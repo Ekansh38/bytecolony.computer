@@ -130,18 +130,19 @@ function toggleTheme() {
   var N          = 120;
   var MAX_SPEED  = 1.8,  MIN_SPEED  = 0.6;
   var PERCEPTION = 55,   SEP_DIST   = 50;
-  var SEP_W      = 0.28, ALI_W      = 0.06, COH_W = 0.003;
-  var MAX_FORCE  = 0.15;
+  var SEP_W      = 0.18, ALI_W      = 0.05, COH_W = 0.001;
+  var MAX_FORCE  = 0.08;
   var MARGIN     = 100,  TURN       = 0.22;
-  var SPREAD_R   = 180,  SPREAD_W   = 0.03;
-  var WANDER     = 0.07;
+  var SPREAD_R   = 180,  SPREAD_W   = 0.06;
+  var WANDER     = 0.02;
   var BOID_LEN     = 14;
   var BOID_HALF    = 5.5;
   var BOID_OPACITY = 0.14;
   var BOID_GLOW    = 0;
 
   var boids = [];
-  var _blast = 0;  // decays each frame; multiplies position step for scatter effect
+  var _blast = 0;      // decays each frame; multiplies position step for scatter effect
+  var _glowPulse = 0;  // decays each frame; drives BOID_GLOW during click scatter
 
   var mouseX = -9999, mouseY = -9999;
   var MOUSE_R    = 280;   // px radius of mouse influence
@@ -149,9 +150,10 @@ function toggleTheme() {
   document.addEventListener('mousemove', function(e) { mouseX = e.clientX; mouseY = e.clientY; });
   document.addEventListener('mouseleave', function()  { mouseX = -9999;    mouseY = -9999; });
 
-  // click on background → blast boids outward with glow + sound
+  // click on background → blast boids outward + spike their glow
   function _scatterBoids(cx, cy) {
     _blast = 28;
+    _glowPulse = 35;
     for (var i = 0; i < boids.length; i++) {
       var b = boids[i];
       var dx = b.x - cx, dy = b.y - cy;
@@ -160,17 +162,6 @@ function toggleTheme() {
       b.vx = Math.cos(angle) * MAX_SPEED;
       b.vy = Math.sin(angle) * MAX_SPEED;
     }
-    _blastGlow(cx, cy);
-  }
-
-  function _blastGlow(cx, cy) {
-    var hex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#7aa2f7';
-    var r = parseInt(hex.slice(1,3),16)||122, g = parseInt(hex.slice(3,5),16)||162, bv = parseInt(hex.slice(5,7),16)||247;
-    var el = document.createElement('div');
-    el.style.cssText = 'position:fixed;left:'+cx+'px;top:'+cy+'px;width:0;height:0;border-radius:50%;pointer-events:none;z-index:999;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba('+r+','+g+','+bv+',0.18) 0%,transparent 70%);opacity:1;transition:width 0.45s ease-out,height 0.45s ease-out,opacity 0.45s ease-out;';
-    document.body.appendChild(el);
-    requestAnimationFrame(function() { el.style.width='180px'; el.style.height='180px'; el.style.opacity='0'; });
-    setTimeout(function() { el.parentNode && el.parentNode.removeChild(el); }, 550);
   }
 
   document.addEventListener('click', function(e) {
@@ -280,6 +271,8 @@ function toggleTheme() {
   window._invalidateAccentCache = function () { _accentRgb = null; };
 
   function drawBoids(noClear) {
+    if (_glowPulse > 0) { _glowPulse--; BOID_GLOW = Math.ceil(_glowPulse * 1.4); }
+    else if (BOID_GLOW > 0 && _glowPulse === 0) { BOID_GLOW = 0; }
     if (!noClear) ctx.clearRect(0, 0, W, H);
     if (BOID_GLOW > 0) {
       ctx.shadowColor = accentRgba(1);
