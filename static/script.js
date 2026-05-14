@@ -128,13 +128,14 @@ function toggleTheme() {
   // Each boid is a concave arrow pointing in its velocity direction.
 
   var N          = 120;
-  var MAX_SPEED  = 1.8,  MIN_SPEED  = 0.6;
-  var PERCEPTION = 55,   SEP_DIST   = 50;
-  var SEP_W      = 0.14, ALI_W      = 0.04, COH_W = 0.001;
-  var MAX_FORCE  = 0.05;
-  var MARGIN     = 100,  TURN       = 0.22;
+  var MAX_SPEED  = 1.0,  MIN_SPEED  = 0.3;
+  var PERCEPTION = 60,   SEP_DIST   = 55;
+  var SEP_W      = 0.20, ALI_W      = 0.04, COH_W = 0.001;
+  var MAX_FORCE  = 0.04;
+  var SEP_FORCE  = 0.14;  // separation gets a higher cap to prevent overlap
+  var MARGIN     = 100,  TURN       = 0.12;
   var SPREAD_R   = 180,  SPREAD_W   = 0.06;
-  var WANDER     = 0.008;
+  var WANDER     = 0.006;
   var BOID_LEN     = 14;
   var BOID_HALF    = 5.5;
   var BOID_OPACITY = 0.14;
@@ -145,7 +146,7 @@ function toggleTheme() {
 
   var mouseX = -9999, mouseY = -9999;
   var MOUSE_R    = 200;   // px radius of mouse influence
-  var MOUSE_PULL = 0.22;  // force toward cursor per frame
+  var MOUSE_PULL = 0.14;  // force toward cursor per frame
   document.addEventListener('mousemove', function(e) { mouseX = e.clientX; mouseY = e.clientY; });
   document.addEventListener('mouseleave', function()  { mouseX = -9999;    mouseY = -9999; });
 
@@ -221,7 +222,7 @@ function toggleTheme() {
         }
       }
 
-      if (sc  > 0) { tmp = clamp2(sx*SEP_W,  sy*SEP_W,  MAX_FORCE); fx += tmp[0]; fy += tmp[1]; }
+      if (sc  > 0) { tmp = clamp2(sx*SEP_W,  sy*SEP_W,  SEP_FORCE); fx += tmp[0]; fy += tmp[1]; }
       if (ac  > 0) {
         tmp = clamp2(ax/ac, ay/ac, MAX_SPEED);
         tmp = clamp2((tmp[0]-b.vx)*ALI_W, (tmp[1]-b.vy)*ALI_W, MAX_FORCE);
