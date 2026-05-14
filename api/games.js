@@ -66,7 +66,13 @@ module.exports = async (req, res) => {
       const [rateCheck] = await kv([['get', rateKey]]);
       if (rateCheck?.result) return res.status(429).json({ error: 'one submission per hour please' });
 
-      const newId = slugify(t) + '-' + Date.now().toString(36);
+      const newId = slugify(t);
+
+      // enforce unique ID (unique title slug)
+      const existing = await kv([['lrange', 'arcade', '0', String(MAX_KEEP - 1)]]);
+      const allIds = (existing[0]?.result || []).map(s => { try { return JSON.parse(s).id; } catch { return null; } }).filter(Boolean);
+      if (allIds.includes(newId)) return res.status(409).json({ error: 'a game called "' + newId + '" already exists — pick a different title' });
+
       const entry = { id: newId, title: t, author: a, code: c, date: new Date().toISOString() };
 
       await kv([

@@ -1653,14 +1653,14 @@ function toggleTheme() {
     var co = lua.lua_newthread(L);
 
     var sandbox = [
-      'os.execute=nil; os.exit=nil; os.getenv=nil; os.remove=nil; os.rename=nil; os.tmpname=nil',
-      'io.open=nil; io.lines=nil; io.popen=nil',
-      'require=nil; load=nil; dofile=nil; loadfile=nil; collectgarbage=nil',
-      'io.read=function() return coroutine.yield() end',
-      'io.write=function(...)',
-      '  local s="" for i=1,select("#",...)do s=s..tostring(select(i,...))end',
-      '  print(s)',
-      'end',
+      'os=nil; require=nil; load=nil; dofile=nil; loadfile=nil; collectgarbage=nil',
+      'io={',
+      '  read=function() return coroutine.yield() end,',
+      '  write=function(...)',
+      '    local s="" for i=1,select("#",...)do s=s..tostring(select(i,...))end',
+      '    print(s)',
+      '  end',
+      '}',
     ].join('\n');
 
     var status = lauxlib.luaL_loadstring(co, toLua(sandbox + '\n\n' + game.code));
