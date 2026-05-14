@@ -161,43 +161,16 @@ function toggleTheme() {
       b.vy = Math.sin(angle) * MAX_SPEED;
     }
     _blastGlow(cx, cy);
-    _blastSound();
   }
 
   function _blastGlow(cx, cy) {
     var hex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#7aa2f7';
     var r = parseInt(hex.slice(1,3),16)||122, g = parseInt(hex.slice(3,5),16)||162, bv = parseInt(hex.slice(5,7),16)||247;
     var el = document.createElement('div');
-    el.style.cssText = 'position:fixed;left:'+cx+'px;top:'+cy+'px;width:0;height:0;border-radius:50%;pointer-events:none;z-index:999;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba('+r+','+g+','+bv+',0.28) 0%,transparent 70%);opacity:1;transition:width 0.5s ease-out,height 0.5s ease-out,opacity 0.5s ease-out;';
+    el.style.cssText = 'position:fixed;left:'+cx+'px;top:'+cy+'px;width:0;height:0;border-radius:50%;pointer-events:none;z-index:999;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba('+r+','+g+','+bv+',0.18) 0%,transparent 70%);opacity:1;transition:width 0.45s ease-out,height 0.45s ease-out,opacity 0.45s ease-out;';
     document.body.appendChild(el);
-    requestAnimationFrame(function() { el.style.width='450px'; el.style.height='450px'; el.style.opacity='0'; });
-    setTimeout(function() { el.parentNode && el.parentNode.removeChild(el); }, 600);
-  }
-
-  function _blastSound() {
-    try {
-      var A = window.AudioContext || window.webkitAudioContext;
-      if (!A) return;
-      var actx = new A();
-      // noise whoosh
-      var bufLen = Math.floor(actx.sampleRate * 0.22);
-      var buf = actx.createBuffer(1, bufLen, actx.sampleRate);
-      var data = buf.getChannelData(0);
-      for (var i = 0; i < bufLen; i++) data[i] = (Math.random()*2-1) * Math.pow(1 - i/bufLen, 2);
-      var noise = actx.createBufferSource(); noise.buffer = buf;
-      var filt = actx.createBiquadFilter(); filt.type = 'bandpass'; filt.frequency.value = 700; filt.Q.value = 0.7;
-      var ng = actx.createGain(); ng.gain.setValueAtTime(0.05, actx.currentTime); ng.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.22);
-      noise.connect(filt); filt.connect(ng); ng.connect(actx.destination); noise.start();
-      // low thud
-      var osc = actx.createOscillator(); var og = actx.createGain();
-      osc.connect(og); og.connect(actx.destination);
-      osc.frequency.setValueAtTime(160, actx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(28, actx.currentTime + 0.28);
-      og.gain.setValueAtTime(0.08, actx.currentTime);
-      og.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.28);
-      osc.start(); osc.stop(actx.currentTime + 0.28);
-      setTimeout(function() { try { actx.close(); } catch(_) {} }, 450);
-    } catch(_) {}
+    requestAnimationFrame(function() { el.style.width='180px'; el.style.height='180px'; el.style.opacity='0'; });
+    setTimeout(function() { el.parentNode && el.parentNode.removeChild(el); }, 550);
   }
 
   document.addEventListener('click', function(e) {

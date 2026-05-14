@@ -12,7 +12,7 @@
   </li>
   {{ end }}{{ end }}
 </ul>
-<div class="ascii-close"></div>
+<div class="ascii-close">+------------------------------------------------------------------------------+</div>
 
 <div class="ascii-sep">+-- client work</div>
 <ul>
@@ -33,7 +33,7 @@
     <span class="li-desc">this site</span>
   </li>
 </ul>
-<div class="ascii-close"></div>
+<div class="ascii-close">+------------------------------------------------------------------------------+</div>
 
 {{/* EXPERIENCE SECTION — commented out, re-enable when ready
 <div class="ascii-sep"><a href="/experience" class="now-link">+-- experience</a></div>
@@ -46,7 +46,7 @@
   </li>
   {{ end }}
 </ul>
-<div class="ascii-close"></div>
+<div class="ascii-close">+------------------------------------------------------------------------------+</div>
 */}}
 
 {{ $games := .Site.GetPage "/games" }}
@@ -60,7 +60,7 @@
   </li>
   {{ end }}
 </ul>
-<div class="ascii-close"></div>
+<div class="ascii-close">+------------------------------------------------------------------------------+</div>
 
 <div class="ascii-sep"><a href="/games" class="now-link">+-- games</a></div>
 <ul>
@@ -71,7 +71,7 @@
   </li>
   {{ end }}
 </ul>
-<div class="ascii-close"></div>
+<div class="ascii-close">+------------------------------------------------------------------------------+</div>
 
 {{ $tools := .Site.GetPage "/tools" }}
 <div class="ascii-sep"><a href="/tools" class="now-link">+-- tools</a></div>
@@ -83,7 +83,7 @@
   </li>
   {{ end }}
 </ul>
-<div class="ascii-close"></div>
+<div class="ascii-close">+------------------------------------------------------------------------------+</div>
 
 {{ $writing := .Site.GetPage "/writing" }}
 <div class="ascii-sep"><a href="/writing" class="now-link">+-- writing</a></div>
@@ -99,11 +99,11 @@
 {{ else }}
 <p style="color: var(--muted)">nothing yet child, keep waiting</p>
 {{ end }}
-<div class="ascii-close"></div>
+<div class="ascii-close">+------------------------------------------------------------------------------+</div>
 
 <div class="ascii-sep">+-- get in touch</div>
 <p class="contact-blurb">whether it's a project, a question, or just to say hi:</p>
 <a href="#" class="copy-email contact-email" data-email="{{ .Site.Params.email }}">{{ .Site.Params.email }}<span class="email-expand"> · click to copy</span></a>
-<div class="ascii-close"></div>
+<div class="ascii-close">+------------------------------------------------------------------------------+</div>
 
 {{ end }}

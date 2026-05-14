@@ -134,6 +134,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
+  font-size: 17px;
   background: var(--bg);
   scrollbar-width: none;       /* Firefox */
   -ms-overflow-style: none;    /* IE/Edge */
@@ -283,16 +284,11 @@ body.home ul { list-style: none; padding-left: 0; }
 body.home li::before { content: '| '; color: var(--muted); display: inline; }
 
 .ascii-close {
-  display: block;
   color: var(--muted);
   font-size: 0.88rem;
   white-space: nowrap;
   overflow: hidden;
   margin-bottom: 4px;
-}
-.ascii-close::before {
-  display: block;
-  content: '+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+';
 }
 
 .now-link { color: var(--muted); }
