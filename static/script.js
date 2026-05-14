@@ -129,18 +129,24 @@ function toggleTheme() {
 
   var N          = 120;
   var MAX_SPEED  = 1.8,  MIN_SPEED  = 0.6;
-  var PERCEPTION = 70,   SEP_DIST   = 50;
-  var SEP_W      = 0.28, ALI_W      = 0.06, COH_W = 0.005;
+  var PERCEPTION = 55,   SEP_DIST   = 50;
+  var SEP_W      = 0.28, ALI_W      = 0.06, COH_W = 0.003;
   var MAX_FORCE  = 0.15;
   var MARGIN     = 100,  TURN       = 0.22;
   var SPREAD_R   = 180,  SPREAD_W   = 0.03;
-  var WANDER     = 0.04;
+  var WANDER     = 0.07;
   var BOID_LEN     = 14;
   var BOID_HALF    = 5.5;
   var BOID_OPACITY = 0.14;
   var BOID_GLOW    = 0;
 
   var boids = [];
+
+  var mouseX = -9999, mouseY = -9999;
+  var MOUSE_R    = 150;   // px radius of mouse influence
+  var MOUSE_PULL = 0.05;  // force toward cursor per frame
+  document.addEventListener('mousemove', function(e) { mouseX = e.clientX; mouseY = e.clientY; });
+  document.addEventListener('mouseleave', function()  { mouseX = -9999;    mouseY = -9999; });
 
   function clamp2(vx, vy, max) {
     var m2 = vx*vx + vy*vy;
@@ -203,6 +209,15 @@ function toggleTheme() {
       if (b.x > W-MARGIN) fx -= TURN*(1-(W-b.x)/MARGIN);
       if (b.y < MARGIN)   fy += TURN*(1-b.y/MARGIN);
       if (b.y > H-MARGIN) fy -= TURN*(1-(H-b.y)/MARGIN);
+
+      // mouse attraction — boids within MOUSE_R steer gently toward cursor
+      var mdx = mouseX - b.x, mdy = mouseY - b.y;
+      var md2 = mdx*mdx + mdy*mdy;
+      if (md2 < MOUSE_R*MOUSE_R && md2 > 1) {
+        var md = Math.sqrt(md2);
+        fx += (mdx/md) * MOUSE_PULL;
+        fy += (mdy/md) * MOUSE_PULL;
+      }
 
       b.vx += fx + (Math.random()-0.5)*WANDER;
       b.vy += fy + (Math.random()-0.5)*WANDER;
@@ -869,7 +884,7 @@ function toggleTheme() {
       desc:'slow drift',
       params:{'boids.n':20,  'boids.size':45, 'boids.tick':0.5, 'boids.opacity':60, 'boids.glow':30,
               'boids.perception':150, 'boids.separation':100} },
-    swarm:     { sim:'boids', lspeed:null, bspeed:50, theme:'gruvbox',
+    swarm:     { sim:'boids', lspeed:null, bspeed:20, theme:'gruvbox',
       desc:'fast dense',
       params:{'boids.n':300, 'boids.size':6,  'boids.tick':3.5, 'boids.opacity':22, 'boids.glow':0,
               'boids.perception':60,  'boids.separation':30} },
@@ -1131,7 +1146,7 @@ function toggleTheme() {
       '  boids.size        1–200    default 14',
       '  boids.tick        0–30     default 1.8  (velocity)',
       '  boids.speed       0–100%   default 15   (sim tick rate)',
-      '  boids.perception  1–2000   default 70',
+      '  boids.perception  1–2000   default 55',
       '  boids.separation  0–1000   default 50',
       '  boids.opacity     0–100%   default 14',
       '  boids.glow        0–100%   default 0',

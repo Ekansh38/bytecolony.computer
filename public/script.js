@@ -1,9 +1,25 @@
-var THEMES = ['tokyo-night', 'gruvbox', 'rose-pine', 'solarized-light'];
-var LIGHT_THEMES = ['rose-pine', 'solarized-light'];
+document.addEventListener('click', function (e) {
+  var el = e.target.closest('.copy-email');
+  if (!el) return;
+  // don't intercept if the user is selecting the email text
+  if (window.getSelection && window.getSelection().toString().length > 0) return;
+  var email = el.getAttribute('data-email');
+  navigator.clipboard.writeText(email).then(function () {
+    var toast = document.getElementById('copy-toast');
+    if (!toast) return;
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { toast.classList.remove('show'); }, 2000);
+  });
+});
+
+var THEMES = ['tokyo-night', 'gruvbox', 'dracula', 'rose-pine', 'github-light', 'papercolor-light'];
+var LIGHT_THEMES = ['rose-pine', 'github-light', 'papercolor-light'];
 
 function applyTheme(name) {
   document.documentElement.setAttribute('data-theme', name);
   localStorage.setItem('theme', name);
+  if (window._invalidateAccentCache) window._invalidateAccentCache();
   var isLight = LIGHT_THEMES.indexOf(name) >= 0;
   var t = document.getElementById('t');
   if (t) t.textContent = isLight ? '[light]' : '[dark]';
@@ -22,6 +38,8 @@ function toggleTheme() {
   var saved = localStorage.getItem('theme') || 'tokyo-night';
   if (saved === 'dark') saved = 'tokyo-night';
   if (saved === 'light') saved = 'rose-pine';
+  if (saved === 'solarized-light' || saved === 'flexoki-light' || saved === 'ayu-light') saved = 'github-light';
+  if (saved === 'kanagawa') saved = 'dracula';
   if (THEMES.indexOf(saved) < 0) saved = 'tokyo-night';
   applyTheme(saved);
 
@@ -68,14 +86,15 @@ function toggleTheme() {
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
 
-  var MODES = ['life', 'boids', 'off'];
-  var modeIdx = Math.max(0, MODES.indexOf(localStorage.getItem('bgMode') || 'life'));
-  var speedLevel = parseInt(localStorage.getItem('bgSpeed') || '2');
+  var MODES = ['life', 'boids', 'combo', 'off'];
+  var modeIdx = Math.max(0, MODES.indexOf(localStorage.getItem('bgMode') || 'combo'));
+  var lifeSpeedLevel  = Math.max(0, Math.min(100, parseInt(localStorage.getItem('bgLifeSpeed')  || '15')));
+  var boidsSpeedLevel = Math.max(0, Math.min(100, parseInt(localStorage.getItem('bgBoidsSpeed') || '15')));
   var W, H;
 
   function isDark() {
     var t = document.documentElement.getAttribute('data-theme');
-    return t !== 'rose-pine' && t !== 'solarized-light';
+    return LIGHT_THEMES.indexOf(t) < 0;
   }
 
   function updateBtn() {
@@ -86,6 +105,7 @@ function toggleTheme() {
     ctx.clearRect(0, 0, W, H);
     if (mode === 'boids') initBoids();
     if (mode === 'life')  initLife();
+    if (mode === 'combo') { initLife(); initBoids(); }
   }
 
   function cycleMode() {
@@ -109,15 +129,24 @@ function toggleTheme() {
 
   var N          = 120;
   var MAX_SPEED  = 1.8,  MIN_SPEED  = 0.6;
-  var PERCEPTION = 85,   SEP_DIST   = 50;
-  var SEP_W      = 0.15, ALI_W      = 0.06, COH_W = 0.009;
-  var MAX_FORCE  = 0.12;
+  var PERCEPTION = 55,   SEP_DIST   = 50;
+  var SEP_W      = 0.28, ALI_W      = 0.06, COH_W = 0.003;
+  var MAX_FORCE  = 0.15;
   var MARGIN     = 100,  TURN       = 0.22;
-  var SPREAD_R   = 200,  SPREAD_W   = 0.03;
-  var BOID_LEN   = 14;
-  var BOID_HALF  = 5.5;
+  var SPREAD_R   = 180,  SPREAD_W   = 0.03;
+  var WANDER     = 0.07;
+  var BOID_LEN     = 14;
+  var BOID_HALF    = 5.5;
+  var BOID_OPACITY = 0.14;
+  var BOID_GLOW    = 0;
 
   var boids = [];
+
+  var mouseX = -9999, mouseY = -9999;
+  var MOUSE_R    = 150;   // px radius of mouse influence
+  var MOUSE_PULL = 0.05;  // force toward cursor per frame
+  document.addEventListener('mousemove', function(e) { mouseX = e.clientX; mouseY = e.clientY; });
+  document.addEventListener('mouseleave', function()  { mouseX = -9999;    mouseY = -9999; });
 
   function clamp2(vx, vy, max) {
     var m2 = vx*vx + vy*vy;
@@ -137,6 +166,7 @@ function toggleTheme() {
 
   function updateBoids() {
     var P2 = PERCEPTION*PERCEPTION, S2 = SEP_DIST*SEP_DIST, SP2 = SPREAD_R*SPREAD_R;
+    var sp = (1 + boidsCurrentSpeed / 100 * 19) / 5;
     var i, j, b, o, dx, dy, d2, d, spd, tmp;
 
     for (i = 0; i < N; i++) {
@@ -180,45 +210,48 @@ function toggleTheme() {
       if (b.y < MARGIN)   fy += TURN*(1-b.y/MARGIN);
       if (b.y > H-MARGIN) fy -= TURN*(1-(H-b.y)/MARGIN);
 
-      b.vx += fx; b.vy += fy;
+      // mouse attraction — boids within MOUSE_R steer gently toward cursor
+      var mdx = mouseX - b.x, mdy = mouseY - b.y;
+      var md2 = mdx*mdx + mdy*mdy;
+      if (md2 < MOUSE_R*MOUSE_R && md2 > 1) {
+        var md = Math.sqrt(md2);
+        fx += (mdx/md) * MOUSE_PULL;
+        fy += (mdy/md) * MOUSE_PULL;
+      }
+
+      b.vx += fx + (Math.random()-0.5)*WANDER;
+      b.vy += fy + (Math.random()-0.5)*WANDER;
       spd = Math.sqrt(b.vx*b.vx + b.vy*b.vy);
       if (spd > MAX_SPEED) { b.vx = b.vx/spd*MAX_SPEED; b.vy = b.vy/spd*MAX_SPEED; }
       else if (spd < MIN_SPEED && spd > 1e-4) { b.vx = b.vx/spd*MIN_SPEED; b.vy = b.vy/spd*MIN_SPEED; }
 
-      var sp = lifeCurrentSpeed / 5;
       b.x += b.vx * sp; b.y += b.vy * sp;
       if (b.x < -20) b.x = W+20; else if (b.x > W+20) b.x = -20;
       if (b.y < -20) b.y = H+20; else if (b.y > H+20) b.y = -20;
-    }
-
-    // Hard separation: directly push apart any boids still overlapping
-    var MIN_D = BOID_LEN * 1.2;
-    var MIN_D2 = MIN_D * MIN_D;
-    for (i = 0; i < N; i++) {
-      for (j = i + 1; j < N; j++) {
-        dx = boids[j].x - boids[i].x; dy = boids[j].y - boids[i].y;
-        d2 = dx*dx + dy*dy;
-        if (d2 < MIN_D2 && d2 > 0) {
-          d = Math.sqrt(d2);
-          var push = (MIN_D - d) * 0.5;
-          var nx = dx/d, ny = dy/d;
-          boids[i].x -= nx*push; boids[i].y -= ny*push;
-          boids[j].x += nx*push; boids[j].y += ny*push;
-        }
-      }
     }
   }
 
   function isHome() { return window.location.pathname === '/'; }
 
-  function drawBoids() {
-    var dark = isDark();
-    var sub  = isHome();
-    ctx.clearRect(0, 0, W, H);
+  var _accentRgb = null;
+  function accentRgba(alpha) {
+    if (!_accentRgb) {
+      var hex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+      _accentRgb = [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)];
+    }
+    return 'rgba('+_accentRgb[0]+','+_accentRgb[1]+','+_accentRgb[2]+','+alpha+')';
+  }
+  window._invalidateAccentCache = function () { _accentRgb = null; };
 
-    ctx.fillStyle = dark
-      ? (sub ? 'rgba(169,177,214,0.18)' : 'rgba(169,177,214,0.07)')
-      : (sub ? 'rgba(52,59,88,0.15)'    : 'rgba(52,59,88,0.055)');
+  function drawBoids(noClear) {
+    if (!noClear) ctx.clearRect(0, 0, W, H);
+    if (BOID_GLOW > 0) {
+      ctx.shadowColor = accentRgba(1);
+      ctx.shadowBlur  = BOID_GLOW;
+    } else {
+      ctx.shadowBlur = 0;
+    }
+    ctx.fillStyle = accentRgba(BOID_OPACITY);
     for (var i = 0; i < N; i++) {
       var b   = boids[i];
       var spd = Math.sqrt(b.vx*b.vx + b.vy*b.vy);
@@ -234,6 +267,7 @@ function toggleTheme() {
       ctx.closePath();
       ctx.fill();
     }
+    ctx.shadowBlur = 0;
   }
 
   // ===== CONWAY'S GAME OF LIFE ==============================
@@ -241,12 +275,25 @@ function toggleTheme() {
   // (R-pentomino, Acorn, gliders, oscillators) plus a sparse random
   // base. Auto-fertilises by dropping structured patterns, not blobs.
 
-  var CELL = 7;
+  var CELL          = 7;
+  var LIFE_OPACITY  = 0.09;
+  var LIFE_GLOW     = 0;
+  var LIFE_AUTOFILL = 1;
   var GW, GH;
   var grid, next;
   var lifeFrame = 0;
   var liveCount = 0;
-  var lifeCurrentSpeed = 5;
+  var lifeCurrentSpeed  = lifeSpeedLevel;
+  var boidsCurrentSpeed = boidsSpeedLevel;
+  var LIFE_RAINBOW   = 0;   // 0=off 1=time 2=age 3=position
+  var lifeRainbowHue = 0;
+  var cellAge        = null;
+
+  var TRAIL_ON    = 0;    // 0=off 1=on
+  var TRAIL_SIZE  = 2;    // 1=single cell  2=cross(5)  3=wide cross(9)
+  var TRAIL_GLOW  = 12;   // 0-100 → extra opacity boost at peak heat
+  var TRAIL_DECAY = 80;   // 0-100 → fade speed (0=slowest 100=fastest)
+  var trailHeat   = null; // Float32Array, same dims as grid
 
   // Known patterns as [dx, dy] offsets from placement origin
   var PAT_GLIDER_SE = [[1,0],[2,1],[0,2],[1,2],[2,2]];            // moves SE
@@ -259,6 +306,82 @@ function toggleTheme() {
   var PAT_BLINKER   = [[0,0],[1,0],[2,0]];                        // period-2
   var PAT_TOAD      = [[1,0],[2,0],[3,0],[0,1],[1,1],[2,1]];      // period-2
   var PAT_BEACON    = [[0,0],[1,0],[0,1],[3,2],[2,3],[3,3]];      // period-2
+
+  // ── Spawnable complex structures ──────────────────────────
+  var PAT_GOSPER_GUN = [                                          // infinite glider factory
+    [24,0],
+    [22,1],[24,1],
+    [12,2],[13,2],[20,2],[21,2],[34,2],[35,2],
+    [11,3],[15,3],[20,3],[21,3],[34,3],[35,3],
+    [0,4],[1,4],[10,4],[16,4],[20,4],[21,4],
+    [0,5],[1,5],[10,5],[14,5],[16,5],[17,5],[22,5],[24,5],
+    [10,6],[16,6],[24,6],
+    [11,7],[15,7],
+    [12,8],[13,8]
+  ];
+  var PAT_PULSAR = [                                              // period-3 oscillator
+    [2,0],[3,0],[4,0],[8,0],[9,0],[10,0],
+    [0,2],[5,2],[7,2],[12,2],
+    [0,3],[5,3],[7,3],[12,3],
+    [0,4],[5,4],[7,4],[12,4],
+    [2,5],[3,5],[4,5],[8,5],[9,5],[10,5],
+    [2,7],[3,7],[4,7],[8,7],[9,7],[10,7],
+    [0,8],[5,8],[7,8],[12,8],
+    [0,9],[5,9],[7,9],[12,9],
+    [0,10],[5,10],[7,10],[12,10],
+    [2,12],[3,12],[4,12],[8,12],[9,12],[10,12]
+  ];
+  var PAT_LWSS = [                                                // lightweight spaceship
+    [1,0],[2,0],[3,0],[4,0],
+    [0,1],[4,1],
+    [4,2],
+    [0,3],[3,3]
+  ];
+  var PAT_PENTADECATHLON = [                                      // period-15 oscillator
+    [1,0],[2,0],[3,0],
+    [0,1],[4,1],
+    [1,2],[2,2],[3,2],
+    [1,3],[2,3],[3,3],
+    [1,4],[2,4],[3,4],
+    [1,5],[2,5],[3,5],
+    [0,6],[4,6],
+    [1,7],[2,7],[3,7]
+  ];
+  var PAT_SWITCHENGINE = [                                        // infinite growth
+    [0,0],[2,0],
+    [1,1],[2,1],[4,2],[5,2],[6,2],
+    [0,2],[1,4],[2,4],[4,4],[5,4],[6,4],
+    [1,5],[4,5]
+  ];
+
+  var PAT_HWSS = [                                                // heavyweight spaceship (13 cells, c/2) x=7,y=5 RLE: 3b2o2b$bo4bo$o6b$o5bo$6o!
+    [3,0],[4,0],
+    [1,1],[6,1],
+    [0,2],
+    [0,3],[6,3],
+    [0,4],[1,4],[2,4],[3,4],[4,4],[5,4]
+  ];
+  // RLE source: conwaylife.com URL param — period-30 oscillator (26 cells, 22×7) found by Gosper 1970
+  var PAT_QUEEN_BEE = [                                           // queen bee shuttle — RLE: 9b2o$9bobo$4b2o6bo7b2o$2obo2bo2bo2bo7b2o$2o2b2o6bo$9bobo$9b2o!
+    [9,0],[10,0],
+    [9,1],[11,1],
+    [4,2],[5,2],[12,2],[20,2],[21,2],
+    [0,3],[1,3],[3,3],[6,3],[9,3],[12,3],[20,3],[21,3],
+    [0,4],[1,4],[4,4],[5,4],[12,4],
+    [9,5],[11,5],
+    [9,6],[10,6]
+  ];
+
+  var SPAWN_PATTERNS = {
+    'r-pentomino':    PAT_RPENTO,
+    'acorn':          PAT_ACORN,
+    'gosper-gun':     PAT_GOSPER_GUN,
+    'queen-bee':      PAT_QUEEN_BEE,
+    'pulsar':         PAT_PULSAR,
+    'pentadecathlon': PAT_PENTADECATHLON,
+    'lwss':           PAT_LWSS,
+    'hwss':           PAT_HWSS,
+  };
 
   function placePattern(cx, cy, cells) {
     for (var i = 0; i < cells.length; i++) {
@@ -275,31 +398,38 @@ function toggleTheme() {
     next      = new Uint8Array(GW * GH);
     liveCount = 0;
     lifeFrame = 0;
+    cellAge   = LIFE_RAINBOW === 2 ? new Uint16Array(GW * GH) : null;
+    trailHeat = new Float32Array(GW * GH);
 
-    // Sparse random base (~12%) — enough for organic interaction without dying
+    // Sparse random base — density scales with autofill (>1 = overpopulated)
+    var fillRate = LIFE_AUTOFILL <= 1
+      ? 0.12 * LIFE_AUTOFILL
+      : 0.12 + (LIFE_AUTOFILL - 1) * 0.43;  // 1→12%, 2→55%
     for (var i = 0; i < GW * GH; i++) {
-      if (Math.random() < 0.12) { grid[i] = 1; liveCount++; }
+      if (Math.random() < fillRate) { grid[i] = 1; liveCount++; }
     }
 
-    // Scatter gliders in all four directions
-    var gliders = [PAT_GLIDER_SE, PAT_GLIDER_SW, PAT_GLIDER_NE, PAT_GLIDER_NW];
-    for (var k = 0; k < 16; k++) {
-      placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), gliders[k % 4]);
-    }
-    // Long-lived chaos seeds that produce gliders and complex structures
-    for (var k = 0; k < 10; k++) {
-      placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), PAT_RPENTO);
-    }
-    for (var k = 0; k < 5; k++) {
-      placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), PAT_ACORN);
-    }
-    for (var k = 0; k < 4; k++) {
-      placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), PAT_DIEHARD);
-    }
-    // Quick oscillators for immediate visual interest
-    var oscs = [PAT_BLINKER, PAT_TOAD, PAT_BEACON];
-    for (var k = 0; k < 24; k++) {
-      placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), oscs[k % 3]);
+    if (LIFE_AUTOFILL > 0) {
+      // Scatter gliders in all four directions
+      var gliders = [PAT_GLIDER_SE, PAT_GLIDER_SW, PAT_GLIDER_NE, PAT_GLIDER_NW];
+      for (var k = 0; k < Math.round(16 * LIFE_AUTOFILL); k++) {
+        placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), gliders[k % 4]);
+      }
+      // Long-lived chaos seeds that produce gliders and complex structures
+      for (var k = 0; k < Math.round(10 * LIFE_AUTOFILL); k++) {
+        placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), PAT_RPENTO);
+      }
+      for (var k = 0; k < Math.round(5 * LIFE_AUTOFILL); k++) {
+        placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), PAT_ACORN);
+      }
+      for (var k = 0; k < Math.round(4 * LIFE_AUTOFILL); k++) {
+        placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), PAT_DIEHARD);
+      }
+      // Quick oscillators for immediate visual interest
+      var oscs = [PAT_BLINKER, PAT_TOAD, PAT_BEACON];
+      for (var k = 0; k < Math.round(24 * LIFE_AUTOFILL); k++) {
+        placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), oscs[k % 3]);
+      }
     }
   }
 
@@ -320,10 +450,16 @@ function toggleTheme() {
       }
     }
     var tmp = grid; grid = next; next = tmp;
+    if (LIFE_RAINBOW === 1) lifeRainbowHue = (lifeRainbowHue + 2) % 360;
+    if (LIFE_RAINBOW === 2 && cellAge) {
+      for (var i = 0; i < GW * GH; i++)
+        cellAge[i] = grid[i] ? Math.min(65535, cellAge[i] + 1) : 0;
+    }
     // Auto-fertilise: keep activity up so the sim never looks like it stalled
-    if (liveCount < GW * GH * 0.05) {
+    if (LIFE_AUTOFILL > 0 && liveCount < GW * GH * 0.05 * LIFE_AUTOFILL) {
       var seeds = [PAT_RPENTO, PAT_ACORN, PAT_DIEHARD, PAT_GLIDER_SE, PAT_GLIDER_NW];
-      for (var k = 0; k < 5; k++) {
+      var numSeeds = Math.max(1, Math.round(5 * LIFE_AUTOFILL));
+      for (var k = 0; k < numSeeds; k++) {
         placePattern(
           Math.floor(Math.random() * GW),
           Math.floor(Math.random() * GH),
@@ -333,17 +469,63 @@ function toggleTheme() {
     }
   }
 
-  function drawLife() {
-    var dark = isDark();
-    var sub  = isHome();
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = dark
-      ? (sub ? 'rgba(169,177,214,0.10)' : 'rgba(169,177,214,0.05)')
-      : (sub ? 'rgba(52,59,88,0.09)'    : 'rgba(52,59,88,0.04)');
-    for (var y = 0; y < GH; y++) {
-      for (var x = 0; x < GW; x++) {
-        if (grid[y*GW + x]) ctx.fillRect(x*CELL+1, y*CELL+1, CELL-2, CELL-2);
+  function drawLife(noClear) {
+    if (!noClear) ctx.clearRect(0, 0, W, H);
+    if (LIFE_GLOW > 0) {
+      ctx.shadowColor = LIFE_RAINBOW > 0 ? 'rgba(255,255,255,0.8)' : accentRgba(1);
+      ctx.shadowBlur  = LIFE_GLOW;
+    } else {
+      ctx.shadowBlur = 0;
+    }
+    if (LIFE_RAINBOW === 0) {
+      ctx.fillStyle = accentRgba(LIFE_OPACITY);
+      for (var y = 0; y < GH; y++)
+        for (var x = 0; x < GW; x++)
+          if (grid[y*GW + x]) ctx.fillRect(x*CELL+1, y*CELL+1, CELL-2, CELL-2);
+    } else if (LIFE_RAINBOW === 1) {
+      // time: all cells same hue, rotates each step
+      ctx.fillStyle = 'hsla(' + lifeRainbowHue + ',72%,60%,' + LIFE_OPACITY + ')';
+      for (var y = 0; y < GH; y++)
+        for (var x = 0; x < GW; x++)
+          if (grid[y*GW + x]) ctx.fillRect(x*CELL+1, y*CELL+1, CELL-2, CELL-2);
+    } else if (LIFE_RAINBOW === 2) {
+      // age: newly born = red, older cycles through spectrum
+      for (var y = 0; y < GH; y++) {
+        for (var x = 0; x < GW; x++) {
+          if (!grid[y*GW + x]) continue;
+          var age = cellAge ? cellAge[y*GW + x] : 0;
+          ctx.fillStyle = 'hsla(' + (age * 4 % 360) + ',72%,60%,' + LIFE_OPACITY + ')';
+          ctx.fillRect(x*CELL+1, y*CELL+1, CELL-2, CELL-2);
+        }
       }
+    } else if (LIFE_RAINBOW === 3) {
+      // position: diagonal spatial rainbow
+      for (var y = 0; y < GH; y++) {
+        for (var x = 0; x < GW; x++) {
+          if (!grid[y*GW + x]) continue;
+          var hue = Math.round((x + y) * 360 / (GW + GH)) % 360;
+          ctx.fillStyle = 'hsla(' + hue + ',72%,60%,' + LIFE_OPACITY + ')';
+          ctx.fillRect(x*CELL+1, y*CELL+1, CELL-2, CELL-2);
+        }
+      }
+    }
+    ctx.shadowBlur = 0;
+
+    // trail glow: second pass — hot cells drawn brighter on top
+    if (TRAIL_ON && TRAIL_GLOW > 0 && trailHeat) {
+      for (var y = 0; y < GH; y++) {
+        for (var x = 0; x < GW; x++) {
+          var idx = y * GW + x;
+          var h = trailHeat[idx];
+          if (!grid[idx] || h < 0.005) continue;
+          var extra = h * (TRAIL_GLOW / 100);
+          ctx.shadowColor = accentRgba(1);
+          ctx.shadowBlur  = extra * 12;
+          ctx.fillStyle   = accentRgba(Math.min(1, LIFE_OPACITY + extra));
+          ctx.fillRect(x*CELL+1, y*CELL+1, CELL-2, CELL-2);
+        }
+      }
+      ctx.shadowBlur = 0;
     }
   }
 
@@ -355,20 +537,51 @@ function toggleTheme() {
     initMode(MODES[modeIdx]);
   }
 
+  // Returns {skip, multi} for a given speed percentage 0–100.
+  // Converts pct→1–20 equivalent, then: skip=N means step every N frames; multi=N means N steps per frame.
+  function lifeStepRate(pct) {
+    var sp = 1 + pct / 100 * 19;
+    if (sp <= 10) return { skip: Math.max(1, Math.round(36 * Math.pow(1/36, (sp-1)/9))), multi: 1 };
+    return { skip: 1, multi: Math.round(1 + (sp - 10) * 1.2) };
+  }
+
   function loop() {
-    // Smoothly lerp toward target speed for fluid slider feel
-    lifeCurrentSpeed += (speedLevel - lifeCurrentSpeed) * 0.07;
+    if (document.hidden) { requestAnimationFrame(loop); return; }
+    lifeCurrentSpeed  += (lifeSpeedLevel  - lifeCurrentSpeed)  * 0.07;
+    boidsCurrentSpeed += (boidsSpeedLevel - boidsCurrentSpeed) * 0.07;
+
+    // decay trail heat every frame for smooth fade regardless of sim speed
+    if (TRAIL_ON && trailHeat) {
+      var dr = 0.998 - (TRAIL_DECAY / 100) * 0.198;
+      for (var i = 0; i < trailHeat.length; i++) {
+        if (trailHeat[i] > 0.001) trailHeat[i] *= dr;
+        else if (trailHeat[i] > 0) trailHeat[i] = 0;
+      }
+    }
 
     var mode = MODES[modeIdx];
     if (mode === 'life') {
-      lifeFrame++;
-      // speedLevel 1→slowest (every 18 frames), 10→fast (every 1)
-      var lifeSpeed = Math.max(1, Math.round(18 * Math.pow(1/18, (lifeCurrentSpeed - 1) / 9)));
-      if (lifeFrame % lifeSpeed === 0) stepLife();
-      drawLife();
+      if (lifeSpeedLevel > 0) {
+        lifeFrame++;
+        var lr = lifeStepRate(lifeCurrentSpeed);
+        if (lr.multi > 1) { for (var i = 0; i < lr.multi; i++) stepLife(); }
+        else if (lifeFrame % lr.skip === 0) stepLife();
+      }
+      drawLife(false);
     } else if (mode === 'boids') {
-      updateBoids();
-      drawBoids();
+      if (boidsSpeedLevel > 0) updateBoids();
+      drawBoids(false);
+    } else if (mode === 'combo') {
+      if (lifeSpeedLevel > 0) {
+        lifeFrame++;
+        var lr = lifeStepRate(lifeCurrentSpeed);
+        if (lr.multi > 1) { for (var i = 0; i < lr.multi; i++) stepLife(); }
+        else if (lifeFrame % lr.skip === 0) stepLife();
+      }
+      if (boidsSpeedLevel > 0) updateBoids();
+      ctx.clearRect(0, 0, W, H);
+      drawLife(true);   // noClear=true: life drawn on fresh canvas
+      drawBoids(true);  // noClear=true: boids drawn on top
     } else {
       ctx.clearRect(0, 0, W, H);
     }
@@ -380,6 +593,32 @@ function toggleTheme() {
   window.addEventListener('resize', resize);
   requestAnimationFrame(loop);
 
+  // ── Mouse trail: plant live cells where the cursor moves ──
+  var _trailGX = -1, _trailGY = -1, _trailBlocked = false;
+  var TRAIL_PATTERNS = [
+    [[0,0]],
+    [[0,0],[1,0],[-1,0],[0,1],[0,-1]],
+    [[0,0],[1,0],[-1,0],[0,1],[0,-1],[2,0],[-2,0],[0,2],[0,-2]],
+  ];
+  window.addEventListener('mousemove', function (e) {
+    var mode = MODES[modeIdx];
+    if (!TRAIL_ON || (mode !== 'life' && mode !== 'combo') || window._pendingSpawn || _trailBlocked) return;
+    if (!grid) return;
+    var gx = Math.floor(e.clientX / CELL);
+    var gy = Math.floor(e.clientY / CELL);
+    if (gx === _trailGX && gy === _trailGY) return;
+    _trailGX = gx; _trailGY = gy;
+    var pts = TRAIL_PATTERNS[Math.max(0, Math.min(2, TRAIL_SIZE - 1))];
+    for (var i = 0; i < pts.length; i++) {
+      var cx = gx + pts[i][0], cy = gy + pts[i][1];
+      if (cx >= 0 && cx < GW && cy >= 0 && cy < GH) {
+        var idx = cy * GW + cx;
+        if (!grid[idx]) { grid[idx] = 1; liveCount++; }
+        if (trailHeat) trailHeat[idx] = 1.0;
+      }
+    }
+  }, { passive: true });
+
   // expose controls for terminal commands
   window.setBgMode = function (m) {
     var idx = MODES.indexOf(m);
@@ -388,24 +627,139 @@ function toggleTheme() {
     localStorage.setItem('bgMode', m);
     updateBtn();
     initMode(m);
+    if (window._rebuildPresetPicker) window._rebuildPresetPicker();
     return true;
   };
-  window.getBgMode  = function () { return MODES[modeIdx]; };
-  window.setBgSpeed = function (n) {
-    speedLevel = Math.max(1, Math.min(10, n));
-    localStorage.setItem('bgSpeed', speedLevel);
+  window.getBgMode    = function () { return MODES[modeIdx]; };
+  window.setLifeSpeed = function (n) {
+    lifeSpeedLevel = Math.max(0, Math.min(100, Math.round(n)));
+    localStorage.setItem('bgLifeSpeed', lifeSpeedLevel);
   };
-  window.getBgSpeed = function () { return speedLevel; };
-  window.resetBg    = function () { initMode(MODES[modeIdx]); };
+  window.setBoidsSpeed = function (n) {
+    boidsSpeedLevel = Math.max(0, Math.min(100, Math.round(n)));
+    localStorage.setItem('bgBoidsSpeed', boidsSpeedLevel);
+  };
+  window.setBgSpeed = function (n) {  // sets both (backward compat)
+    window.setLifeSpeed(n); window.setBoidsSpeed(n);
+  };
+  window.getLifeSpeed  = function () { return lifeSpeedLevel; };
+  window.getBoidsSpeed = function () { return boidsSpeedLevel; };
+  window.getBgSpeed    = function () { return lifeSpeedLevel; };
+  window.resetBg       = function () { LIFE_AUTOFILL = 1; initMode(MODES[modeIdx]); };
+
+  function ensureLife() {
+    if (MODES[modeIdx] !== 'life' && MODES[modeIdx] !== 'combo') {
+      modeIdx = MODES.indexOf('life'); initMode('life'); updateBtn();
+    } else if (MODES[modeIdx] === 'combo' && !grid) {
+      initLife();
+    }
+  }
+
+  window.spawnPattern = function (name) {
+    var pat = SPAWN_PATTERNS[name];
+    if (!pat) return false;
+    ensureLife();
+    if (!grid) return false;
+    placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), pat);
+    return true;
+  };
+
+  var spawnOverlay = document.getElementById('spawn-overlay');
+  var spawnHint    = document.getElementById('spawn-hint');
+
+  function updateSpawnHint() {
+    if (!spawnHint) return;
+    var n = window._pendingSpawnCount || 1;
+    var name = window._pendingSpawn || '';
+    var countStr = n > 1 ? ' <span class="sh-count">(' + n + ' left)</span>' : '';
+    spawnHint.innerHTML =
+      '<span class="sh-name">' + name + '</span>' + countStr +
+      ' &nbsp;·&nbsp; click to place &nbsp;·&nbsp; <span class="sh-esc">esc to cancel</span>';
+  }
+
+  function cancelSpawn() {
+    window._pendingSpawn = null;
+    window._pendingSpawnCount = 0;
+    if (spawnOverlay) spawnOverlay.classList.remove('active');
+    _trailGX = -1; _trailGY = -1;
+    _trailBlocked = true;
+    setTimeout(function () { _trailBlocked = false; }, 500);
+  }
+  window.cancelSpawn = cancelSpawn;
+
+  if (spawnOverlay) {
+    spawnOverlay.addEventListener('click', function (e) {
+      var name = window._pendingSpawn;
+      if (!name) return;
+      var pat = SPAWN_PATTERNS[name];
+      if (!pat || !grid) { cancelSpawn(); return; }
+      var gx = Math.floor(e.clientX / CELL);
+      var gy = Math.floor(e.clientY / CELL);
+      placePattern(gx, gy, pat);
+      window._pendingSpawnCount = (window._pendingSpawnCount || 1) - 1;
+      if (window._pendingSpawnCount <= 0) {
+        cancelSpawn();
+      } else {
+        updateSpawnHint();
+      }
+    });
+  }
+
+  window.queueSpawn = function (name, count) {
+    if (!SPAWN_PATTERNS[name]) return false;
+    ensureLife();
+    window._pendingSpawn = name;
+    window._pendingSpawnCount = Math.max(1, Math.min(20, count || 1));
+    updateSpawnHint();
+    if (spawnOverlay) spawnOverlay.classList.add('active');
+    var termOverlay = document.getElementById('term-overlay');
+    if (termOverlay) termOverlay.classList.remove('open');
+    return true;
+  };
+
+  window.clearLife = function () {
+    ensureLife();
+    if (!grid) return false;
+    grid.fill(0);
+    liveCount = 0;
+    LIFE_AUTOFILL = 0;
+    return true;
+  };
+
+  window.setLifeAutofill = function (val) { LIFE_AUTOFILL = Math.max(0, Math.min(2, parseFloat(val) || 0)); };
+
+  window.startAutofill = function () {
+    ensureLife();
+    LIFE_AUTOFILL = 1;
+    /* seed a few patterns immediately so something appears */
+    var seeds = [PAT_RPENTO, PAT_ACORN, PAT_DIEHARD, PAT_GLIDER_SE];
+    for (var k = 0; k < seeds.length; k++) {
+      placePattern(Math.floor(Math.random() * GW), Math.floor(Math.random() * GH), seeds[k]);
+    }
+  };
+
+  window.spawnPatternNames = function () { return Object.keys(SPAWN_PATTERNS); };
 
   window.getBgParams = function () {
     return {
-      'life.cell':         CELL,
-      'boids.n':           N,
-      'boids.size':        BOID_LEN,
-      'boids.speed':       MAX_SPEED,
-      'boids.perception':  PERCEPTION,
-      'boids.separation':  SEP_DIST,
+      'life.cell':      CELL,
+      'life.opacity':   Math.round(LIFE_OPACITY * 100),
+      'life.glow':      Math.round(LIFE_GLOW / 40 * 100),
+      'life.autofill':  Math.round(LIFE_AUTOFILL / 2 * 100),
+      'life.rainbow':   LIFE_RAINBOW,
+      'life.speed':     lifeSpeedLevel,
+      'boids.n':          N,
+      'boids.size':       BOID_LEN,
+      'boids.tick':       MAX_SPEED,
+      'boids.perception': PERCEPTION,
+      'boids.separation': SEP_DIST,
+      'boids.opacity':    Math.round(BOID_OPACITY * 100),
+      'boids.glow':       Math.round(BOID_GLOW / 40 * 100),
+      'boids.speed':      boidsSpeedLevel,
+      'trail.on':         TRAIL_ON,
+      'trail.size':       TRAIL_SIZE,
+      'trail.glow':       TRAIL_GLOW,
+      'trail.decay':      TRAIL_DECAY,
     };
   };
 
@@ -413,17 +767,37 @@ function toggleTheme() {
     switch (key) {
       case 'life.cell':
         CELL = Math.max(1, Math.min(80, Math.round(val)));
-        if (MODES[modeIdx] === 'life') initLife();
+        if (MODES[modeIdx] === 'life' || MODES[modeIdx] === 'combo') initLife();
+        return true;
+      case 'life.opacity':
+        LIFE_OPACITY = Math.max(0.01, Math.min(1, parseFloat(val) / 100));
+        return true;
+      case 'life.glow':
+        LIFE_GLOW = Math.max(0, Math.min(40, (parseFloat(val) / 100) * 40));
+        return true;
+      case 'life.autofill':
+        LIFE_AUTOFILL = Math.max(0, Math.min(2, (parseFloat(val) / 100) * 2));
+        if (MODES[modeIdx] === 'life' || MODES[modeIdx] === 'combo') initLife();
+        return true;
+      case 'life.rainbow':
+        LIFE_RAINBOW = Math.max(0, Math.min(3, Math.round(parseFloat(val) || 0)));
+        if (LIFE_RAINBOW === 2 && !cellAge && grid) cellAge = new Uint16Array(GW * GH);
+        return true;
+      case 'life.speed':
+        window.setLifeSpeed(parseFloat(val));
+        return true;
+      case 'boids.speed':
+        window.setBoidsSpeed(parseFloat(val));
         return true;
       case 'boids.n':
         N = Math.max(1, Math.min(1000, Math.round(val)));
-        if (MODES[modeIdx] === 'boids') initBoids();
+        if (MODES[modeIdx] === 'boids' || MODES[modeIdx] === 'combo') initBoids();
         return true;
       case 'boids.size':
         BOID_LEN  = Math.max(1, Math.min(200, val));
         BOID_HALF = BOID_LEN * 0.393;
         return true;
-      case 'boids.speed':
+      case 'boids.tick':
         MAX_SPEED = Math.max(0, Math.min(30, val));
         MIN_SPEED = Math.min(MIN_SPEED, Math.max(0, MAX_SPEED * 0.33));
         return true;
@@ -433,10 +807,163 @@ function toggleTheme() {
       case 'boids.separation':
         SEP_DIST = Math.max(0, Math.min(1000, val));
         return true;
+      case 'boids.opacity':
+        BOID_OPACITY = Math.max(0.01, Math.min(1, parseFloat(val) / 100));
+        return true;
+      case 'boids.glow':
+        BOID_GLOW = Math.max(0, Math.min(40, (parseFloat(val) / 100) * 40));
+        return true;
+      case 'trail.on':
+        TRAIL_ON = val ? 1 : 0;
+        return true;
+      case 'trail.size':
+        TRAIL_SIZE = Math.max(1, Math.min(3, Math.round(val)));
+        return true;
+      case 'trail.glow':
+        TRAIL_GLOW = Math.max(0, Math.min(100, Math.round(parseFloat(val))));
+        return true;
+      case 'trail.decay':
+        TRAIL_DECAY = Math.max(0, Math.min(100, Math.round(parseFloat(val))));
+        return true;
       default:
         return false;
     }
   };
+
+  // wrap setParam to persist individual param changes to localStorage
+  var _origSetParam = window.setParam;
+  window.setParam = function (key, val) {
+    var ok = _origSetParam(key, val);
+    if (ok) localStorage.setItem('p:' + key, String(val));
+    return ok;
+  };
+
+  // ── presets ──────────────────────────────────────────────────
+  // All speeds (lspeed/bspeed) are 0–100%. Opacity/glow/autofill params also 0–100%.
+  var PRESETS = {
+    // default — exact site defaults, read from code
+    'default':  { sim:'combo', lspeed:15, bspeed:15, desc:'site defaults',
+      params:{'life.cell':7,  'life.opacity':9,  'life.glow':0,  'life.autofill':50, 'life.rainbow':0,
+              'boids.n':120, 'boids.size':14, 'boids.tick':1.8, 'boids.opacity':14, 'boids.glow':0,
+              'trail.on':0,  'trail.size':2,  'trail.glow':12, 'trail.decay':80} },
+    // life
+    ghost:     { sim:'life',  lspeed:12, bspeed:null,
+      desc:'barely there',
+      params:{'life.cell':8,  'life.opacity':6,  'life.glow':0,  'life.autofill':40, 'life.rainbow':0,
+              'trail.on':0} },
+    bloom:     { sim:'life',  lspeed:20, bspeed:null, theme:'tokyo-night',
+      desc:'glow + trail',
+      params:{'life.cell':5,  'life.opacity':70, 'life.glow':80, 'life.autofill':55, 'life.rainbow':0,
+              'trail.on':1,   'trail.glow':45,   'trail.decay':60, 'trail.size':2} },
+    ember:     { sim:'life',  lspeed:18, bspeed:null, theme:'gruvbox',
+      desc:'warm glow',
+      params:{'life.cell':8,  'life.opacity':35, 'life.glow':55, 'life.autofill':50, 'life.rainbow':0,
+              'trail.on':0} },
+    chromatic: { sim:'life',  lspeed:20, bspeed:null,
+      desc:'rainbow',
+      params:{'life.cell':6,  'life.opacity':55, 'life.glow':20, 'life.autofill':50, 'life.rainbow':1,
+              'trail.on':0} },
+    paper:     { sim:'life',  lspeed:12, bspeed:null, theme:'papercolor-light',
+      desc:'soft cells',
+      params:{'life.cell':10, 'life.opacity':20, 'life.glow':0,  'life.autofill':35, 'life.rainbow':0,
+              'trail.on':0} },
+    // boids
+    flock:     { sim:'boids', lspeed:null, bspeed:18,
+      desc:'calm flock',
+      params:{'boids.n':80,  'boids.size':15, 'boids.tick':1.4, 'boids.opacity':15, 'boids.glow':0,
+              'boids.perception':80, 'boids.separation':40} },
+    midnight:  { sim:'boids', lspeed:null, bspeed:15, theme:'tokyo-night',
+      desc:'dark glow',
+      params:{'boids.n':50,  'boids.size':20, 'boids.tick':1.0, 'boids.opacity':85, 'boids.glow':70,
+              'boids.perception':100, 'boids.separation':60} },
+    dusk:      { sim:'boids', lspeed:null, bspeed:14, theme:'dracula',
+      desc:'purple glow',
+      params:{'boids.n':40,  'boids.size':28, 'boids.tick':0.9, 'boids.opacity':75, 'boids.glow':65,
+              'boids.perception':120, 'boids.separation':80} },
+    soft:      { sim:'boids', lspeed:null, bspeed:10, theme:'rose-pine',
+      desc:'slow drift',
+      params:{'boids.n':20,  'boids.size':45, 'boids.tick':0.5, 'boids.opacity':60, 'boids.glow':30,
+              'boids.perception':150, 'boids.separation':100} },
+    swarm:     { sim:'boids', lspeed:null, bspeed:20, theme:'gruvbox',
+      desc:'fast dense',
+      params:{'boids.n':300, 'boids.size':6,  'boids.tick':3.5, 'boids.opacity':22, 'boids.glow':0,
+              'boids.perception':60,  'boids.separation':30} },
+  };
+
+  window.getPresetNames = function () { return Object.keys(PRESETS); };
+  window.getPresetsForMode = function (mode) {
+    return Object.keys(PRESETS).filter(function (k) { return PRESETS[k].sim === mode; });
+  };
+
+  // ── preset picker — shows all presets; applying one switches mode automatically ─
+  function rebuildPresetPicker() {
+    var menu = document.getElementById('preset-picker-menu');
+    if (!menu) return;
+    menu.innerHTML = '';
+    var header = document.createElement('div');
+    header.className = 'tp-header';
+    header.textContent = ':preset';
+    menu.appendChild(header);
+    var names = window.getPresetNames();
+    names.forEach(function (name) {
+      var p = PRESETS[name];
+      var btn = document.createElement('button');
+      btn.className = 'tp-item' + (activePreset === name ? ' active' : '');
+      btn.innerHTML = '<span class="tp-arrow">▶</span>' + name;
+      btn.addEventListener('click', function () {
+        window.applyPreset(name);
+        document.getElementById('preset-picker-menu').classList.remove('open');
+      });
+      menu.appendChild(btn);
+    });
+  }
+  window._rebuildPresetPicker = rebuildPresetPicker;
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // restore individual params (overrides preset defaults with any manually-changed values)
+    var PARAM_KEYS = ['life.cell','life.opacity','life.glow','life.autofill','life.rainbow',
+      'boids.n','boids.size','boids.tick','boids.opacity','boids.glow','boids.perception','boids.separation',
+      'trail.on','trail.size','trail.glow','trail.decay'];
+    var savedPreset = localStorage.getItem('preset');
+    if (savedPreset && PRESETS[savedPreset]) window.applyPreset(savedPreset);
+    for (var ki = 0; ki < PARAM_KEYS.length; ki++) {
+      var sv = localStorage.getItem('p:' + PARAM_KEYS[ki]);
+      if (sv !== null) _origSetParam(PARAM_KEYS[ki], parseFloat(sv));
+    }
+    rebuildPresetPicker();
+    var ppBtn  = document.getElementById('preset-picker-btn');
+    var ppMenu = document.getElementById('preset-picker-menu');
+    if (ppBtn && ppMenu) {
+      ppBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        rebuildPresetPicker();
+        ppMenu.classList.toggle('open');
+      });
+      document.addEventListener('click', function () { ppMenu.classList.remove('open'); });
+      ppMenu.addEventListener('click', function (e) { e.stopPropagation(); });
+    }
+  });
+
+  // rebuild picker whenever mode changes
+  var _origCycleMode = cycleMode;
+  cycleMode = function () { _origCycleMode(); rebuildPresetPicker(); };
+
+  var activePreset = null;
+  window.applyPreset = function (name) {
+    var p = PRESETS[name];
+    if (!p) return false;
+    if (p.theme) applyTheme(p.theme);
+    if (p.sim) window.setBgMode(p.sim);
+    if (p.lspeed != null) window.setLifeSpeed(p.lspeed);
+    if (p.bspeed != null) window.setBoidsSpeed(p.bspeed);
+    var keys = Object.keys(p.params);
+    for (var i = 0; i < keys.length; i++) window.setParam(keys[i], p.params[keys[i]]);
+    activePreset = name;
+    localStorage.setItem('preset', name);
+    if (window._rebuildPresetPicker) window._rebuildPresetPicker();
+    return true;
+  };
+  window.getActivePreset = function () { return activePreset; };
 })();
 // ================================================================
 // END BG EFFECT
@@ -515,168 +1042,344 @@ function toggleTheme() {
   }
 
   var NEOFETCH = [
-    '  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ekansh@home',
-    '  █                 █   ────────────────────────────────────────',
-    '  █  ┌───────────┐  █',
-    '  █  │           │  █   age      12',
-    '  █  │   > _     │  █   editor   vim',
-    '  █  │           │  █',
-    '  █  └───────────┘  █',
-    '  █                 █',
-    '  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀',
-    '        █████',
-    '  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄',
-    '  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀',
+    'ekansh@site',
+    '──────────────────────────',
+    'age       12',
+    'editor    vim',
+    'hobbies   bjj  music  cs  reading',
     '',
-    '                        projects  byte-space · geno',
-    '                        music     btop',
-    '                        hobbies   bjj · cs · music · reading',
+    'github    github.com/ekansh38',
   ].join('\n');
 
   // ── help system ─────────────────────────────────────────────
   var HELP_INDEX = [
     'help [topic|command]',
     '',
-    'topics:',
-    '  nav     navigating site content',
-    '  bg      background simulation & tuning',
-    '  sys     system information',
-    '  look    themes & appearance',
-    '  fun     the fun stuff',
+    '  nav    ls  cat  cd  pwd  open',
+    '  bg     modes  speed  reset  preset  params  set',
+    '  life   wipe  fill  spawn  life params',
+    '  boids  boids params',
+    '  trail  mouse trail params',
+    '  look   colorscheme  color',
+    '  sys    neofetch  top  ps  df  env  history  whoami',
+    '  fun    cowsay  curl',
     '',
-    'type  help <topic>     to list commands in a topic',
-    'type  help <command>   for detailed help on a command',
-    'type  help help        to learn about this help system',
+    '  :     open   ·   esc   close   ·   tab   autocomplete',
   ].join('\n');
 
   var HELP_TOPICS = {
     help: [
       'help [topic|command]',
-      '─────────────────────────────────────────────',
-      'with no args:         show topic list',
-      'help <topic>:         list commands in that topic',
-      'help <command>:       detailed usage for a command',
-      'help help:            you\'re looking at it',
       '',
-      'topics: nav  bg  sys  look  fun',
+      '  help           this list',
+      '  help nav       filesystem commands',
+      '  help bg        simulation overview',
+      '  help life      life sim params + commands',
+      '  help boids     boids params',
+      '  help trail     mouse trail params',
+      '  help look      colorschemes',
+      '  help sys       system commands',
+      '  help fun       misc commands',
+      '  help <cmd>     usage for any command',
     ].join('\n'),
 
     nav: [
-      'nav — navigating site content',
-      '─────────────────────────────────────────────',
-      '  ls [path]         list directory contents',
-      '  cat <path>        read a file',
-      '  cd <path>         change directory',
-      '  pwd               print working directory',
-      '  open <path>       navigate to a page',
+      'nav',
       '',
-      'use tab to complete paths. ls to explore.',
+      '  ls [path]      list directory',
+      '  cat <path>     print file',
+      '  cd [path]      change dir  (cd ..  /  cd)',
+      '  pwd            working dir',
+      '  open <path>    navigate to page',
+      '',
+      '  projects/   writing/   music/   games/',
+      '',
+      '  ls projects/geno',
+      '  cat music/btop',
+      '  open projects/geno',
     ].join('\n'),
 
     bg: [
-      'bg — background simulation',
-      '─────────────────────────────────────────────',
-      '  bg [life|boids|off]    get or set mode',
-      '  speed [1-10]           get or set speed',
-      '  reset                  reinit simulation',
-      '  params                 show all tunable params',
-      '  set <param> <val>      change a parameter',
+      'bg — simulation overview',
       '',
-      'life params:',
-      '  life.cell         cell size px       (1–80,    default 7)',
+      '  bg [life|boids|combo|off]    get/set mode',
+      '  speed [life|boids] [0-100]   get/set speed (%)',
+      '  reset                        reinit from scratch',
+      '  preset <name>                apply a named preset',
+      '  params                       all params + current values',
+      '  set <param> <val>            change a param',
       '',
-      'boids params:',
-      '  boids.n           boid count         (1–1000,  default 120)',
-      '  boids.size        boid length px     (1–200,   default 14)',
-      '  boids.speed       max speed          (0–30,    default 1.8)',
-      '  boids.perception  sight radius px    (1–2000,  default 85)',
-      '  boids.separation  separation px      (0–1000,  default 50)',
+      'presets:  default  ghost  bloom  ember  chromatic  paper',
+      '          flock  midnight  dusk  soft  swarm',
+      '',
+      '  help life    life sim params + commands',
+      '  help boids   boids params',
+      '  help trail   mouse trail params',
+    ].join('\n'),
+
+    life: [
+      'life — conway\'s game of life',
+      '',
+      '  wipe                     clear grid, stop autofill',
+      '  fill                     re-enable autofill',
+      '  spawn <pat>              click to place pattern',
+      '  spawn <pat> random [n]   n random placements',
+      '',
+      'patterns:',
+      '  r-pentomino  acorn  gosper-gun  queen-bee',
+      '  pulsar  pentadecathlon  lwss  hwss',
+      '',
+      'params:',
+      '  life.cell      1–80    default 7',
+      '  life.opacity   0–100%  default 9',
+      '  life.glow      0–100%  default 0',
+      '  life.autofill  0–100%  default 50',
+      '  life.rainbow   0–3     default 0  (0=off 1=time 2=age 3=pos)',
+      '  life.speed     0–100%  default 15  (sim tick rate)',
+    ].join('\n'),
+
+    boids: [
+      'boids — flocking simulation',
+      '',
+      'params:',
+      '  boids.n           1–1000   default 120',
+      '  boids.size        1–200    default 14',
+      '  boids.tick        0–30     default 1.8  (velocity)',
+      '  boids.speed       0–100%   default 15   (sim tick rate)',
+      '  boids.perception  1–2000   default 55',
+      '  boids.separation  0–1000   default 50',
+      '  boids.opacity     0–100%   default 14',
+      '  boids.glow        0–100%   default 0',
+      '',
+      '  <param>   →  prints current value',
+    ].join('\n'),
+
+    trail: [
+      'trail — mouse trail (life/combo mode only)',
+      '',
+      '  move the cursor over the canvas to plant live cells',
+      '  trail cells glow bright and fade back to base opacity',
+      '',
+      'params:',
+      '  trail.on      0=off 1=on        default 1',
+      '  trail.size    1–3               default 2  (1=dot 2=cross 3=wide)',
+      '  trail.glow    0–100%            default 12 (brightness boost)',
+      '  trail.decay   0–100%            default 80 (0=slow fade 100=fast)',
+      '',
+      '  set trail.glow 80    brighter trail',
+      '  set trail.decay 20   trail lingers longer',
+      '  set trail.on 0       disable',
     ].join('\n'),
 
     look: [
-      'look — appearance',
-      '─────────────────────────────────────────────',
-      '  colorscheme [name]    list or apply a colorscheme',
-      '  color                 print current palette',
+      'look',
       '',
-      'colorschemes:',
-      '  tokyo-night    dark   (default)',
+      '  colorscheme [name]   list / apply',
+      '  color                current palette',
+      '',
+      '  tokyo-night    dark  (default)',
       '  gruvbox        dark',
+      '  kanagawa       dark',
+      '  flexoki-light  light',
       '  rose-pine      light',
-      '  solarized-light light',
+      '  ayu-light      light',
     ].join('\n'),
 
     sys: [
-      'sys — system',
-      '─────────────────────────────────────────────',
-      '  neofetch          system overview',
-      '  uname [-a]        kernel / browser info',
-      '  uptime            time since page load',
-      '  top               live process view',
-      '  ps                process list',
-      '  df                disk usage',
-      '  du [path]         directory sizes',
-      '  env               environment variables',
-      '  history           command history',
-      '  color             current theme palette',
-      '  whoami            identity',
-      '  date              current date',
-      '  pwd               working directory',
+      'sys',
+      '',
+      '  neofetch       system info',
+      '  top            processes',
+      '  ps             process list',
+      '  df             disk',
+      '  env            site + sim vars',
+      '  history        command log',
+      '  whoami         you',
     ].join('\n'),
 
     fun: [
       'fun',
-      '─────────────────────────────────────────────',
-      '  cowsay [text]       cow',
-      '  fortune             random quote',
-      '  ping <host>         ping',
-      '  find . -name <pat>  find files',
-      '  grep <pat> <path>   search',
-      '  wc [-l] <path>      word/line count',
-      '  which <cmd>         locate a command',
-      '  make [target]       build',
-      '  tar                 archive',
-      '  yes [text]          infinite output',
-
-      '  curl -L <url>        try it',
-      '  sudo <cmd>          nope',
-      '  rm -rf /            nice try',
-      '  vim                 spiritual',
+      '',
+      '  cowsay [text]   ascii cow',
+      '  curl -L <url>   try it',
+      '',
+      '  sudo   rm -rf /   vim',
     ].join('\n'),
   };
 
   var HELP_CMDS = {
-    ls:      'ls [path]\n  list directory contents.\n\n  ls                   → top-level\n  ls projects          → project dirs\n  ls projects/geno     → articles\n  ls now               → error (file)',
-    cat:     'cat <path>\n  print a file.\n\n  cat now                    → current status\n  cat music/btop             → album info\n  cat projects/geno/article  → article body',
-    cd:      'cd [path]\n  change directory.\n\n  cd projects          → into projects/\n  cd byte-space        → relative path\n  cd ..                → go up\n  cd                   → back to root',
-    pwd:     'pwd\n  print working directory.',
-    open:    'open <path>\n  navigate to a page.\n\n  open projects          → /projects/\n  open projects/geno     → project page\n  open music/btop        → album page',
-    bg:      'bg [life|boids|off]\n  get or set background mode.\n\n  bg             → show current mode\n  bg life        → Conway\'s Game of Life\n  bg boids       → flocking simulation\n  bg off         → disable',
-    speed:   'speed [1-10]\n  get or set simulation speed (syncs with the slider).\n\n  speed          → show current\n  speed 1        → slowest\n  speed 10       → fastest',
-    reset:   'reset\n  reinitialize the current simulation from scratch.',
-    params:  'params\n  show all tunable simulation parameters with current values.',
-    set:     'set <param> <value>\n  tune a simulation parameter live. ranges are intentionally wide.\n\n  set life.cell 1           → single pixel cells\n  set life.cell 40          → chunky blocks\n  set boids.n 1000          → chaos\n  set boids.n 5             → lonely\n  set boids.size 100        → massive\n  set boids.speed 20        → unhinged\n  set boids.speed 0         → frozen\n  set boids.perception 2000 → hive mind\n  set boids.perception 1    → blind\n  set boids.separation 0    → merge\n\n  see: help bg  for all params and defaults',
-    colorscheme: 'colorscheme [name]\n  list or apply a colorscheme.\n\n  colorscheme              → list (active marked *)\n  colorscheme gruvbox      → apply\n\n  available: tokyo-night  gruvbox  rose-pine  solarized-light',
-    cowsay:  'cowsay [text]\n  a cow says something.\n\n  cowsay hello world',
-    fortune: 'fortune\n  print a random programming quote.',
-    ping:    'ping <host>\n  send 3 ICMP echo requests.\n\n  ping ekanshgoenka.com',
-    find:    'find . -name <pattern>\n  find files matching a pattern.\n\n  find . -name "*.go"\n  find . -name "*.md"',
-    grep:    'grep <pattern> <path>\n  search file contents.',
-    wc:      'wc [-l] <path>\n  count lines, words, and bytes.',
-    which:   'which <command>\n  show path of a command.',
-    top:     'top\n  show live process monitor.',
-    ps:      'ps\n  show process list.',
-    df:      'df\n  show disk usage.',
-    du:      'du [path]\n  show directory sizes.',
-    env:     'env\n  print environment variables.',
-    uname:   'uname [-a]\n  print kernel info.\n  -a    all info',
-    uptime:  'uptime\n  time since page load, with load averages.',
-    history: 'history\n  show command history for this session.',
-    color:   'color\n  print current theme CSS variables.',
-    whoami:  'whoami\n  print user identity.',
-    make:    'make [target]\n  build target.\n\n  make\n  make clean',
-    tar:     'tar [flags] [file]\n  archive utility.\n\n  tar -xzf archive.tar.gz',
-    curl:    'curl -L <url>\n  transfer data.\n\n  curl -L ekanshgoenka.com\n\n  (run that from a real terminal, not here)',
+    ls: [
+      'ls [path]',
+      '',
+      '  ls                   top-level',
+      '  ls projects          project list',
+      '  ls projects/geno     articles',
+      '  ls writing           posts',
+      '  ls music             releases',
+      '  ls games             games',
+    ].join('\n'),
+
+    cat: [
+      'cat <path>',
+      '',
+      '  cat music/btop',
+      '  cat writing/some-post',
+      '  cat projects/geno',
+    ].join('\n'),
+
+    cd: [
+      'cd [path]',
+      '',
+      '  cd projects     into projects/',
+      '  cd geno         relative path',
+      '  cd ..           up one level',
+      '  cd              back to root',
+    ].join('\n'),
+
+    pwd:    'pwd',
+
+    open: [
+      'open <path>',
+      '',
+      '  open projects          /projects/',
+      '  open projects/geno     project page',
+      '  open music/btop        album page',
+    ].join('\n'),
+
+    bg: [
+      'bg [life|boids|combo|off]',
+      '',
+      '  bg           current mode',
+      '  bg life      Conway\'s Game of Life',
+      '  bg boids     flocking sim',
+      '  bg combo     life + boids layers',
+      '  bg off       disable',
+      '',
+      'help bg    full guide',
+    ].join('\n'),
+
+    speed: [
+      'speed [life|boids] [0-100]',
+      '',
+      '  speed              show both speeds (%)',
+      '  speed life         current life speed',
+      '  speed boids        current boids speed',
+      '  speed life 50      set life to 50%',
+      '  speed boids 75     set boids to 75%',
+      '  speed 25           set both to 25%',
+      '  0%=slowest  100%=fastest',
+    ].join('\n'),
+
+    preset: [
+      'preset <name>',
+      '',
+      'each preset switches mode automatically.',
+      'some also change the colorscheme.',
+      '',
+      '  default    combo  · site defaults',
+      '  ghost      life   · barely there',
+      '  bloom      life   · glow + trail            (tokyo-night)',
+      '  ember      life   · warm glow               (gruvbox)',
+      '  chromatic  life   · rainbow',
+      '  paper      life   · soft cells              (papercolor-light)',
+      '  flock      boids  · calm flock',
+      '  midnight   boids  · dark glow               (tokyo-night)',
+      '  dusk       boids  · purple glow             (dracula)',
+      '  soft       boids  · slow drift              (rose-pine)',
+      '  swarm      boids  · fast dense              (gruvbox)',
+    ].join('\n'),
+
+    reset:   'reset\n  reinit sim',
+
+    params:  'params\n  all params + values\n  <param>         print value\n  set <p> <v>     change it',
+
+    set: [
+      'set <param> <value>',
+      '  <param>   print current value',
+      '',
+      'life:',
+      '  life.cell 1          pixel cells',
+      '  life.cell 14         chunky',
+      '  life.opacity 10      dim (10%)',
+      '  life.opacity 100     full (100%)',
+      '  life.glow 30         bloom (30%)',
+      '  life.glow 80         heavy (80%)',
+      '  life.autofill 0      = wipe',
+      '  life.autofill 100    = overpopulated (100%)',
+      '  life.rainbow off     no color',
+      '  life.rainbow time    hue rotates',
+      '  life.rainbow age     born=red → old',
+      '  life.rainbow position  spatial',
+      '  life.speed 25        slow tick (25%)',
+      '  life.speed 75        fast tick (75%)',
+      '',
+      'boids:',
+      '  boids.n 30           few',
+      '  boids.n 1000         maxflock',
+      '  boids.tick 0.5       slow velocity',
+      '  boids.tick 8         fast velocity',
+      '  boids.speed 50       mid ticks (50%)',
+      '  boids.perception 20     blind',
+      '  boids.perception 500    hive mind',
+      '  boids.separation 0      merge',
+      '  boids.opacity 90     bright (90%)',
+      '  boids.glow 50        glow (50%)',
+    ].join('\n'),
+
+    wipe: [
+      'wipe',
+      '  clear grid + stop autofill',
+      '',
+      '  fill          restart autofill',
+      '  spawn <pat>   place pattern',
+      '  reset         full reinit',
+    ].join('\n'),
+
+    fill:   'fill\n  restart autofill',
+
+    spawn: [
+      'spawn [pattern] [random] [count]',
+      '',
+      '  spawn                     list patterns',
+      '  spawn pulsar              click to place',
+      '  spawn pulsar 3            click 3 times',
+      '  spawn pulsar random       random location',
+      '  spawn pulsar random 5     5 random',
+      '',
+      '  r-pentomino     5 cells, ~1103 gen chaos (1970)',
+      '  acorn           7 cells, ~5206 gen chaos (1970s)',
+      '  gosper-gun      infinite glider factory (1970)',
+      '  queen-bee       period-30 oscillator (1970)',
+      '  pulsar          period-3 oscillator',
+      '  pentadecathlon  period-15 oscillator',
+      '  lwss            lightweight spaceship (c/2)',
+      '  hwss            heavyweight spaceship (c/2)',
+      '',
+      '  click mode: esc to cancel',
+      '  wipe first for clean canvas',
+    ].join('\n'),
+
+    colorscheme: [
+      'colorscheme [name]',
+      '',
+      '  colorscheme              list (▶ = active)',
+      '  colorscheme gruvbox      apply',
+      '',
+      '  tokyo-night  gruvbox  kanagawa  (dark)',
+      '  flexoki-light  rose-pine  ayu-light  (light)',
+    ].join('\n'),
+
+    color:   'color\n  bg  fg  accent  muted  border',
+    whoami:  'whoami',
+    pwd:     'pwd',
+    cowsay:  'cowsay [text]\n  cowsay hello world',
+    top:     'top',
+    ps:      'ps',
+    df:      'df',
+    env:     'env\n  SITE  COLORSCHEME  BG_MODE  BG_SPEED(%)  all params',
+    history: 'history',
+    curl:    'curl -L <url>\n  curl -L ekanshgoenka.com',
+    neofetch: 'neofetch',
   };
 
   // ── output helpers ──────────────────────────────────────────
@@ -988,7 +1691,7 @@ function toggleTheme() {
 
     whoami: function (args) {
       if (args.length) { tooMany('whoami'); return; }
-      line('ekansh goenka. 13. building things. bjj. music.');
+      line('ekansh goenka. 12. building things. bjj. music.');
     },
 
     neofetch: function (args) {
@@ -998,7 +1701,7 @@ function toggleTheme() {
 
     colorscheme: function (args) {
       if (args.length > 1) { tooMany('colorscheme'); return; }
-      var ALL = ['tokyo-night', 'gruvbox', 'rose-pine', 'solarized-light'];
+      var ALL = ['tokyo-night', 'gruvbox', 'kanagawa', 'flexoki-light', 'rose-pine', 'ayu-light'];
       var cur  = document.documentElement.getAttribute('data-theme');
       var name = args[0];
       if (!name) {
@@ -1037,18 +1740,38 @@ function toggleTheme() {
       var m = args[0];
       if (!m) { line('bg: ' + (window.getBgMode ? window.getBgMode() : '?'), 'term-line-ok'); return; }
       if (!window.setBgMode || !window.setBgMode(m))
-        line('bg: unknown mode. try: life  boids  off', 'term-line-err');
+        line('bg: unknown mode. try: life  boids  combo  off', 'term-line-err');
       else
         line('bg → ' + m, 'term-line-ok');
     },
 
     speed: function (args) {
+      // speed                      → show both (as %)
+      // speed life|boids [0-100]   → set specific
+      // speed [0-100]              → set both
+      var ls = window.getLifeSpeed  ? window.getLifeSpeed()  : 21;
+      var bs = window.getBoidsSpeed ? window.getBoidsSpeed() : 21;
+      if (!args[0]) {
+        line('life.speed = ' + ls + '%\nboids.speed = ' + bs + '%', 'term-line-ok');
+        return;
+      }
+      if (args[0] === 'life' || args[0] === 'boids') {
+        if (args.length > 2) { tooMany('speed'); return; }
+        var which = args[0];
+        if (!args[1]) { line(which + '.speed = ' + (which === 'life' ? ls : bs) + '%', 'term-line-ok'); return; }
+        var n = parseInt(args[1]);
+        if (isNaN(n) || n < 0 || n > 100) { line('speed: value must be 0–100 (%)', 'term-line-err'); return; }
+        if (which === 'life'  && window.setLifeSpeed)  window.setLifeSpeed(n);
+        if (which === 'boids' && window.setBoidsSpeed) window.setBoidsSpeed(n);
+        line(which + '.speed → ' + n + '%', 'term-line-ok');
+        return;
+      }
       if (args.length > 1) { tooMany('speed'); return; }
-      if (!args[0]) { line('speed: ' + (window.getBgSpeed ? window.getBgSpeed() : '?') + ' / 10', 'term-line-ok'); return; }
       var n = parseInt(args[0]);
-      if (isNaN(n) || n < 1 || n > 10) { line('speed: value must be 1–10', 'term-line-err'); return; }
-      if (window.setBgSpeed) window.setBgSpeed(n);
-      line('speed → ' + n, 'term-line-ok');
+      if (isNaN(n) || n < 0 || n > 100) { line('speed: value must be 0–100 (%)', 'term-line-err'); return; }
+      if (window.setLifeSpeed)  window.setLifeSpeed(n);
+      if (window.setBoidsSpeed) window.setBoidsSpeed(n);
+      line('speed → ' + n + '%  (life + boids)', 'term-line-ok');
     },
 
     reset: function (args) {
@@ -1057,29 +1780,147 @@ function toggleTheme() {
       line('simulation reinitialized.', 'term-line-ok');
     },
 
+    spawn: function (args) {
+      var names = window.spawnPatternNames ? window.spawnPatternNames() : [];
+      if (!args[0]) {
+        line([
+          'spawn <pattern> [random] [count]',
+          '',
+          '  r-pentomino     5 cells, ~1103 gen chaos (1970)',
+          '  acorn           7 cells, ~5206 gen chaos (1970s)',
+          '  gosper-gun      infinite glider factory (1970)',
+          '  queen-bee       period-30 oscillator (1970)',
+          '  pulsar          period-3 oscillator',
+          '  pentadecathlon  period-15 oscillator',
+          '  lwss / hwss     spaceships (c/2)',
+          '',
+          '  spawn pulsar           click to place',
+          '  spawn pulsar 3         click 3 times',
+          '  spawn pulsar random    random location',
+          '  spawn pulsar random 5  5 random locations',
+          '',
+          '  tip: wipe first for a clean canvas',
+        ].join('\n'), 'term-line-pre');
+        return;
+      }
+      var name = args[0];
+      var randomMode = false;
+      var count = 1;
+      for (var i = 1; i < args.length; i++) {
+        if (args[i] === 'random') { randomMode = true; }
+        else if (/^\d+$/.test(args[i])) { count = Math.max(1, Math.min(20, parseInt(args[i]))); }
+        else { line('unknown flag: ' + args[i], 'term-line-err'); return; }
+      }
+      if (randomMode) {
+        if (!window.spawnPattern || names.indexOf(name) < 0)
+          { line('unknown pattern: ' + name, 'term-line-err'); return; }
+        for (var k = 0; k < count; k++) window.spawnPattern(name);
+        line('spawned ' + (count > 1 ? count + 'x ' : '') + name, 'term-line-ok');
+      } else {
+        if (!window.queueSpawn || !window.queueSpawn(name, count))
+          { line('unknown pattern: ' + name, 'term-line-err'); return; }
+        line(count > 1
+          ? 'click ' + count + ' times to place ' + name + '  ·  esc to cancel'
+          : 'click to place ' + name + '  ·  esc to cancel',
+          'term-line-ok');
+      }
+    },
+
+    wipe: function (args) {
+      if (args.length) { tooMany('wipe'); return; }
+      if (!window.clearLife || !window.clearLife())
+        line('wipe: failed', 'term-line-err');
+      else
+        line('grid cleared. use spawn to place patterns, or fill to restore.', 'term-line-ok');
+    },
+
+    preset: function (args) {
+      if (args.length > 1) { tooMany('preset'); return; }
+      var names = window.getPresetNames ? window.getPresetNames() : [];
+      if (!args[0]) {
+        line([
+          'preset <name>',
+          '',
+          'life:',
+          '  sparse     dim (default)',
+          '  bloom      full opacity + glow',
+          '  coarse     chunky 14px cells',
+          '  overdrive  tiny cells fast',
+          '  chromatic  rainbow time-shift',
+          '',
+          'boids:',
+          '  flock      120 boids (default)',
+          '  swarm      350 fast small boids',
+          '  drift      15 slow large + glow',
+          '  glow       80 bright + glow',
+          '  maxflock   1000 full opacity',
+          '',
+          'combo:',
+          '  layered  chaos  spectrum',
+        ].join('\n'), 'term-line-pre');
+        return;
+      }
+      var name = args[0];
+      if (!window.applyPreset || !window.applyPreset(name))
+        line('unknown preset: ' + name + '  try: ' + names.join('  '), 'term-line-err');
+      else
+        line('preset → ' + name, 'term-line-ok');
+    },
+
+    fill: function (args) {
+      if (args.length) { tooMany('fill'); return; }
+      if (window.startAutofill) { window.startAutofill(); line('autofill enabled. background will seed itself.', 'term-line-ok'); }
+      else line('fill: not available in current mode.', 'term-line-err');
+    },
+
     params: function (args) {
       if (args.length) { tooMany('params'); return; }
       var p = window.getBgParams ? window.getBgParams() : {};
+      function v(k) { return String(p[k] !== undefined ? p[k] : '?'); }
       line([
-        'simulation parameters  (set <param> <val> to change)',
-        '',
         'life:',
-        '  life.cell         ' + (p['life.cell']        || '?') + '    cell size px  (1–80)',
+        '  life.cell        ' + v('life.cell')     + '\t(1–80)',
+        '  life.opacity     ' + v('life.opacity')  + '%\t(0–100%)',
+        '  life.glow        ' + v('life.glow')     + '%\t(0–100%)',
+        '  life.autofill    ' + v('life.autofill') + '%\t(0–100%)',
+        '  life.rainbow     ' + v('life.rainbow')  + '\t(0=off 1=time 2=age 3=pos)',
+        '  life.speed       ' + v('life.speed')    + '%\t(0–100%  sim tick rate)',
         '',
         'boids:',
-        '  boids.n           ' + (p['boids.n']          || '?') + '   count         (1–1000)',
-        '  boids.size        ' + (p['boids.size']        || '?') + '   length px     (1–200)',
-        '  boids.speed       ' + (p['boids.speed']       || '?') + '  max speed      (0–30)',
-        '  boids.perception  ' + (p['boids.perception']  || '?') + '   sight radius  (1–2000)',
-        '  boids.separation  ' + (p['boids.separation']  || '?') + '   separation px (0–1000)',
+        '  boids.n          ' + v('boids.n')          + '\t(1–1000)',
+        '  boids.size       ' + v('boids.size')        + '\t(1–200)',
+        '  boids.tick       ' + v('boids.tick')        + '\t(0–30  velocity)',
+        '  boids.speed      ' + v('boids.speed')       + '%\t(0–100%  sim tick rate)',
+        '  boids.perception ' + v('boids.perception')  + '\t(1–2000)',
+        '  boids.separation ' + v('boids.separation')  + '\t(0–1000)',
+        '  boids.opacity    ' + v('boids.opacity')     + '%\t(0–100%)',
+        '  boids.glow       ' + v('boids.glow')        + '%\t(0–100%)',
+        '',
+        'trail:',
+        '  trail.on         ' + v('trail.on')    + '\t(0=off 1=on)',
+        '  trail.size       ' + v('trail.size')  + '\t(1=single 2=cross 3=wide)',
+        '  trail.glow       ' + v('trail.glow')  + '%\t(0–100%)',
+        '  trail.decay      ' + v('trail.decay') + '%\t(0=slow 100=fast)',
+        '',
+        'set <param> <value>  to change',
       ].join('\n'), 'term-line-pre');
     },
 
     set: function (args) {
       if (args.length > 2) { tooMany('set'); return; }
       var key = args[0] || '';
-      var val = parseFloat(args[1]);
-      if (!key || isNaN(val)) { line('usage: set <param> <value>   (see: params)', 'term-line-err'); return; }
+      var rawVal = args[1];
+      if (!key || rawVal === undefined) { line('usage: set <param> <value>   (see: params)', 'term-line-err'); return; }
+      // life.rainbow accepts: off|time|age|position or 0|1|2|3
+      var val;
+      if (key === 'life.rainbow') {
+        var rmap = { 'off':0, 'time':1, 'age':2, 'position':3, '0':0, '1':1, '2':2, '3':3 };
+        if (rmap[rawVal] === undefined) { line('life.rainbow: off | time | age | position', 'term-line-err'); return; }
+        val = rmap[rawVal];
+      } else {
+        val = parseFloat(rawVal);
+        if (isNaN(val)) { line('usage: set <param> <value>   (see: params)', 'term-line-err'); return; }
+      }
       if (!window.setParam || !window.setParam(key, val))
         line('unknown param "' + key + '"  —  see: params', 'term-line-err');
       else
@@ -1087,27 +1928,6 @@ function toggleTheme() {
     },
 
     // ── system ──────────────────────────────────────────────────
-    uname: function (args) {
-      var flags = args.filter(function (a) { return a[0] === '-'; });
-      var extra = args.filter(function (a) { return a[0] !== '-'; });
-      if (extra.length) { tooMany('uname'); return; }
-      if (flags.some(function (f) { return f.replace(/-/g,'').split('').some(function(c){ return 'a'.indexOf(c)<0; }); }))
-        { line('uname: invalid option', 'term-line-err'); return; }
-      if (args.indexOf('-a') >= 0)
-        line('Browser 1.0.0 ekansh-site #1 SMP ' + new Date().toDateString() + ' x86_64 WebKit');
-      else
-        line('Browser');
-    },
-
-    uptime: function (args) {
-      if (args.length) { tooMany('uptime'); return; }
-      var s = Math.floor((Date.now() - PAGE_START) / 1000);
-      var m = Math.floor(s / 60); s %= 60;
-      var h = Math.floor(m / 60); m %= 60;
-      var t = (h ? h + 'h ' : '') + (m ? m + 'm ' : '') + s + 's';
-      line('up ' + t + '   load avg: 0.42 0.13 0.07');
-    },
-
     ps: function (args) {
       if (args.length) { tooMany('ps'); return; }
       line([
@@ -1169,109 +1989,27 @@ function toggleTheme() {
     df: function (args) {
       if (args.length) { tooMany('df'); return; }
       line([
-        'Filesystem        Size    Used   Avail  Use%  Mounted on',
-        '/dev/brain        256G    201G    55G    79%   /home/ekansh',
-        '/dev/internet      ∞       ∞      ∞     ??%   /www',
-        'tmpfs             16G     0.2G   15.8G   1%   /tmp',
+        'Filesystem        Size     Used     Avail    Use%  Mounted on',
+        '/dev/brain        10.0PB   9.8PB    0.2PB    98%   /home/ekansh',
+        '/dev/internet      ∞        ∞        ∞       ??%   /www',
+        'tmpfs             16G      0.2G     15.8G     1%   /tmp',
       ].join('\n'), 'term-line-pre');
-    },
-
-    du: function (args) {
-      if (args.length > 1) { tooMany('du'); return; }
-      var target = args.length ? resolvePath(args[0]) : cwd;
-      if (!FS.hasOwnProperty(target)) { line('du: ' + (args.join(' ') || '.') + ': no such file', 'term-line-err'); return; }
-      var prefix = target ? target + '/' : '';
-      var kids = lsChildren(target);
-      var out = kids.map(function (n) {
-        var full = prefix + n;
-        return (FS[full] && FS[full].type === 'dir' ? '12K' : '4.0K') + '\t./' + n;
-      });
-      out.push('28K\t./');
-      line(out.join('\n'), 'term-line-pre');
-    },
-
-    ping: function (args) {
-      if (args.length > 1) { tooMany('ping'); return; }
-      var host = args[0] || 'ekanshgoenka.com';
-      var steps = [
-        'PING ' + host + ': 56 data bytes',
-        '64 bytes from ' + host + ': icmp_seq=0 ttl=64 time=' + (Math.random()*8+1).toFixed(3) + ' ms',
-        '64 bytes from ' + host + ': icmp_seq=1 ttl=64 time=' + (Math.random()*8+1).toFixed(3) + ' ms',
-        '64 bytes from ' + host + ': icmp_seq=2 ttl=64 time=' + (Math.random()*8+1).toFixed(3) + ' ms',
-        '',
-        '--- ' + host + ' ping statistics ---',
-        '3 packets transmitted, 3 received, 0% packet loss',
-      ];
-      steps.forEach(function (s, i) { setTimeout(function () { line(s); }, i * 300); });
-    },
-
-    grep: function (args) {
-      if (args.length < 2) { line('usage: grep <pattern> <path>', 'term-line-err'); return; }
-      var pat = args[0], path = args[1];
-      line('grep: ' + path + ': permission denied', 'term-line-err');
-      line('(hint: try  cat <path>  instead)');
-    },
-
-    find: function (args) {
-      var ni = args.indexOf('-name');
-      var name = ni >= 0 ? (args[ni + 1] || '') : '';
-      if (!name) { line('usage: find . -name <pattern>', 'term-line-err'); return; }
-      var pat = name.replace(/\*/g, '');
-      var files = Object.keys(FS).filter(function (p) {
-        return p && FS[p].type === 'file' && (!pat || p.indexOf(pat) >= 0);
-      });
-      line(files.length ? files.map(function (p) { return './' + p; }).join('\n') : '(no matches)',
-           files.length ? 'term-line-pre' : 'term-line-err');
-    },
-
-    wc: function (args) {
-      var path = args[args.length - 1] || '';
-      var lines = Math.floor(Math.random()*80+20);
-      var words = Math.floor(lines * (Math.random()*8+4));
-      var bytes = Math.floor(words * 5.2);
-      line('  ' + lines + '  ' + words + '  ' + bytes + '  ' + (path || '-'));
-    },
-
-    which: function (args) {
-      if (args.length > 1) { tooMany('which'); return; }
-      var cmd = args[0];
-      if (!cmd) { needArg('which', 'which <command>'); return; }
-      if (CMDS[cmd]) line('/usr/local/bin/' + cmd);
-      else line('which: ' + cmd + ': not found', 'term-line-err');
     },
 
     env: function (args) {
       if (args.length) { tooMany('env'); return; }
-      var theme = document.documentElement.getAttribute('data-theme');
-      line([
-        'TERM=xterm-256color',
-        'SHELL=/bin/zsh',
-        'USER=ekansh',
-        'HOME=/home/ekansh',
-        'EDITOR=vim',
+      var theme  = document.documentElement.getAttribute('data-theme');
+      var mode   = window.getBgMode  ? window.getBgMode()  : 'life';
+      var speed  = window.getBgSpeed ? window.getBgSpeed() : 5;
+      var params = window.getBgParams ? window.getBgParams() : {};
+      var vars = [
+        'SITE=ekanshgoenka.com',
         'COLORSCHEME=' + theme,
-        'BG_MODE=' + (window.getBgMode ? window.getBgMode() : 'life'),
-        'LANG=en_US.UTF-8',
-        'PATH=/usr/local/bin:/usr/bin:/bin',
-      ].join('\n'), 'term-line-pre');
-    },
-
-    make: function (args) {
-      if (args.length > 1) { tooMany('make'); return; }
-      var target = args[0] || 'all';
-      var steps = [
-        'cc -O2 -Wall -o ' + target + ' main.c util.c',
-        'ld -o ' + target + ' main.o util.o',
-        'make: \'' + target + '\' is up to date.',
+        'BG_MODE=' + mode,
+        'BG_SPEED=' + speed,
       ];
-      steps.forEach(function (s, i) { setTimeout(function () { line(s); }, i * 180); });
-    },
-
-    tar: function (args) {
-      if (args.join('').indexOf('x') >= 0)
-        line('tar: checksum error\ntar: error exit delayed from previous errors.', 'term-line-err');
-      else
-        line('tar: refusing to create empty archive', 'term-line-err');
+      Object.keys(params).forEach(function (k) { vars.push(k.toUpperCase().replace('.','_') + '=' + params[k]); });
+      line(vars.join('\n'), 'term-line-pre');
     },
 
     // ── fun ─────────────────────────────────────────────────────
@@ -1290,11 +2028,6 @@ function toggleTheme() {
       ].join('\n'), 'term-line-pre');
     },
 
-    fortune: function (args) {
-      if (args.length) { tooMany('fortune'); return; }
-      line(QUOTES[Math.floor(Math.random() * QUOTES.length)]);
-    },
-
     // ── misc ────────────────────────────────────────────────────
     man: function (a) {
       if (!a[0]) { line('what manual page do you want?', 'term-line-err'); return; }
@@ -1303,6 +2036,12 @@ function toggleTheme() {
       else line('no manual entry for ' + a[0], 'term-line-err');
     },
     clear:  function (args) { if (args.length) { tooMany('clear'); return; } output.innerHTML = ''; },
+    'default': function (args) {
+      if (args.length) { tooMany('default'); return; }
+      localStorage.clear();
+      line('all settings cleared — reloading…', 'term-line-ok');
+      setTimeout(function () { location.reload(); }, 700);
+    },
     exit:   function (args) { if (args.length) { tooMany('exit'); return; } close(); },
     q:      function (args) { if (args.length) { tooMany('q'); return; } close(); },
     echo:   function (args) { line(args.join(' ')); },
@@ -1383,7 +2122,6 @@ function toggleTheme() {
     },
     sudo:   function ()  { line('ekansh is not in the sudoers file. this incident will be reported.', 'term-line-err'); },
     vim:    function (args) { if (args.length) { tooMany('vim'); return; } line('you\'re already in vim (spiritually).', 'term-line-ok'); },
-    date:   function (args) { if (args.length) { tooMany('date'); return; } line(new Date().toString().toLowerCase()); },
     rm: function (a) {
       var flags = a.filter(function (x) { return x[0] === '-'; }).join('');
       var paths = a.filter(function (x) { return x[0] !== '-'; });
@@ -1393,7 +2131,6 @@ function toggleTheme() {
       if (isRF) { line('rm: ' + (paths[0] || '/') + ': permission denied', 'term-line-err'); return; }
       line('rm: ' + (a[0] || '?') + ': permission denied', 'term-line-err');
     },
-    yes:    function (a) { line(a.join(' ') || 'y'); line('(use ctrl+c to stop — kidding, you can\'t)'); },
     true:   function ()  { /* exits 0, outputs nothing, as god intended */ },
     false:  function ()  { line('false: exited with status 1', 'term-line-err'); },
     ':':    function ()  { /* the shell builtin : always succeeds */ },
@@ -1433,14 +2170,51 @@ function toggleTheme() {
       });
   }
 
+  var ALL_THEMES    = ['tokyo-night', 'gruvbox', 'kanagawa', 'flexoki-light', 'rose-pine', 'ayu-light'];
+  var ALL_PARAMS    = ['life.cell','life.opacity','life.glow','life.autofill','life.rainbow','life.speed','boids.n','boids.size','boids.tick','boids.speed','boids.perception','boids.separation','boids.opacity','boids.glow','trail.on','trail.size','trail.glow','trail.decay'];
+  var ALL_PATTERNS  = ['r-pentomino','acorn','gosper-gun','queen-bee','pulsar','pentadecathlon','lwss','hwss'];
+  var HELP_KEYS     = Object.keys(HELP_TOPICS).concat(Object.keys(HELP_CMDS)).sort();
+
+  function completeArg(cmd, pos, typed) {
+    var CMAP = {
+      colorscheme: function (p) { return p === 0 ? ALL_THEMES : []; },
+      theme:       function (p) { return p === 0 ? ALL_THEMES : []; },
+      bg:          function (p) { return p === 0 ? ['life', 'boids', 'combo', 'off'] : []; },
+      speed:       function (p) { return p === 0 ? ['life','boids','0','10','25','50','75','100'] : p === 1 ? ['0','10','25','50','75','100'] : []; },
+      set:         function (p) { return p === 0 ? ALL_PARAMS : []; },
+      spawn: function (p, args) {
+        if (p === 0) return ALL_PATTERNS;
+        if (p === 1) return ['random','1','2','3','4','5'];
+        if (p === 2) return ['1','2','3','4','5'];
+        return [];
+      },
+      preset:      function (p) { return p === 0 ? (window.getPresetNames ? window.getPresetNames() : []) : []; },
+      help:        function (p) { return p === 0 ? HELP_KEYS : []; },
+      man:         function (p) { return p === 0 ? CMD_NAMES.concat(Object.keys(HELP_TOPICS)).sort() : []; },
+      which:       function (p) { return p === 0 ? CMD_NAMES : []; },
+      curl:        function (p) { return p === 0 ? ['-L'] : p === 1 ? ['ekanshgoenka.com'] : []; },
+      rm:          function ()  { return completePath(typed); },
+    };
+    var fn = CMAP[cmd];
+    if (fn) return fn(pos).filter(function (s) { return s.indexOf(typed) === 0; });
+    if (['ls','cat','cd','open'].indexOf(cmd) >= 0) return completePath(typed);
+    return [];
+  }
+
   function complete(val) {
     var parts = val.trimStart().split(/\s+/);
-    var isCmd   = parts.length === 1;
-    var typed   = parts[parts.length - 1];
+    var isCmd = parts.length === 1;
+    var typed = parts[parts.length - 1];
 
-    var hits = isCmd
-      ? CMD_NAMES.filter(function (c) { return c.indexOf(typed) === 0; })
-      : completePath(typed);
+    var hits;
+    if (isCmd) {
+      var paramKeys = window.getBgParams ? Object.keys(window.getBgParams()) : [];
+      hits = CMD_NAMES.concat(paramKeys).filter(function (c) { return c.indexOf(typed) === 0; });
+    } else {
+      var cmd = parts[0].toLowerCase();
+      var pos = parts.length - 2;  // 0-indexed arg position
+      hits = completeArg(cmd, pos, typed);
+    }
 
     if (!hits.length) return val;
 
@@ -1486,7 +2260,15 @@ function toggleTheme() {
     var tokens = cmd.split(/\s+/);
     var fn = CMDS[tokens[0].toLowerCase()];
     if (fn) fn(tokens.slice(1));
-    else line('command not found: ' + tokens[0], 'term-line-err');
+    else {
+      var p = window.getBgParams ? window.getBgParams() : {};
+      if (p.hasOwnProperty(tokens[0])) {
+        if (tokens.length > 1)
+          line('tip: use: set ' + tokens[0] + ' ' + tokens.slice(1).join(' '), 'term-line-err');
+        else
+          line(tokens[0] + ' = ' + p[tokens[0]], 'term-line-ok');
+      } else line('command not found: ' + tokens[0], 'term-line-err');
+    }
   }
 
   // ── event wiring ────────────────────────────────────────────
@@ -1495,6 +2277,7 @@ function toggleTheme() {
         e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
       e.preventDefault(); open();
     }
+    if (e.key === 'Escape' && window._pendingSpawn) { if (window.cancelSpawn) window.cancelSpawn(); return; }
     if (e.key === 'Escape' && isOpen) close();
   });
 
@@ -1527,4 +2310,73 @@ function toggleTheme() {
 // ================================================================
 // END HIDDEN TERMINAL
 // ================================================================
+
+// ================================================================
+// READING PROGRESS COLUMN
+// Shows a column of Life-cell-style squares on article pages
+// that fill top→bottom as the user scrolls
+// ================================================================
+(function () {
+  if (!document.body.classList.contains('page')) return;
+
+  var CELLS      = 28;   // total cells in the column
+  var CELL_SIZE  = 7;    // px per cell (square)
+  var CELL_GAP   = 3;    // gap between cells (must match CSS gap)
+
+  var container = document.createElement('div');
+  container.id = 'read-progress';
+
+  // one canvas per cell for simplicity
+  var canvases = [];
+  for (var i = 0; i < CELLS; i++) {
+    var c = document.createElement('canvas');
+    c.width  = CELL_SIZE;
+    c.height = CELL_SIZE;
+    container.appendChild(c);
+    canvases.push(c);
+  }
+  document.body.appendChild(container);
+
+  function getCSSVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function draw(progress) {
+    // progress 0..1
+    var filled = Math.round(progress * CELLS);
+    var accent = getCSSVar('--accent');
+    var border = getCSSVar('--border');
+    for (var i = 0; i < CELLS; i++) {
+      var ctx = canvases[i].getContext('2d');
+      ctx.clearRect(0, 0, CELL_SIZE, CELL_SIZE);
+      if (i < filled) {
+        ctx.fillStyle = accent;
+        ctx.fillRect(0, 0, CELL_SIZE, CELL_SIZE);
+      } else {
+        // empty cell: just a 1px border square
+        ctx.strokeStyle = border;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(0.5, 0.5, CELL_SIZE - 1, CELL_SIZE - 1);
+      }
+    }
+  }
+
+  function getProgress() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docH  = document.documentElement.scrollHeight;
+    var winH  = window.innerHeight;
+    var max   = docH - winH;
+    if (max <= 0) return 1;
+    return Math.min(1, Math.max(0, scrollTop / max));
+  }
+
+  draw(getProgress());
+
+  window.addEventListener('scroll', function () { draw(getProgress()); }, { passive: true });
+
+  // redraw on theme change
+  var obs = new MutationObserver(function () { draw(getProgress()); });
+  obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+
 

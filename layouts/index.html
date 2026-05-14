@@ -2,10 +2,8 @@
 
 <div class="bio">{{ .Content }}</div>
 
-<hr>
-
 {{ $projects := .Site.GetPage "/projects" }}
-<h2><a href="/projects" class="now-link">Projects</a></h2>
+<div class="ascii-sep"><a href="/projects" class="now-link">+-- projects</a></div>
 <ul>
   {{ range $projects.Sections }}{{ if not .Params.shipped }}
   <li>
@@ -15,9 +13,7 @@
   {{ end }}{{ end }}
 </ul>
 
-<hr>
-
-<h2>Shipped</h2>
+<div class="ascii-sep">+-- shipped</div>
 <ul>
   <li>
     <span class="li-name"><a href="https://www.drchandnichopra.com" target="_blank" rel="noopener noreferrer">drchandnichopra.com</a></span>:
@@ -38,10 +34,7 @@
 </ul>
 
 {{/* EXPERIENCE SECTION — commented out, re-enable when ready
-<hr>
-
-{{ $experience := .Site.GetPage "/experience" }}
-<h2><a href="/experience" class="now-link">Experience</a></h2>
+<div class="ascii-sep"><a href="/experience" class="now-link">+-- experience</a></div>
 <ul>
   {{ range $experience.RegularPages }}
   <li>
@@ -51,13 +44,11 @@
   </li>
   {{ end }}
 </ul>
-
-<hr>
 */}}
 
 {{ $games := .Site.GetPage "/games" }}
 {{ $music := .Site.GetPage "/music" }}
-<h2><a href="/music" class="now-link">Music</a></h2>
+<div class="ascii-sep"><a href="/music" class="now-link">+-- music</a></div>
 <ul>
   {{ range $music.RegularPages }}
   <li>
@@ -67,9 +58,7 @@
   {{ end }}
 </ul>
 
-<hr>
-
-<h2><a href="/games" class="now-link">Games</a></h2>
+<div class="ascii-sep"><a href="/games" class="now-link">+-- games</a></div>
 <ul>
   {{ range $games.RegularPages }}
   <li>
@@ -79,10 +68,8 @@
   {{ end }}
 </ul>
 
-<hr>
-
 {{ $tools := .Site.GetPage "/tools" }}
-<h2><a href="/tools" class="now-link">Tools</a></h2>
+<div class="ascii-sep"><a href="/tools" class="now-link">+-- tools</a></div>
 <ul>
   {{ range $tools.RegularPages }}
   <li>
@@ -92,10 +79,8 @@
   {{ end }}
 </ul>
 
-<hr>
-
 {{ $writing := .Site.GetPage "/writing" }}
-<h2><a href="/writing" class="now-link">Writing</a></h2>
+<div class="ascii-sep"><a href="/writing" class="now-link">+-- writing</a></div>
 {{ if $writing.RegularPages }}
 <ul>
   {{ range $writing.RegularPages }}
@@ -109,9 +94,7 @@
 <p style="color: var(--muted)">nothing yet child, keep waiting</p>
 {{ end }}
 
-<hr>
-
-<h2>Get in touch</h2>
+<div class="ascii-sep">+-- get in touch</div>
 <p class="contact-blurb">whether it's a project, a question, or just to say hi:</p>
 <a href="#" class="copy-email contact-email" data-email="{{ .Site.Params.email }}">{{ .Site.Params.email }}<span class="email-expand"> · click to copy</span></a>
 
