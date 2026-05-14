@@ -129,13 +129,13 @@ function toggleTheme() {
 
   var N          = 120;
   var MAX_SPEED  = 1.0,  MIN_SPEED  = 0.3;
-  var PERCEPTION = 60,   SEP_DIST   = 55;
-  var SEP_W      = 0.20, ALI_W      = 0.04, COH_W = 0.001;
-  var MAX_FORCE  = 0.04;
-  var SEP_FORCE  = 0.14;  // separation gets a higher cap to prevent overlap
-  var MARGIN     = 100,  TURN       = 0.12;
-  var SPREAD_R   = 180,  SPREAD_W   = 0.06;
-  var WANDER     = 0.006;
+  var PERCEPTION = 90,   SEP_DIST   = 40;
+  var SEP_W      = 0.16, ALI_W      = 0.06, COH_W = 0.008;
+  var MAX_FORCE  = 0.03;
+  var SEP_FORCE  = 0.10;  // separation gets a higher cap to prevent overlap
+  var MARGIN     = 100,  TURN       = 0.10;
+  var SPREAD_R   = 120,  SPREAD_W   = 0.02;
+  var WANDER     = 0.003;
   var BOID_LEN     = 14;
   var BOID_HALF    = 5.5;
   var BOID_OPACITY = 0.14;
@@ -156,7 +156,7 @@ function toggleTheme() {
       var s = MIN_SPEED + Math.random() * (MAX_SPEED - MIN_SPEED);
       boids.push({ x: Math.random()*W, y: Math.random()*H,
                    vx: Math.cos(a)*s,  vy: Math.sin(a)*s,
-                   op: 0.10 + Math.random() * 0.18 });  // per-boid opacity 0.10–0.28
+                   op: 0.13 + Math.random() * 0.18 });  // per-boid opacity 0.13–0.31
     }
   }
 
