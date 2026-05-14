@@ -130,11 +130,11 @@ function toggleTheme() {
   var N          = 120;
   var MAX_SPEED  = 1.8,  MIN_SPEED  = 0.6;
   var PERCEPTION = 55,   SEP_DIST   = 50;
-  var SEP_W      = 0.18, ALI_W      = 0.05, COH_W = 0.001;
-  var MAX_FORCE  = 0.08;
+  var SEP_W      = 0.14, ALI_W      = 0.04, COH_W = 0.001;
+  var MAX_FORCE  = 0.05;
   var MARGIN     = 100,  TURN       = 0.22;
   var SPREAD_R   = 180,  SPREAD_W   = 0.06;
-  var WANDER     = 0.02;
+  var WANDER     = 0.008;
   var BOID_LEN     = 14;
   var BOID_HALF    = 5.5;
   var BOID_OPACITY = 0.14;
@@ -153,7 +153,7 @@ function toggleTheme() {
   // click on background → blast boids outward + spike their glow
   function _scatterBoids(cx, cy) {
     _blast = 28;
-    _glowPulse = 35;
+    _glowPulse = 55;
     for (var i = 0; i < boids.length; i++) {
       var b = boids[i];
       var dx = b.x - cx, dy = b.y - cy;
@@ -271,7 +271,7 @@ function toggleTheme() {
   window._invalidateAccentCache = function () { _accentRgb = null; };
 
   function drawBoids(noClear) {
-    if (_glowPulse > 0) { _glowPulse--; BOID_GLOW = Math.ceil(_glowPulse * 1.4); }
+    if (_glowPulse > 0) { _glowPulse--; BOID_GLOW = Math.ceil(_glowPulse * 2.2); }
     else if (BOID_GLOW > 0 && _glowPulse === 0) { BOID_GLOW = 0; }
     if (!noClear) ctx.clearRect(0, 0, W, H);
     if (BOID_GLOW > 0) {
