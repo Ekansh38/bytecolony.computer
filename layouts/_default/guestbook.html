@@ -1,0 +1,98 @@
+{{ define "main" }}
+<h1 style="margin-bottom:6px;">guestbook</h1>
+<p style="color:var(--muted);margin-bottom:32px;">leave a note. no account needed.</p>
+
+<div class="gb-form">
+  <div class="gb-row">
+    <input id="gb-name" type="text" placeholder="name" maxlength="50" autocomplete="off" spellcheck="false">
+    <button id="gb-submit">leave a note →</button>
+  </div>
+  <textarea id="gb-msg" placeholder="message (max 280 chars)" maxlength="280" rows="2" spellcheck="false"></textarea>
+  <!-- honeypot: bots fill this, humans don't see it -->
+  <input id="gb-hp" type="text" tabindex="-1" autocomplete="off" style="display:none">
+  <div id="gb-status"></div>
+</div>
+
+<hr style="margin:32px 0;">
+
+<div id="gb-entries">
+  <p style="color:var(--muted)">loading...</p>
+</div>
+
+<script>
+(function() {
+  var API = '/api/guestbook';
+
+  function fmt(iso) {
+    var d = new Date(iso);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function render(entries) {
+    var el = document.getElementById('gb-entries');
+    if (!entries.length) {
+      el.innerHTML = '<p style="color:var(--muted)">no entries yet. be the first.</p>';
+      return;
+    }
+    el.innerHTML = entries.map(function(e) {
+      return '<div class="gb-entry">'
+        + '<span class="gb-entry-name">' + esc(e.name) + '</span>'
+        + '<span class="gb-entry-date">' + fmt(e.date) + '</span>'
+        + '<div class="gb-entry-msg">' + esc(e.message) + '</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function setStatus(msg, color) {
+    var el = document.getElementById('gb-status');
+    el.textContent = msg;
+    el.style.color = color || 'var(--muted)';
+  }
+
+  fetch(API).then(function(r){ return r.json(); }).then(render).catch(function() {
+    document.getElementById('gb-entries').innerHTML = '<p style="color:var(--muted)">couldn\'t load entries.</p>';
+  });
+
+  document.getElementById('gb-submit').addEventListener('click', function() {
+    var name    = document.getElementById('gb-name').value.trim();
+    var message = document.getElementById('gb-msg').value.trim();
+    var hp      = document.getElementById('gb-hp').value;
+
+    if (!name || !message) { setStatus('name and message are both required.'); return; }
+
+    var btn = document.getElementById('gb-submit');
+    btn.disabled = true;
+    btn.textContent = 'sending...';
+    setStatus('');
+
+    fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, message: message, hp: hp })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        document.getElementById('gb-name').value = '';
+        document.getElementById('gb-msg').value = '';
+        setStatus('note left. thanks.', 'var(--accent)');
+        fetch(API).then(function(r){ return r.json(); }).then(render);
+      } else {
+        setStatus(data.error || 'something went wrong.');
+      }
+    })
+    .catch(function() { setStatus('network error. try again.'); })
+    .finally(function() {
+      btn.disabled = false;
+      btn.textContent = 'leave a note →';
+    });
+  });
+})();
+</script>
+{{ end }}

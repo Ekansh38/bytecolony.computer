@@ -21,6 +21,7 @@
       "has": [{ "type": "header", "key": "user-agent", "value": "curl.*" }],
       "dest": "/api/index.js"
     },
+    { "src": "/api/guestbook", "dest": "/api/guestbook.js" },
     { "handle": "filesystem" }
   ]
 }

@@ -355,6 +355,43 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
   transform: translateX(-50%) translateY(0);
 }
 
+/* ── GUESTBOOK ───────────────────────────────────────────────── */
+.gb-form { margin-bottom: 0; }
+.gb-row { display: flex; gap: 12px; margin-bottom: 10px; align-items: stretch; }
+.gb-row input { flex: 1; }
+#gb-msg { width: 100%; resize: vertical; }
+.gb-form input, .gb-form textarea {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: inherit;
+  padding: 8px 12px;
+  outline: none;
+  border-radius: 0;
+  transition: border-color 0.15s;
+}
+.gb-form input:focus, .gb-form textarea:focus { border-color: var(--accent); }
+#gb-submit {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: inherit;
+  padding: 8px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+#gb-submit:hover { color: var(--accent); border-color: var(--accent); }
+#gb-submit:disabled { opacity: 0.5; cursor: default; }
+#gb-status { margin-top: 8px; font-size: 0.9rem; min-height: 1.2em; }
+.gb-entry { padding: 16px 0; border-bottom: 1px solid var(--border); }
+.gb-entry:first-child { border-top: none; }
+.gb-entry-name { font-weight: 700; color: var(--accent); margin-right: 12px; }
+.gb-entry-date { color: var(--muted); font-size: 0.88rem; }
+.gb-entry-msg { margin-top: 6px; line-height: 1.6; }
+
 footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.77rem; }
 .footer-meta { color: var(--muted); }
 .footer-links { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 4px; }
