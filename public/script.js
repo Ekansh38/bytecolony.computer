@@ -143,25 +143,17 @@ function toggleTheme() {
   var boids = [];
 
   var mouseX = -9999, mouseY = -9999;
-  var MOUSE_R    = 150;   // px radius of mouse influence
+  var MOUSE_R    = 280;   // px radius of mouse influence
   var MOUSE_PULL = 0.05;  // force toward cursor per frame
   document.addEventListener('mousemove', function(e) { mouseX = e.clientX; mouseY = e.clientY; });
   document.addEventListener('mouseleave', function()  { mouseX = -9999;    mouseY = -9999; });
 
-  // click on background → scatter all boids outward from click point
+  // click on background → fully reinit all boids (random positions + velocities)
   document.addEventListener('click', function(e) {
     var t = e.target;
     if (t.tagName === 'A' || t.tagName === 'BUTTON' || t.tagName === 'INPUT') return;
     if (t.closest && (t.closest('a') || t.closest('button') || t.closest('#theme-picker') || t.closest('#preset-picker') || t.closest('#term-box'))) return;
-    var cx = e.clientX, cy = e.clientY;
-    for (var i = 0; i < boids.length; i++) {
-      var b = boids[i];
-      var dx = b.x - cx, dy = b.y - cy;
-      var d = Math.sqrt(dx * dx + dy * dy) || 1;
-      var strength = Math.min(MAX_SPEED * 3, 1000 / d);
-      b.vx += (dx / d) * strength;
-      b.vy += (dy / d) * strength;
-    }
+    initBoids();
   });
 
   function clamp2(vx, vy, max) {
