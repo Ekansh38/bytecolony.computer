@@ -3,7 +3,8 @@
 <div class="bio">{{ .Content }}</div>
 
 {{ $projects := .Site.GetPage "/projects" }}
-<div class="ascii-sep">+--<a href="/projects" class="now-link">projects</a>-<span class="sep-fill"></span><span class="sep-close">+</span></div>
+<hr>
+<h2><a href="/projects" class="now-link">projects</a></h2>
 <ul>
   {{ range $projects.Sections }}{{ if not .Params.shipped }}
   <li>
@@ -12,9 +13,9 @@
   </li>
   {{ end }}{{ end }}
 </ul>
-<div class="ascii-close">+<span class="ac-fill"></span>+</div>
 
-<div class="ascii-sep">+--client-work-<span class="sep-fill"></span><span class="sep-close">+</span></div>
+<hr>
+<h2>client work</h2>
 <ul>
   <li>
     <span class="li-name"><a href="https://www.drchandnichopra.com" target="_blank" rel="noopener noreferrer">drchandnichopra.com</a></span>:
@@ -33,10 +34,10 @@
     <span class="li-desc">this site</span>
   </li>
 </ul>
-<div class="ascii-close">+<span class="ac-fill"></span>+</div>
 
 {{/* EXPERIENCE SECTION — commented out, re-enable when ready
-<div class="ascii-sep">+--experience-<span class="sep-fill"></span><span class="sep-close">+</span></div>
+<hr>
+<h2><a href="/experience" class="now-link">experience</a></h2>
 <ul>
   {{ range $experience.RegularPages }}
   <li>
@@ -46,12 +47,12 @@
   </li>
   {{ end }}
 </ul>
-<div class="ascii-close">+<span class="ac-fill"></span>+</div>
 */}}
 
 {{ $games := .Site.GetPage "/games" }}
 {{ $music := .Site.GetPage "/music" }}
-<div class="ascii-sep">+--<a href="/music" class="now-link">music</a>-<span class="sep-fill"></span><span class="sep-close">+</span></div>
+<hr>
+<h2><a href="/music" class="now-link">music</a></h2>
 <ul>
   {{ range $music.RegularPages }}
   <li>
@@ -60,9 +61,9 @@
   </li>
   {{ end }}
 </ul>
-<div class="ascii-close">+<span class="ac-fill"></span>+</div>
 
-<div class="ascii-sep">+--<a href="/games" class="now-link">games</a>-<span class="sep-fill"></span><span class="sep-close">+</span></div>
+<hr>
+<h2><a href="/games" class="now-link">games</a></h2>
 <ul>
   {{ range $games.RegularPages }}
   <li>
@@ -71,10 +72,10 @@
   </li>
   {{ end }}
 </ul>
-<div class="ascii-close">+<span class="ac-fill"></span>+</div>
 
 {{ $tools := .Site.GetPage "/tools" }}
-<div class="ascii-sep">+--<a href="/tools" class="now-link">tools</a>-<span class="sep-fill"></span><span class="sep-close">+</span></div>
+<hr>
+<h2><a href="/tools" class="now-link">tools</a></h2>
 <ul>
   {{ range $tools.RegularPages }}
   <li>
@@ -83,10 +84,10 @@
   </li>
   {{ end }}
 </ul>
-<div class="ascii-close">+<span class="ac-fill"></span>+</div>
 
 {{ $writing := .Site.GetPage "/writing" }}
-<div class="ascii-sep">+--<a href="/writing" class="now-link">writing</a>-<span class="sep-fill"></span><span class="sep-close">+</span></div>
+<hr>
+<h2><a href="/writing" class="now-link">writing</a></h2>
 {{ if $writing.RegularPages }}
 <ul>
   {{ range $writing.RegularPages }}
@@ -99,11 +100,10 @@
 {{ else }}
 <p style="color: var(--muted)">nothing yet child, keep waiting</p>
 {{ end }}
-<div class="ascii-close">+<span class="ac-fill"></span>+</div>
 
-<div class="ascii-sep">+--get-in-touch-<span class="sep-fill"></span><span class="sep-close">+</span></div>
+<hr>
+<h2>get in touch</h2>
 <p class="contact-blurb">whether it's a project, a question, or just to say hi:</p>
 <a href="#" class="copy-email contact-email" data-email="{{ .Site.Params.email }}">{{ .Site.Params.email }}<span class="email-expand"> · click to copy</span></a>
-<div class="ascii-close">+<span class="ac-fill"></span>+</div>
 
 {{ end }}

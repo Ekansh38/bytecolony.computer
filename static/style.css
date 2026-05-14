@@ -260,49 +260,6 @@ body.page :not(pre) > code {
 h1 { font-size: 1.35rem; font-weight: 700; }
 h2 { color: var(--muted); margin: 32px 0 10px; font-size: 0.88rem; }
 
-.ascii-sep {
-  display: flex;
-  align-items: center;
-  margin: 28px 0 0;
-  color: var(--muted);
-  font-size: 0.88rem;
-  font-weight: 700;
-}
-.sep-fill {
-  flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-  line-height: 1.4;
-}
-.sep-fill::after {
-  content: '----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------';
-  color: var(--muted);
-}
-.ascii-sep a { color: var(--muted); text-decoration: none; }
-.ascii-sep a:hover { color: var(--accent); }
-.ascii-sep > .sep-close { flex-shrink: 0; }
-
-body.home ul { list-style: none; padding-left: 0; }
-body.home li::before { content: '|'; color: var(--muted); position: absolute; left: 0;  top: 10px; }
-body.home li::after  { content: '|'; color: var(--muted); position: absolute; right: 0; top: 10px; }
-
-.ascii-close {
-  display: flex;
-  align-items: center;
-  color: var(--muted);
-  font-size: 0.88rem;
-  margin-bottom: 4px;
-}
-.ac-fill {
-  flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.ac-fill::after {
-  content: '----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------';
-  color: var(--muted);
-}
-
 .now-link { color: var(--muted); }
 .now-link:hover { color: var(--accent); text-decoration: none; }
 hr { border: none; border-top: 1px solid var(--border); margin: 24px 0 0; }
@@ -317,8 +274,7 @@ header { margin-bottom: 28px; }
 .li-name, .project-title { font-weight: 700; }
 .li-name-plain { font-weight: 700; color: var(--fg); }
 .li-meta { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
-body.projects li { padding: 10px 0; }
-body.home li { position: relative; padding: 10px 2ch 10px 2.2ch; }
+body.projects li, body.home li { padding: 10px 0; }
 .bio { margin-bottom: 12px; }
 .toggle { background: none; border: none; padding: 0; font: inherit; cursor: pointer; color: var(--muted); }
 .toggle:hover { color: var(--accent); }

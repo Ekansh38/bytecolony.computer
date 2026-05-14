@@ -142,35 +142,6 @@ function toggleTheme() {
   var BOID_GLOW    = 0;
 
   var boids = [];
-  var _blast = 0;  // decays each frame; multiplies position step for scatter effect
-
-  var mouseX = -9999, mouseY = -9999;
-  var MOUSE_R    = 200;   // px radius of mouse influence
-  var MOUSE_PULL = 0.14;  // force toward cursor per frame
-  document.addEventListener('mousemove', function(e) { mouseX = e.clientX; mouseY = e.clientY; });
-  document.addEventListener('mouseleave', function()  { mouseX = -9999;    mouseY = -9999; });
-
-  // click on background → blast boids outward
-  function _scatterBoids(cx, cy) {
-    _blast = 28;
-    for (var i = 0; i < boids.length; i++) {
-      var b = boids[i];
-      var dx = b.x - cx, dy = b.y - cy;
-      var d = Math.sqrt(dx*dx + dy*dy) || 1;
-      var angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.9;
-      b.vx = Math.cos(angle) * MAX_SPEED;
-      b.vy = Math.sin(angle) * MAX_SPEED;
-    }
-  }
-
-  document.addEventListener('click', function(e) {
-    // only fire on true empty background (body or html element)
-    var t = e.target;
-    if (t !== document.body && t !== document.documentElement) return;
-    // don't fire if user just selected text
-    if (window.getSelection && window.getSelection().toString().length > 0) return;
-    _scatterBoids(e.clientX, e.clientY);
-  });
 
   function clamp2(vx, vy, max) {
     var m2 = vx*vx + vy*vy;
@@ -189,8 +160,6 @@ function toggleTheme() {
   }
 
   function updateBoids() {
-    if (_blast > 0) _blast--;
-    var _blastMult = _blast > 0 ? (1 + _blast) : 1;
     var P2 = PERCEPTION*PERCEPTION, S2 = SEP_DIST*SEP_DIST, SP2 = SPREAD_R*SPREAD_R;
     var sp = (1 + boidsCurrentSpeed / 100 * 19) / 5;
     var i, j, b, o, dx, dy, d2, d, spd, tmp;
@@ -236,22 +205,13 @@ function toggleTheme() {
       if (b.y < MARGIN)   fy += TURN*(1-b.y/MARGIN);
       if (b.y > H-MARGIN) fy -= TURN*(1-(H-b.y)/MARGIN);
 
-      // mouse attraction — boids within MOUSE_R steer gently toward cursor
-      var mdx = mouseX - b.x, mdy = mouseY - b.y;
-      var md2 = mdx*mdx + mdy*mdy;
-      if (md2 < MOUSE_R*MOUSE_R && md2 > 1) {
-        var md = Math.sqrt(md2);
-        fx += (mdx/md) * MOUSE_PULL;
-        fy += (mdy/md) * MOUSE_PULL;
-      }
-
       b.vx += fx + (Math.random()-0.5)*WANDER;
       b.vy += fy + (Math.random()-0.5)*WANDER;
       spd = Math.sqrt(b.vx*b.vx + b.vy*b.vy);
       if (spd > MAX_SPEED) { b.vx = b.vx/spd*MAX_SPEED; b.vy = b.vy/spd*MAX_SPEED; }
       else if (spd < MIN_SPEED && spd > 1e-4) { b.vx = b.vx/spd*MIN_SPEED; b.vy = b.vy/spd*MIN_SPEED; }
 
-      b.x += b.vx * sp * _blastMult; b.y += b.vy * sp * _blastMult;
+      b.x += b.vx * sp; b.y += b.vy * sp;
       if (b.x < -20) b.x = W+20; else if (b.x > W+20) b.x = -20;
       if (b.y < -20) b.y = H+20; else if (b.y > H+20) b.y = -20;
     }
