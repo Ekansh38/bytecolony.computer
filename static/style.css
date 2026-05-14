@@ -263,7 +263,7 @@ h2 { color: var(--muted); margin: 32px 0 10px; font-size: 1.3rem; font-weight: 7
 .now-link { color: var(--muted); }
 .now-link:hover { color: var(--accent); text-decoration: none; }
 hr { border: none; border-top: 1px solid var(--border); margin: 24px 0 0; }
-h3 { color: var(--muted); margin: 28px 0 6px; font-size: 0.82rem; }
+h3 { color: var(--muted); margin: 28px 0 6px; font-size: 1rem; }
 
 header { margin-bottom: 48px; }
 .header-top { display: flex; justify-content: space-between; align-items: center; }
@@ -306,7 +306,6 @@ body.projects li, body.home li { padding: 10px 0; }
 .contact-blurb { color: var(--muted); margin-bottom: 10px; }
 .contact-email {
   display: inline-block;
-  font-size: 1rem;
   font-weight: 700;
   color: var(--accent);
   text-decoration: none;
@@ -329,8 +328,8 @@ body.projects li, body.home li { padding: 10px 0; }
 /* ── ARTICLE PROSE ─────────────────────────────────────────── */
 body.page p  { line-height: 1.85; margin-bottom: 1em; }
 body.page h1 { font-size: 1.4rem; color: var(--fg); margin: 0 0 8px; }
-body.page h2 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 36px 0 10px; }
-body.page h3 { font-size: 0.9rem; color: var(--fg); font-weight: 700; margin: 28px 0 8px; }
+body.page h2 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 36px 0 10px; }
+body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px 0 8px; }
 .project-meta  { color: var(--muted); margin-bottom: 20px; }
 
 .links { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
@@ -367,7 +366,6 @@ footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--border
 .social a:hover { color: var(--accent); transform: translate(2px, -2px); }
 .copy-email {
   color: var(--fg);
-  font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
   user-select: none;
