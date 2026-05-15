@@ -222,36 +222,12 @@
     'for i, e in ipairs(top) do',
     '  print(i .. ". " .. e.name .. "  " .. e.score)',
     'end',
-    '',
-    '-- leaderboard display with padding',
-    'for i, e in ipairs(net.top(5)) do',
-    '  local rank = string.rep(" ", 2 - #tostring(i)) .. i .. "."',
-    '  local name = e.name .. string.rep(" ", 14 - math.min(#e.name, 14))',
-    '  print(colored(rank .. " ", color.blue) .. name .. colored(tostring(e.score), color.yellow))',
-    'end',
-    '',
-    '-- example: animation',
-    'for i = 1, 5 do',
-    '  clear()',
-    '  print(colored("frame " .. i, color.cyan))',
-    '  sleep(300)',
-    'end',
   ].join('\n');
 
   document.getElementById('arc-docs-code').innerHTML = highlightLua(DOCS);
 
   // snippets
   var SNIPPETS = [
-    {
-      title: 'leaderboard display',
-      code: [
-        'for i, e in ipairs(net.top(5)) do',
-        '  local rank = string.rep(" ", 2 - #tostring(i)) .. i .. "."',
-        '  local name = e.name .. string.rep(" ", 14 - math.min(#e.name, 14))',
-        '  print(colored(rank .. " ", color.blue) .. name .. colored(tostring(e.score), color.yellow))',
-        'end',
-      ].join('\n'),
-    },
     {
       title: 'animation loop',
       code: [
@@ -263,37 +239,24 @@
       ].join('\n'),
     },
     {
-      title: 'ask for name, save score',
+      title: 'leaderboard',
       code: [
-        'local name  = io.read("your name: ")',
-        'local score = 0',
-        '',
-        '-- ... game logic ...',
-        '',
+        'local name = io.read("your name: ")',
         'net.rank(name, score)',
-        'print(colored("score saved!", color.green))',
-      ].join('\n'),
-    },
-    {
-      title: 'padding / alignment',
-      code: [
-        'local function pad(s, width)',
-        '  return s .. string.rep(" ", width - math.min(#s, width))',
-        'end',
         '',
-        'print(pad("name",  12) .. pad("score", 8) .. "rank")',
-        'print(pad("alice", 12) .. pad("1500",  8) .. "#1")',
-        'print(pad("bob",   12) .. pad("980",   8) .. "#2")',
+        'for i, e in ipairs(net.top(5)) do',
+        '  local r = string.rep(" ", 2 - #tostring(i)) .. i .. "."',
+        '  local n = e.name .. string.rep(" ", math.max(0, 14 - #e.name))',
+        '  print(colored(r .. " ", color.blue) .. n .. colored(tostring(e.score), color.yellow))',
+        'end',
       ].join('\n'),
     },
     {
-      title: 'shared counter (multiplayer-ish)',
+      title: 'shared counter',
       code: [
-        '-- increment a global counter anyone can see',
-        'local raw   = net.get("visits")',
-        'local count = (tonumber(raw) or 0) + 1',
-        'net.set("visits", count)',
-        'print("this game has been played " .. count .. " times")',
+        'local count = (tonumber(net.get("plays")) or 0) + 1',
+        'net.set("plays", count)',
+        'print("played " .. count .. " times total")',
       ].join('\n'),
     },
   ];
