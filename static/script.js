@@ -1645,6 +1645,45 @@ function toggleTheme() {
     document.head.appendChild(s);
   }
 
+  // ── web audio sound effects ───────────────────────────────────────────────
+  function arcadeSound(preset, dur, wave) {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      function tone(f, d, w, delay) {
+        var osc = ctx.createOscillator(), g = ctx.createGain();
+        osc.connect(g); g.connect(ctx.destination);
+        osc.type = w || 'sine'; osc.frequency.value = f;
+        var t0 = ctx.currentTime + (delay || 0);
+        g.gain.setValueAtTime(0.22, t0);
+        g.gain.exponentialRampToValueAtTime(0.001, t0 + d);
+        osc.start(t0); osc.stop(t0 + d);
+      }
+      if (preset === 'win')   { tone(523,.10,'sine',0); tone(659,.10,'sine',.11); tone(784,.25,'sine',.23); }
+      else if (preset === 'lose')  { tone(300,.15,'sawtooth',0); tone(200,.30,'sawtooth',.16); }
+      else if (preset === 'blip')  { tone(880,.06,'sine'); }
+      else if (preset === 'buzz')  { tone(110,.30,'square'); }
+      else if (preset === 'click') { tone(1200,.03,'sine'); }
+      else if (preset === 'coin')  { tone(987,.05,'sine',0); tone(1319,.12,'sine',.06); }
+      else { tone(typeof preset === 'number' ? preset : 440, dur || 0.15, wave || 'sine'); }
+      setTimeout(function() { try { ctx.close(); } catch(e) {} }, 1200);
+    } catch(e) {}
+  }
+
+  // ── ansi → html (for colored game output) ────────────────────────────────
+  function ansiToHtml(text) {
+    var s = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var ANSI = {31:'#f7768e',32:'#9ece6a',33:'#e0af68',34:'#7aa2f7',35:'#bb9af7',36:'#73daca',37:'#c0caf5'};
+    var open = 0;
+    s = s.replace(/\x1b\[([0-9;]*)m/g, function(_, code) {
+      if (!code || code === '0') { var c = '</span>'.repeat(open); open = 0; return c; }
+      if (code === '1') { open++; return '<span style="font-weight:700">'; }
+      var n = parseInt(code.split(';')[0]);
+      if (ANSI[n]) { open++; return '<span style="color:' + ANSI[n] + '">'; }
+      return '';
+    });
+    return s + '</span>'.repeat(open);
+  }
+
   function runLuaGame(game) {
     var fx = window.fengari;
     if (!fx) { line('lua runtime not available', 'term-line-err'); return; }
@@ -1657,29 +1696,46 @@ function toggleTheme() {
     var L = lauxlib.luaL_newstate();
     lualib.luaL_openlibs(L);
 
-    // override print → terminal output
+    // game print → colored terminal output
+    function lineHtml(text) {
+      var el = document.createElement('pre');
+      el.className = 'term-line-pre';
+      el.innerHTML = ansiToHtml(text);
+      output.appendChild(el);
+      output.scrollTop = output.scrollHeight;
+    }
+
     lua.lua_pushcfunction(L, function(Ls) {
       var n = lua.lua_gettop(Ls), parts = [];
       for (var i = 1; i <= n; i++) {
-        var t = lua.lua_type(Ls, i);
-        var s;
-        if (t === lua.LUA_TSTRING) {
-          var raw = lua.lua_tostring(Ls, i); s = raw ? toJS(raw) : '';
-        } else if (t === lua.LUA_TNUMBER) {
-          s = String(lua.lua_tonumber(Ls, i));
-        } else if (t === lua.LUA_TBOOLEAN) {
-          s = lua.lua_toboolean(Ls, i) ? 'true' : 'false';
-        } else if (t === lua.LUA_TNIL) {
-          s = 'nil';
-        } else {
-          var tn = lua.lua_typename(Ls, t); s = tn ? toJS(tn) : '?';
-        }
+        var t = lua.lua_type(Ls, i), s;
+        if (t === lua.LUA_TSTRING) { var raw = lua.lua_tostring(Ls, i); s = raw ? toJS(raw) : ''; }
+        else if (t === lua.LUA_TNUMBER) { s = String(lua.lua_tonumber(Ls, i)); }
+        else if (t === lua.LUA_TBOOLEAN) { s = lua.lua_toboolean(Ls, i) ? 'true' : 'false'; }
+        else if (t === lua.LUA_TNIL) { s = 'nil'; }
+        else { var tn = lua.lua_typename(Ls, t); s = tn ? toJS(tn) : '?'; }
         parts.push(s);
       }
-      line(parts.join('\t'), 'term-line-pre');
+      lineHtml(parts.join('\t'));
       return 0;
     });
     lua.lua_setglobal(L, toLua('print'));
+
+    // _sound(preset_or_freq, dur?, wave?)
+    lua.lua_pushcfunction(L, function(Ls) {
+      var a1 = lua.lua_type(Ls, 1) === lua.LUA_TNUMBER
+        ? lua.lua_tonumber(Ls, 1)
+        : (lua.lua_type(Ls, 1) === lua.LUA_TSTRING ? toJS(lua.lua_tostring(Ls, 1)) : 440);
+      var dur  = lua.lua_type(Ls, 2) === lua.LUA_TNUMBER ? lua.lua_tonumber(Ls, 2) : undefined;
+      var wave = lua.lua_type(Ls, 3) === lua.LUA_TSTRING ? toJS(lua.lua_tostring(Ls, 3)) : undefined;
+      arcadeSound(a1, dur, wave);
+      return 0;
+    });
+    lua.lua_setglobal(L, toLua('_sound'));
+
+    // clear() — wipe game output
+    lua.lua_pushcfunction(L, function(Ls) { output.innerHTML = ''; return 0; });
+    lua.lua_setglobal(L, toLua('clear'));
 
     var co = lua.lua_newthread(L);
 
@@ -1687,18 +1743,33 @@ function toggleTheme() {
       'os=nil; require=nil; load=nil; dofile=nil; loadfile=nil; collectgarbage=nil',
       'io={',
       '  read=function(prompt) if type(prompt)=="string" then print(prompt) end return coroutine.yield() end,',
-      '  write=function(...)',
-      '    local s="" for i=1,select("#",...)do s=s..tostring(select(i,...))end',
-      '    print(s)',
-      '  end',
+      '  write=function(...) local s="" for i=1,select("#",...)do s=s..tostring(select(i,...))end print(s) end',
       '}',
+      // color: ANSI escape constants
+      'color={',
+      '  red="\27[31m", green="\27[32m", yellow="\27[33m",',
+      '  blue="\27[34m", purple="\27[35m", cyan="\27[36m",',
+      '  white="\27[37m", bold="\27[1m", reset="\27[0m"',
+      '}',
+      'function colored(text, col) return col .. tostring(text) .. color.reset end',
+      // sound: named presets + raw beep
+      'sound={',
+      '  beep =function(freq,dur) _sound(freq or 440, dur or 0.15, "sine") end,',
+      '  blip =function() _sound("blip") end,',
+      '  buzz =function() _sound("buzz") end,',
+      '  win  =function() _sound("win")  end,',
+      '  lose =function() _sound("lose") end,',
+      '  click=function() _sound("click") end,',
+      '  coin =function() _sound("coin") end,',
+      '}',
+      // sleep(ms): yields with sentinel, resumed by setTimeout
+      'function sleep(ms) coroutine.yield("\0sleep\0"..tostring(math.floor(ms or 100))) end',
     ].join('\n');
 
     var status = lauxlib.luaL_loadstring(co, toLua(sandbox + '\n\n' + game.code));
-    var SANDBOX_LINES = sandbox.split('\n').length + 2; // +2 for the \n\n separator
+    var SANDBOX_LINES = sandbox.split('\n').length + 2;
 
     function cleanErr(raw) {
-      // strip "[string "..."]:N: " → "line N: "
       return raw.replace(/^\[string "[^"]*"\]:(\d+):\s*/, function(_, n) {
         var userLine = Math.max(1, parseInt(n) - SANDBOX_LINES);
         return 'line ' + userLine + ': ';
@@ -1713,7 +1784,6 @@ function toggleTheme() {
 
     function exitGame() {
       _gameMode = false; _gameResume = null;
-      line('── done  ·  type games to see more ──', 'term-line-ok');
     }
 
     function step(inputStr) {
@@ -1721,6 +1791,16 @@ function toggleTheme() {
       if (inputStr !== undefined) { lua.lua_pushstring(co, toLua(String(inputStr))); nargs = 1; }
       var st = lua.lua_resume(co, null, nargs);
       if (st === lua.LUA_YIELD) {
+        // check for sleep sentinel
+        if (lua.lua_type(co, -1) === lua.LUA_TSTRING) {
+          var raw = lua.lua_tostring(co, -1);
+          var sv = raw ? toJS(raw) : '';
+          if (sv.charAt(0) === '\0') {
+            var ms = parseInt(sv.slice(7)) || 100;
+            setTimeout(function() { if (_gameMode) step(); }, ms);
+            return;
+          }
+        }
         _gameResume = step;
       } else {
         if (st !== lua.LUA_OK) {

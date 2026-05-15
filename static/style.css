@@ -472,16 +472,35 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 #arc-submit:disabled, #arc-test:disabled { opacity: 0.5; cursor: default; }
 #arc-status { font-size: 0.88rem; color: var(--muted); }
 
+.arc-section-header {
+  font-weight: 700;
+  color: var(--fg);
+  border-left: 3px solid var(--accent);
+  padding-left: 10px;
+  margin-bottom: 16px;
+}
+
+.arc-form-box {
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  padding: 20px 22px;
+  margin-bottom: 0;
+}
+
 .arc-card {
   display: block;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border);
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 14px 18px;
+  margin-bottom: 8px;
   text-decoration: none !important;
   color: var(--fg);
+  transition: border-color 0.15s, background 0.15s;
 }
-.arc-card:first-child { border-top: 1px solid var(--border); }
+.arc-card:hover { border-color: var(--accent); background: var(--bg); }
 .arc-card:hover .arc-card-title { color: var(--accent); }
-.arc-card-header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 5px; }
+.arc-card-header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
 .arc-card-title { font-weight: 700; font-size: 1rem; transition: color 0.15s; }
 .arc-card-meta { color: var(--muted); font-size: 0.82rem; }
 .arc-card-desc { color: var(--muted); font-size: 0.85rem; }
@@ -746,17 +765,17 @@ body.page #bg-canvas { opacity: 0.25; }
   }
 
   #preset-picker-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--fg);
     cursor: pointer;
     font: inherit;
     font-size: 1.1rem;
-    padding: 0;
+    padding: 5px 12px;
     outline: none;
-    transition: color 0.15s;
+    transition: color 0.15s, border-color 0.15s;
   }
-  #preset-picker-btn:hover { color: var(--fg); }
+  #preset-picker-btn:hover { color: var(--accent); border-color: var(--accent); }
 
   #preset-picker-menu {
     display: none;
@@ -781,17 +800,17 @@ body.page #bg-canvas { opacity: 0.25; }
   }
 
   #theme-picker-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--fg);
     cursor: pointer;
     font: inherit;
     font-size: 1.1rem;
-    padding: 0;
+    padding: 5px 12px;
     outline: none;
-    transition: color 0.15s;
+    transition: color 0.15s, border-color 0.15s;
   }
-  #theme-picker-btn:hover { color: var(--fg); }
+  #theme-picker-btn:hover { color: var(--accent); border-color: var(--accent); }
 
   #theme-picker-menu {
     display: none;
