@@ -425,6 +425,84 @@
   }
   .tut-editcode-note strong { color: var(--fg); }
 
+  /* EXPERT screen */
+  .tut-api-grid {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 20px;
+  }
+  .tut-api-row {
+    display: flex; align-items: baseline; gap: 12px;
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    background: var(--code-bg, var(--bg));
+    cursor: pointer; transition: border-color 0.15s;
+  }
+  .tut-api-row:hover { border-color: var(--accent); }
+  .tut-api-row.tut-api-tried { border-color: var(--accent); }
+  .tut-api-name {
+    color: var(--accent); font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0; min-width: 170px;
+  }
+  .tut-api-desc {
+    color: var(--muted); font-size: 0.78rem; line-height: 1.5;
+  }
+  .tut-api-demo-out {
+    font-size: 0.8rem; color: var(--accent);
+    margin-top: 6px; opacity: 0;
+    transition: opacity 0.3s; white-space: pre;
+  }
+  .tut-api-demo-out.show { opacity: 1; }
+  .tut-api-col { flex: 1; }
+
+  /* NETWORKING screen */
+  .tut-net-demo {
+    border: 1px solid var(--border);
+    background: var(--code-bg, var(--bg));
+    margin-bottom: 18px; overflow: hidden;
+  }
+  .tut-net-tabs {
+    display: flex; border-bottom: 1px solid var(--border);
+  }
+  .tut-net-tab {
+    flex: 1; padding: 7px 10px; font-size: 0.75rem;
+    color: var(--muted); background: none; border: none;
+    font-family: inherit; cursor: pointer; text-align: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+  }
+  .tut-net-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tut-net-panel { padding: 14px 18px; }
+  .tut-net-panel.hidden { display: none; }
+  .tut-lb {
+    display: flex; flex-direction: column; gap: 4px;
+    min-height: 80px;
+  }
+  .tut-lb-row {
+    display: flex; gap: 12px; align-items: center;
+    font-size: 0.82rem; padding: 3px 0;
+    opacity: 0; transform: translateX(-8px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .tut-lb-row.show { opacity: 1; transform: translateX(0); }
+  .tut-lb-rank { color: var(--muted); width: 18px; flex-shrink: 0; }
+  .tut-lb-name { flex: 1; color: var(--fg); }
+  .tut-lb-score { color: var(--accent); font-weight: 700; }
+  .tut-lb-empty { color: var(--muted); font-size: 0.8rem; font-style: italic; }
+  .tut-net-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .tut-net-inp {
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--fg); font-family: inherit; font-size: 0.82rem;
+    padding: 5px 10px; width: 120px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .tut-net-inp:focus { border-color: var(--accent); }
+  .tut-net-note {
+    font-size: 0.75rem; color: var(--muted); line-height: 1.5;
+    margin-top: 10px;
+  }
+  .tut-net-note span { color: var(--accent); }
+
   /* SCREEN 7: starter cards */
   #tut-s7 .tut-step-wrap { max-width: 700px; }
   .tut-starters-grid {
@@ -519,6 +597,7 @@
     <div class="tut-dot" data-i="3"></div>
     <div class="tut-dot" data-i="4"></div>
     <div class="tut-dot" data-i="5"></div>
+    <div class="tut-dot" data-i="6"></div>
   </div>
 
   <!-- SCREEN 0: experience check -->
@@ -530,7 +609,7 @@
         <span class="tut-card-symbol" style="top:10px;right:14px;animation-delay:0s">{}</span>
         <span class="tut-card-symbol" style="bottom:12px;left:10px;animation-delay:2s">;</span>
         <span class="tut-choice-title">i've coded before</span>
-        <span class="tut-choice-desc">skip the intro, go straight to the editor</span>
+        <span class="tut-choice-desc">show me what the arcade adds on top</span>
       </button>
       <button class="tut-choice-card" id="tut-newbie-btn">
         <span class="tut-card-symbol" style="top:10px;right:14px;animation-delay:0.8s">?</span>
@@ -541,10 +620,58 @@
     </div>
   </div>
 
+  <!-- EXPERT screen: arcade APIs -->
+  <div class="tut-screen" id="tut-sexpert">
+    <div class="tut-step-wrap" style="max-width:600px">
+      <div class="tut-step-tag">arcade APIs</div>
+      <div class="tut-heading" style="font-size:clamp(1.3rem,3vw,1.8rem)">what the arcade adds</div>
+      <div class="tut-body">games run in a Lua sandbox. beyond standard Lua, you get these. click each to see what it does:</div>
+      <div class="tut-api-grid">
+        <div class="tut-api-row" data-eapi="io">
+          <div class="tut-api-col">
+            <div class="tut-api-name">io.read("prompt")</div>
+            <div class="tut-api-desc">blocks until player hits Enter. returns a string.</div>
+            <div class="tut-api-demo-out" id="eapi-io-out">name: <span style="color:var(--accent)">ekansh</span><br>hello, ekansh!</div>
+          </div>
+        </div>
+        <div class="tut-api-row" data-eapi="sleep">
+          <div class="tut-api-col">
+            <div class="tut-api-name">sleep(ms)</div>
+            <div class="tut-api-desc">async pause via coroutines - doesn't block the browser.</div>
+            <div class="tut-api-demo-out" id="eapi-sleep-out">3... 2... 1... GO!</div>
+          </div>
+        </div>
+        <div class="tut-api-row" data-eapi="colored">
+          <div class="tut-api-col">
+            <div class="tut-api-name">colored(text, color.red)</div>
+            <div class="tut-api-desc">ANSI color output. colors: red, green, yellow, blue, cyan, purple, bold.</div>
+            <div class="tut-api-demo-out" id="eapi-colored-out"></div>
+          </div>
+        </div>
+        <div class="tut-api-row" data-eapi="sound">
+          <div class="tut-api-col">
+            <div class="tut-api-name">sound.win() / sound.lose()</div>
+            <div class="tut-api-desc">web audio sounds. also: click, coin, blip, buzz, beep(freq, dur).</div>
+            <div class="tut-api-demo-out" id="eapi-sound-out">&#9834;</div>
+          </div>
+        </div>
+        <div class="tut-api-row" data-eapi="net">
+          <div class="tut-api-col">
+            <div class="tut-api-name">net.rank(name, score)</div>
+            <div class="tut-api-desc">save to a persistent leaderboard scoped to your game. net.top(n) retrieves it. net.get/set for key-value storage.</div>
+            <div class="tut-api-demo-out" id="eapi-net-out">1. ekansh  99<br>2. guest   42</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:18px">full reference is in the <strong style="color:var(--fg)">docs panel</strong> inside the editor (right side)</div>
+      <button class="tut-btn" id="tut-expert-next">pick a starter →</button>
+    </div>
+  </div>
+
   <!-- SCREEN 1: welcome -->
   <div class="tut-screen" id="tut-s1">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">01 / 06</div>
+      <div class="tut-step-tag">01 / 07</div>
       <div class="tut-heading" id="tut-s1-heading"></div>
       <div class="tut-body" id="tut-s1-body" style="opacity:0;transition:opacity 0.5s"></div>
       <div id="tut-s1-game-preview" style="opacity:0;transition:opacity 0.4s;margin-bottom:20px">
@@ -562,7 +689,7 @@
   <!-- SCREEN 2: first line -->
   <div class="tut-screen" id="tut-s2">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">02 / 06</div>
+      <div class="tut-step-tag">02 / 07</div>
       <div class="tut-heading">your first program</div>
       <div class="tut-body">Lua reads almost like English. edit the code below and hit run:</div>
       <textarea class="tut-code" id="tut-s2-code" rows="1" spellcheck="false">print("hello!")</textarea>
@@ -586,7 +713,7 @@
   <!-- SCREEN 3: story builder (was variables quiz) -->
   <div class="tut-screen" id="tut-s3">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">03 / 06</div>
+      <div class="tut-step-tag">03 / 07</div>
       <div class="tut-heading">pick a path</div>
       <div class="tut-body">your game reacts to what the player does. click a choice and see what happens:</div>
 
@@ -614,7 +741,7 @@
   <!-- SCREEN 4: if/else with dramatic story output -->
   <div class="tut-screen" id="tut-s4">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">04 / 06</div>
+      <div class="tut-step-tag">04 / 07</div>
       <div class="tut-heading">the code behind it</div>
       <div class="tut-body">your game checks values and branches. drag the slider - watch the story change:</div>
       <div class="tut-if-code" id="tut-if-code"><span class="lh-kw2">local</span> health <span class="lh-op">=</span> <span class="lh-num" id="tut-score-val">70</span>
@@ -637,7 +764,7 @@
   <!-- SCREEN 5: powers -->
   <div class="tut-screen" id="tut-s5">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">05 / 06</div>
+      <div class="tut-step-tag">05 / 07</div>
       <div class="tut-heading">special powers</div>
       <div class="tut-body">the arcade gives you functions that normal Lua doesn't have. click each one:</div>
       <div class="tut-power-demo" id="tut-power-demo">the quick brown fox</div>
@@ -669,27 +796,73 @@
         </button>
       </div>
       <div class="tut-power-note" id="tut-power-note">activate <span id="tut-power-count">0</span> / 5 powers to continue</div>
-      <button class="tut-btn" id="tut-s5-next" disabled>finish tutorial →</button>
+      <button class="tut-btn" id="tut-s5-next" disabled>continue →</button>
     </div>
   </div>
 
-  <!-- SCREEN 6: edit code -->
+  <!-- SCREEN 5b: networking -->
+  <div class="tut-screen" id="tut-snet">
+    <div class="tut-step-wrap">
+      <div class="tut-step-tag">06 / 07</div>
+      <div class="tut-heading">the arcade has a database</div>
+      <div class="tut-body">your game can save and load data that persists between plays. add a leaderboard in 2 lines:</div>
+      <div class="tut-if-code" style="margin-bottom:14px"><span class="lh-builtin">net</span>.<span class="lh-fn">rank</span>(<span class="lh-str">"ekansh"</span>, <span class="lh-num">99</span>)      <span class="lh-cmt">-- save score</span>
+<span class="lh-kw2">local</span> top <span class="lh-op">=</span> <span class="lh-builtin">net</span>.<span class="lh-fn">top</span>(<span class="lh-num">5</span>)            <span class="lh-cmt">-- fetch top 5</span>
+<span class="lh-kw">for</span> i, e <span class="lh-kw">in</span> <span class="lh-builtin">ipairs</span>(top) <span class="lh-kw">do</span>
+  <span class="lh-builtin">print</span>(i <span class="lh-op">..</span> <span class="lh-str">". "</span> <span class="lh-op">..</span> e.name <span class="lh-op">..</span> <span class="lh-str">"  "</span> <span class="lh-op">..</span> e.score)
+<span class="lh-kw">end</span></div>
+
+      <div class="tut-net-demo">
+        <div class="tut-net-tabs">
+          <button class="tut-net-tab active" data-tab="lb">leaderboard</button>
+          <button class="tut-net-tab" data-tab="kv">key-value</button>
+        </div>
+        <div class="tut-net-panel" id="tut-net-panel-lb">
+          <div class="tut-lb" id="tut-lb-list">
+            <div class="tut-lb-empty">no scores yet - add one below</div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="tut-net-actions">
+              <input class="tut-net-inp" id="tut-lb-name" placeholder="your name" maxlength="18">
+              <button class="tut-btn-muted" id="tut-lb-add">net.rank(name, score)</button>
+            </div>
+          </div>
+          <div class="tut-net-note">each game has its own leaderboard namespace. data is stored in <span>Redis</span> (Upstash) via a serverless API. it persists forever.</div>
+        </div>
+        <div class="tut-net-panel hidden" id="tut-net-panel-kv">
+          <div class="tut-if-code" style="margin-bottom:10px;font-size:0.78rem"><span class="lh-builtin">net</span>.<span class="lh-fn">set</span>(<span class="lh-str">"lives"</span>, <span class="lh-num">3</span>)
+<span class="lh-kw2">local</span> lives <span class="lh-op">=</span> <span class="lh-builtin">net</span>.<span class="lh-fn">get</span>(<span class="lh-str">"lives"</span>)</div>
+          <div class="tut-net-note">key-value storage scoped per game. good for saving player progress, unlocks, or anything that should persist. <span>reads and writes are async</span> — execution resumes automatically when done.</div>
+        </div>
+      </div>
+
+      <button class="tut-btn" id="tut-snet-next">continue →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 6: edit code + docs panel -->
   <div class="tut-screen" id="tut-s6">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">06 / 06</div>
-      <div class="tut-heading">one more thing</div>
-      <div class="tut-body">the arcade has no accounts. when you submit a game, you get a unique <strong>edit code</strong>. this is the only way to edit or delete your game later.</div>
+      <div class="tut-step-tag">07 / 07</div>
+      <div class="tut-heading">last two things</div>
+      <div class="tut-body">no accounts. when you submit a game, you get a unique <strong>edit code</strong> — save it, it won't be shown again:</div>
       <div class="tut-editcode-box">
         <span class="tut-editcode-val" id="tut-editcode-demo">a3f9b-2c81d</span>
         <button class="tut-editcode-copy" id="tut-editcode-copy-demo">copy</button>
       </div>
-      <div class="tut-editcode-note" style="color:var(--muted);font-size:0.75rem;margin-bottom:12px;opacity:0.7">
+      <div class="tut-editcode-note" style="color:var(--muted);font-size:0.75rem;margin-bottom:14px;opacity:0.7">
         ^ just an example. your real code will look different.
       </div>
-      <div class="tut-editcode-note">
-        <strong>save it somewhere</strong> - it won't be shown again. no email, no password - just this code.
+      <div class="tut-body" style="margin-bottom:12px">the editor has a <strong>docs panel</strong> on the right side. every API with examples, plus ready-to-paste snippets. click the tab to open it anytime:</div>
+      <div style="border:1px solid var(--border);background:var(--code-bg,var(--bg));padding:12px 18px;margin-bottom:20px;font-size:0.82rem">
+        <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:10px">
+          <div style="padding:5px 12px;color:var(--accent);border-bottom:2px solid var(--accent);font-size:0.72rem;font-weight:700">snippets</div>
+          <div style="padding:5px 12px;color:var(--muted);font-size:0.72rem">reference</div>
+        </div>
+        <div style="color:var(--muted);font-size:0.78rem">hello world &nbsp;·&nbsp; number guesser &nbsp;·&nbsp; story game &nbsp;·&nbsp; countdown &nbsp;·&nbsp; leaderboard</div>
+        <div style="color:var(--muted);font-size:0.72rem;margin-top:6px;opacity:0.6">click any snippet → inserts code at cursor</div>
       </div>
-      <button class="tut-btn" id="tut-s6-next" style="margin-top:8px">pick a starter →</button>
+      <button class="tut-btn" id="tut-s6-next" style="margin-top:4px">pick a starter →</button>
     </div>
   </div>
 
@@ -743,10 +916,9 @@
 
 <script>
 (function() {
-  // redirect if already seen
+  // redirect if already completed tutorial
   try {
-    var seen = localStorage.getItem('arcade_intro');
-    if (seen === 'expert' || seen === 'done') {
+    if (localStorage.getItem('arcade_intro') === 'done') {
       window.location.replace('/arcade/editor/');
       return;
     }
@@ -834,16 +1006,21 @@
   }
 
   // screen management
+  // indices: 0=s0, 1=s1, 2=s2, 3=s3, 4=s4, 5=s5, 6=snet, 7=s6, 8=s7(starter), 9=sexpert
+  var IDX_START   = 8; // starter picker
+  var IDX_EXPERT  = 9; // expert API screen
   var currentScreen = 0;
   var allScreens = [
-    document.getElementById('tut-s0'),
-    document.getElementById('tut-s1'),
-    document.getElementById('tut-s2'),
-    document.getElementById('tut-s3'),
-    document.getElementById('tut-s4'),
-    document.getElementById('tut-s5'),
-    document.getElementById('tut-s6'),
-    document.getElementById('tut-s7'),
+    document.getElementById('tut-s0'),      // 0
+    document.getElementById('tut-s1'),      // 1
+    document.getElementById('tut-s2'),      // 2
+    document.getElementById('tut-s3'),      // 3
+    document.getElementById('tut-s4'),      // 4
+    document.getElementById('tut-s5'),      // 5
+    document.getElementById('tut-snet'),    // 6  networking
+    document.getElementById('tut-s6'),      // 7  edit code + docs
+    document.getElementById('tut-s7'),      // 8  starter picker
+    document.getElementById('tut-sexpert'), // 9  expert APIs
   ];
 
   var progressBar = document.getElementById('tut-progress');
@@ -851,41 +1028,36 @@
   var dotsEl      = document.getElementById('tut-dots');
   var dots        = dotsEl.querySelectorAll('.tut-dot');
 
-  // progress = 0% at s0, then steps for s1-s6, hidden at s7
   function updateUI(idx) {
-    // skip & dots: only on steps 1-6
-    skipBtn.style.display  = (idx >= 1 && idx <= 6) ? '' : 'none';
-    dotsEl.style.display   = (idx >= 1 && idx <= 6) ? '' : 'none';
-    // progress bar: steps 1-6
-    if (idx >= 1 && idx <= 6) {
-      progressBar.style.width = ((idx / 6) * 100) + '%';
-    } else if (idx === 7) {
+    var inNewbie = (idx >= 1 && idx <= 7);
+    skipBtn.style.display = inNewbie ? '' : 'none';
+    dotsEl.style.display  = inNewbie ? '' : 'none';
+    if (inNewbie) {
+      progressBar.style.width = ((idx / 7) * 100) + '%';
+    } else if (idx === IDX_START) {
       progressBar.style.width = '100%';
     } else {
       progressBar.style.width = '0%';
     }
-    // dots
     dots.forEach(function(d) {
       var i = parseInt(d.getAttribute('data-i'));
       d.classList.toggle('tut-dot-active', i === idx - 1);
     });
   }
 
-  function goTo(idx, fromClick) {
+  function goTo(idx) {
     var old = allScreens[currentScreen];
     var next = allScreens[idx];
     if (!next) return;
-
     old.classList.add('tut-exit');
     old.classList.remove('tut-active');
-
     setTimeout(function() {
       old.classList.remove('tut-exit');
       currentScreen = idx;
       next.classList.add('tut-active');
       updateUI(idx);
       if (idx === 1) startScreen1();
-      if (idx === 7) startScreen7();
+      if (idx === IDX_START) startScreen7();
     }, 260);
   }
 
@@ -895,14 +1067,78 @@
 
   // SCREEN 0
   document.getElementById('tut-expert-btn').addEventListener('click', function(e) {
-    try { localStorage.setItem('arcade_intro', 'expert'); } catch(ex) {}
-    window.location.href = '/arcade/editor/';
+    var r = this.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + r.height / 2, 16);
+    goTo(IDX_EXPERT);
   });
 
   document.getElementById('tut-newbie-btn').addEventListener('click', function(e) {
     var r = this.getBoundingClientRect();
     burst(r.left + r.width / 2, r.top + r.height / 2, 20);
     goTo(1);
+  });
+
+  // EXPERT SCREEN
+  function playWinSoundFn() {
+    try {
+      var actx = new (window.AudioContext || window.webkitAudioContext)();
+      [220, 330, 440, 660].forEach(function(freq, i) {
+        var osc = actx.createOscillator(), gain = actx.createGain();
+        osc.connect(gain); gain.connect(actx.destination);
+        osc.frequency.value = freq; osc.type = 'sine';
+        gain.gain.setValueAtTime(0.12, actx.currentTime + i * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + i * 0.1 + 0.15);
+        osc.start(actx.currentTime + i * 0.1);
+        osc.stop(actx.currentTime + i * 0.1 + 0.2);
+      });
+    } catch(e) {}
+  }
+
+  var eapiColors = {
+    red: '#f7768e', green: '#9ece6a', yellow: '#e0af68',
+    blue: '#7aa2f7', cyan: '#73daca', purple: '#bb9af7'
+  };
+
+  document.querySelectorAll('.tut-api-row').forEach(function(row) {
+    row.addEventListener('click', function() {
+      var api = this.getAttribute('data-eapi');
+      this.classList.add('tut-api-tried');
+      var outEl;
+      if (api === 'io') {
+        outEl = document.getElementById('eapi-io-out');
+      } else if (api === 'sleep') {
+        outEl = document.getElementById('eapi-sleep-out');
+        outEl.textContent = '3...';
+        outEl.classList.add('show');
+        setTimeout(function() { outEl.textContent = '3... 2...'; }, 400);
+        setTimeout(function() { outEl.textContent = '3... 2... 1...'; }, 800);
+        setTimeout(function() { outEl.textContent = '3... 2... 1... GO!'; }, 1200);
+        return;
+      } else if (api === 'colored') {
+        outEl = document.getElementById('eapi-colored-out');
+        var accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+        var pairs = [
+          ['error!', eapiColors.red],
+          ['success', eapiColors.green],
+          ['warning', eapiColors.yellow],
+          ['info', eapiColors.blue],
+        ];
+        outEl.innerHTML = pairs.map(function(p) {
+          return '<span style="color:' + p[1] + '">' + p[0] + '</span>';
+        }).join('  ');
+      } else if (api === 'sound') {
+        outEl = document.getElementById('eapi-sound-out');
+        playWinSoundFn();
+      } else if (api === 'net') {
+        outEl = document.getElementById('eapi-net-out');
+        outEl.innerHTML = '1. ekansh  <span style="color:var(--accent)">99</span>\n2. guest   <span style="color:var(--accent)">42</span>';
+      }
+      if (outEl) outEl.classList.add('show');
+    });
+  });
+
+  document.getElementById('tut-expert-next').addEventListener('click', function() {
+    goTo(IDX_START);
   });
 
   // SCREEN 1: typewriter + game preview
@@ -1211,10 +1447,58 @@
   });
 
   document.getElementById('tut-s5-next').addEventListener('click', function() {
-    if (!this.disabled) goTo(6);
+    if (!this.disabled) goTo(6); // go to networking
   });
 
-  // SCREEN 6: edit code
+  // SCREEN 6: networking
+  var lbData = [];
+  var lbNames = ['ekansh', 'alex', 'sam', 'riley', 'jordan'];
+  var lbScores = [99, 84, 71, 65, 52];
+
+  // tabs
+  document.querySelectorAll('.tut-net-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var target = this.getAttribute('data-tab');
+      document.querySelectorAll('.tut-net-tab').forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      document.getElementById('tut-net-panel-lb').classList.toggle('hidden', target !== 'lb');
+      document.getElementById('tut-net-panel-kv').classList.toggle('hidden', target !== 'kv');
+    });
+  });
+
+  function renderLb() {
+    var list = document.getElementById('tut-lb-list');
+    if (!lbData.length) {
+      list.innerHTML = '<div class="tut-lb-empty">no scores yet - add one below</div>';
+      return;
+    }
+    var sorted = lbData.slice().sort(function(a, b) { return b.score - a.score; }).slice(0, 5);
+    list.innerHTML = '';
+    sorted.forEach(function(entry, i) {
+      var row = document.createElement('div');
+      row.className = 'tut-lb-row';
+      row.innerHTML = '<span class="tut-lb-rank">' + (i + 1) + '.</span>'
+        + '<span class="tut-lb-name">' + entry.name + '</span>'
+        + '<span class="tut-lb-score">' + entry.score + '</span>';
+      list.appendChild(row);
+      setTimeout(function(r) { r.classList.add('show'); }, 30 + i * 60, row);
+    });
+  }
+
+  document.getElementById('tut-lb-add').addEventListener('click', function() {
+    var nameEl = document.getElementById('tut-lb-name');
+    var name = nameEl.value.trim() || ('player' + (lbData.length + 1));
+    var score = Math.floor(Math.random() * 80) + 20;
+    lbData.push({ name: name, score: score });
+    nameEl.value = '';
+    renderLb();
+    var r = this.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + r.height / 2, 8);
+  });
+
+  document.getElementById('tut-snet-next').addEventListener('click', function() { goTo(7); });
+
+  // SCREEN 7: edit code
   document.getElementById('tut-editcode-copy-demo').addEventListener('click', function() {
     var btn = this;
     var code = document.getElementById('tut-editcode-demo').textContent;
@@ -1226,13 +1510,13 @@
     burst(r.left + r.width / 2, r.top + r.height / 2, 10);
   });
 
-  document.getElementById('tut-s6-next').addEventListener('click', function() { goTo(7); });
+  document.getElementById('tut-s6-next').addEventListener('click', function() { goTo(IDX_START); });
 
   // skip button
   skipBtn.addEventListener('click', function(e) {
     var r = this.getBoundingClientRect();
     burst(r.left + r.width / 2, r.top + r.height / 2, 8);
-    goTo(7);
+    goTo(IDX_START);
   });
 
   // SCREEN 7: starter cards + animated previews

@@ -982,9 +982,10 @@ function toggleTheme() {
 // HIDDEN TERMINAL — press ':' or click [:] to open
 // ================================================================
 (function () {
-  var overlay = document.getElementById('term-overlay');
-  var output  = document.getElementById('term-output');
-  var inp     = document.getElementById('term-input');
+  var overlay  = document.getElementById('term-overlay');
+  var output   = document.getElementById('term-output');
+  var inp      = document.getElementById('term-input');
+  var inpRow   = document.getElementById('term-input-row');
   if (!overlay || !output || !inp) return;
 
   var hist = [], histIdx = -1, isOpen = false;
@@ -1907,6 +1908,7 @@ function toggleTheme() {
     function exitGame() {
       flushIoBuf();
       _gameMode = false; _gameResume = null;
+      if (inpRow) inpRow.style.display = '';
     }
 
     function step(inputStr) {
@@ -1988,28 +1990,34 @@ function toggleTheme() {
 
         output.appendChild(inputRow);
         output.scrollTop = output.scrollHeight;
+
+        // hide the bottom ~$ bar so there's only one place to type
+        if (inpRow) inpRow.style.display = 'none';
         inlineInp.focus();
+
+        function submitInline(val) {
+          if (inpRow) inpRow.style.display = '';
+          inlineInp.remove();
+          var typedEl = document.createElement('pre');
+          typedEl.className = 'term-line-pre';
+          typedEl.textContent = val;
+          inputRow.appendChild(typedEl);
+          inp.focus();
+          _gameResume = null;
+          if (val.trim() === 'quit' || val.trim() === 'exit' || val.trim() === 'q') {
+            _gameMode = false;
+            line('game exited.', 'term-line-ok');
+          } else {
+            step(val);
+          }
+        }
 
         inlineInp.addEventListener('keydown', function(e) {
           if (e.key === 'Enter') {
             e.preventDefault();
-            var val = inlineInp.value;
-            // freeze inline input, show typed text inline
-            inlineInp.remove();
-            var typedEl = document.createElement('pre');
-            typedEl.className = 'term-line-pre';
-            typedEl.textContent = val;
-            inputRow.appendChild(typedEl);
-            // restore normal input focus, resume game
-            inp.focus();
-            _gameResume = null;
-            if (val.trim() === 'quit' || val.trim() === 'exit' || val.trim() === 'q') {
-              _gameMode = false;
-              line('game exited.', 'term-line-ok');
-            } else {
-              step(val);
-            }
+            submitInline(inlineInp.value);
           } else if (e.key === 'Escape') {
+            if (inpRow) inpRow.style.display = '';
             _gameMode = false; _gameResume = null;
             inlineInp.remove();
             inp.focus();
