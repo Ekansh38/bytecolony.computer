@@ -499,16 +499,23 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: 18px 0;
+  padding: 18px 0 18px 10px;
+  margin-left: -10px;
   border-bottom: 1px solid var(--border);
   text-decoration: none !important;
   color: var(--fg);
-  transition: opacity 0.15s;
+  transition: background 0.18s, box-shadow 0.18s, padding-left 0.18s;
   animation: arc-fadein 0.28s ease both;
+  position: relative;
 }
 .arc-card::after { display: none; }
-.arc-card:hover { opacity: 0.7; }
+.arc-card:hover {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent);
+  padding-left: 18px;
+}
 .arc-card:hover .arc-card-title { color: var(--accent); }
+.arc-card:hover .arc-card-num { color: var(--accent); opacity: 0.5; }
 .arc-card-num {
   font-size: 0.7rem;
   color: var(--muted);

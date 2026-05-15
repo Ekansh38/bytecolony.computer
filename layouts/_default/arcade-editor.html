@@ -1,6 +1,8 @@
 {{ define "main" }}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/dialog/dialog.min.css">
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/dialog/dialog.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/keymap/vim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/edit/matchbrackets.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/edit/closebrackets.min.js"></script>
@@ -9,20 +11,20 @@
 <style>
   body { max-width: min(1200px, 96vw) !important; }
 
-  /* ── custom Lua mode colors — exact match to source viewer ── */
-  .cm-keyword    { color: var(--code-kw)   !important; }                         /* if then else end while for do return break repeat until */
-  .cm-def        { color: var(--code-fn)   !important; }                         /* local function */
-  .cm-atom       { color: var(--code-num)  !important; }                         /* true false nil */
-  .cm-operator   { color: var(--code-op)   !important; }                         /* and or not + - == .. etc */
-  .cm-string     { color: var(--code-str)  !important; }                         /* "..." */
-  .cm-number     { color: var(--code-num)  !important; }                         /* 42 3.14 */
-  .cm-comment    { color: var(--code-cmt)  !important; font-style: italic; }     /* -- comment */
-  .cm-builtin    { color: var(--code-type) !important; }                         /* print tonumber type pairs ipairs */
-  .cm-arcade     { color: var(--accent)    !important; }                         /* sleep clear colored color sound net */
-  .cm-std        { color: var(--code-attr) !important; }                         /* math string table io os */
-  .cm-callee     { color: var(--code-fn)   !important; }                         /* user-defined function calls */
+  /* ── Lua syntax colors (exact match to source viewer) ── */
+  .cm-keyword  { color: var(--code-kw)   !important; }
+  .cm-def      { color: var(--code-fn)   !important; }
+  .cm-atom     { color: var(--code-num)  !important; }
+  .cm-operator { color: var(--code-op)   !important; }
+  .cm-string   { color: var(--code-str)  !important; }
+  .cm-number   { color: var(--code-num)  !important; }
+  .cm-comment  { color: var(--code-cmt)  !important; font-style: italic; }
+  .cm-builtin  { color: var(--code-type) !important; }
+  .cm-arcade   { color: var(--accent)    !important; }
+  .cm-std      { color: var(--code-attr) !important; }
+  .cm-callee   { color: var(--code-fn)   !important; }
 
-  /* ── CodeMirror base overrides ── */
+  /* ── CodeMirror base ── */
   .CodeMirror {
     background: var(--code-bg) !important;
     color: var(--fg) !important;
@@ -47,18 +49,28 @@
   .CodeMirror-activeline-background { background: rgba(127,127,127,0.055) !important; }
   .CodeMirror-matchingbracket { outline: 1px solid var(--accent) !important; color: inherit !important; }
   .CodeMirror-nonmatchingbracket { color: var(--code-err) !important; }
-  /* vim command line */
+
+  /* vim dialog (inline, no browser prompt) */
   .CodeMirror-dialog {
-    background: var(--code-bg) !important; color: var(--fg) !important;
+    background: var(--code-bg) !important;
+    color: var(--fg) !important;
     border-top: 1px solid var(--border) !important;
-    font-family: inherit !important; font-size: 0.82rem; padding: 4px 10px;
+    font-family: inherit !important;
+    font-size: 0.82rem;
+    padding: 5px 12px;
+    z-index: 20;
   }
   .CodeMirror-dialog input {
-    background: transparent !important; color: var(--fg) !important;
-    font-family: inherit !important; border: none !important; outline: none !important;
+    background: transparent !important;
+    color: var(--fg) !important;
+    font-family: inherit !important;
+    border: none !important;
+    border-bottom: 1px solid var(--accent) !important;
+    outline: none !important;
+    min-width: 180px;
   }
 
-  /* ── layout ── */
+  /* ── outer wrapper ── */
   .ae-wrap {
     display: flex; flex-direction: column;
     border: 1px solid var(--border);
@@ -66,249 +78,236 @@
     min-height: 520px;
     margin-top: 8px;
   }
+
+  /* ── top bar ── */
   .ae-topbar {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 14px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 14px;
+    height: 40px;
     border-bottom: 1px solid var(--border);
     background: var(--code-bg);
     flex-shrink: 0;
   }
-  .ae-back { color: var(--muted); font-size: 0.82rem; text-decoration: none; white-space: nowrap; }
+  .ae-back { color: var(--muted); font-size: 0.8rem; text-decoration: none; white-space: nowrap; }
   .ae-back:hover { color: var(--fg); }
-  .ae-mode { font-size: 0.82rem; color: var(--muted); }
-  .ae-mode strong { color: var(--accent); font-weight: 400; }
+  .ae-topbar-divider { width: 1px; height: 14px; background: var(--border); }
+  .ae-mode { font-size: 0.8rem; color: var(--muted); }
+  .ae-mode strong { color: var(--fg); font-weight: 600; }
   .ae-topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-  .ae-charcount { font-size: 0.75rem; color: var(--muted); opacity: 0.6; }
+  .ae-save-status {
+    font-size: 0.7rem; color: var(--accent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .ae-save-status.ae-save-visible { opacity: 1; }
+  .ae-charcount { font-size: 0.7rem; color: var(--muted); opacity: 0.55; }
   .ae-charcount.ae-char-warn { color: var(--code-num); opacity: 1; }
   .ae-charcount.ae-char-over { color: var(--code-err); opacity: 1; }
-  .ae-vim-btn {
-    font-family: inherit; font-size: 0.72rem;
+  .ae-topbar-btn {
+    font-family: inherit; font-size: 0.7rem;
     background: transparent; border: 1px solid var(--border);
-    color: var(--muted); padding: 2px 8px; cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
+    color: var(--muted); padding: 3px 9px; cursor: pointer;
+    transition: border-color 0.15s, color 0.15s; white-space: nowrap;
   }
-  .ae-vim-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .ae-vim-btn.ae-vim-on { border-color: var(--accent); color: var(--accent); }
+  .ae-topbar-btn:hover { border-color: var(--fg); color: var(--fg); }
+  .ae-topbar-btn.ae-btn-on { border-color: var(--accent); color: var(--accent); }
 
-  /* form area wraps metabars + editor + actions */
+  /* ── form area ── */
   #ae-form-area { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 
-  /* meta bars */
+  /* ── meta bar (cleaner field layout) ── */
   .ae-metabar {
-    display: flex; align-items: center; gap: 6px;
-    padding: 7px 14px;
     border-bottom: 1px solid var(--border);
     background: var(--code-bg);
-    flex-shrink: 0; flex-wrap: wrap;
+    flex-shrink: 0;
   }
-  .ae-metabar input {
+  .ae-meta-row {
+    display: flex; align-items: stretch;
+  }
+  .ae-meta-field {
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--border);
+    padding: 7px 14px 8px;
+    flex: 1; min-width: 0;
+    transition: background 0.15s;
+  }
+  .ae-meta-field:last-child { border-right: none; }
+  .ae-meta-field:focus-within {
+    background: color-mix(in srgb, var(--accent) 3%, transparent);
+  }
+  .ae-meta-lbl {
+    font-size: 0.6rem; color: var(--muted);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 4px; opacity: 0.6;
+    transition: color 0.15s, opacity 0.15s;
+  }
+  .ae-meta-lbl-opt { font-size: 0.58rem; opacity: 0.55; text-transform: none; letter-spacing: 0; }
+  .ae-meta-field:focus-within .ae-meta-lbl { color: var(--accent); opacity: 1; }
+  .ae-meta-field input {
     background: transparent; border: none;
-    border-bottom: 1px solid var(--border);
-    color: var(--fg); font-family: inherit; font-size: 0.85rem;
-    padding: 3px 6px; outline: none; min-width: 0;
+    color: var(--fg); font-family: inherit; font-size: 0.88rem;
+    padding: 0; outline: none; width: 100%;
   }
-  .ae-metabar input:focus { border-bottom-color: var(--accent); }
-  .ae-metabar input::placeholder { color: var(--muted); opacity: 0.6; }
-  .ae-inp-title    { flex: 2; min-width: 140px; }
-  .ae-inp-author   { flex: 1; min-width: 100px; }
-  .ae-inp-desc     { flex: 3; min-width: 160px; }
-  .ae-inp-editcode { flex: 1; min-width: 140px; }
-  .ae-inp-upd      { flex: 2; min-width: 120px; }
-  .ae-slug-preview { font-size: 0.72rem; color: var(--accent); opacity: 0.7; white-space: nowrap; }
+  .ae-meta-field input::placeholder { color: var(--muted); opacity: 0.4; }
+  .ae-field-title  { flex: 2.5; }
+  .ae-field-author { flex: 1.5; }
+  .ae-field-desc   { flex: 3; }
+  .ae-field-code   { flex: 1.5; }
+  .ae-slug-hint {
+    padding: 2px 14px 4px;
+    font-size: 0.65rem; color: var(--accent);
+    opacity: 0.6; border-top: 1px dashed var(--border);
+  }
 
-  /* editor */
+  /* ── main body: editor + docs ── */
+  .ae-body { display: flex; flex: 1; min-height: 0; overflow: hidden; }
   .ae-editor-wrap { flex: 1; min-height: 0; overflow: hidden; background: var(--code-bg); }
   #ae-editor { height: 100%; }
   #ae-editor .CodeMirror { height: 100%; }
 
-  /* ── tutorial overlay ── */
-  #ae-tutorial {
-    flex: 1; display: flex; flex-direction: column;
-    background: var(--code-bg); overflow: hidden;
+  /* ── docs panel ── */
+  .ae-docs-panel {
+    width: 290px; flex-shrink: 0;
+    border-left: 1px solid var(--border);
+    background: var(--code-bg);
+    display: flex; flex-direction: column;
+    overflow: hidden;
   }
-  .ae-tut-slide {
-    display: none; flex: 1; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 32px 28px; overflow-y: auto;
+  .ae-docs-tabs {
+    display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0;
   }
-  .ae-tut-slide.ae-tut-active { display: flex; }
+  .ae-docs-tab {
+    flex: 1; padding: 7px 0; font-size: 0.72rem;
+    font-family: inherit; cursor: pointer;
+    background: transparent; border: none; border-right: 1px solid var(--border);
+    color: var(--muted); letter-spacing: 0.04em;
+    transition: color 0.15s, background 0.15s;
+  }
+  .ae-docs-tab:last-child { border-right: none; }
+  .ae-docs-tab:hover { color: var(--fg); }
+  .ae-docs-tab.ae-tab-on {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+  }
+  .ae-docs-body {
+    flex: 1; overflow-y: auto; padding: 10px;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  }
 
-  /* step 0: experience check */
-  .ae-tut-question {
-    font-size: 1.1rem; color: var(--fg); margin-bottom: 32px;
-    text-align: center; font-weight: 600;
+  /* snippet card */
+  .ae-snip {
+    border: 1px solid var(--border);
+    margin-bottom: 8px; overflow: hidden;
   }
-  .ae-tut-question small {
-    display: block; font-size: 0.8rem; color: var(--muted);
-    font-weight: 400; margin-top: 6px;
-  }
-  .ae-tut-choice-grid {
-    display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
-    max-width: 560px; width: 100%;
-  }
-  .ae-tut-choice {
-    flex: 1; min-width: 200px; max-width: 250px;
-    border: 1px solid var(--border); padding: 20px 18px;
-    cursor: pointer; background: transparent;
-    font-family: inherit; text-align: left;
-    transition: border-color 0.15s, background 0.15s;
-    color: var(--fg);
-  }
-  .ae-tut-choice:hover { border-color: var(--accent); background: rgba(122,162,247,0.04); }
-  .ae-tut-choice-title { display: block; font-size: 0.92rem; font-weight: 600; margin-bottom: 6px; color: var(--accent); }
-  .ae-tut-choice-desc  { display: block; font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
-
-  /* tutorial step layout */
-  .ae-tut-body { max-width: 560px; width: 100%; }
-  .ae-tut-dots {
-    display: flex; gap: 6px; justify-content: center; margin-bottom: 24px;
-  }
-  .ae-tut-dot {
-    width: 6px; height: 6px; border-radius: 0;
-    background: var(--border); transition: background 0.2s;
-  }
-  .ae-tut-dot.ae-tut-dot-on { background: var(--accent); }
-  .ae-tut-label {
-    font-size: 0.68rem; color: var(--accent); letter-spacing: 0.1em;
-    text-transform: uppercase; margin-bottom: 8px;
-  }
-  .ae-tut-title {
-    font-size: 1.1rem; font-weight: 700; color: var(--fg);
-    margin-bottom: 12px;
-  }
-  .ae-tut-text {
-    font-size: 0.85rem; color: var(--muted); line-height: 1.7;
-    margin-bottom: 18px;
-  }
-  .ae-tut-text strong { color: var(--fg); font-weight: 600; }
-  .ae-tut-code {
-    background: var(--bg); border: 1px solid var(--border);
-    padding: 12px 16px; font-size: 0.82rem; line-height: 1.7;
-    margin-bottom: 14px; overflow-x: auto; white-space: pre;
-    tab-size: 2;
-  }
-  .ae-tut-note {
-    font-size: 0.78rem; color: var(--muted); line-height: 1.6;
-    border-left: 2px solid var(--border); padding-left: 10px;
-    margin-bottom: 18px;
-  }
-  .ae-tut-note strong { color: var(--accent); }
-  .ae-tut-nav {
+  .ae-snip-head {
     display: flex; align-items: center; justify-content: space-between;
-    margin-top: 10px;
+    padding: 6px 10px;
+    background: color-mix(in srgb, var(--fg) 3%, transparent);
+    border-bottom: 1px solid var(--border);
   }
-  .ae-tut-nav-btn {
-    font-family: inherit; font-size: 0.82rem; cursor: pointer;
+  .ae-snip-info { min-width: 0; }
+  .ae-snip-name { font-size: 0.72rem; font-weight: 700; color: var(--accent); display: block; }
+  .ae-snip-note { font-size: 0.65rem; color: var(--muted); }
+  .ae-snip-btn {
+    font-family: inherit; font-size: 0.65rem;
     background: transparent; border: 1px solid var(--border);
-    color: var(--muted); padding: 5px 14px;
-    transition: border-color 0.15s, color 0.15s;
+    color: var(--muted); padding: 2px 7px; cursor: pointer;
+    transition: border-color 0.15s, color 0.15s; flex-shrink: 0; margin-left: 8px;
   }
-  .ae-tut-nav-btn:hover { border-color: var(--fg); color: var(--fg); }
-  .ae-tut-nav-btn.ae-tut-next {
-    border-color: var(--accent); color: var(--accent);
-    font-weight: 600;
+  .ae-snip-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .ae-snip-preview {
+    padding: 6px 10px; font-size: 0.68rem;
+    line-height: 1.55; color: var(--muted);
+    white-space: pre; overflow-x: hidden;
+    max-height: 72px; overflow-y: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
+    mask-image: linear-gradient(to bottom, black 60%, transparent);
   }
-  .ae-tut-nav-btn.ae-tut-next:hover { background: var(--accent); color: var(--bg); }
-  .ae-tut-skip {
-    font-size: 0.75rem; color: var(--muted); cursor: pointer;
-    background: none; border: none; font-family: inherit;
-    text-decoration: underline; padding: 0; opacity: 0.6;
-  }
-  .ae-tut-skip:hover { opacity: 1; color: var(--fg); }
 
-  /* starter picker grid */
-  .ae-tut-pick-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: 10px; width: 100%;
+  /* reference tab */
+  .ae-ref {
+    white-space: pre; font-size: 0.68rem;
+    line-height: 1.65; color: var(--muted);
+    overflow-x: auto;
   }
-  .ae-tut-pick-card {
-    border: 1px solid var(--border); padding: 14px 16px;
-    cursor: pointer; background: transparent; font-family: inherit;
-    text-align: left; color: var(--fg);
-    transition: border-color 0.15s, background 0.15s;
+  .ae-ref-section {
+    color: var(--accent); font-weight: 700;
+    margin-top: 12px; margin-bottom: 2px;
+    font-size: 0.65rem; letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
-  .ae-tut-pick-card:hover { border-color: var(--accent); background: rgba(122,162,247,0.04); }
-  .ae-tut-pick-title { display: block; font-size: 0.88rem; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
-  .ae-tut-pick-desc  { display: block; font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+  .ae-ref-section:first-child { margin-top: 0; }
 
-  /* actions bar */
+  /* ── action bar ── */
   .ae-actions {
     display: flex; align-items: center; gap: 8px;
-    padding: 8px 14px;
+    padding: 0 14px; height: 40px;
     border-top: 1px solid var(--border);
-    background: var(--code-bg);
-    flex-shrink: 0;
+    background: var(--code-bg); flex-shrink: 0;
   }
   .ae-run-btn {
     background: transparent; border: 1px solid var(--border);
-    color: var(--fg); font-family: inherit; font-size: 0.82rem;
-    padding: 5px 14px; cursor: pointer;
+    color: var(--muted); font-family: inherit; font-size: 0.8rem;
+    padding: 4px 12px; cursor: pointer;
     transition: border-color 0.15s, color 0.15s;
   }
   .ae-run-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .ae-status { font-size: 0.82rem; }
+  .ae-status { font-size: 0.8rem; }
   .ae-status-err { color: var(--code-err); }
   .ae-status-ok  { color: var(--accent); }
   .ae-spacer { flex: 1; }
   .ae-primary-btn {
     background: var(--accent); border: none;
-    color: var(--bg); font-family: inherit; font-size: 0.82rem; font-weight: 700;
+    color: var(--bg); font-family: inherit; font-size: 0.8rem; font-weight: 700;
     padding: 5px 16px; cursor: pointer; transition: opacity 0.15s;
   }
   .ae-primary-btn:hover { opacity: 0.85; }
   .ae-primary-btn:disabled { opacity: 0.4; cursor: default; }
 
-  /* ── success panel (replaces form area after submit) ── */
+  /* ── success panel ── */
   #ae-success-panel {
     flex: 1; display: none;
     flex-direction: column; align-items: center; justify-content: center;
-    background: var(--code-bg);
-    padding: 40px 20px;
-    text-align: center;
+    background: var(--code-bg); padding: 40px 20px; text-align: center;
   }
-  .ae-success-check {
-    font-size: 2.4rem; color: var(--accent);
-    margin-bottom: 10px;
-  }
-  .ae-success-title {
-    font-size: 1.1rem; color: var(--fg);
-    font-weight: 700; margin-bottom: 28px;
-  }
+  .ae-success-check { font-size: 2.4rem; color: var(--accent); margin-bottom: 10px; }
+  .ae-success-title { font-size: 1.1rem; color: var(--fg); font-weight: 700; margin-bottom: 6px; }
+  .ae-success-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 28px; line-height: 1.6; max-width: 360px; }
   .ae-success-lbl {
-    font-size: 0.78rem; color: var(--muted); letter-spacing: 0.06em;
-    text-transform: uppercase; margin-bottom: 8px;
+    font-size: 0.7rem; color: var(--muted);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px;
   }
   .ae-success-code-box {
-    display: flex; align-items: center; gap: 10px;
-    border: 1px solid var(--accent);
-    padding: 12px 20px;
-    margin-bottom: 10px;
-    background: var(--bg);
+    display: flex; align-items: center; gap: 12px;
+    border: 1px solid var(--accent); padding: 12px 20px;
+    margin-bottom: 10px; background: var(--bg);
   }
-  .ae-success-code {
-    font-size: 1.5rem; color: var(--accent);
-    letter-spacing: 0.12em; font-weight: 700;
-  }
+  .ae-success-code { font-size: 1.5rem; color: var(--accent); letter-spacing: 0.14em; font-weight: 700; }
   .ae-success-warn {
     font-size: 0.78rem; color: var(--muted);
-    max-width: 320px; margin: 0 auto 28px;
-    line-height: 1.55;
+    max-width: 360px; margin: 0 auto 28px; line-height: 1.6;
   }
   .ae-success-warn strong { color: var(--fg); }
-  .ae-success-btns {
-    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-  }
+  .ae-success-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
   .ae-success-view {
     color: var(--accent); text-decoration: none; font-size: 0.85rem;
-    border: 1px solid var(--accent); padding: 5px 14px;
+    border: 1px solid var(--accent); padding: 5px 16px;
+    transition: background 0.15s, color 0.15s;
   }
   .ae-success-view:hover { background: var(--accent); color: var(--bg); text-decoration: none; }
   .ae-success-another {
     background: transparent; border: 1px solid var(--border);
     color: var(--muted); font-family: inherit; font-size: 0.85rem;
-    padding: 5px 14px; cursor: pointer; transition: border-color 0.15s, color 0.15s;
+    padding: 5px 16px; cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
   }
   .ae-success-another:hover { border-color: var(--fg); color: var(--fg); }
+
+  @media (max-width: 640px) {
+    .ae-docs-panel { display: none !important; }
+    .ae-meta-row { flex-wrap: wrap; }
+    .ae-meta-field { border-right: none; border-bottom: 1px solid var(--border); }
+    .ae-meta-field:last-child { border-bottom: none; }
+  }
 </style>
 
 <div class="arc-bg-dots" aria-hidden="true"></div>
@@ -318,9 +317,12 @@
   <!-- top bar -->
   <div class="ae-topbar">
     <a href="/arcade" class="ae-back">← arcade</a>
+    <div class="ae-topbar-divider"></div>
     <span class="ae-mode" id="ae-mode">new game</span>
     <div class="ae-topbar-right">
-      <button class="ae-vim-btn" id="ae-vim-btn" title="toggle vim keybindings">vim: off</button>
+      <span class="ae-save-status" id="ae-save-status">saved</span>
+      <button class="ae-topbar-btn" id="ae-docs-btn" title="toggle snippets and reference">docs</button>
+      <button class="ae-topbar-btn" id="ae-vim-btn" title="toggle vim keybindings">vim: off</button>
       <span class="ae-charcount" id="ae-charcount">0 / 25000</span>
     </div>
   </div>
@@ -330,51 +332,82 @@
 
     <!-- new / remix meta bar -->
     <div class="ae-metabar" id="ae-new-bar">
-      <input id="ae-title"  class="ae-inp-title"  type="text" placeholder="title" maxlength="50" autocomplete="off" spellcheck="false">
-      <input id="ae-author" class="ae-inp-author" type="text" placeholder="author" maxlength="50" autocomplete="off" spellcheck="false">
-      <input id="ae-desc"   class="ae-inp-desc"   type="text" placeholder="description (optional)" maxlength="200" autocomplete="off" spellcheck="false">
-      <span id="ae-slug" class="ae-slug-preview" style="display:none"></span>
+      <div class="ae-meta-row">
+        <div class="ae-meta-field ae-field-title">
+          <span class="ae-meta-lbl">title</span>
+          <input id="ae-title" type="text" placeholder="my awesome game" maxlength="50" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="ae-meta-field ae-field-author">
+          <span class="ae-meta-lbl">author</span>
+          <input id="ae-author" type="text" placeholder="your name" maxlength="50" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="ae-meta-field ae-field-desc">
+          <span class="ae-meta-lbl">description <span class="ae-meta-lbl-opt">(optional)</span></span>
+          <input id="ae-desc" type="text" placeholder="what does your game do?" maxlength="200" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+      <div class="ae-slug-hint" id="ae-slug" style="display:none"></div>
     </div>
 
     <!-- edit meta bar -->
     <div class="ae-metabar" id="ae-edit-bar" style="display:none">
-      <input id="ae-upd-title" class="ae-inp-upd"      type="text" placeholder="new title (optional)" maxlength="50" autocomplete="off" spellcheck="false">
-      <input id="ae-upd-desc"  class="ae-inp-desc"     type="text" placeholder="new description (optional)" maxlength="200" autocomplete="off" spellcheck="false">
-      <input id="ae-editcode"  class="ae-inp-editcode" type="text" placeholder="edit code (xxxxx-xxxxx)" autocomplete="off" spellcheck="false">
+      <div class="ae-meta-row">
+        <div class="ae-meta-field ae-field-title">
+          <span class="ae-meta-lbl">new title <span class="ae-meta-lbl-opt">(leave blank to keep)</span></span>
+          <input id="ae-upd-title" type="text" placeholder="leave blank to keep current" maxlength="50" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="ae-meta-field ae-field-desc">
+          <span class="ae-meta-lbl">new description <span class="ae-meta-lbl-opt">(leave blank to keep)</span></span>
+          <input id="ae-upd-desc" type="text" placeholder="leave blank to keep current" maxlength="200" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="ae-meta-field ae-field-code">
+          <span class="ae-meta-lbl">edit code</span>
+          <input id="ae-editcode" type="text" placeholder="xxxxx-xxxxx" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
     </div>
 
-    <!-- code editor -->
-    <div class="ae-editor-wrap">
-      <div id="ae-editor"></div>
+    <!-- editor + docs panel -->
+    <div class="ae-body">
+      <div class="ae-editor-wrap">
+        <div id="ae-editor"></div>
+      </div>
+      <div class="ae-docs-panel" id="ae-docs-panel" style="display:none">
+        <div class="ae-docs-tabs">
+          <button class="ae-docs-tab ae-tab-on" data-tab="snippets">snippets</button>
+          <button class="ae-docs-tab" data-tab="reference">reference</button>
+        </div>
+        <div class="ae-docs-body" id="ae-docs-body"></div>
+      </div>
     </div>
 
     <!-- action bar -->
     <div class="ae-actions">
-      <button class="ae-run-btn" id="ae-run">▶ run</button>
+      <button class="ae-run-btn" id="ae-run">&#9654; run</button>
       <span class="ae-status" id="ae-status"></span>
       <div class="ae-spacer"></div>
-      <button class="ae-primary-btn" id="ae-submit">submit game →</button>
-      <button class="ae-primary-btn" id="ae-update" style="display:none">publish update →</button>
+      <button class="ae-primary-btn" id="ae-submit">submit game</button>
+      <button class="ae-primary-btn" id="ae-update" style="display:none">publish update</button>
     </div>
 
   </div><!-- /form area -->
 
-  <!-- success panel (shown after submit) -->
+  <!-- success panel -->
   <div id="ae-success-panel">
-    <div class="ae-success-check">✓</div>
+    <div class="ae-success-check">&#10003;</div>
     <div class="ae-success-title">game submitted!</div>
+    <div class="ae-success-sub">it's live on the arcade. here's your edit code - this is how you edit or delete your game later. no accounts, no passwords, just this.</div>
     <div class="ae-success-lbl">your edit code</div>
     <div class="ae-success-code-box">
       <code class="ae-success-code" id="ae-success-code"></code>
       <button class="ag-copy-btn" id="ae-success-copy">copy</button>
     </div>
     <p class="ae-success-warn">
-      <strong>save this.</strong> you'll need it to edit or delete your game later.
-      it won't be shown again.
+      <strong>save this.</strong> it won't be shown again. you'll need it to edit or delete your game. paste it somewhere safe.
     </p>
     <div class="ae-success-btns">
-      <a class="ae-success-view" id="ae-success-link" href="#">view game →</a>
-      <button class="ae-success-another" id="ae-success-another">submit another</button>
+      <a class="ae-success-view" id="ae-success-link" href="#">view game</a>
+      <button class="ae-success-another" id="ae-success-another">write another</button>
     </div>
   </div>
 
@@ -382,7 +415,8 @@
 
 <script>
 (function() {
-  // ── custom Lua mode: exact match to source viewer tokenizer ──
+
+  // ── custom Lua mode (exact match to source viewer tokenizer) ──
   CodeMirror.defineMode('lua-arcade', function() {
     var KW_CTL = /^(if|then|else|elseif|end|while|do|for|in|return|break|repeat|until)$/;
     var KW_DEF = /^(local|function)$/;
@@ -391,33 +425,21 @@
     var FN_STD = /^(math|string|table|io|os|coroutine)$/;
     var FN_BLT = /^(print|tostring|tonumber|type|pairs|ipairs|pcall|xpcall|error|select|assert|next|rawget|rawset|setmetatable|getmetatable)$/;
     var FN_ARC = /^(sleep|clear|colored|color|sound|net)$/;
-
     return {
       startState: function() { return {}; },
       token: function(stream) {
         if (stream.eatSpace()) return null;
-
-        // comment
         if (stream.match('--')) { stream.skipToEnd(); return 'comment'; }
-
-        // string
         var ch = stream.peek();
         if (ch === '"' || ch === "'") {
-          stream.next();
-          var c;
+          stream.next(); var c;
           while ((c = stream.next()) != null) {
-            if (c === '\\') { stream.next(); }
-            else if (c === ch) { break; }
+            if (c === '\\') { stream.next(); } else if (c === ch) { break; }
           }
           return 'string';
         }
-
-        // hex number
         if (stream.match(/^0[xX][0-9a-fA-F]+/)) return 'number';
-        // decimal / float
         if (stream.match(/^\d+\.?\d*(?:[eE][+-]?\d+)?/) || stream.match(/^\.\d+(?:[eE][+-]?\d+)?/)) return 'number';
-
-        // identifiers & keywords
         if (stream.match(/^[a-zA-Z_]\w*/)) {
           var w = stream.current();
           var rest = stream.string.slice(stream.pos).replace(/^[ \t]*/, '');
@@ -432,28 +454,77 @@
           if (isCall) return 'callee';
           return null;
         }
-
-        // multi-char operators first
         if (stream.match(/^(~=|<=|>=|==|\.\.|\/\/)/)) return 'operator';
-        // single-char operators
         if (stream.match(/^[+\-*\/%^#&|~<>=]/)) return 'operator';
-
-        stream.next();
-        return null;
+        stream.next(); return null;
       },
     };
   });
   CodeMirror.defineMIME('text/x-lua-arcade', 'lua-arcade');
 
-  // ── define vim ex commands so :w :q :wq don't cause weirdness ──
-  if (CodeMirror.Vim) {
-    CodeMirror.Vim.defineEx('write',  'w',  function() { /* no-op */ });
-    CodeMirror.Vim.defineEx('quit',   'q',  function() { window.location.href = '/arcade'; });
-    CodeMirror.Vim.defineEx('wq',     'wq', function() { window.location.href = '/arcade'; });
-    CodeMirror.Vim.defineEx('x',      'x',  function() { window.location.href = '/arcade'; });
-    CodeMirror.Vim.defineEx('xit',    '',   function() { window.location.href = '/arcade'; });
+  // ── autosave draft (only for new-game mode) ──
+  var DRAFT_KEY = 'arcade_editor_draft_v2';
+  var params  = new URLSearchParams(window.location.search);
+  var editId  = params.get('edit');
+  var remixId = params.get('remix');
+
+  function saveDraft() {
+    if (editId || remixId) return;
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        code:   editor ? editor.getValue() : '',
+        title:  (document.getElementById('ae-title')  || {}).value || '',
+        author: (document.getElementById('ae-author') || {}).value || '',
+        desc:   (document.getElementById('ae-desc')   || {}).value || '',
+        t: Date.now()
+      }));
+    } catch(e) {}
   }
 
+  function loadDraft() {
+    try {
+      var d = JSON.parse(localStorage.getItem(DRAFT_KEY));
+      if (!d) return false;
+      var age = Date.now() - (d.t || 0);
+      if (age > 7 * 24 * 60 * 60 * 1000) return false; // expire after 7 days
+      if (d.code)   editor.setValue(d.code);
+      if (d.title)  { var ti = document.getElementById('ae-title');  if (ti)  ti.value  = d.title; }
+      if (d.author) { var au = document.getElementById('ae-author'); if (au)  au.value  = d.author; }
+      if (d.desc)   { var de = document.getElementById('ae-desc');   if (de)  de.value  = d.desc; }
+      return true;
+    } catch(e) {}
+    return false;
+  }
+
+  function clearDraft() {
+    try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
+  }
+
+  var saveTimer;
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveDraft, 600);
+  }
+
+  function showSaved() {
+    var el = document.getElementById('ae-save-status');
+    el.textContent = 'saved';
+    el.classList.add('ae-save-visible');
+    clearTimeout(el._hideTimer);
+    el._hideTimer = setTimeout(function() { el.classList.remove('ae-save-visible'); }, 1400);
+  }
+
+  // ── vim ex commands ──
+  if (CodeMirror.Vim) {
+    CodeMirror.Vim.defineEx('write', 'w', function() {
+      saveDraft(); showSaved();
+    });
+    CodeMirror.Vim.defineEx('quit',  'q',  function() { window.location.href = '/arcade'; });
+    CodeMirror.Vim.defineEx('wq',    'wq', function() { saveDraft(); window.location.href = '/arcade'; });
+    CodeMirror.Vim.defineEx('x',     'x',  function() { saveDraft(); window.location.href = '/arcade'; });
+  }
+
+  // ── create editor ──
   var editor = CodeMirror(document.getElementById('ae-editor'), {
     value: 'print("hello!")\n',
     mode: 'lua-arcade',
@@ -466,25 +537,33 @@
     tabSize: 2,
     indentWithTabs: false,
     extraKeys: {
-      Tab: function(cm) {
+      'Tab': function(cm) {
         if (cm.somethingSelected()) { cm.indentSelection('add'); }
         else { cm.replaceSelection('  ', 'end'); }
       },
       'Shift-Tab': function(cm) { cm.indentSelection('subtract'); },
+      'Cmd-S': function() { saveDraft(); showSaved(); },
+      'Ctrl-S': function() { saveDraft(); showSaved(); },
     },
   });
 
-  // stop all key events in editor from reaching site-level handlers (e.g. [:] opening terminal)
+  // prevent site-level handlers ([:] terminal) from capturing keystrokes in editor
   editor.getWrapperElement().addEventListener('keydown', function(e) { e.stopPropagation(); }, true);
 
-  editor.on('change', updateCharCount);
+  editor.on('change', function() { updateCharCount(); scheduleSave(); });
 
-  // prefill from snippet "open in editor"
+  // ── prefill: sessionStorage snippet → then draft → then default ──
+  var loaded = false;
   try {
     var prefill = sessionStorage.getItem('arcade_prefill_code');
-    if (prefill) { sessionStorage.removeItem('arcade_prefill_code'); editor.setValue(prefill); }
+    if (prefill) {
+      sessionStorage.removeItem('arcade_prefill_code');
+      editor.setValue(prefill);
+      loaded = true;
+    }
   } catch(e) {}
 
+  // helpers
   function getCode() { return editor.getValue(); }
   function setCode(v) { editor.setValue(v); }
 
@@ -509,21 +588,18 @@
     vimOn = !vimOn;
     editor.setOption('keyMap', vimOn ? 'vim' : 'default');
     this.textContent = 'vim: ' + (vimOn ? 'on' : 'off');
-    this.classList.toggle('ae-vim-on', vimOn);
+    this.classList.toggle('ae-btn-on', vimOn);
     editor.focus();
   });
 
-  // ── URL params → mode ──
-  var params    = new URLSearchParams(window.location.search);
-  var editId    = params.get('edit');
-  var remixId   = params.get('remix');
+  // ── mode setup from URL params ──
   var modeEl    = document.getElementById('ae-mode');
   var submitBtn = document.getElementById('ae-submit');
   var updateBtn = document.getElementById('ae-update');
 
   if (editId) {
     modeEl.innerHTML = 'loading&hellip;';
-    document.getElementById('ae-new-bar').style.display = 'none';
+    document.getElementById('ae-new-bar').style.display  = 'none';
     document.getElementById('ae-edit-bar').style.display = 'flex';
     submitBtn.style.display = 'none';
     updateBtn.style.display = 'inline-block';
@@ -533,9 +609,10 @@
       .then(function(game) {
         if (game.error) { modeEl.textContent = 'game not found'; return; }
         modeEl.innerHTML = 'editing &nbsp;<strong>' + game.title + '</strong>';
-        document.getElementById('ae-upd-title').placeholder = 'new title (currently: ' + game.title + ')';
-        document.getElementById('ae-upd-desc').placeholder  = 'new description (currently: ' + (game.desc || 'none') + ')';
+        document.getElementById('ae-upd-title').placeholder = 'leave blank to keep: ' + game.title;
+        document.getElementById('ae-upd-desc').placeholder  = 'leave blank to keep: ' + (game.desc || '(none)');
         setCode(game.code || '');
+        updateCharCount();
       })
       .catch(function() { modeEl.textContent = 'error loading game'; });
 
@@ -544,22 +621,127 @@
     document.getElementById('ae-title').value = 'remix-' + remixId.slice(0, 20);
     fetch('/api/games?id=' + encodeURIComponent(remixId))
       .then(function(r) { return r.json(); })
-      .then(function(game) { if (!game.error) setCode(game.code || ''); });
+      .then(function(game) {
+        if (!game.error) { setCode(game.code || ''); updateCharCount(); }
+      });
 
   } else {
     modeEl.textContent = 'new game';
+    // load saved draft if no prefill
+    if (!loaded) { loadDraft(); }
+    // wire autosave on text inputs
+    ['ae-title', 'ae-author', 'ae-desc'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', scheduleSave);
+    });
   }
+
+  updateCharCount();
 
   // ── slug preview ──
   var titleInp = document.getElementById('ae-title');
   var slugEl   = document.getElementById('ae-slug');
-  if (titleInp) {
+  if (titleInp && slugEl) {
     titleInp.addEventListener('input', function() {
       var s = slugify(this.value);
-      if (s) { slugEl.textContent = 'id: ' + s; slugEl.style.display = 'inline'; }
-      else { slugEl.style.display = 'none'; }
+      if (s) { slugEl.textContent = 'id will be: ' + s; slugEl.style.display = 'block'; }
+      else   { slugEl.style.display = 'none'; }
     });
   }
+
+  // ── docs panel ──
+  var SNIPPETS = [
+    { name: 'hello world', note: 'simplest game', code: 'print(colored("Hello, world!", color.cyan))\nprint("This is my first game.")\nio.read("")' },
+    { name: 'dice roller', note: 'random + conditions', code: 'local roll = math.random(1, 6)\nprint(colored("rolling...", color.yellow))\nsleep(600)\nprint("you rolled: " .. roll)\nif roll == 6 then\n  print(colored("max roll!", color.green))\n  sound.win()\nelse\n  print("try again")\n  sound.blip()\nend' },
+    { name: 'number guesser', note: 'loops + input', code: 'local secret = math.random(1, 10)\nlocal tries = 0\nprint(colored("guess 1-10", color.cyan))\nwhile true do\n  local g = tonumber(io.read("guess: "))\n  tries = tries + 1\n  if g == secret then\n    print(colored("got it in " .. tries .. "!", color.green))\n    sound.win() break\n  elseif g < secret then print("too low")\n  else print("too high") end\nend' },
+    { name: 'story game', note: 'branching choices', code: 'print(colored("THE CAVE", color.yellow))\nprint("you stand at the entrance.")\nlocal c = io.read("[i]nside or [l]eave? ")\nif c == "i" then\n  print(colored("you venture in...", color.cyan))\n  sleep(1000)\n  if math.random(1,2) == 1 then\n    print(colored("you find treasure!", color.yellow))\n    sound.win()\n  else\n    print(colored("a bat! you run.", color.red))\n    sound.lose()\n  end\nelse\n  print("wise choice.") sound.click()\nend' },
+    { name: 'countdown', note: 'animation', code: 'print(colored("get ready...", color.yellow))\nsleep(800)\nfor i = 5, 1, -1 do\n  clear()\n  print(colored("  " .. i, color.yellow))\n  sound.click()\n  sleep(700)\nend\nclear()\nprint(colored("  GO!", color.green))\nsound.win()' },
+    { name: 'leaderboard', note: 'net API - saves scores', code: 'local name = io.read("your name: ")\nlocal score = math.random(100, 999)\nnet.rank(name, score)\nprint("score: " .. colored(tostring(score), color.yellow))\nlocal top = net.top(5)\nprint(colored("-- top 5 --", color.cyan))\nfor i, e in ipairs(top) do\n  print(i .. ". " .. e.name .. "  " .. e.score)\nend' },
+  ];
+
+  var REF_SECTIONS = [
+    { title: 'output', lines: ['print("text")          -- print a line', 'print("a" .. "b")      -- join strings with ..'] },
+    { title: 'input', lines: ['local x = io.read("prompt: ")  -- wait for enter', 'local n = tonumber(x)          -- string to number'] },
+    { title: 'variables', lines: ['local score = 0     -- number', 'local name  = "alice" -- text (use quotes)', 'local alive = true    -- boolean'] },
+    { title: 'if / else', lines: ['if score > 10 then', '  print("win!")', 'elseif score > 5 then', '  print("close")', 'else', '  print("try again")', 'end'] },
+    { title: 'loops', lines: ['for i = 1, 5 do print(i) end', '', 'while score < 100 do', '  score = score + 10', 'end'] },
+    { title: 'random', lines: ['math.random(1, 6)   -- 1 to 6', 'math.random(0, 1)   -- coin flip'] },
+    { title: 'colors', lines: ['colored("text", color.red)', 'colored("text", color.green)', 'colored("text", color.yellow)', 'colored("text", color.cyan)', 'colored("text", color.bold)'] },
+    { title: 'arcade API', lines: ['sleep(500)        -- wait 500ms', 'clear()            -- wipe terminal', 'sound.win()        -- victory', 'sound.lose()       -- defeat', 'sound.coin()       -- pickup', 'sound.beep(440, 0.2) -- custom tone'] },
+    { title: 'net (persistence)', lines: ['net.set("key", "value")', 'local v = net.get("key")  -- "" if unset', 'net.rank("name", score)', 'local top = net.top(10)'] },
+  ];
+
+  function renderSnippets() {
+    return SNIPPETS.map(function(s, i) {
+      return '<div class="ae-snip">'
+        + '<div class="ae-snip-head">'
+        + '<div class="ae-snip-info"><span class="ae-snip-name">' + s.name + '</span><span class="ae-snip-note">' + s.note + '</span></div>'
+        + '<button class="ae-snip-btn" data-idx="' + i + '">insert</button>'
+        + '</div>'
+        + '<div class="ae-snip-preview">' + escHtml(s.code) + '</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  function renderRef() {
+    return REF_SECTIONS.map(function(sec) {
+      return '<div class="ae-ref-section">' + sec.title + '</div>'
+        + '<div class="ae-ref">' + escHtml(sec.lines.join('\n')) + '</div>';
+    }).join('');
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  var docsOpen = false;
+  var activeTab = 'snippets';
+
+  function renderDocsContent() {
+    var body = document.getElementById('ae-docs-body');
+    if (activeTab === 'snippets') {
+      body.innerHTML = renderSnippets();
+    } else {
+      body.innerHTML = renderRef();
+    }
+  }
+
+  document.getElementById('ae-docs-btn').addEventListener('click', function() {
+    docsOpen = !docsOpen;
+    var panel = document.getElementById('ae-docs-panel');
+    panel.style.display = docsOpen ? 'flex' : 'none';
+    this.classList.toggle('ae-btn-on', docsOpen);
+    if (docsOpen) renderDocsContent();
+    editor.refresh();
+  });
+
+  document.querySelectorAll('.ae-docs-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      activeTab = this.getAttribute('data-tab');
+      document.querySelectorAll('.ae-docs-tab').forEach(function(t) { t.classList.remove('ae-tab-on'); });
+      this.classList.add('ae-tab-on');
+      renderDocsContent();
+    });
+  });
+
+  document.getElementById('ae-docs-body').addEventListener('click', function(e) {
+    var btn = e.target.closest('.ae-snip-btn');
+    if (!btn) return;
+    var idx = parseInt(btn.getAttribute('data-idx'));
+    var code = SNIPPETS[idx].code;
+    // insert at cursor or append
+    var doc = editor.getDoc();
+    var cursor = doc.getCursor();
+    var existing = editor.getValue();
+    if (!existing.trim() || existing.trim() === 'print("hello!")') {
+      editor.setValue(code + '\n');
+    } else {
+      doc.replaceRange('\n\n' + code, { line: doc.lineCount(), ch: 0 });
+    }
+    editor.focus();
+    btn.textContent = 'inserted!';
+    setTimeout(function() { btn.textContent = 'insert'; }, 1400);
+  });
 
   // ── run ──
   document.getElementById('ae-run').addEventListener('click', function() {
@@ -569,28 +751,31 @@
     else { setStatus('open [:] terminal first', 'err'); }
   });
 
-  // ── show success panel ──
+  // ── success panel ──
   function showSuccess(editCode, gameId) {
+    clearDraft();
     document.getElementById('ae-form-area').style.display = 'none';
     var panel = document.getElementById('ae-success-panel');
     panel.style.display = 'flex';
     document.getElementById('ae-success-code').textContent = editCode;
     document.getElementById('ae-success-link').href        = '/arcade/game/?id=' + gameId;
-    document.getElementById('ae-success-link').textContent = 'view game →';
   }
 
-  // ── submit (new) ──
+  // ── submit (new game) ──
   submitBtn.addEventListener('click', function() {
-    var title  = document.getElementById('ae-title').value.trim();
-    var author = document.getElementById('ae-author').value.trim();
-    var desc   = document.getElementById('ae-desc').value.trim();
+    var title  = (document.getElementById('ae-title')  || {}).value || '';
+    var author = (document.getElementById('ae-author') || {}).value || '';
+    var desc   = (document.getElementById('ae-desc')   || {}).value || '';
     var code   = getCode().trim();
     var btn    = this;
-    if (!title)  { setStatus('title required', 'err'); return; }
-    if (!author) { setStatus('author required', 'err'); return; }
-    if (!code)   { setStatus('write some code first', 'err'); return; }
+    title  = title.trim();
+    author = author.trim();
+    desc   = desc.trim();
+    if (!title)       { setStatus('title required', 'err'); return; }
+    if (!author)      { setStatus('author required', 'err'); return; }
+    if (!code)        { setStatus('write some code first', 'err'); return; }
     if (code.length > 25000) { setStatus('code too long (max 25000)', 'err'); return; }
-    btn.disabled = true; btn.textContent = 'submitting…'; setStatus('', '');
+    btn.disabled = true; btn.textContent = 'submitting...'; setStatus('', '');
     fetch('/api/games', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title: title, author: author, desc: desc, code: code }),
@@ -600,28 +785,28 @@
         showSuccess(data.editCode, data.id);
       } else {
         setStatus(data.error || 'something went wrong', 'err');
-        btn.disabled = false; btn.textContent = 'submit game →';
+        btn.disabled = false; btn.textContent = 'submit game';
       }
     }).catch(function() {
       setStatus('network error', 'err');
-      btn.disabled = false; btn.textContent = 'submit game →';
+      btn.disabled = false; btn.textContent = 'submit game';
     });
   });
 
   // ── update (edit mode) ──
   updateBtn.addEventListener('click', function() {
     var code     = getCode().trim();
-    var editCode = document.getElementById('ae-editcode').value.trim();
-    var newTitle = document.getElementById('ae-upd-title').value.trim();
-    var newDesc  = document.getElementById('ae-upd-desc').value.trim();
+    var editCode = (document.getElementById('ae-editcode')  || {}).value || '';
+    var newTitle = (document.getElementById('ae-upd-title') || {}).value || '';
+    var newDesc  = (document.getElementById('ae-upd-desc')  || {}).value;
     var btn      = this;
+    editCode = editCode.trim(); newTitle = newTitle.trim();
     if (!editCode) { setStatus('enter your edit code', 'err'); return; }
-    if (!code && !newTitle && newDesc === '') { setStatus('nothing to update', 'err'); return; }
-    btn.disabled = true; btn.textContent = 'publishing…'; setStatus('', '');
+    btn.disabled = true; btn.textContent = 'publishing...'; setStatus('', '');
     var payload = { code: editCode };
-    if (code)     payload.newCode  = code;
-    if (newTitle) payload.newTitle = newTitle;
-    if (newDesc !== '') payload.newDesc = newDesc;
+    if (code)              payload.newCode  = code;
+    if (newTitle)          payload.newTitle = newTitle;
+    if (newDesc !== undefined && newDesc !== '') payload.newDesc = newDesc.trim();
     fetch('/api/games?id=' + encodeURIComponent(editId), {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -629,15 +814,15 @@
       if (data.ok) {
         try { localStorage.removeItem('arcade_v1'); } catch(e) {}
         setStatus('updated!', 'ok');
-        btn.disabled = false; btn.textContent = 'publish update →';
+        btn.disabled = false; btn.textContent = 'publish update';
         setTimeout(function() { window.location.href = '/arcade/game/?id=' + editId; }, 900);
       } else {
         setStatus(data.error || 'error', 'err');
-        btn.disabled = false; btn.textContent = 'publish update →';
+        btn.disabled = false; btn.textContent = 'publish update';
       }
     }).catch(function() {
       setStatus('network error', 'err');
-      btn.disabled = false; btn.textContent = 'publish update →';
+      btn.disabled = false; btn.textContent = 'publish update';
     });
   });
 
@@ -650,29 +835,27 @@
     });
   });
 
-  // ── submit another ──
+  // ── write another ──
   document.getElementById('ae-success-another').addEventListener('click', function() {
     document.getElementById('ae-success-panel').style.display = 'none';
     document.getElementById('ae-form-area').style.display = 'flex';
     setCode('print("hello!")\n');
-    document.getElementById('ae-title').value  = '';
-    document.getElementById('ae-desc').value   = '';
+    ['ae-title', 'ae-author', 'ae-desc'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.value = '';
+    });
     document.getElementById('ae-slug').style.display = 'none';
-    submitBtn.disabled = false; submitBtn.textContent = 'submit game →';
+    submitBtn.disabled = false; submitBtn.textContent = 'submit game';
     setStatus('', '');
     editor.focus();
   });
 
-  updateCharCount();
-
-  // if tutorial not done and not expert, redirect (only for new game mode, not edit/remix)
+  // ── tutorial redirect (new game, no prefill, never completed tutorial) ──
   if (!editId && !remixId) {
-    var pref = localStorage.getItem('arcade_intro');
-    if (!pref) {
-      var prefill = sessionStorage.getItem('arcade_prefill_code');
-      if (!prefill) {
-        window.location.replace('/arcade/tutorial/');
-      }
+    var pref    = localStorage.getItem('arcade_intro');
+    var prefill = null;
+    try { prefill = sessionStorage.getItem('arcade_prefill_code'); } catch(e) {}
+    if (!pref && !prefill) {
+      window.location.replace('/arcade/tutorial/');
     }
   }
 
