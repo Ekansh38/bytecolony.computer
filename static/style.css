@@ -461,6 +461,36 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 .arc-stat-line { font-size:0.82rem; color:var(--muted); letter-spacing:0.03em; }
 .arc-stat-val { color:var(--accent); font-weight:700; }
 
+/* ── Arcade intro ── */
+.arc-intro {
+  margin: 20px 0 28px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+}
+.arc-intro-row {
+  display: flex; gap: 16px;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.83rem; line-height: 1.5;
+  align-items: baseline;
+}
+.arc-intro-row:last-child { border-bottom: none; }
+.arc-intro-key {
+  color: var(--accent); font-weight: 600;
+  min-width: 68px; flex-shrink: 0; letter-spacing: 0.02em;
+}
+.arc-intro-val { color: var(--muted); }
+.arc-intro-val code, .arc-ic {
+  color: var(--fg); background: var(--bg);
+  padding: 0 4px; font-family: inherit; font-size: inherit;
+  border: 1px solid var(--border);
+}
+.arc-kbd {
+  color: var(--fg); background: var(--bg);
+  padding: 0 4px; font-family: inherit; font-size: inherit;
+  border: 1px solid var(--border); border-radius: 0;
+}
+
 /* ── Loading ── */
 .arc-loading-state { color:var(--muted); padding:24px 0; }
 
