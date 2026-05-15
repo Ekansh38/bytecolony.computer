@@ -334,7 +334,7 @@
     var hp     = document.getElementById('arc-hp').value;
     var status = document.getElementById('arc-status');
     var btn    = document.getElementById('arc-submit');
-    if (!title || !author || !code) { status.textContent = 'title, name, and code required.'; status.style.color = 'var(--muted)'; return; }
+    if (!title || !author || !code) { status.textContent = 'title, name, and code required.'; status.style.color = 'var(--code-err)'; return; }
 
     btn.disabled = true; btn.textContent = 'checking...'; status.textContent = '';
 
@@ -354,9 +354,9 @@
           document.getElementById('arc-editcode').textContent = data.editCode;
           document.getElementById('arc-editcode-box').style.display = 'block';
           lsBust(); load(true);
-        } else { status.textContent = data.error || 'something went wrong.'; status.style.color = 'var(--muted)'; }
+        } else { status.textContent = data.error || 'something went wrong.'; status.style.color = 'var(--code-err)'; }
       })
-      .catch(function(){ status.textContent = 'network error.'; status.style.color = 'var(--muted)'; })
+      .catch(function(){ status.textContent = 'network error.'; status.style.color = 'var(--code-err)'; })
       .finally(function(){ btn.disabled = false; btn.textContent = 'submit game →'; });
     }
 
