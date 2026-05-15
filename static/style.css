@@ -480,18 +480,18 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 .arc-card:hover { opacity: 0.7; }
 .arc-card:hover .arc-card-title { color: var(--accent); }
 .arc-card-num {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: var(--muted);
   opacity: 0.35;
-  min-width: 20px;
+  min-width: 22px;
   text-align: right;
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
 }
 .arc-card-body { flex: 1; min-width: 0; }
-.arc-card-title { font-weight: 700; font-size: 0.95rem; display: block; margin-bottom: 2px; transition: color 0.15s; }
-.arc-card-meta { color: var(--muted); font-size: 0.76rem; display: block; margin-bottom: 4px; }
-.arc-card-desc { color: var(--muted); font-size: 0.8rem; opacity: 0.7; }
+.arc-card-title { font-weight: 700; font-size: 1.05rem; display: block; margin-bottom: 4px; transition: color 0.15s; }
+.arc-card-meta { color: var(--muted); font-size: 0.82rem; display: block; margin-bottom: 5px; }
+.arc-card-desc { color: var(--muted); font-size: 0.85rem; opacity: 0.7; }
 
 /* ── Section headers ── */
 .arc-section-header {
