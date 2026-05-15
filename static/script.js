@@ -970,6 +970,19 @@ function toggleTheme() {
   var hist = [], histIdx = -1, isOpen = false;
   var PAGE_START = Date.now();
   var _gameMode = false, _gameResume = null;
+  var _gCache = null, _gCacheAt = 0, _gById = {}, G_TTL = 300000; // 5 min
+
+  function _renderGames(gs) {
+    if (!gs.length) { line('no games yet. visit /arcade to submit one.', 'term-line-ok'); return; }
+    var W = 22;
+    var rows = gs.map(function(g) {
+      var t = g.title.length > W ? g.title.slice(0, W - 1) + '\u2026' : g.title;
+      while (t.length < W) t += ' ';
+      var a = 'by ' + g.author; if (a.length > 18) a = a.slice(0, 17) + '\u2026'; while (a.length < 18) a += ' ';
+      return '  ' + t + '  ' + a + '  \u2192  play ' + g.id;
+    });
+    line(['', 'community arcade'].concat(rows).concat(['', 'play <id> to start  \u00b7  /arcade to submit']).join('\n'), 'term-line-pre');
+  }
 
   var QUOTES = [
     '"the best code is no code at all."  — jeff atwood',
@@ -2239,41 +2252,35 @@ function toggleTheme() {
     // ── arcade ──────────────────────────────────────────────────
     games: function(args) {
       if (args.length) { tooMany('games'); return; }
+      var now = Date.now();
+      if (_gCache && now - _gCacheAt < G_TTL) { _renderGames(_gCache); return; }
       line('fetching games...', 'term-line-ok');
       fetch('/api/games').then(function(r) { return r.json(); }).then(function(gs) {
-        if (!gs.length) { line('no games yet. visit /arcade to submit one.', 'term-line-ok'); return; }
-        var W = 22;
-        var rows = gs.map(function(g) {
-          var t = g.title.length > W ? g.title.slice(0, W - 1) + '…' : g.title;
-          while (t.length < W) t += ' ';
-          var a = 'by ' + g.author;
-          if (a.length > 18) a = a.slice(0, 17) + '…';
-          while (a.length < 18) a += ' ';
-          return '  ' + t + '  ' + a + '  →  play ' + g.id;
-        });
-        line(['', 'community arcade'].concat(rows).concat(['', "play <id> to start  ·  /arcade to submit"]).join('\n'), 'term-line-pre');
+        _gCache = gs; _gCacheAt = Date.now(); _renderGames(gs);
       }).catch(function() { line('could not fetch games', 'term-line-err'); });
     },
 
     source: function(args) {
       if (!args[0]) { needArg('source', 'source <game-id>'); return; }
       var id = args[0];
+      var cached = _gById[id];
+      if (cached) { line('── ' + cached.title + ' by ' + cached.author + ' ──\n\n' + cached.code, 'term-line-pre'); return; }
       fetch('/api/games?id=' + encodeURIComponent(id)).then(function(r) { return r.json(); }).then(function(g) {
         if (g.error) { line('game not found: ' + id, 'term-line-err'); return; }
+        _gById[id] = g;
         line('── ' + g.title + ' by ' + g.author + ' ──\n\n' + g.code, 'term-line-pre');
       }).catch(function() { line('could not fetch source', 'term-line-err'); });
     },
 
     delete: function(args) {
-      if (!args[0]) { needArg('delete', 'delete <game-id> <edit-code>'); return; }
-      if (!args[1]) { needArg('delete', 'delete <game-id> <edit-code>'); return; }
+      if (!args[0] || !args[1]) { needArg('delete', 'delete <game-id> <edit-code>'); return; }
       var id = args[0], code = args[1];
       fetch('/api/games?id=' + encodeURIComponent(id), {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: code })
       }).then(function(r) { return r.json(); }).then(function(data) {
-        if (data.ok) line('deleted: ' + id, 'term-line-ok');
+        if (data.ok) { _gCache = null; delete _gById[id]; line('deleted: ' + id, 'term-line-ok'); }
         else line(data.error || 'delete failed', 'term-line-err');
       }).catch(function() { line('network error', 'term-line-err'); });
     },
@@ -2281,9 +2288,11 @@ function toggleTheme() {
     play: function(args) {
       if (!args[0]) { needArg('play', 'play <game-id>  (see: games)'); return; }
       var id = args[0];
+      if (_gById[id]) { loadFengari(function() { runLuaGame(_gById[id]); }); return; }
       line('fetching ' + id + '...', 'term-line-ok');
       fetch('/api/games?id=' + encodeURIComponent(id)).then(function(r) { return r.json(); }).then(function(game) {
         if (game.error) { line('game not found: ' + id + '  (see: games)', 'term-line-err'); return; }
+        _gById[id] = game;
         loadFengari(function() { runLuaGame(game); });
       }).catch(function() { line('could not load game', 'term-line-err'); });
     },
@@ -2405,8 +2414,9 @@ function toggleTheme() {
   }
 
   // expose for arcade page buttons
-  window.termOpen = open;
-  window.termRun  = function(cmd) { open(); setTimeout(function() { run(cmd); }, 80); };
+  window.termOpen   = open;
+  window.termRun    = function(cmd) { open(); setTimeout(function() { run(cmd); }, 80); };
+  window.termRunLua = function(code) { open(); setTimeout(function() { loadFengari(function() { runLuaGame({ id: '_test_', title: 'test run', author: 'you', code: code }); }); }, 80); };
 
   // ── run a command ───────────────────────────────────────────
   function run(raw) {

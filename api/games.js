@@ -68,12 +68,14 @@ module.exports = async (req, res) => {
   try {
     // ── GET list ──────────────────────────────────────────────────────────────
     if (req.method === 'GET' && !id) {
+      res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=60');
       const all = await fetchAll();
       return res.status(200).json(all.map(g => ({ id: g.id, title: g.title, author: g.author, date: g.date })));
     }
 
     // ── GET single game by id ─────────────────────────────────────────────────
     if (req.method === 'GET' && id) {
+      res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=300');
       const all = await fetchAll();
       const game = all.find(g => g.id === id);
       if (!game) return res.status(404).json({ error: 'game not found' });

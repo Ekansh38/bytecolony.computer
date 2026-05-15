@@ -396,7 +396,7 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 .arc-form { margin-top: 20px; }
 .arc-row { display: flex; gap: 12px; margin-bottom: 10px; }
 .arc-row input { flex: 1; min-width: 0; }
-.arc-form input, .arc-form textarea {
+.arc-form input {
   background: var(--code-bg);
   border: 1px solid var(--border);
   color: var(--fg);
@@ -409,10 +409,53 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
   width: 100%;
   box-sizing: border-box;
 }
-.arc-form input:focus, .arc-form textarea:focus { border-color: var(--accent); }
-#arc-code { resize: vertical; font-size: 0.88rem; line-height: 1.6; }
-.arc-submit-row { display: flex; align-items: baseline; gap: 16px; margin-top: 10px; flex-wrap: wrap; }
-#arc-submit {
+.arc-form input:focus { border-color: var(--accent); }
+
+/* syntax-highlighted editor overlay */
+.arc-editor {
+  position: relative;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+}
+.arc-editor:focus-within { border-color: var(--accent); }
+.arc-editor-hl {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  margin: 0;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+  border: none;
+  box-sizing: border-box;
+  color: var(--fg);
+}
+#arc-code {
+  position: relative;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--fg);
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  padding: 8px 12px;
+  resize: vertical;
+  min-height: 220px;
+  z-index: 1;
+}
+.arc-submit-row { display: flex; align-items: baseline; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+#arc-submit, #arc-test {
   background: none;
   border: 1px solid var(--border);
   color: var(--muted);
@@ -423,8 +466,10 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
   white-space: nowrap;
   transition: color 0.15s, border-color 0.15s;
 }
+#arc-test:hover  { color: var(--accent); border-color: var(--accent); }
+#arc-submit { color: var(--fg); border-color: var(--fg); }
 #arc-submit:hover { color: var(--accent); border-color: var(--accent); }
-#arc-submit:disabled { opacity: 0.5; cursor: default; }
+#arc-submit:disabled, #arc-test:disabled { opacity: 0.5; cursor: default; }
 #arc-status { font-size: 0.88rem; color: var(--muted); }
 
 .arc-card {
@@ -434,7 +479,9 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 .arc-card:first-of-type { border-top: 1px solid var(--border); }
 .arc-card-top { margin-bottom: 10px; }
 .arc-card-meta { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.arc-card-title { font-weight: 700; font-size: 1rem; }
+.arc-card-link { text-decoration: none; color: var(--fg); }
+.arc-card-link:hover .arc-card-title { color: var(--accent); }
+.arc-card-title { font-weight: 700; font-size: 1rem; transition: color 0.15s; }
 .arc-card-author { color: var(--muted); font-size: 0.88rem; }
 .arc-card-date   { color: var(--muted); font-size: 0.82rem; }
 .arc-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }

@@ -2,123 +2,163 @@
 <h1 style="margin-bottom:6px;">arcade</h1>
 <p style="color:var(--muted);margin-bottom:6px;">lua games made by visitors. click a card to play, or open the terminal (<kbd>[:]</kbd>) and type <code>games</code>.</p>
 <p style="color:var(--muted);margin-bottom:32px;font-size:0.88rem;">
-  available: <code>print()</code> · <code>io.read("prompt")</code> · <code>math</code> · <code>string</code> · <code>table</code> · <code>if/else</code> · <code>while</code> · <code>for</code> · functions
+  available: <code>print()</code> · <code>io.read("prompt")</code> · <code>math</code> · <code>string</code> · <code>table</code> · loops · functions
 </p>
 
-<div id="arc-games">
-  <p style="color:var(--muted)">loading games...</p>
-</div>
+<div id="arc-games"><p style="color:var(--muted)">loading...</p></div>
 
 <hr style="margin:32px 0;">
 
 <details id="arc-details">
   <summary style="cursor:pointer;color:var(--accent);list-style:none;margin-bottom:20px;">+ submit a game</summary>
-
   <div class="arc-form">
     <div class="arc-row">
-      <input id="arc-title"  type="text" placeholder="game title (becomes the id, must be unique)" maxlength="50" autocomplete="off" spellcheck="false">
+      <input id="arc-title"  type="text" placeholder="game title (unique, becomes the id)" maxlength="50" autocomplete="off" spellcheck="false">
       <input id="arc-author" type="text" placeholder="your name" maxlength="50" autocomplete="off" spellcheck="false">
     </div>
-    <textarea id="arc-code" placeholder="-- lua code here. use print() for output, io.read() for input.
-
-print('what is your name?')
-local name = io.read()
-print('nice to meet you, ' .. name .. '!')" rows="14" spellcheck="false" autocomplete="off"></textarea>
+    <div class="arc-editor">
+      <pre class="arc-editor-hl" id="arc-hl" aria-hidden="true"></pre>
+      <textarea id="arc-code" placeholder="-- lua code here&#10;print('what is your name?')&#10;local name = io.read()&#10;print('hi ' .. name)" rows="14" spellcheck="false" autocomplete="off"></textarea>
+    </div>
     <input id="arc-hp" type="text" tabindex="-1" autocomplete="off" style="display:none">
     <div class="arc-submit-row">
+      <button id="arc-test">test in terminal →</button>
       <button id="arc-submit">submit game →</button>
       <span id="arc-status"></span>
     </div>
     <div id="arc-editcode-box" style="display:none;margin-top:16px;padding:12px;border:1px solid var(--accent);font-size:0.88rem;">
-      <div style="color:var(--accent);font-weight:700;margin-bottom:4px;">your edit code — save this now, it won't be shown again</div>
+      <div style="color:var(--accent);font-weight:700;margin-bottom:4px;">your edit code — save this, it won't be shown again</div>
       <code id="arc-editcode" style="font-size:1rem;letter-spacing:0.05em;"></code>
-      <div style="color:var(--muted);margin-top:6px;font-size:0.82rem;">use this to delete or update your game. to delete: terminal → <code>delete &lt;id&gt; &lt;code&gt;</code></div>
+      <div style="color:var(--muted);margin-top:6px;font-size:0.82rem;">to delete: terminal → <code>delete &lt;id&gt; &lt;code&gt;</code></div>
     </div>
   </div>
 </details>
 
+<hr style="margin:32px 0;">
+
+<details id="arc-docs">
+  <summary style="cursor:pointer;color:var(--accent);list-style:none;margin-bottom:20px;">lua basics</summary>
+  <pre id="arc-docs-code" class="arc-source-block" style="font-size:0.82rem;line-height:1.7;"></pre>
+</details>
+
 <script>
 (function() {
-  var API       = '/api/games';
-  var CACHE_TTL = 60000;
-  var _games    = null, _cacheAt = 0;
-  var _codeCache = {};
+  var API = '/api/games';
+  var LS_KEY = 'arcade_v1', LS_TTL = 5 * 60 * 1000;
 
-  // ── lua syntax highlight ───────────────────────────────────────────────────
-  var LUA_KW = /\b(local|function|if|then|else|elseif|end|while|do|for|in|return|break|and|or|not|true|false|nil|repeat|until|math|string|table|print|io|tostring|tonumber|type|pairs|ipairs|pcall|error|select|coroutine)\b/g;
+  function lsGet() { try { var d = JSON.parse(localStorage.getItem(LS_KEY)); if (d && Date.now() - d.t < LS_TTL) return d.v; } catch(e) {} return null; }
+  function lsSet(v) { try { localStorage.setItem(LS_KEY, JSON.stringify({t: Date.now(), v: v})); } catch(e) {} }
+  function lsBust() { try { localStorage.removeItem(LS_KEY); } catch(e) {} }
 
+  // ── lua syntax highlight ──────────────────────────────────────────────────
+  var LUA_KW = /\b(local|function|if|then|else|elseif|end|while|do|for|in|return|break|and|or|not|true|false|nil|repeat|until|math|string|table|print|io|tostring|tonumber|type|pairs|ipairs|pcall|error|select)\b/g;
   function hlEsc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
   function highlightLua(code) {
     return code.split('\n').map(function(line) {
-      var comment = '';
-      var ci = -1;
-      // find -- not inside a string (simplified: find first --)
-      var inStr = false, sq = '';
+      var comment = '', ci = -1, inStr = false, sq = '';
       for (var k = 0; k < line.length - 1; k++) {
         if (!inStr && (line[k] === '"' || line[k] === "'")) { inStr = true; sq = line[k]; }
         else if (inStr && line[k] === sq && line[k-1] !== '\\') { inStr = false; }
         else if (!inStr && line[k] === '-' && line[k+1] === '-') { ci = k; break; }
       }
       if (ci >= 0) { comment = '<span class="lh-cmt">' + hlEsc(line.slice(ci)) + '</span>'; line = line.slice(0, ci); }
-
-      // tokenize: strings vs rest
       var out = '', i = 0;
       while (i < line.length) {
         if (line[i] === '"' || line[i] === "'") {
           var q = line[i], j = i + 1;
           while (j < line.length && line[j] !== q) { if (line[j] === '\\') j++; j++; }
-          out += '<span class="lh-str">' + hlEsc(line.slice(i, j + 1)) + '</span>';
-          i = j + 1;
+          out += '<span class="lh-str">' + hlEsc(line.slice(i, j + 1)) + '</span>'; i = j + 1;
         } else { out += hlEsc(line[i++]); }
       }
-      // keywords + numbers (on non-string tokens only — rough but fine)
       out = out.replace(LUA_KW, '<span class="lh-kw">$1</span>');
       out = out.replace(/\b(\d+\.?\d*)\b/g, '<span class="lh-num">$1</span>');
       return out + comment;
     }).join('\n');
   }
 
-  function fmt(iso) {
-    var d = new Date(iso);
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  }
-  function esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+  // ── docs ──────────────────────────────────────────────────────────────────
+  var DOCS = [
+    '-- variables',
+    'local x = 5',
+    'local name = "ekansh"',
+    'local alive = true',
+    '',
+    '-- output / input',
+    'print("hello " .. name)',
+    'local answer = io.read("enter something: ")',
+    'local n = tonumber(io.read("enter a number: "))',
+    '',
+    '-- if / else',
+    'if x > 3 then',
+    '  print("big")',
+    'elseif x == 3 then',
+    '  print("three")',
+    'else',
+    '  print("small")',
+    'end',
+    '',
+    '-- while loop',
+    'local i = 1',
+    'while i <= 5 do',
+    '  print(i)',
+    '  i = i + 1',
+    'end',
+    '',
+    '-- for loop',
+    'for i = 1, 5 do',
+    '  print(i)',
+    'end',
+    '',
+    '-- functions',
+    'local function greet(name)',
+    '  return "hi " .. name',
+    'end',
+    'print(greet("ekansh"))',
+    '',
+    '-- math',
+    'math.random(1, 10)    -- random int 1-10',
+    'math.floor(3.7)       -- 3',
+    'math.abs(-5)          -- 5',
+    '',
+    '-- strings',
+    'string.len("hello")   -- 5',
+    'string.upper("hi")    -- "HI"',
+    'string.rep("ha", 3)   -- "hahaha"',
+    '#"hello"              -- 5  (length shorthand)',
+    '',
+    '-- tables  (arrays start at 1)',
+    'local t = {10, 20, 30}',
+    'print(t[1])            -- 10',
+    'table.insert(t, 40)',
+    'print(#t)              -- 4',
+  ].join('\n');
 
-  function playGame(id) {
-    if (window.termRun) {
-      window.termRun('play ' + id);
-    } else {
-      var hint = document.getElementById('arc-hint');
-      if (hint) { hint.style.display = 'block'; hint.textContent = 'open terminal with [:], then type: play ' + id; }
-    }
-  }
+  document.getElementById('arc-docs-code').innerHTML = highlightLua(DOCS);
+
+  // ── render cards ──────────────────────────────────────────────────────────
+  function fmt(iso) { var d = new Date(iso); return d.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}); }
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  var _codeCache = {};
 
   function render(games) {
     var el = document.getElementById('arc-games');
-    if (!games.length) {
-      el.innerHTML = '<p style="color:var(--muted)">no games yet — be the first to submit one below.</p>';
-      return;
-    }
+    if (!games.length) { el.innerHTML = '<p style="color:var(--muted)">no games yet. submit one below.</p>'; return; }
     el.innerHTML = '<p id="arc-hint" style="display:none;color:var(--muted);margin-bottom:12px;font-size:0.88rem;"></p>'
       + games.map(function(g) {
         return '<div class="arc-card" id="card-' + esc(g.id) + '">'
           + '<div class="arc-card-top">'
-          + '<div class="arc-card-meta">'
+          + '<a class="arc-card-link" href="/arcade/game/?id=' + esc(g.id) + '">'
           + '<span class="arc-card-title">' + esc(g.title) + '</span>'
+          + '</a>'
           + '<span class="arc-card-author">by ' + esc(g.author) + '</span>'
           + '<span class="arc-card-date">' + fmt(g.date) + '</span>'
           + '</div>'
-          + '</div>'
           + '<div class="arc-card-actions">'
-          + '<button class="arc-play-btn"   data-id="' + esc(g.id) + '">play →</button>'
-          + '<button class="arc-src-btn"    data-id="' + esc(g.id) + '">source</button>'
-          + '<button class="arc-remix-btn"  data-id="' + esc(g.id) + '" data-title="' + esc(g.title) + '">remix</button>'
-          + '<button class="arc-del-btn"    data-id="' + esc(g.id) + '">delete</button>'
+          + '<button class="arc-play-btn" data-id="' + esc(g.id) + '">play →</button>'
+          + '<button class="arc-remix-btn" data-id="' + esc(g.id) + '">remix</button>'
+          + '<button class="arc-del-btn" data-id="' + esc(g.id) + '">delete</button>'
           + '</div>'
-          + '<pre class="arc-source-block" id="src-' + esc(g.id) + '" style="display:none"></pre>'
           + '<div class="arc-del-form" id="del-' + esc(g.id) + '" style="display:none">'
           + '<input type="text" class="arc-code-inp" placeholder="edit code  (xxxxx-xxxxx)">'
           + '<button class="arc-del-confirm" data-id="' + esc(g.id) + '">confirm delete</button>'
@@ -127,178 +167,140 @@ print('nice to meet you, ' .. name .. '!')" rows="14" spellcheck="false" autocom
           + '</div>';
       }).join('');
 
-    // play
     el.querySelectorAll('.arc-play-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() { playGame(btn.getAttribute('data-id')); });
-    });
-
-    // source toggle
-    el.querySelectorAll('.arc-src-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        var gid   = btn.getAttribute('data-id');
-        var block = document.getElementById('src-' + gid);
-        if (block.style.display !== 'none') { block.style.display = 'none'; btn.textContent = 'source'; return; }
-        if (_codeCache[gid]) { block.innerHTML = highlightLua(_codeCache[gid]); block.style.display = 'block'; btn.textContent = 'source ▲'; return; }
-        btn.textContent = 'loading...';
-        fetch(API + '?id=' + encodeURIComponent(gid))
-          .then(function(r) { return r.json(); })
-          .then(function(data) {
-            _codeCache[gid] = data.code || '(no code)';
-            block.innerHTML = highlightLua(_codeCache[gid]);
-            block.style.display = 'block';
-            btn.textContent = 'source ▲';
-          }).catch(function() { btn.textContent = 'source'; });
+        var id = btn.getAttribute('data-id');
+        if (window.termRun) { window.termRun('play ' + id); return; }
+        var h = document.getElementById('arc-hint');
+        if (h) { h.style.display = 'block'; h.textContent = 'open terminal with [:], then type: play ' + id; }
       });
     });
 
-    // remix
     el.querySelectorAll('.arc-remix-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        var gid   = btn.getAttribute('data-id');
-        var gtitle = btn.getAttribute('data-title');
-        var details = document.getElementById('arc-details');
-        details.open = true;
-        document.getElementById('arc-title').value = 'remix-' + gid.slice(0, 20);
-        details.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        if (_codeCache[gid]) {
-          document.getElementById('arc-code').value = _codeCache[gid];
-        } else {
-          fetch(API + '?id=' + encodeURIComponent(gid))
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-              _codeCache[gid] = data.code || '';
-              document.getElementById('arc-code').value = _codeCache[gid];
-            });
-        }
+        var id = btn.getAttribute('data-id');
+        document.getElementById('arc-details').open = true;
+        document.getElementById('arc-title').value = 'remix-' + id.slice(0, 20);
+        document.getElementById('arc-details').scrollIntoView({behavior:'smooth', block:'start'});
+        if (_codeCache[id]) { setCode(_codeCache[id]); return; }
+        fetch(API + '?id=' + encodeURIComponent(id)).then(function(r){return r.json();}).then(function(d){
+          _codeCache[id] = d.code || ''; setCode(_codeCache[id]);
+        });
       });
     });
 
-    // delete toggle
     el.querySelectorAll('.arc-del-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        var gid = btn.getAttribute('data-id');
-        var form = document.getElementById('del-' + gid);
-        form.style.display = form.style.display === 'none' ? 'flex' : 'none';
-        btn.textContent = form.style.display === 'none' ? 'delete' : 'cancel';
+        var id = btn.getAttribute('data-id');
+        var form = document.getElementById('del-' + id);
+        var open = form.style.display === 'none';
+        form.style.display = open ? 'flex' : 'none';
+        btn.textContent = open ? 'cancel' : 'delete';
       });
     });
 
-    // delete confirm
     el.querySelectorAll('.arc-del-confirm').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        var gid    = btn.getAttribute('data-id');
-        var form   = document.getElementById('del-' + gid);
-        var inp    = form.querySelector('.arc-code-inp');
+        var id = btn.getAttribute('data-id');
+        var form = document.getElementById('del-' + id);
+        var inp = form.querySelector('.arc-code-inp');
         var status = form.querySelector('.arc-del-status');
-        var code   = inp.value.trim();
-        if (!code) { status.textContent = 'enter your edit code'; return; }
+        if (!inp.value.trim()) { status.textContent = 'enter your edit code'; return; }
         btn.disabled = true; btn.textContent = 'deleting...'; status.textContent = '';
-        fetch(API + '?id=' + encodeURIComponent(gid), {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: code })
-        })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data.ok) {
-            var card = document.getElementById('card-' + gid);
-            if (card) card.remove();
-            _games = (_games || []).filter(function(g) { return g.id !== gid; });
-          } else {
-            status.textContent = data.error || 'error';
-            btn.disabled = false; btn.textContent = 'confirm delete';
-          }
-        })
-        .catch(function() { status.textContent = 'network error'; btn.disabled = false; btn.textContent = 'confirm delete'; });
+        fetch(API + '?id=' + encodeURIComponent(id), {
+          method: 'DELETE', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({code: inp.value.trim()})
+        }).then(function(r){return r.json();}).then(function(d){
+          if (d.ok) {
+            var card = document.getElementById('card-' + id); if (card) card.remove();
+            lsBust();
+          } else { status.textContent = d.error || 'error'; btn.disabled = false; btn.textContent = 'confirm delete'; }
+        }).catch(function(){ status.textContent = 'network error'; btn.disabled = false; btn.textContent = 'confirm delete'; });
       });
     });
   }
 
   function load(force) {
-    if (!force && _games && Date.now() - _cacheAt < CACHE_TTL) { render(_games); return; }
-    fetch(API).then(function(r) { return r.json(); }).then(function(data) {
-      _games = data; _cacheAt = Date.now(); render(data);
-    }).catch(function() {
-      document.getElementById('arc-games').innerHTML = '<p style="color:var(--muted)">couldn\'t load games.</p>';
-    });
+    if (!force) { var c = lsGet(); if (c) { render(c); return; } }
+    fetch(API).then(function(r){return r.json();}).then(function(data){ lsSet(data); render(data); })
+      .catch(function(){ document.getElementById('arc-games').innerHTML = '<p style="color:var(--muted)">couldn\'t load games.</p>'; });
   }
-
   load();
 
-  // ── textarea QoL ───────────────────────────────────────────────────────────
+  // ── textarea editor ───────────────────────────────────────────────────────
   var ta = document.getElementById('arc-code');
+  var hl = document.getElementById('arc-hl');
+
+  function setCode(code) {
+    ta.value = code; updateHl(); ta.focus();
+  }
+  function updateHl() {
+    hl.innerHTML = highlightLua(ta.value) + '\n';
+    hl.scrollTop = ta.scrollTop;
+  }
+  ta.addEventListener('input', updateHl);
+  ta.addEventListener('scroll', function() { hl.scrollTop = ta.scrollTop; });
+  updateHl();
+
   ta.addEventListener('keydown', function(e) {
     var start = ta.selectionStart, end = ta.selectionEnd, val = ta.value;
-
-    // Tab → 2 spaces
     if (e.key === 'Tab') {
       e.preventDefault();
       ta.value = val.slice(0, start) + '  ' + val.slice(end);
       ta.selectionStart = ta.selectionEnd = start + 2;
-      return;
+      updateHl(); return;
     }
-
-    // Enter → auto-indent to match current line's indentation
     if (e.key === 'Enter') {
       var lineStart = val.lastIndexOf('\n', start - 1) + 1;
-      var currentLine = val.slice(lineStart, start);
-      var indent = currentLine.match(/^(\s*)/)[1];
-      // add extra indent after lines ending with 'then', 'do', 'else', 'function ...'
-      if (/\b(then|do|else|function)\s*$/.test(currentLine.trim())) indent += '  ';
+      var indent = val.slice(lineStart, start).match(/^(\s*)/)[1];
+      if (/\b(then|do|else|function)\s*$/.test(val.slice(lineStart, start).trim())) indent += '  ';
       e.preventDefault();
       ta.value = val.slice(0, start) + '\n' + indent + val.slice(end);
       ta.selectionStart = ta.selectionEnd = start + 1 + indent.length;
-      return;
+      updateHl(); return;
     }
-
-    // Auto-close brackets/quotes
-    var pairs = { '(': ')', '[': ']', '"': '"', "'": "'" };
+    var pairs = {'(':')', '[':']', '"':'"', "'":"'"};
     if (pairs[e.key] && start === end) {
       e.preventDefault();
       ta.value = val.slice(0, start) + e.key + pairs[e.key] + val.slice(end);
       ta.selectionStart = ta.selectionEnd = start + 1;
+      updateHl();
     }
   });
 
-  // ── submit ─────────────────────────────────────────────────────────────────
+  // ── test button ───────────────────────────────────────────────────────────
+  document.getElementById('arc-test').addEventListener('click', function() {
+    var code = ta.value.trim();
+    if (!code) { document.getElementById('arc-status').textContent = 'write some code first.'; return; }
+    if (window.termRunLua) { window.termRunLua(code); }
+    else { document.getElementById('arc-status').textContent = 'open the terminal first with [:]'; }
+  });
+
+  // ── submit ────────────────────────────────────────────────────────────────
   document.getElementById('arc-submit').addEventListener('click', function() {
     var title  = document.getElementById('arc-title').value.trim();
     var author = document.getElementById('arc-author').value.trim();
-    var code   = document.getElementById('arc-code').value.trim();
+    var code   = ta.value.trim();
     var hp     = document.getElementById('arc-hp').value;
     var status = document.getElementById('arc-status');
     var btn    = document.getElementById('arc-submit');
-
-    if (!title || !author || !code) { status.textContent = 'title, name, and code are all required.'; status.style.color = 'var(--muted)'; return; }
-
+    if (!title || !author || !code) { status.textContent = 'title, name, and code required.'; status.style.color = 'var(--muted)'; return; }
     btn.disabled = true; btn.textContent = 'submitting...'; status.textContent = '';
-
-    fetch(API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: title, author: author, code: code, hp: hp })
-    })
-    .then(function(r) { return r.json(); })
+    fetch(API, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({title:title, author:author, code:code, hp:hp}) })
+    .then(function(r){return r.json();})
     .then(function(data) {
       if (data.ok) {
-        document.getElementById('arc-title').value  = '';
+        document.getElementById('arc-title').value = '';
         document.getElementById('arc-author').value = '';
-        document.getElementById('arc-code').value   = '';
-        status.textContent = 'submitted!  play it: play ' + data.id;
-        status.style.color = 'var(--accent)';
-        // show edit code
-        var box  = document.getElementById('arc-editcode-box');
-        var code = document.getElementById('arc-editcode');
-        code.textContent = data.editCode;
-        box.style.display = 'block';
-        _games = null; load(true);
-      } else {
-        status.textContent = data.error || 'something went wrong.';
-        status.style.color = 'var(--muted)';
-      }
+        setCode(''); status.textContent = 'submitted!  play it: play ' + data.id; status.style.color = 'var(--accent)';
+        document.getElementById('arc-editcode').textContent = data.editCode;
+        document.getElementById('arc-editcode-box').style.display = 'block';
+        lsBust(); load(true);
+      } else { status.textContent = data.error || 'something went wrong.'; status.style.color = 'var(--muted)'; }
     })
-    .catch(function() { status.textContent = 'network error. try again.'; status.style.color = 'var(--muted)'; })
-    .finally(function() { btn.disabled = false; btn.textContent = 'submit game →'; });
+    .catch(function(){ status.textContent = 'network error.'; status.style.color = 'var(--muted)'; })
+    .finally(function(){ btn.disabled = false; btn.textContent = 'submit game →'; });
   });
 })();
 </script>

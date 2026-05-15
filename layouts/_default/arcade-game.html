@@ -1,0 +1,82 @@
+{{ define "main" }}
+<p style="margin-bottom:24px;"><a href="/arcade" style="color:var(--muted);">← arcade</a></p>
+
+<div id="ag-loading" style="color:var(--muted)">loading...</div>
+
+<div id="ag-content" style="display:none">
+  <h1 id="ag-title" style="margin-bottom:4px;"></h1>
+  <p id="ag-meta" style="color:var(--muted);margin-bottom:24px;"></p>
+  <button id="ag-play" style="margin-bottom:32px;">play in terminal →</button>
+  <hr style="margin-bottom:32px;">
+  <pre id="ag-source" class="arc-source-block"></pre>
+</div>
+
+<div id="ag-error" style="display:none;color:var(--muted)">game not found.</div>
+
+<style>
+#ag-play {
+  background: none; border: 1px solid var(--fg); color: var(--fg);
+  font-family: inherit; font-size: inherit; padding: 8px 18px;
+  cursor: pointer; transition: color .15s, border-color .15s;
+}
+#ag-play:hover { color: var(--accent); border-color: var(--accent); }
+</style>
+
+<script>
+(function() {
+  var LUA_KW = /\b(local|function|if|then|else|elseif|end|while|do|for|in|return|break|and|or|not|true|false|nil|repeat|until|math|string|table|print|io|tostring|tonumber|type|pairs|ipairs|pcall|error|select)\b/g;
+  function hlEsc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function highlightLua(code) {
+    return code.split('\n').map(function(line) {
+      var comment = '', ci = -1, inStr = false, sq = '';
+      for (var k = 0; k < line.length - 1; k++) {
+        if (!inStr && (line[k] === '"' || line[k] === "'")) { inStr = true; sq = line[k]; }
+        else if (inStr && line[k] === sq && line[k-1] !== '\\') { inStr = false; }
+        else if (!inStr && line[k] === '-' && line[k+1] === '-') { ci = k; break; }
+      }
+      if (ci >= 0) { comment = '<span class="lh-cmt">' + hlEsc(line.slice(ci)) + '</span>'; line = line.slice(0, ci); }
+      var out = '', i = 0;
+      while (i < line.length) {
+        if (line[i] === '"' || line[i] === "'") {
+          var q = line[i], j = i + 1;
+          while (j < line.length && line[j] !== q) { if (line[j] === '\\') j++; j++; }
+          out += '<span class="lh-str">' + hlEsc(line.slice(i, j+1)) + '</span>'; i = j + 1;
+        } else { out += hlEsc(line[i++]); }
+      }
+      out = out.replace(LUA_KW, '<span class="lh-kw">$1</span>');
+      out = out.replace(/\b(\d+\.?\d*)\b/g, '<span class="lh-num">$1</span>');
+      return out + comment;
+    }).join('\n');
+  }
+
+  function fmt(iso) { var d = new Date(iso); return d.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}); }
+
+  var id = new URLSearchParams(window.location.search).get('id');
+  if (!id) {
+    document.getElementById('ag-loading').style.display = 'none';
+    document.getElementById('ag-error').style.display = 'block';
+    return;
+  }
+
+  fetch('/api/games?id=' + encodeURIComponent(id))
+    .then(function(r) { return r.json(); })
+    .then(function(game) {
+      document.getElementById('ag-loading').style.display = 'none';
+      if (game.error) { document.getElementById('ag-error').style.display = 'block'; return; }
+      document.title = game.title + ' — arcade';
+      document.getElementById('ag-title').textContent = game.title;
+      document.getElementById('ag-meta').textContent = 'by ' + game.author + '  ·  ' + fmt(game.date) + '  ·  ' + id;
+      document.getElementById('ag-source').innerHTML = highlightLua(game.code);
+      document.getElementById('ag-content').style.display = 'block';
+      document.getElementById('ag-play').addEventListener('click', function() {
+        if (window.termRun) { window.termRun('play ' + id); return; }
+        this.textContent = 'open terminal with [:], then type: play ' + id;
+      });
+    })
+    .catch(function() {
+      document.getElementById('ag-loading').style.display = 'none';
+      document.getElementById('ag-error').style.display = 'block';
+    });
+})();
+</script>
+{{ end }}
