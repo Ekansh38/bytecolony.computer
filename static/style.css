@@ -1176,28 +1176,6 @@ body.page #bg-canvas { opacity: 0.25; }
 .term-line-ok   { color: var(--accent); }
 .term-line-pre  { white-space: pre; font-family: inherit; margin: 0; }
 
-/* inline game input (io.read prompt) */
-.term-input-row {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: nowrap;
-}
-.term-input-prompt {
-  flex-shrink: 0;
-}
-.term-inline-input {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--fg);
-  font-family: inherit;
-  font-size: inherit;
-  line-height: 1.65;
-  caret-color: var(--accent);
-  flex: 1;
-  min-width: 40px;
-  padding: 0;
-}
 
 /* ── PRESET PICKER (desktop only) ───────────────────────────── */
 #preset-picker { display: none; }

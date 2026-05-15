@@ -982,11 +982,13 @@ function toggleTheme() {
 // HIDDEN TERMINAL — press ':' or click [:] to open
 // ================================================================
 (function () {
-  var overlay  = document.getElementById('term-overlay');
-  var output   = document.getElementById('term-output');
-  var inp      = document.getElementById('term-input');
-  var inpRow   = document.getElementById('term-input-row');
+  var overlay    = document.getElementById('term-overlay');
+  var output     = document.getElementById('term-output');
+  var inp        = document.getElementById('term-input');
+  var inpRow     = document.getElementById('term-input-row');
+  var termPrompt = document.getElementById('term-prompt');
   if (!overlay || !output || !inp) return;
+  var DEFAULT_PROMPT = termPrompt ? termPrompt.innerHTML : '~$&nbsp;';
 
   var hist = [], histIdx = -1, isOpen = false;
   var PAGE_START = Date.now();
@@ -1908,7 +1910,7 @@ function toggleTheme() {
     function exitGame() {
       flushIoBuf();
       _gameMode = false; _gameResume = null;
-      if (inpRow) inpRow.style.display = '';
+      if (termPrompt) termPrompt.innerHTML = DEFAULT_PROMPT;
     }
 
     function step(inputStr) {
@@ -1967,64 +1969,16 @@ function toggleTheme() {
             }
           }
         }
-        // game is waiting for io.read() input — show inline input in output
+        // game is waiting for io.read() — show prompt in bottom bar, user types there
         _gameResume = step;
-        var prompt = iobuf; iobuf = '';
-
-        var inputRow = document.createElement('div');
-        inputRow.className = 'term-input-row';
-
-        if (prompt) {
-          var promptEl = document.createElement('pre');
-          promptEl.className = 'term-line-pre term-input-prompt';
-          promptEl.innerHTML = ansiToHtml(prompt);
-          inputRow.appendChild(promptEl);
+        var ioPrompt = iobuf; iobuf = '';
+        // show the io.read prompt in the bottom prompt span
+        if (termPrompt) {
+          termPrompt.innerHTML = ioPrompt ? ansiToHtml(ioPrompt) : '';
         }
-
-        var inlineInp = document.createElement('input');
-        inlineInp.type = 'text';
-        inlineInp.className = 'term-inline-input';
-        inlineInp.autocomplete = 'off';
-        inlineInp.spellcheck = false;
-        inputRow.appendChild(inlineInp);
-
-        output.appendChild(inputRow);
+        inp.value = '';
+        inp.focus();
         output.scrollTop = output.scrollHeight;
-
-        // hide the bottom ~$ bar so there's only one place to type
-        if (inpRow) inpRow.style.display = 'none';
-        inlineInp.focus();
-
-        function submitInline(val) {
-          if (inpRow) inpRow.style.display = '';
-          inlineInp.remove();
-          var typedEl = document.createElement('pre');
-          typedEl.className = 'term-line-pre';
-          typedEl.textContent = val;
-          inputRow.appendChild(typedEl);
-          inp.focus();
-          _gameResume = null;
-          if (val.trim() === 'quit' || val.trim() === 'exit' || val.trim() === 'q') {
-            _gameMode = false;
-            line('game exited.', 'term-line-ok');
-          } else {
-            step(val);
-          }
-        }
-
-        inlineInp.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            submitInline(inlineInp.value);
-          } else if (e.key === 'Escape') {
-            if (inpRow) inpRow.style.display = '';
-            _gameMode = false; _gameResume = null;
-            inlineInp.remove();
-            inp.focus();
-            line('game exited.', 'term-line-ok');
-          }
-          e.stopPropagation();
-        });
 
       } else {
         if (st !== lua.LUA_OK) {
@@ -2755,6 +2709,9 @@ function toggleTheme() {
   function close() {
     overlay.classList.remove('open');
     isOpen = false;
+    // if a game was mid-input, restore the prompt
+    if (termPrompt) termPrompt.innerHTML = DEFAULT_PROMPT;
+    _gameMode = false; _gameResume = null;
   }
 
   // expose for arcade page buttons
@@ -2796,12 +2753,27 @@ function toggleTheme() {
     if (e.key === 'Enter') {
       var v = inp.value; inp.value = '';
       if (_gameMode) {
-        line('> ' + v, 'term-line-cmd');
+        // echo what was shown in prompt + typed value, then restore ~$ prompt
+        var echoPrompt = termPrompt ? termPrompt.innerHTML : '';
+        if (termPrompt) termPrompt.innerHTML = DEFAULT_PROMPT;
+        if (echoPrompt && echoPrompt !== DEFAULT_PROMPT) {
+          // show "prompt value" as one output line
+          var echoEl = document.createElement('pre');
+          echoEl.className = 'term-line-pre';
+          echoEl.innerHTML = echoPrompt + v;
+          output.appendChild(echoEl);
+        } else {
+          line('> ' + v, 'term-line-cmd');
+        }
         if (v.trim() === 'quit' || v.trim() === 'exit' || v.trim() === 'q') {
           _gameMode = false; _gameResume = null;
+          if (termPrompt) termPrompt.innerHTML = DEFAULT_PROMPT;
           line('─────────────────────────────────────────', 'term-line-pre');
           line('game exited.', 'term-line-ok');
-        } else if (_gameResume) { _gameResume(v); }
+        } else if (_gameResume) {
+          _gameResume = null;
+          step(v);
+        }
       } else { run(v); }
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
