@@ -4,22 +4,48 @@
 <div id="ag-loading" style="color:var(--muted)">loading...</div>
 
 <div id="ag-content" style="display:none">
-  <h1 id="ag-title" style="margin-bottom:4px;"></h1>
-  <p id="ag-meta" style="color:var(--muted);margin-bottom:24px;"></p>
-  <button id="ag-play" style="margin-bottom:32px;">play in terminal →</button>
-  <hr style="margin-bottom:32px;">
+  <h1 id="ag-title" style="margin-bottom:6px;"></h1>
+  <p id="ag-desc" style="color:var(--muted);margin-bottom:6px;display:none;"></p>
+  <p id="ag-meta" style="color:var(--muted);font-size:0.82rem;margin-bottom:28px;"></p>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;">
+    <button id="ag-play" class="ag-btn ag-btn-primary">play in terminal →</button>
+    <button id="ag-remix" class="ag-btn">remix →</button>
+  </div>
+
+  <hr style="margin-bottom:28px;">
+
+  <details id="ag-del-section" style="margin-bottom:32px;">
+    <summary class="ag-del-summary">delete this game</summary>
+    <div style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <input type="text" id="ag-code-inp" class="arc-code-inp" placeholder="edit code  (xxxxx-xxxxx)">
+      <button id="ag-del-confirm" class="arc-del-confirm">confirm delete</button>
+      <span id="ag-del-status" class="arc-del-status"></span>
+    </div>
+  </details>
+
+  <h3 style="margin-bottom:8px;">source</h3>
   <pre id="ag-source" class="arc-source-block"></pre>
 </div>
 
 <div id="ag-error" style="display:none;color:var(--muted)">game not found.</div>
 
 <style>
-#ag-play {
-  background: none; border: 1px solid var(--fg); color: var(--fg);
+.ag-btn {
+  background: none; border: 1px solid var(--border); color: var(--muted);
   font-family: inherit; font-size: inherit; padding: 8px 18px;
   cursor: pointer; transition: color .15s, border-color .15s;
 }
-#ag-play:hover { color: var(--accent); border-color: var(--accent); }
+.ag-btn:hover { color: var(--accent); border-color: var(--accent); }
+.ag-btn-primary { color: var(--fg); border-color: var(--fg); }
+.ag-btn-primary:hover { color: var(--accent); border-color: var(--accent); }
+.ag-del-summary {
+  cursor: pointer; list-style: none; color: var(--muted);
+  font-size: 0.85rem; user-select: none;
+}
+.ag-del-summary::-webkit-details-marker { display: none; }
+.ag-del-summary::before { content: '+ '; }
+#ag-del-section[open] .ag-del-summary::before { content: '− '; }
 </style>
 
 <script>
@@ -65,12 +91,36 @@
       if (game.error) { document.getElementById('ag-error').style.display = 'block'; return; }
       document.title = game.title + ' — arcade';
       document.getElementById('ag-title').textContent = game.title;
+      if (game.desc) {
+        var descEl = document.getElementById('ag-desc');
+        descEl.textContent = game.desc;
+        descEl.style.display = 'block';
+      }
       document.getElementById('ag-meta').textContent = 'by ' + game.author + '  ·  ' + fmt(game.date) + '  ·  ' + id;
       document.getElementById('ag-source').innerHTML = highlightLua(game.code);
       document.getElementById('ag-content').style.display = 'block';
+
       document.getElementById('ag-play').addEventListener('click', function() {
         if (window.termRun) { window.termRun('play ' + id); return; }
-        this.textContent = 'open terminal with [:], then type: play ' + id;
+        this.textContent = 'open terminal [:], then type: play ' + id;
+      });
+
+      document.getElementById('ag-remix').addEventListener('click', function() {
+        window.location.href = '/arcade/?remix=' + encodeURIComponent(id);
+      });
+
+      document.getElementById('ag-del-confirm').addEventListener('click', function() {
+        var code = document.getElementById('ag-code-inp').value.trim();
+        var status = document.getElementById('ag-del-status');
+        if (!code) { status.textContent = 'enter your edit code'; return; }
+        this.disabled = true; this.textContent = 'deleting...'; status.textContent = '';
+        fetch('/api/games?id=' + encodeURIComponent(id), {
+          method: 'DELETE', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({code: code})
+        }).then(function(r){return r.json();}).then(function(d){
+          if (d.ok) { window.location.href = '/arcade/'; }
+          else { status.textContent = d.error || 'error'; document.getElementById('ag-del-confirm').disabled = false; document.getElementById('ag-del-confirm').textContent = 'confirm delete'; }
+        }).catch(function(){ status.textContent = 'network error'; document.getElementById('ag-del-confirm').disabled = false; document.getElementById('ag-del-confirm').textContent = 'confirm delete'; });
       });
     })
     .catch(function() {

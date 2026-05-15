@@ -1,7 +1,7 @@
 {{ define "main" }}
 <h1 style="margin-bottom:6px;">arcade</h1>
-<p style="color:var(--muted);margin-bottom:6px;">lua games made by visitors. click a card to play, or open the terminal (<kbd>[:]</kbd>) and type <code>games</code>.</p>
-<p style="color:var(--muted);margin-bottom:32px;font-size:0.88rem;">
+<p style="color:var(--muted);margin-bottom:6px;">lua games made by visitors. click a game to play, or open the terminal (<kbd>[:]</kbd>) and type <code>games</code>.</p>
+<p style="color:var(--muted);margin-bottom:32px;font-size:0.85rem;">
   available: <code>print()</code> · <code>io.read("prompt")</code> · <code>math</code> · <code>string</code> · <code>table</code> · loops · functions
 </p>
 
@@ -9,13 +9,14 @@
 
 <hr style="margin:32px 0;">
 
-<details id="arc-details">
-  <summary style="cursor:pointer;color:var(--accent);list-style:none;margin-bottom:20px;">+ submit a game</summary>
+<button class="arc-section-btn" id="arc-toggle-submit">+ submit a game</button>
+<div id="arc-submit-body" style="display:none;">
   <div class="arc-form">
     <div class="arc-row">
       <input id="arc-title"  type="text" placeholder="game title (unique, becomes the id)" maxlength="50" autocomplete="off" spellcheck="false">
       <input id="arc-author" type="text" placeholder="your name" maxlength="50" autocomplete="off" spellcheck="false">
     </div>
+    <input id="arc-desc" type="text" placeholder="short description (optional, max 200 chars)" maxlength="200" autocomplete="off" spellcheck="false" style="margin-bottom:10px;">
     <div class="arc-editor">
       <pre class="arc-editor-hl" id="arc-hl" aria-hidden="true"></pre>
       <textarea id="arc-code" placeholder="-- lua code here&#10;print('what is your name?')&#10;local name = io.read()&#10;print('hi ' .. name)" rows="14" spellcheck="false" autocomplete="off"></textarea>
@@ -29,17 +30,17 @@
     <div id="arc-editcode-box" style="display:none;margin-top:16px;padding:12px;border:1px solid var(--accent);font-size:0.88rem;">
       <div style="color:var(--accent);font-weight:700;margin-bottom:4px;">your edit code — save this, it won't be shown again</div>
       <code id="arc-editcode" style="font-size:1rem;letter-spacing:0.05em;"></code>
-      <div style="color:var(--muted);margin-top:6px;font-size:0.82rem;">to delete: terminal → <code>delete &lt;id&gt; &lt;code&gt;</code></div>
+      <div style="color:var(--muted);margin-top:6px;font-size:0.82rem;">to delete: open the game page, scroll to delete — or terminal → <code>delete &lt;id&gt; &lt;code&gt;</code></div>
     </div>
   </div>
-</details>
+</div>
 
 <hr style="margin:32px 0;">
 
-<details id="arc-docs">
-  <summary style="cursor:pointer;color:var(--accent);list-style:none;margin-bottom:20px;">lua basics</summary>
+<button class="arc-section-btn" id="arc-toggle-docs">lua basics</button>
+<div id="arc-docs-body" style="display:none;margin-top:16px;">
   <pre id="arc-docs-code" class="arc-source-block" style="font-size:0.82rem;line-height:1.7;"></pre>
-</details>
+</div>
 
 <script>
 (function() {
@@ -135,89 +136,36 @@
 
   document.getElementById('arc-docs-code').innerHTML = highlightLua(DOCS);
 
+  // ── section toggles ───────────────────────────────────────────────────────
+  document.getElementById('arc-toggle-submit').addEventListener('click', function() {
+    var body = document.getElementById('arc-submit-body');
+    var open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : 'block';
+    this.textContent = open ? '+ submit a game' : '− submit a game';
+  });
+  document.getElementById('arc-toggle-docs').addEventListener('click', function() {
+    var body = document.getElementById('arc-docs-body');
+    var open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : 'block';
+    this.textContent = open ? 'lua basics' : '− lua basics';
+  });
+
   // ── render cards ──────────────────────────────────────────────────────────
   function fmt(iso) { var d = new Date(iso); return d.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}); }
   function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-  var _codeCache = {};
-
   function render(games) {
     var el = document.getElementById('arc-games');
-    if (!games.length) { el.innerHTML = '<p style="color:var(--muted)">no games yet. submit one below.</p>'; return; }
-    el.innerHTML = '<p id="arc-hint" style="display:none;color:var(--muted);margin-bottom:12px;font-size:0.88rem;"></p>'
-      + games.map(function(g) {
-        return '<div class="arc-card" id="card-' + esc(g.id) + '">'
-          + '<div class="arc-card-top">'
-          + '<a class="arc-card-link" href="/arcade/game/?id=' + esc(g.id) + '">'
-          + '<span class="arc-card-title">' + esc(g.title) + '</span>'
-          + '</a>'
-          + '<span class="arc-card-author">by ' + esc(g.author) + '</span>'
-          + '<span class="arc-card-date">' + fmt(g.date) + '</span>'
-          + '</div>'
-          + '<div class="arc-card-actions">'
-          + '<button class="arc-play-btn" data-id="' + esc(g.id) + '">play →</button>'
-          + '<button class="arc-remix-btn" data-id="' + esc(g.id) + '">remix</button>'
-          + '<button class="arc-del-btn" data-id="' + esc(g.id) + '">delete</button>'
-          + '</div>'
-          + '<div class="arc-del-form" id="del-' + esc(g.id) + '" style="display:none">'
-          + '<input type="text" class="arc-code-inp" placeholder="edit code  (xxxxx-xxxxx)">'
-          + '<button class="arc-del-confirm" data-id="' + esc(g.id) + '">confirm delete</button>'
-          + '<span class="arc-del-status"></span>'
-          + '</div>'
-          + '</div>';
-      }).join('');
-
-    el.querySelectorAll('.arc-play-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var id = btn.getAttribute('data-id');
-        if (window.termRun) { window.termRun('play ' + id); return; }
-        var h = document.getElementById('arc-hint');
-        if (h) { h.style.display = 'block'; h.textContent = 'open terminal with [:], then type: play ' + id; }
-      });
-    });
-
-    el.querySelectorAll('.arc-remix-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var id = btn.getAttribute('data-id');
-        document.getElementById('arc-details').open = true;
-        document.getElementById('arc-title').value = 'remix-' + id.slice(0, 20);
-        document.getElementById('arc-details').scrollIntoView({behavior:'smooth', block:'start'});
-        if (_codeCache[id]) { setCode(_codeCache[id]); return; }
-        fetch(API + '?id=' + encodeURIComponent(id)).then(function(r){return r.json();}).then(function(d){
-          _codeCache[id] = d.code || ''; setCode(_codeCache[id]);
-        });
-      });
-    });
-
-    el.querySelectorAll('.arc-del-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var id = btn.getAttribute('data-id');
-        var form = document.getElementById('del-' + id);
-        var open = form.style.display === 'none';
-        form.style.display = open ? 'flex' : 'none';
-        btn.textContent = open ? 'cancel' : 'delete';
-      });
-    });
-
-    el.querySelectorAll('.arc-del-confirm').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var id = btn.getAttribute('data-id');
-        var form = document.getElementById('del-' + id);
-        var inp = form.querySelector('.arc-code-inp');
-        var status = form.querySelector('.arc-del-status');
-        if (!inp.value.trim()) { status.textContent = 'enter your edit code'; return; }
-        btn.disabled = true; btn.textContent = 'deleting...'; status.textContent = '';
-        fetch(API + '?id=' + encodeURIComponent(id), {
-          method: 'DELETE', headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({code: inp.value.trim()})
-        }).then(function(r){return r.json();}).then(function(d){
-          if (d.ok) {
-            var card = document.getElementById('card-' + id); if (card) card.remove();
-            lsBust();
-          } else { status.textContent = d.error || 'error'; btn.disabled = false; btn.textContent = 'confirm delete'; }
-        }).catch(function(){ status.textContent = 'network error'; btn.disabled = false; btn.textContent = 'confirm delete'; });
-      });
-    });
+    if (!games.length) { el.innerHTML = '<p style="color:var(--muted)">no games yet — submit one below.</p>'; return; }
+    el.innerHTML = games.map(function(g) {
+      return '<a class="arc-card" href="/arcade/game/?id=' + esc(g.id) + '">'
+        + '<div class="arc-card-header">'
+        + '<span class="arc-card-title">' + esc(g.title) + '</span>'
+        + '<span class="arc-card-meta">by ' + esc(g.author) + ' · ' + fmt(g.date) + '</span>'
+        + '</div>'
+        + (g.desc ? '<div class="arc-card-desc">' + esc(g.desc) + '</div>' : '')
+        + '</a>';
+    }).join('');
   }
 
   function load(force) {
@@ -268,6 +216,18 @@
     }
   });
 
+  // ── remix prefill from URL param ─────────────────────────────────────────
+  var remixId = new URLSearchParams(window.location.search).get('remix');
+  if (remixId) {
+    document.getElementById('arc-submit-body').style.display = 'block';
+    document.getElementById('arc-toggle-submit').textContent = '− submit a game';
+    document.getElementById('arc-title').value = 'remix-' + remixId.slice(0, 20);
+    fetch(API + '?id=' + encodeURIComponent(remixId)).then(function(r){return r.json();}).then(function(d){
+      setCode(d.code || '');
+      document.getElementById('arc-submit-body').scrollIntoView({behavior:'smooth'});
+    });
+  }
+
   // ── test button ───────────────────────────────────────────────────────────
   document.getElementById('arc-test').addEventListener('click', function() {
     var code = ta.value.trim();
@@ -280,6 +240,7 @@
   document.getElementById('arc-submit').addEventListener('click', function() {
     var title  = document.getElementById('arc-title').value.trim();
     var author = document.getElementById('arc-author').value.trim();
+    var desc   = document.getElementById('arc-desc').value.trim();
     var code   = ta.value.trim();
     var hp     = document.getElementById('arc-hp').value;
     var status = document.getElementById('arc-status');
@@ -287,12 +248,13 @@
     if (!title || !author || !code) { status.textContent = 'title, name, and code required.'; status.style.color = 'var(--muted)'; return; }
     btn.disabled = true; btn.textContent = 'submitting...'; status.textContent = '';
     fetch(API, { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({title:title, author:author, code:code, hp:hp}) })
+      body: JSON.stringify({title:title, author:author, desc:desc, code:code, hp:hp}) })
     .then(function(r){return r.json();})
     .then(function(data) {
       if (data.ok) {
         document.getElementById('arc-title').value = '';
         document.getElementById('arc-author').value = '';
+        document.getElementById('arc-desc').value = '';
         setCode(''); status.textContent = 'submitted!  play it: play ' + data.id; status.style.color = 'var(--accent)';
         document.getElementById('arc-editcode').textContent = data.editCode;
         document.getElementById('arc-editcode-box').style.display = 'block';

@@ -41,7 +41,7 @@ function checkAuth(submitted, game) {
   return game.codeHash && hashCode(submitted) === game.codeHash;
 }
 
-const MAX_TITLE = 50, MAX_AUTHOR = 50, MAX_CODE = 8000;
+const MAX_TITLE = 50, MAX_AUTHOR = 50, MAX_DESC = 200, MAX_CODE = 8000;
 const RATE_TTL = 3600, MAX_KEEP = 50;
 
 async function fetchAll() {
@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
     if (req.method === 'GET' && !id) {
       res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=60');
       const all = await fetchAll();
-      return res.status(200).json(all.map(g => ({ id: g.id, title: g.title, author: g.author, date: g.date })));
+      return res.status(200).json(all.map(g => ({ id: g.id, title: g.title, author: g.author, desc: g.desc || '', date: g.date })));
     }
 
     // ── GET single game by id ─────────────────────────────────────────────────
@@ -85,11 +85,12 @@ module.exports = async (req, res) => {
 
     // ── POST: submit a game ───────────────────────────────────────────────────
     if (req.method === 'POST') {
-      const { title, author, code, hp } = req.body || {};
+      const { title, author, desc, code, hp } = req.body || {};
       if (hp) return res.status(200).json({ ok: true });
 
       const t = (title  || '').trim().slice(0, MAX_TITLE);
       const a = (author || '').trim().slice(0, MAX_AUTHOR);
+      const d = (desc   || '').trim().slice(0, MAX_DESC);
       const c = (code   || '').trim().slice(0, MAX_CODE);
       if (!t || !a || !c) return res.status(400).json({ error: 'title, author, and code are all required' });
 
@@ -104,7 +105,7 @@ module.exports = async (req, res) => {
         return res.status(409).json({ error: `a game called "${newId}" already exists — pick a different title` });
 
       const editCode = genCode();
-      const entry = { id: newId, title: t, author: a, code: c, date: new Date().toISOString(), codeHash: hashCode(editCode) };
+      const entry = { id: newId, title: t, author: a, desc: d, code: c, date: new Date().toISOString(), codeHash: hashCode(editCode) };
 
       await kv([
         ['lpush', 'arcade', JSON.stringify(entry)],
