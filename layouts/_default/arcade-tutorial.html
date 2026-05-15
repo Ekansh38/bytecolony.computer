@@ -186,29 +186,33 @@
   /* code editor component */
   .tut-ce-wrap {
     position: relative;
-    border: 1px solid var(--border);
-    background: var(--code-bg, var(--bg));
     margin-bottom: 20px;
     overflow: hidden;
   }
-  .tut-ce-wrap:focus-within { border-color: var(--accent); }
   .tut-ce-hl {
     position: absolute; inset: 0;
-    padding: 14px 18px; margin: 0;
-    font-size: 0.82rem; line-height: 1.75; tab-size: 2;
-    font-family: inherit; white-space: pre; overflow: hidden;
+    padding: 10px 14px; margin: 0;
+    font-size: 0.82rem; line-height: 1.7; tab-size: 2;
+    font-family: inherit;
+    white-space: pre-wrap; word-wrap: break-word;
     pointer-events: none; color: var(--fg);
-    box-sizing: border-box;
+    box-sizing: border-box; overflow: hidden;
+    background: var(--code-bg, var(--bg));
+    border: 1px solid var(--border);
   }
   .tut-ce-ta {
     position: relative; display: block; width: 100%;
-    padding: 14px 18px; box-sizing: border-box;
-    font-size: 0.82rem; line-height: 1.75; tab-size: 2;
-    font-family: inherit; white-space: pre;
+    padding: 10px 14px; box-sizing: border-box;
+    font-size: 0.82rem; line-height: 1.7; tab-size: 2;
+    font-family: inherit;
+    white-space: pre-wrap; word-wrap: break-word;
     background: transparent; color: transparent;
-    caret-color: var(--fg); border: none; resize: none;
-    outline: none; overflow: auto; min-height: 48px;
+    caret-color: var(--fg); border: 1px solid var(--border);
+    resize: none; outline: none; overflow: hidden;
+    min-height: 40px;
   }
+  .tut-ce-ta:focus { border-color: var(--accent); }
+  .tut-ce-wrap:focus-within .tut-ce-hl { border-color: var(--accent); }
 
   /* next button */
   .tut-btn {
@@ -230,6 +234,31 @@
   }
   .tut-btn-muted:hover { border-color: var(--fg); color: var(--fg); }
 
+  /* SCREEN 1: animated cave preview */
+  .tut-preview-term {
+    border: 1px solid var(--border);
+    background: var(--code-bg, var(--bg));
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .tut-preview-term-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 12px; border-bottom: 1px solid var(--border);
+    background: var(--code-bg, var(--bg));
+  }
+  .tut-preview-term-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border);
+  }
+  .tut-preview-term-title {
+    font-size: 0.72rem; color: var(--muted); margin-left: 4px;
+  }
+  .tut-preview-term-out {
+    padding: 10px 14px; font-size: 0.82rem;
+    min-height: 140px; line-height: 1.75;
+    color: var(--fg); background: var(--bg);
+  }
+
   /* SCREEN 2: mini terminal */
   .tut-mini-term {
     border: 1px solid var(--border); margin-bottom: 16px;
@@ -249,7 +278,7 @@
     margin-left: 4px;
   }
   .tut-term-out {
-    min-height: 48px; padding: 10px 14px;
+    min-height: 40px; padding: 10px 14px;
     font-size: 0.85rem; color: var(--muted);
     font-style: italic; background: var(--bg);
     border: none; outline: none;
@@ -272,139 +301,64 @@
   }
   .tut-success-msg.tut-visible { opacity: 1; }
 
-  /* SCREEN 3: variables */
+  /* SCREEN 3: variables terminal (real terminal look) */
   .tut-var-term {
-    border: 1px solid var(--border); margin-bottom: 16px;
-    overflow: hidden;
+    border: 1px solid var(--border); overflow: hidden;
+    background: var(--code-bg, var(--bg)); margin-bottom: 16px;
   }
   .tut-var-out {
-    min-height: 40px; padding: 10px 14px;
-    font-size: 0.88rem; color: var(--muted);
-    font-style: italic; background: var(--bg);
-    white-space: pre-wrap;
+    min-height: 8px; padding: 8px 14px;
+    font-size: 0.82rem; color: var(--fg);
+    line-height: 1.7; background: var(--bg);
   }
-  .tut-var-out.active { color: var(--fg); font-style: normal; }
+  .tut-var-out:empty { min-height: 8px; padding: 4px 14px; }
   .tut-var-inp-row {
-    display: flex; align-items: center; gap: 8px;
-    padding: 7px 14px; border-top: 1px solid var(--border);
-    background: var(--code-bg, var(--bg));
+    display: flex; align-items: center; padding: 5px 12px;
+    border-top: 1px solid var(--border);
+    background: var(--code-bg, var(--bg)); gap: 6px;
   }
   .tut-var-prompt {
-    font-size: 0.82rem; color: var(--muted); flex-shrink: 0;
+    color: var(--accent); font-size: 0.82rem; flex-shrink: 0;
   }
   .tut-var-inp {
-    background: transparent; border: none; border-bottom: 1px solid var(--accent);
-    color: var(--fg); font-family: inherit; font-size: 0.82rem;
-    outline: none; flex: 1;
+    background: transparent; border: none; color: var(--fg);
+    font-family: inherit; font-size: 0.82rem;
+    outline: none; flex: 1; caret-color: var(--accent);
   }
 
-  /* SCREEN 4: story builder */
-  .tut-story-scene {
-    border: 1px solid var(--border);
-    background: var(--code-bg, var(--bg));
-    padding: 20px 22px; margin-bottom: 16px;
-    min-height: 90px; position: relative;
+  /* SCREEN 4: if/else two-panel */
+  .tut-two-panel {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 18px; align-items: start;
   }
-  .tut-story-text {
-    font-size: 0.88rem; color: var(--fg);
-    line-height: 1.7; margin-bottom: 14px;
-    min-height: 2.5em;
+  @media (max-width: 540px) { .tut-two-panel { grid-template-columns: 1fr; } }
+  .tut-cave-choice-btn {
+    width: 100%; padding: 12px 16px;
+    border: 1px solid var(--border); background: transparent;
+    font-family: inherit; font-size: 0.88rem; color: var(--fg);
+    cursor: pointer; text-align: left;
+    transition: border-color 0.15s, background 0.15s;
+    margin-bottom: 8px; display: block;
   }
-  .tut-story-choices {
-    display: flex; gap: 8px; flex-wrap: wrap;
-  }
-  .tut-story-btn {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--muted); font-family: inherit; font-size: 0.8rem;
-    padding: 5px 12px; cursor: pointer;
-    transition: all 0.18s; position: relative;
-  }
-  .tut-story-btn:hover:not(:disabled) {
-    border-color: var(--accent); color: var(--accent);
-    box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 25%, transparent);
-  }
-  .tut-story-btn:disabled { opacity: 0.35; cursor: default; }
-  .tut-story-btn.tut-story-chosen {
-    border-color: var(--accent); color: var(--bg);
-    background: var(--accent);
-  }
-  .tut-story-path-label {
-    font-size: 0.7rem; color: var(--accent);
-    letter-spacing: 0.08em; text-transform: uppercase;
-    margin-bottom: 6px; opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .tut-story-path-label.visible { opacity: 1; }
-  .tut-story-outcome {
-    font-size: 0.85rem; line-height: 1.6;
-    padding: 12px 14px; margin-top: 12px;
-    border-left: 2px solid var(--accent);
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.35s, transform 0.35s;
-    color: var(--fg);
-  }
-  .tut-story-outcome.visible { opacity: 1; transform: translateY(0); }
-  .tut-story-outcome.outcome-good { border-color: var(--accent); }
-  .tut-story-outcome.outcome-bad { border-color: var(--code-err, #f7768e); color: var(--code-err, #f7768e); }
-  .tut-story-reset {
-    font-size: 0.75rem; color: var(--muted);
-    background: none; border: none; cursor: pointer;
-    font-family: inherit; padding: 0; margin-top: 10px;
-    opacity: 0.6; transition: opacity 0.15s;
-  }
-  .tut-story-reset:hover { opacity: 1; }
-
-  /* SCREEN 5: if-else slider */
-  .tut-if-code {
-    background: var(--code-bg, var(--bg));
-    border: 1px solid var(--border);
-    padding: 14px 18px; font-size: 0.82rem;
-    line-height: 1.75; margin-bottom: 18px;
-    white-space: pre;
-  }
-  .tut-slider-wrap {
-    margin-bottom: 18px;
-  }
-  .tut-slider-label {
-    font-size: 0.78rem; color: var(--muted);
-    margin-bottom: 6px;
-  }
-  .tut-slider-label span { color: var(--accent); font-weight: 700; }
-  input[type=range].tut-slider {
-    width: 100%; appearance: none; -webkit-appearance: none;
-    height: 4px; background: var(--border); outline: none;
-    cursor: pointer; border-radius: 0;
-  }
-  input[type=range].tut-slider::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 14px; height: 14px; border-radius: 0;
-    background: var(--accent); cursor: pointer;
-  }
-  .tut-story-output {
-    border: 1px solid var(--border);
-    padding: 16px 20px; margin-bottom: 18px;
-    min-height: 60px; position: relative;
-    background: var(--code-bg, var(--bg));
-    transition: border-color 0.3s;
-  }
-  .tut-story-output.active-win {
+  .tut-cave-choice-btn:hover { border-color: var(--accent); }
+  .tut-cave-choice-btn.chosen {
     border-color: var(--accent);
-    box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 18%, transparent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
   }
-  .tut-story-output.active-lose {
-    border-color: var(--code-err, #f7768e);
+  .tut-branch-code {
+    background: var(--code-bg, var(--bg));
+    border: 1px solid var(--border);
+    padding: 12px 16px; font-size: 0.8rem;
+    line-height: 1.75; white-space: pre;
+    tab-size: 2; overflow-x: auto;
   }
-  .tut-story-line {
-    font-size: 0.9rem; color: var(--fg);
-    opacity: 0; transform: translateY(4px);
-    transition: opacity 0.3s, transform 0.3s;
-    line-height: 1.6;
+  .tut-branch-line { display: block; }
+  .tut-branch-line.active {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    margin: 0 -16px; padding: 0 16px;
   }
-  .tut-story-line.visible { opacity: 1; transform: translateY(0); }
-  .tut-story-tag-win { color: var(--accent); font-weight: 700; }
-  .tut-story-tag-lose { color: var(--code-err, #f7768e); font-weight: 700; }
 
-  /* SCREEN 6: loops */
+  /* SCREEN 5: loops step-through */
   .tut-loop-out {
     border: 1px solid var(--border);
     background: var(--code-bg, var(--bg));
@@ -437,7 +391,24 @@
     transition: transform 0.15s;
   }
 
-  /* SCREEN 7: powers */
+  /* loop code highlight for current i */
+  .tut-loop-code-wrap {
+    background: var(--code-bg, var(--bg));
+    border: 1px solid var(--border);
+    padding: 12px 16px; font-size: 0.82rem;
+    line-height: 1.75; white-space: pre;
+    tab-size: 2; margin-bottom: 14px; overflow-x: auto;
+  }
+  .tut-loop-hl-line {
+    display: block;
+    transition: background 0.2s;
+  }
+  .tut-loop-hl-line.active {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    margin: 0 -16px; padding: 0 16px;
+  }
+
+  /* SCREEN 6: powers */
   .tut-power-demo {
     border: 1px solid var(--border);
     padding: 14px 18px; margin-bottom: 18px;
@@ -477,6 +448,11 @@
     display: block; font-size: 0.7rem;
     color: var(--muted); line-height: 1.4;
   }
+  .tut-power-cave-ctx {
+    display: block; font-size: 0.65rem;
+    color: var(--muted); margin-top: 5px;
+    opacity: 0.7; font-style: italic;
+  }
   .tut-power-check {
     position: absolute; top: 5px; right: 7px;
     font-size: 0.65rem; color: var(--accent);
@@ -489,62 +465,7 @@
   }
   .tut-power-note span { color: var(--accent); }
 
-  /* SCREEN 9 (edit code) */
-  .tut-editcode-box {
-    border: 1px solid var(--accent);
-    padding: 18px 22px; margin-bottom: 18px;
-    background: color-mix(in srgb, var(--accent) 5%, transparent);
-    display: flex; align-items: center; gap: 14px;
-    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 14%, transparent);
-  }
-  .tut-editcode-val {
-    font-size: 1.15rem; font-weight: 700;
-    color: var(--accent); letter-spacing: 0.06em;
-    flex: 1;
-  }
-  .tut-editcode-copy {
-    background: transparent; border: 1px solid var(--accent);
-    color: var(--accent); font-family: inherit; font-size: 0.75rem;
-    padding: 4px 10px; cursor: pointer;
-    transition: background 0.15s, color 0.15s; flex-shrink: 0;
-  }
-  .tut-editcode-copy:hover { background: var(--accent); color: var(--bg); }
-  .tut-editcode-note {
-    font-size: 0.8rem; color: var(--muted);
-    margin-bottom: 8px; line-height: 1.5;
-  }
-  .tut-editcode-note strong { color: var(--fg); }
-
-  /* EXPERT screen */
-  .tut-api-grid {
-    display: flex; flex-direction: column; gap: 10px;
-    margin-bottom: 20px;
-  }
-  .tut-api-row {
-    display: flex; align-items: baseline; gap: 12px;
-    border: 1px solid var(--border);
-    padding: 10px 14px;
-    background: var(--code-bg, var(--bg));
-    cursor: pointer; transition: border-color 0.15s;
-  }
-  .tut-api-row:hover { border-color: var(--accent); }
-  .tut-api-row.tut-api-tried { border-color: var(--accent); }
-  .tut-api-name {
-    color: var(--accent); font-weight: 700; font-size: 0.85rem;
-    flex-shrink: 0; min-width: 170px;
-  }
-  .tut-api-desc {
-    color: var(--muted); font-size: 0.78rem; line-height: 1.5;
-  }
-  .tut-api-demo-out {
-    font-size: 0.8rem; color: var(--accent);
-    margin-top: 6px; opacity: 0;
-    transition: opacity 0.3s; white-space: pre;
-  }
-  .tut-api-demo-out.show { opacity: 1; }
-  .tut-api-col { flex: 1; }
-
-  /* NETWORKING screen */
+  /* SCREEN 7: networking */
   .tut-net-demo {
     border: 1px solid var(--border);
     background: var(--code-bg, var(--bg));
@@ -566,7 +487,7 @@
   .tut-net-panel.hidden { display: none; }
   .tut-lb {
     display: flex; flex-direction: column; gap: 4px;
-    min-height: 80px;
+    min-height: 60px;
   }
   .tut-lb-row {
     display: flex; gap: 12px; align-items: center;
@@ -592,9 +513,75 @@
     margin-top: 10px;
   }
   .tut-net-note span { color: var(--accent); }
+  /* net log line */
+  .tut-net-log {
+    font-size: 0.75rem; color: var(--muted);
+    margin-top: 8px; min-height: 18px;
+    transition: opacity 0.3s;
+    font-style: italic;
+  }
+  /* KV demo */
+  .tut-kv-counter {
+    font-size: 2.2rem; font-weight: 700; color: var(--accent);
+    text-align: center; padding: 14px 0 8px;
+    transition: transform 0.15s;
+  }
+  .tut-kv-btns { display: flex; gap: 8px; justify-content: center; margin-bottom: 10px; }
 
-  /* STARTER screen */
+  /* SCREEN 8: edit code */
+  .tut-editcode-box {
+    border: 1px solid var(--accent);
+    padding: 18px 22px; margin-bottom: 18px;
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  .tut-editcode-val {
+    font-size: 1.15rem; font-weight: 700;
+    color: var(--accent); letter-spacing: 0.06em;
+    flex: 1;
+  }
+  .tut-editcode-copy {
+    background: transparent; border: 1px solid var(--accent);
+    color: var(--accent); font-family: inherit; font-size: 0.75rem;
+    padding: 4px 10px; cursor: pointer;
+    transition: background 0.15s, color 0.15s; flex-shrink: 0;
+  }
+  .tut-editcode-copy:hover { background: var(--accent); color: var(--bg); }
+  .tut-editcode-note {
+    font-size: 0.8rem; color: var(--muted);
+    margin-bottom: 8px; line-height: 1.5;
+  }
+  .tut-editcode-note strong { color: var(--fg); }
+
+  /* SCREEN 9 (IDX_START): "you built it" */
   #tut-s7 .tut-step-wrap { max-width: 700px; }
+  .tut-built-cave {
+    border: 1px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+    overflow: hidden; margin-bottom: 20px;
+    box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .tut-built-header {
+    padding: 8px 14px; border-bottom: 1px solid var(--border);
+    font-size: 0.72rem; color: var(--accent); letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+  }
+  .tut-built-code {
+    padding: 12px 18px; font-size: 0.78rem; line-height: 1.75;
+    overflow-x: auto;
+  }
+  .tut-run-cave-btn {
+    width: 100%; padding: 14px;
+    background: var(--accent); color: var(--bg);
+    border: none; font-family: inherit; font-size: 1rem;
+    font-weight: 700; cursor: pointer; letter-spacing: 0.05em;
+    transition: opacity 0.15s;
+  }
+  .tut-run-cave-btn:hover { opacity: 0.88; }
+
+  /* starter picker */
   .tut-starters-grid {
     display: grid; grid-template-columns: 1fr 1fr;
     gap: 12px; margin-bottom: 12px;
@@ -642,6 +629,35 @@
     z-index: 100; font-size: 0.9rem; color: var(--accent);
   }
 
+  /* EXPERT screen */
+  .tut-api-grid {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 20px;
+  }
+  .tut-api-row {
+    display: flex; align-items: baseline; gap: 12px;
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    background: var(--code-bg, var(--bg));
+    cursor: pointer; transition: border-color 0.15s;
+  }
+  .tut-api-row:hover { border-color: var(--accent); }
+  .tut-api-row.tut-api-tried { border-color: var(--accent); }
+  .tut-api-name {
+    color: var(--accent); font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0; min-width: 170px;
+  }
+  .tut-api-desc {
+    color: var(--muted); font-size: 0.78rem; line-height: 1.5;
+  }
+  .tut-api-demo-out {
+    font-size: 0.8rem; color: var(--accent);
+    margin-top: 6px; opacity: 0;
+    transition: opacity 0.3s; white-space: pre;
+  }
+  .tut-api-demo-out.show { opacity: 1; }
+  .tut-api-col { flex: 1; }
+
   /* particles */
   .tut-particle {
     position: fixed; pointer-events: none;
@@ -670,7 +686,6 @@
   @media (max-width: 540px) {
     .tut-starters-grid { grid-template-columns: 1fr; }
     .tut-starter-card.tut-starter-blank { grid-column: 1; }
-    .tut-story-choices { flex-direction: column; }
     .tut-powers-grid { gap: 6px; }
   }
 </style>
@@ -679,7 +694,7 @@
   <canvas id="tut-canvas"></canvas>
   <div id="tut-progress"></div>
   <button id="tut-skip">skip tutorial</button>
-  <button id="tut-back">← back</button>
+  <button id="tut-back">&#8592; back</button>
 
   <div id="tut-dots">
     <div class="tut-dot" data-i="0"></div>
@@ -690,7 +705,6 @@
     <div class="tut-dot" data-i="5"></div>
     <div class="tut-dot" data-i="6"></div>
     <div class="tut-dot" data-i="7"></div>
-    <div class="tut-dot" data-i="8"></div>
   </div>
 
   <!-- SCREEN 0: experience check -->
@@ -708,7 +722,7 @@
         <span class="tut-card-symbol" style="top:10px;right:14px;animation-delay:0.8s">?</span>
         <span class="tut-card-symbol" style="bottom:12px;left:10px;animation-delay:2.5s">?</span>
         <span class="tut-choice-title">new to this</span>
-        <span class="tut-choice-desc">walk me through it — takes about 5–10 minutes</span>
+        <span class="tut-choice-desc">start from scratch, takes 5-10 min</span>
       </button>
     </div>
   </div>
@@ -730,7 +744,7 @@
         <div class="tut-api-row" data-eapi="sleep">
           <div class="tut-api-col">
             <div class="tut-api-name">sleep(ms)</div>
-            <div class="tut-api-desc">async pause via coroutines - doesn't block the browser.</div>
+            <div class="tut-api-desc">async pause via coroutines, doesn't block the browser.</div>
             <div class="tut-api-demo-out" id="eapi-sleep-out">3... 2... 1... GO!</div>
           </div>
         </div>
@@ -757,37 +771,47 @@
         </div>
       </div>
       <div style="font-size:0.78rem;color:var(--muted);margin-bottom:18px">full reference is in the <strong style="color:var(--fg)">docs panel</strong> inside the editor (right side)</div>
-      <button class="tut-btn" id="tut-expert-next">pick a starter →</button>
+      <!-- edit code section for expert path -->
+      <div class="tut-editcode-box" style="margin-top:6px">
+        <span class="tut-editcode-val">a3f9b-2c81d</span>
+        <button class="tut-editcode-copy" id="tut-expert-editcode-copy">copy</button>
+      </div>
+      <div class="tut-editcode-note" style="color:var(--muted);font-size:0.75rem;margin-bottom:20px;opacity:0.7">
+        when you submit a game you get a unique edit code. save it. it won't be shown again.
+      </div>
+      <button class="tut-btn" id="tut-expert-next">pick a starter &#8594;</button>
     </div>
   </div>
 
-  <!-- SCREEN 1: welcome -->
+  <!-- SCREEN 1: what we're building -->
   <div class="tut-screen" id="tut-s1">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">01 / 09</div>
-      <div class="tut-heading" id="tut-s1-heading"></div>
-      <div class="tut-body" id="tut-s1-body" style="opacity:0;transition:opacity 0.5s"></div>
-      <div id="tut-s1-game-preview" style="opacity:0;transition:opacity 0.4s;margin-bottom:20px">
-        <div style="border:1px solid var(--border);background:var(--code-bg,var(--bg));padding:12px 16px;font-size:0.82rem;color:var(--muted);margin-bottom:8px">
-          <span style="color:var(--accent)">THE CAVE</span><br>
-          you stand at the entrance of a dark cave.<br>
-          <span style="opacity:0.6">go [i]nside or [l]eave?</span> <span id="tut-s1-cursor-demo" style="display:inline-block;width:2px;height:0.9em;background:var(--accent);vertical-align:text-bottom;animation:tut-blink 0.9s step-end infinite"></span>
+      <div class="tut-step-tag">what we're making</div>
+      <div class="tut-heading">the cave game.</div>
+      <div class="tut-body">over the next few minutes, you'll build this. step by step.</div>
+      <div class="tut-preview-term" id="tut-s1-preview">
+        <div class="tut-preview-term-bar">
+          <div class="tut-preview-term-dot"></div>
+          <div class="tut-preview-term-dot"></div>
+          <div class="tut-preview-term-dot"></div>
+          <span class="tut-preview-term-title">terminal</span>
         </div>
-        <div style="font-size:0.75rem;color:var(--muted);text-align:right;letter-spacing:0.05em">a story game you could write today</div>
+        <div class="tut-preview-term-out" id="tut-s1-lines"></div>
       </div>
-      <button class="tut-btn" id="tut-s1-next">let's go →</button>
+      <div style="font-size:0.75rem;color:var(--muted);margin-bottom:18px;text-align:right;letter-spacing:0.04em">about 20 lines of code</div>
+      <button class="tut-btn" id="tut-s1-next">let's build it &#8594;</button>
     </div>
   </div>
 
-  <!-- SCREEN 2: first line of code -->
+  <!-- SCREEN 2: print() first line -->
   <div class="tut-screen" id="tut-s2">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">02 / 09</div>
-      <div class="tut-heading">your first program</div>
-      <div class="tut-body">Lua reads almost like English. edit the code below — change the text inside the quotes — then hit run:</div>
+      <div class="tut-step-tag">01 / 08</div>
+      <div class="tut-heading">line 1. the title.</div>
+      <div class="tut-body"><strong>print()</strong> outputs text. every game starts with a title.</div>
       <div class="tut-ce-wrap" id="tut-s2-ce">
         <pre class="tut-ce-hl" id="tut-s2-hl"></pre>
-        <textarea class="tut-ce-ta" id="tut-s2-code" rows="1" spellcheck="false">print("hello!")</textarea>
+        <textarea class="tut-ce-ta" id="tut-s2-code" rows="1" spellcheck="false">print("THE CAVE")</textarea>
       </div>
       <div class="tut-mini-term">
         <div class="tut-term-bar">
@@ -801,157 +825,142 @@
           <button class="tut-btn-muted" id="tut-run-btn">&#9654; run it</button>
         </div>
       </div>
-      <div class="tut-success-msg" id="tut-s2-success">that's your first program. ✓</div>
-      <button class="tut-btn" id="tut-s2-next" style="display:none;margin-top:12px">continue →</button>
+      <div class="tut-success-msg" id="tut-s2-success">nice. that's your game's first line. try changing the text inside the quotes.</div>
+      <button class="tut-btn" id="tut-s2-next" style="display:none;margin-top:12px">continue &#8594;</button>
     </div>
   </div>
 
   <!-- SCREEN 3: variables -->
   <div class="tut-screen" id="tut-svars">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">03 / 09</div>
-      <div class="tut-heading">variables store things</div>
-      <div class="tut-body">a variable is a label for a value. <strong>local name = ...</strong> creates one. try it — type your name below:</div>
+      <div class="tut-step-tag">02 / 08</div>
+      <div class="tut-heading">variables. remember things.</div>
+      <div class="tut-body"><strong>local</strong> creates a variable. <strong>..</strong> joins strings together.</div>
       <div class="tut-code-hl" style="margin-bottom:16px"><span class="lh-kw2">local</span> name <span class="lh-op">=</span> io.<span class="lh-fn">read</span>(<span class="lh-str">"your name? "</span>)
-<span class="lh-builtin">print</span>(<span class="lh-str">"hello, "</span> <span class="lh-op">..</span> name)
-<span class="lh-builtin">print</span>(<span class="lh-str">"welcome to the arcade, "</span> <span class="lh-op">..</span> name <span class="lh-op">..</span> <span class="lh-str">"!"</span>)</div>
+<span class="lh-builtin">print</span>(<span class="lh-str">"brave soul "</span> <span class="lh-op">..</span> name <span class="lh-op">..</span> <span class="lh-str">"."</span>)</div>
       <div class="tut-var-term">
-        <div class="tut-term-bar">
-          <div class="tut-term-dot"></div>
-          <div class="tut-term-dot"></div>
-          <div class="tut-term-dot"></div>
-          <span class="tut-term-title">terminal</span>
-        </div>
-        <div class="tut-var-out" id="tut-vars-out">waiting for input...</div>
-        <div class="tut-var-inp-row">
+        <div class="tut-var-out" id="tut-vars-out"></div>
+        <div class="tut-var-inp-row" id="tut-vars-inp-row">
           <span class="tut-var-prompt">your name?</span>
-          <input class="tut-var-inp" id="tut-vars-inp" placeholder="type and press Enter" autocomplete="off" spellcheck="false">
+          <input class="tut-var-inp" id="tut-vars-inp" type="text" placeholder="" autocomplete="off" spellcheck="false">
         </div>
       </div>
-      <div class="tut-success-msg" id="tut-vars-success">the <span style="color:var(--accent)">.. operator</span> joins strings together. that's all variables are.</div>
-      <button class="tut-btn" id="tut-svars-next" style="display:none;margin-top:14px">continue →</button>
+      <div class="tut-success-msg" id="tut-vars-success">that's variables. <span style="color:var(--accent)">name</span> holds whatever they typed.</div>
+      <button class="tut-btn" id="tut-svars-next" style="display:none;margin-top:14px">continue &#8594;</button>
     </div>
   </div>
 
-  <!-- SCREEN 4: story builder / if-else intro -->
+  <!-- SCREEN 4: if/else cave choice -->
   <div class="tut-screen" id="tut-s3">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">04 / 09</div>
-      <div class="tut-heading">pick a path</div>
-      <div class="tut-body">your game reacts to what the player does. click a choice and see what happens:</div>
-
-      <div class="tut-story-scene" id="tut-story-scene">
-        <div class="tut-story-path-label" id="tut-story-path-label"></div>
-        <div class="tut-story-text" id="tut-story-text">you stand at the edge of a dark forest. the wind picks up. something stirs.</div>
-        <div class="tut-story-choices" id="tut-story-choices">
-          <button class="tut-story-btn" data-path="enter">enter the forest</button>
-          <button class="tut-story-btn" data-path="wait">wait and listen</button>
-          <button class="tut-story-btn" data-path="run">run back to town</button>
+      <div class="tut-step-tag">03 / 08</div>
+      <div class="tut-heading">if/else. the cave choice.</div>
+      <div class="tut-body">if the player types 'i', run one thing. otherwise, run another.</div>
+      <div class="tut-two-panel">
+        <div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px">go [i]nside or [l]eave?</div>
+          <button class="tut-cave-choice-btn" id="tut-cave-inside">[i] go inside</button>
+          <button class="tut-cave-choice-btn" id="tut-cave-leave">[l] leave</button>
+          <div id="tut-cave-result" style="font-size:0.82rem;color:var(--fg);margin-top:10px;min-height:24px;line-height:1.6;opacity:0;transition:opacity 0.3s"></div>
         </div>
-        <div class="tut-story-outcome" id="tut-story-outcome"></div>
+        <div class="tut-branch-code" id="tut-branch-code"><span class="tut-branch-line" id="bl-0"><span class="lh-kw2">local</span> choice <span class="lh-op">=</span> io.<span class="lh-fn">read</span>(<span class="lh-str">"[i]nside or [l]eave? "</span>)</span>
+<span class="tut-branch-line" id="bl-1"><span class="lh-kw">if</span> choice <span class="lh-op">==</span> <span class="lh-str">"i"</span> <span class="lh-kw">then</span></span>
+<span class="tut-branch-line" id="bl-2">  <span class="lh-builtin">print</span>(<span class="lh-str">"you venture inside..."</span>)</span>
+<span class="tut-branch-line" id="bl-3"><span class="lh-kw">else</span></span>
+<span class="tut-branch-line" id="bl-4">  <span class="lh-builtin">print</span>(<span class="lh-str">"you go home safely."</span>)</span>
+<span class="tut-branch-line" id="bl-5"><span class="lh-kw">end</span></span></div>
       </div>
-
-      <div id="tut-s3-note" style="display:none;font-size:0.8rem;color:var(--muted);margin-bottom:14px;line-height:1.6">
-        each choice runs different code. that's it — that's how story games work.
-        in Lua: <span style="color:var(--accent);font-weight:600">if choice == "i" then ... else ... end</span>
-      </div>
-      <button class="tut-story-reset" id="tut-story-reset" style="display:none">try another path</button>
-      <br id="tut-s3-br" style="display:none">
-      <button class="tut-btn" id="tut-s3-next" style="display:none;margin-top:12px">continue →</button>
+      <div id="tut-s3-explain" style="display:none;font-size:0.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6">that's branching. your game reacts to the player.</div>
+      <button class="tut-btn" id="tut-s3-next" style="display:none;margin-top:12px">continue &#8594;</button>
     </div>
   </div>
 
-  <!-- SCREEN 5: the code behind if/else -->
+  <!-- SCREEN 5: the slider / "code behind it" repurposed as loops -->
   <div class="tut-screen" id="tut-s4">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">05 / 09</div>
-      <div class="tut-heading">the code behind it</div>
-      <div class="tut-body">your game checks values and branches. drag the slider — watch the story change:</div>
-      <div class="tut-if-code" id="tut-if-code"><span class="lh-kw2">local</span> health <span class="lh-op">=</span> <span class="lh-num" id="tut-score-val">70</span>
-<span class="lh-kw">if</span> health <span class="lh-op">&gt;</span> <span class="lh-num">50</span> <span class="lh-kw">then</span>
-  <span class="lh-builtin">print</span>(<span class="lh-str">"you push through the pain and survive."</span>)
-<span class="lh-kw">else</span>
-  <span class="lh-builtin">print</span>(<span class="lh-str">"your wounds are too deep. game over."</span>)
-<span class="lh-kw">end</span></div>
-      <div class="tut-slider-wrap">
-        <div class="tut-slider-label">health = <span id="tut-slider-disp">70</span></div>
-        <input type="range" class="tut-slider" id="tut-slider" min="0" max="100" value="70">
+      <div class="tut-step-tag">04 / 08</div>
+      <div class="tut-heading">loops. do it 5 times.</div>
+      <div class="tut-body">a <strong>for</strong> loop counts and runs code each time. step through it:</div>
+      <div class="tut-loop-code-wrap" id="tut-loop-code">
+<span class="tut-loop-hl-line" id="ll-for"><span class="lh-kw">for</span> i <span class="lh-op">=</span> <span class="lh-num">5</span>, <span class="lh-num">1</span>, <span class="lh-num">-1</span> <span class="lh-kw">do</span></span>
+<span class="tut-loop-hl-line" id="ll-print">  <span class="lh-builtin">print</span>(<span class="lh-arcade">colored</span>(<span class="lh-str">"  "</span> <span class="lh-op">..</span> i, <span class="lh-arcade">color</span>.yellow))</span>
+<span class="tut-loop-hl-line" id="ll-sleep">  <span class="lh-arcade">sleep</span>(<span class="lh-num">700</span>)</span>
+<span class="tut-loop-hl-line" id="ll-end"><span class="lh-kw">end</span></span>
+<span class="tut-loop-hl-line" id="ll-go"><span class="lh-builtin">print</span>(<span class="lh-arcade">colored</span>(<span class="lh-str">"  GO!"</span>, <span class="lh-arcade">color</span>.green))</span></div>
+      <div class="tut-loop-controls">
+        <button class="tut-btn-muted" id="tut-loop-step-btn">STEP &#8594;</button>
+        <div class="tut-loop-i-display">i = <span id="tut-loop-i-val">&#8212;</span></div>
       </div>
-      <div class="tut-story-output" id="tut-s4-output">
-        <div class="tut-story-line" id="tut-s4-line"></div>
+      <div class="tut-loop-out" id="tut-loop-out">
+        <div style="color:var(--muted);font-size:0.78rem;font-style:italic" id="tut-loop-placeholder">output will appear here...</div>
       </div>
-      <button class="tut-btn" id="tut-s4-next">continue →</button>
+      <div class="tut-loop-complete" id="tut-loop-complete">loop finished. ran 5 times. &#10003;</div>
+      <button class="tut-btn" id="tut-s4-next" style="display:none">continue &#8594;</button>
     </div>
   </div>
 
-  <!-- SCREEN 6: loops -->
+  <!-- SCREEN 6: loops (repurposed slot, skip to powers) -->
   <div class="tut-screen" id="tut-sloops">
+    <!-- this screen is skipped in the flow; tut-s4 now has loops -->
+    <!-- kept in allScreens for index parity, never shown directly -->
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">06 / 09</div>
-      <div class="tut-heading">loops repeat things</div>
-      <div class="tut-body">a <strong>for</strong> loop runs the same code multiple times, counting as it goes. step through it:</div>
-      <div class="tut-code-hl" style="margin-bottom:14px"><span class="lh-kw">for</span> i <span class="lh-op">=</span> <span class="lh-num">1</span>, <span class="lh-num">5</span> <span class="lh-kw">do</span>
-  <span class="lh-builtin">print</span>(<span class="lh-str">"step "</span> <span class="lh-op">..</span> i)
-<span class="lh-kw">end</span></div>
-      <div class="tut-loop-controls">
-        <button class="tut-btn-muted" id="tut-loop-step-btn">step →</button>
-        <div class="tut-loop-i-display">i = <span id="tut-loop-i-val">–</span></div>
-      </div>
-      <div class="tut-loop-out" id="tut-loop-out">
-        <div style="color:var(--muted);font-size:0.78rem;font-style:italic">output will appear here...</div>
-      </div>
-      <div class="tut-loop-complete" id="tut-loop-complete">loop finished — ran 5 times ✓</div>
-      <button class="tut-btn" id="tut-sloops-next" style="display:none">continue →</button>
+      <div class="tut-step-tag">04b</div>
+      <div class="tut-heading">loops</div>
     </div>
   </div>
 
   <!-- SCREEN 7: special powers -->
   <div class="tut-screen" id="tut-s5">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">07 / 09</div>
-      <div class="tut-heading">special powers</div>
-      <div class="tut-body">the arcade gives you functions that normal Lua doesn't have. click each one:</div>
+      <div class="tut-step-tag">05 / 08</div>
+      <div class="tut-heading">special powers.</div>
+      <div class="tut-body">the arcade gives your game things browsers can't normally do. click each one:</div>
       <div class="tut-power-demo" id="tut-power-demo">the quick brown fox</div>
       <div class="tut-powers-grid">
         <button class="tut-power-card" data-power="sleep">
           <span class="tut-power-check">&#10003;</span>
           <span class="tut-power-name">sleep()</span>
           <span class="tut-power-desc">pause for ms</span>
+          <span class="tut-power-cave-ctx">sleep(1000) in cave: pause before reveal</span>
         </button>
         <button class="tut-power-card" data-power="clear">
           <span class="tut-power-check">&#10003;</span>
           <span class="tut-power-name">clear()</span>
           <span class="tut-power-desc">wipe terminal</span>
+          <span class="tut-power-cave-ctx">clear() in cave: wipe screen for drama</span>
         </button>
         <button class="tut-power-card" data-power="colored">
           <span class="tut-power-check">&#10003;</span>
           <span class="tut-power-name">colored()</span>
           <span class="tut-power-desc">add color to text</span>
+          <span class="tut-power-cave-ctx">colored("gold!", color.yellow): treasure reveal</span>
         </button>
         <button class="tut-power-card" data-power="sound">
           <span class="tut-power-check">&#10003;</span>
           <span class="tut-power-name">sound.win()</span>
           <span class="tut-power-desc">play sounds</span>
+          <span class="tut-power-cave-ctx">sound.win() in cave: victory fanfare</span>
         </button>
         <button class="tut-power-card" data-power="io">
           <span class="tut-power-check">&#10003;</span>
           <span class="tut-power-name">io.read()</span>
           <span class="tut-power-desc">ask for input</span>
+          <span class="tut-power-cave-ctx">io.read("your name? "): asking the player</span>
         </button>
       </div>
       <div class="tut-power-note" id="tut-power-note">activate <span id="tut-power-count">0</span> / 5 powers to continue</div>
-      <button class="tut-btn" id="tut-s5-next" disabled>continue →</button>
+      <button class="tut-btn" id="tut-s5-next" disabled>continue &#8594;</button>
     </div>
   </div>
 
-  <!-- SCREEN 8: networking -->
+  <!-- SCREEN 8: networking / leaderboard -->
   <div class="tut-screen" id="tut-snet">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">08 / 09</div>
-      <div class="tut-heading">the arcade has a database</div>
-      <div class="tut-body">your game can save data that persists between plays. add a leaderboard in 2 lines:</div>
-      <div class="tut-code-hl" style="margin-bottom:14px"><span class="lh-arcade">net</span>.<span class="lh-fn">rank</span>(<span class="lh-str">"ekansh"</span>, <span class="lh-num">99</span>)      <span class="lh-cmt">-- save score</span>
-<span class="lh-kw2">local</span> top <span class="lh-op">=</span> <span class="lh-arcade">net</span>.<span class="lh-fn">top</span>(<span class="lh-num">5</span>)            <span class="lh-cmt">-- fetch top 5</span>
+      <div class="tut-step-tag">06 / 08</div>
+      <div class="tut-heading">the arcade has a database.</div>
+      <div class="tut-body">your game can save scores that last forever. two lines.</div>
+      <div class="tut-code-hl" style="margin-bottom:14px"><span class="lh-arcade">net</span>.<span class="lh-fn">rank</span>(name, <span class="lh-builtin">math</span>.<span class="lh-fn">random</span>(<span class="lh-num">50</span>, <span class="lh-num">100</span>))
+<span class="lh-kw2">local</span> top <span class="lh-op">=</span> <span class="lh-arcade">net</span>.<span class="lh-fn">top</span>(<span class="lh-num">5</span>)
 <span class="lh-kw">for</span> i, e <span class="lh-kw">in</span> <span class="lh-builtin">ipairs</span>(top) <span class="lh-kw">do</span>
   <span class="lh-builtin">print</span>(i <span class="lh-op">..</span> <span class="lh-str">". "</span> <span class="lh-op">..</span> e.name <span class="lh-op">..</span> <span class="lh-str">"  "</span> <span class="lh-op">..</span> e.score)
 <span class="lh-kw">end</span></div>
@@ -963,33 +972,39 @@
         </div>
         <div class="tut-net-panel" id="tut-net-panel-lb">
           <div class="tut-lb" id="tut-lb-list">
-            <div class="tut-lb-empty">no scores yet — add one below</div>
+            <div class="tut-lb-empty">no scores yet. add one below.</div>
           </div>
           <div style="margin-top:12px">
             <div class="tut-net-actions">
               <input class="tut-net-inp" id="tut-lb-name" placeholder="your name" maxlength="18">
               <button class="tut-btn-muted" id="tut-lb-add">net.rank(name, score)</button>
             </div>
+            <div class="tut-net-log" id="tut-net-log"></div>
           </div>
-          <div class="tut-net-note">each game has its own leaderboard namespace. data is stored in <span>Redis</span> (Upstash) via a serverless API. it persists forever.</div>
+          <div class="tut-net-note">the score is whatever your game decides: health remaining, time taken, tries used. <span>net.rank(name, score)</span> handles the rest.</div>
         </div>
         <div class="tut-net-panel hidden" id="tut-net-panel-kv">
-          <div class="tut-code-hl" style="margin-bottom:10px;font-size:0.78rem"><span class="lh-arcade">net</span>.<span class="lh-fn">set</span>(<span class="lh-str">"lives"</span>, <span class="lh-num">3</span>)
+          <div class="tut-code-hl" style="margin-bottom:10px;font-size:0.78rem"><span class="lh-arcade">net</span>.<span class="lh-fn">set</span>(<span class="lh-str">"lives"</span>, lives)
 <span class="lh-kw2">local</span> lives <span class="lh-op">=</span> <span class="lh-arcade">net</span>.<span class="lh-fn">get</span>(<span class="lh-str">"lives"</span>)</div>
-          <div class="tut-net-note">key-value storage scoped per game. good for saving player progress, unlocks, or anything that should persist. <span>reads and writes are async</span> — execution resumes automatically when done.</div>
+          <div class="tut-kv-counter" id="tut-kv-counter">3</div>
+          <div class="tut-kv-btns">
+            <button class="tut-btn-muted" id="tut-kv-minus">- life</button>
+            <button class="tut-btn-muted" id="tut-kv-plus">+ life</button>
+          </div>
+          <div class="tut-net-note">key-value storage scoped per game. good for: lives, level, inventory. <span>reads and writes are instant</span> in real games.</div>
         </div>
       </div>
 
-      <button class="tut-btn" id="tut-snet-next">continue →</button>
+      <button class="tut-btn" id="tut-snet-next" style="display:none">continue &#8594;</button>
     </div>
   </div>
 
-  <!-- SCREEN 9: edit code + docs panel -->
+  <!-- SCREEN 9: edit code + docs -->
   <div class="tut-screen" id="tut-s6">
     <div class="tut-step-wrap">
-      <div class="tut-step-tag">09 / 09</div>
-      <div class="tut-heading">two last things</div>
-      <div class="tut-body">no accounts. when you submit a game, you get a unique <strong>edit code</strong> — save it, it won't be shown again:</div>
+      <div class="tut-step-tag">07 / 08</div>
+      <div class="tut-heading">two last things.</div>
+      <div class="tut-body">no accounts. when you submit a game, you get a unique <strong>edit code</strong>. save it. it won't be shown again:</div>
       <div class="tut-editcode-box">
         <span class="tut-editcode-val" id="tut-editcode-demo">a3f9b-2c81d</span>
         <button class="tut-editcode-copy" id="tut-editcode-copy-demo">copy</button>
@@ -1003,18 +1018,25 @@
           <div style="padding:5px 12px;color:var(--accent);border-bottom:2px solid var(--accent);font-size:0.72rem;font-weight:700">snippets</div>
           <div style="padding:5px 12px;color:var(--muted);font-size:0.72rem">reference</div>
         </div>
-        <div style="color:var(--muted);font-size:0.78rem">hello world &nbsp;·&nbsp; number guesser &nbsp;·&nbsp; story game &nbsp;·&nbsp; countdown &nbsp;·&nbsp; leaderboard &nbsp;·&nbsp; bouncing ball</div>
-        <div style="color:var(--muted);font-size:0.72rem;margin-top:6px;opacity:0.6">click any snippet → inserts code at cursor · reference tab has every API</div>
+        <div style="color:var(--muted);font-size:0.78rem">hello world &nbsp;&middot;&nbsp; number guesser &nbsp;&middot;&nbsp; story game &nbsp;&middot;&nbsp; countdown &nbsp;&middot;&nbsp; leaderboard &nbsp;&middot;&nbsp; bouncing ball</div>
+        <div style="color:var(--muted);font-size:0.72rem;margin-top:6px;opacity:0.6">click any snippet to insert code at cursor. reference tab has every API.</div>
       </div>
-      <button class="tut-btn" id="tut-s6-next" style="margin-top:4px">pick a starter →</button>
+      <button class="tut-btn" id="tut-s6-next" style="margin-top:4px">you built it &#8594;</button>
     </div>
   </div>
 
-  <!-- SCREEN 10: starter picker -->
+  <!-- SCREEN 10 (IDX_START): "you built it" + starter picker -->
   <div class="tut-screen" id="tut-s7">
     <div class="tut-step-wrap">
-      <div class="tut-heading">you're ready.</div>
-      <div class="tut-body">pick a starting point — you can change everything once you're in the editor.</div>
+      <div class="tut-step-tag">done.</div>
+      <div class="tut-heading">you know how to build games.</div>
+      <div class="tut-body" style="margin-bottom:14px">here's the complete cave game you just learned. press RUN to play it for real.</div>
+      <div class="tut-built-cave">
+        <div class="tut-built-header">the cave, complete</div>
+        <div class="tut-built-code"><pre id="tut-s7-cave-code" style="margin:0"></pre></div>
+        <button class="tut-run-cave-btn" id="tut-s7-run-btn">&#9654; RUN IT</button>
+      </div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:14px">now make your own. pick a starting point:</div>
       <div class="tut-starters-grid">
         <button class="tut-starter-card" data-starter="dice">
           <div class="tut-preview" id="tut-prev-dice"><span style="font-size:1.4rem;color:var(--accent)">?</span></div>
@@ -1067,6 +1089,9 @@
       return;
     }
   } catch(e) {}
+
+  // ── complete cave game code ───────────────────────────────────────────────────
+  var CAVE_GAME_CODE = 'print(colored("THE CAVE", color.yellow))\nprint("you stand at the entrance of a dark cave.")\nprint("")\nlocal name = io.read("your name? ")\nprint("brave soul " .. name .. ".")\nprint("")\nlocal choice = io.read("go [i]nside or [l]eave? ")\nif choice == "i" then\n  print(colored("you venture inside...", color.cyan))\n  sleep(1000)\n  clear()\n  if math.random(1, 2) == 1 then\n    print(colored("you find a chest of gold!", color.yellow))\n    sound.win()\n  else\n    print(colored("a bat swoops! you flee.", color.red))\n    sound.lose()\n  end\nelse\n  print("smart choice. you go home safely.")\n  sound.click()\nend';
 
   // ── lua syntax highlight ──────────────────────────────────────────────────────
   function hlEsc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1122,6 +1147,9 @@
   function TutCodeEditor(taEl, hlEl) {
     function sync() {
       hlEl.innerHTML = highlightLua(taEl.value);
+      taEl.style.height = 'auto';
+      taEl.style.height = taEl.scrollHeight + 'px';
+      hlEl.style.height = taEl.style.height;
     }
     taEl.addEventListener('input', sync);
     taEl.addEventListener('scroll', function() {
@@ -1198,7 +1226,7 @@
   }
 
   // ── screen management ─────────────────────────────────────────────────────────
-  // indices: 0=s0, 1=s1, 2=s2, 3=svars, 4=s3, 5=s4, 6=sloops, 7=s5, 8=snet, 9=s6, 10=s7, 11=sexpert
+  // indices: 0=s0, 1=s1, 2=s2, 3=svars, 4=s3, 5=s4, 6=sloops(unused), 7=s5, 8=snet, 9=s6, 10=s7, 11=sexpert
   var IDX_START  = 10;
   var IDX_EXPERT = 11;
   var currentScreen = 0;
@@ -1206,16 +1234,16 @@
 
   var allScreens = [
     document.getElementById('tut-s0'),      // 0  experience check
-    document.getElementById('tut-s1'),      // 1  welcome
-    document.getElementById('tut-s2'),      // 2  first program
+    document.getElementById('tut-s1'),      // 1  what we're building
+    document.getElementById('tut-s2'),      // 2  print() first line
     document.getElementById('tut-svars'),   // 3  variables
-    document.getElementById('tut-s3'),      // 4  pick a path
-    document.getElementById('tut-s4'),      // 5  slider / if-else
-    document.getElementById('tut-sloops'),  // 6  loops
+    document.getElementById('tut-s3'),      // 4  if/else cave choice
+    document.getElementById('tut-s4'),      // 5  loops countdown
+    document.getElementById('tut-sloops'),  // 6  (unused slot, kept for index parity)
     document.getElementById('tut-s5'),      // 7  special powers
     document.getElementById('tut-snet'),    // 8  networking
     document.getElementById('tut-s6'),      // 9  edit code + docs
-    document.getElementById('tut-s7'),      // 10 starter picker
+    document.getElementById('tut-s7'),      // 10 you built it + starter picker
     document.getElementById('tut-sexpert'), // 11 expert APIs
   ];
 
@@ -1226,16 +1254,19 @@
   var dots        = dotsEl.querySelectorAll('.tut-dot');
 
   function updateUI(idx) {
+    // newbie teaching screens: 1-9
     var inNewbie = (idx >= 1 && idx <= 9);
     skipBtn.style.display = inNewbie ? '' : 'none';
     dotsEl.style.display  = inNewbie ? '' : 'none';
     if (inNewbie) {
-      progressBar.style.width = ((idx / 9) * 100) + '%';
+      // 8 teaching screens (1-8), screen 9 = done
+      progressBar.style.width = (Math.min(idx, 8) / 8 * 100) + '%';
     } else if (idx === IDX_START) {
       progressBar.style.width = '100%';
     } else {
       progressBar.style.width = '0%';
     }
+    // dots map to screens 1-8 (indices 0-7 of dots = screen indices 1-8)
     dots.forEach(function(d) {
       var i = parseInt(d.getAttribute('data-i'));
       d.classList.toggle('tut-dot-active', i === idx - 1);
@@ -1342,44 +1373,70 @@
     });
   });
   document.getElementById('tut-expert-next').addEventListener('click', function() { goTo(IDX_START); });
+  document.getElementById('tut-expert-editcode-copy').addEventListener('click', function() {
+    var btn = this;
+    navigator.clipboard.writeText('a3f9b-2c81d').then(function() {
+      btn.textContent = 'copied!';
+      setTimeout(function(){ btn.textContent = 'copy'; }, 1800);
+    }).catch(function(){});
+    var r = btn.getBoundingClientRect();
+    burst(r.left+r.width/2, r.top+r.height/2, 8);
+  });
 
-  // ── SCREEN 1: typewriter ──────────────────────────────────────────────────────
+  // ── SCREEN 1: animated cave preview ──────────────────────────────────────────
+  var s1PreviewInterval = null;
+  var s1PreviewLines = [
+    { html: '<span style="color:var(--accent);font-weight:700">THE CAVE</span>' },
+    { html: 'you stand at the entrance of a dark cave.' },
+    { html: '' },
+    { html: 'your name? <span style="color:var(--accent)">ekansh</span>' },
+    { html: 'brave soul ekansh.' },
+    { html: '' },
+    { html: 'go [i]nside or [l]eave? <span style="color:var(--accent)">i</span>' },
+    { html: '<span style="color:#73daca">you venture inside...</span>' },
+    { html: '<span style="color:var(--accent)">you find a chest of gold!</span>' },
+  ];
+
   function startScreen1() {
-    var headEl   = document.getElementById('tut-s1-heading');
-    var bodyEl   = document.getElementById('tut-s1-body');
-    var previewEl = document.getElementById('tut-s1-game-preview');
-    headEl.innerHTML = ''; bodyEl.style.opacity = '0'; previewEl.style.opacity = '0';
-    var text = 'welcome.', i = 0;
-    var cursor = document.createElement('span');
-    cursor.className = 'tut-cursor';
-    headEl.appendChild(cursor);
-    var tw = setInterval(function() {
-      cursor.before(document.createTextNode(text[i])); i++;
-      if (i >= text.length) {
-        clearInterval(tw);
+    var linesEl = document.getElementById('tut-s1-lines');
+    if (s1PreviewInterval) { clearInterval(s1PreviewInterval); s1PreviewInterval = null; }
+    linesEl.innerHTML = '';
+    var lineIdx = 0;
+    var showing = [];
+
+    function addNextLine() {
+      if (lineIdx >= s1PreviewLines.length) {
+        // brief pause then restart
+        clearInterval(s1PreviewInterval);
+        s1PreviewInterval = null;
         setTimeout(function() {
-          cursor.remove();
-          bodyEl.textContent = 'the arcade is a collection of tiny games — story adventures, quizzes, puzzles — that run in the browser terminal.\n\nyou\'re about to make one.';
-          bodyEl.style.opacity = '1';
-          setTimeout(function(){ previewEl.style.opacity='1'; }, 400);
-        }, 200);
+          linesEl.innerHTML = '';
+          lineIdx = 0;
+          showing = [];
+          s1PreviewInterval = setInterval(addNextLine, 800);
+        }, 2200);
+        return;
       }
-    }, 80);
+      var line = s1PreviewLines[lineIdx];
+      lineIdx++;
+      var div = document.createElement('div');
+      div.style.lineHeight = '1.75';
+      div.innerHTML = line.html;
+      linesEl.appendChild(div);
+      showing.push(div);
+    }
+
+    s1PreviewInterval = setInterval(addNextLine, 800);
   }
-  document.getElementById('tut-s1-next').addEventListener('click', function() { goTo(2); });
+  document.getElementById('tut-s1-next').addEventListener('click', function() {
+    if (s1PreviewInterval) { clearInterval(s1PreviewInterval); s1PreviewInterval = null; }
+    goTo(2);
+  });
 
   // ── SCREEN 2: code editor + run ───────────────────────────────────────────────
   var s2ta = document.getElementById('tut-s2-code');
   var s2hl = document.getElementById('tut-s2-hl');
   var s2CE = new TutCodeEditor(s2ta, s2hl);
-  // auto-height
-  function s2AutoHeight() {
-    s2ta.style.height = 'auto';
-    s2ta.style.height = s2ta.scrollHeight + 'px';
-    s2hl.style.height = s2ta.offsetHeight + 'px';
-  }
-  s2ta.addEventListener('input', s2AutoHeight);
-  s2AutoHeight();
 
   var s2everRan = false;
   document.getElementById('tut-run-btn').addEventListener('click', function() {
@@ -1419,14 +1476,14 @@
   // ── SCREEN 3: variables ───────────────────────────────────────────────────────
   var varsInp = document.getElementById('tut-vars-inp');
   var varsOut = document.getElementById('tut-vars-out');
+  var varsInpRow = document.getElementById('tut-vars-inp-row');
   var varsDone = false;
   varsInp.addEventListener('keydown', function(e) {
     if (e.key !== 'Enter') return;
     var val = this.value.trim() || 'stranger';
-    this.value = '';
     var accent = getAccent();
-    varsOut.className = 'tut-var-out active';
-    varsOut.innerHTML = 'hello, <span style="color:'+accent+';font-weight:700">'+hlEsc(val)+'</span>\nwelcome to the arcade, <span style="color:'+accent+';font-weight:700">'+hlEsc(val)+'</span>!';
+    varsOut.innerHTML = 'your name? <span style="color:'+accent+';font-weight:700">'+hlEsc(val)+'</span><br>brave soul <span style="color:'+accent+';font-weight:700">'+hlEsc(val)+'</span>.';
+    varsInpRow.style.display = 'none';
     var r = varsOut.getBoundingClientRect();
     burst(r.left+r.width/2, r.top+r.height/2, 12);
     if (!varsDone) {
@@ -1439,110 +1496,124 @@
   });
   document.getElementById('tut-svars-next').addEventListener('click', function() { goTo(4); });
 
-  // ── SCREEN 4: story builder ───────────────────────────────────────────────────
-  var storyPaths = {
-    enter: { label:'you chose: enter the forest', text:'branches snap underfoot. eyes gleam in the dark. then — a clearing, and a chest of gold.', type:'good' },
-    wait:  { label:'you chose: wait and listen',  text:'you stand perfectly still. the rustling fades. a fox trots past, ignoring you entirely.', type:'good' },
-    run:   { label:'you chose: run back to town', text:'you sprint down the path. behind you, a branch cracks. you don\'t look back. smart.', type:'neutral' }
-  };
-  var storyChosen = false;
-  document.querySelectorAll('.tut-story-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      if (storyChosen) return;
-      storyChosen = true;
-      var path = this.getAttribute('data-path');
-      var data = storyPaths[path];
-      var r = this.getBoundingClientRect();
-      burst(r.left+r.width/2, r.top+r.height/2, 10);
-      this.classList.add('tut-story-chosen');
-      document.querySelectorAll('.tut-story-btn').forEach(function(b){ b.disabled=true; });
-      var labelEl = document.getElementById('tut-story-path-label');
-      labelEl.textContent = data.label; labelEl.classList.add('visible');
-      var outcomeEl = document.getElementById('tut-story-outcome');
-      outcomeEl.textContent = data.text;
-      outcomeEl.className = 'tut-story-outcome visible '+(data.type==='good'?'outcome-good':'');
+  // ── SCREEN 4: if/else cave choice ────────────────────────────────────────────
+  var caveChosen = false;
+
+  function clearBranchHighlights() {
+    document.querySelectorAll('.tut-branch-line').forEach(function(l){ l.classList.remove('active'); });
+  }
+
+  document.getElementById('tut-cave-inside').addEventListener('click', function() {
+    document.getElementById('tut-cave-inside').classList.add('chosen');
+    document.getElementById('tut-cave-leave').classList.remove('chosen');
+    clearBranchHighlights();
+    // highlight if branch: lines 1 (if), 2 (print inside)
+    document.getElementById('bl-1').classList.add('active');
+    document.getElementById('bl-2').classList.add('active');
+    var resultEl = document.getElementById('tut-cave-result');
+    resultEl.style.opacity = '0';
+    resultEl.innerHTML = '<span style="color:#73daca">you venture inside...</span>';
+    setTimeout(function(){ resultEl.style.opacity = '1'; }, 20);
+    var r = this.getBoundingClientRect();
+    burst(r.left+r.width/2, r.top+r.height/2, 8);
+    if (!caveChosen) {
+      caveChosen = true;
       setTimeout(function() {
-        document.getElementById('tut-s3-note').style.display = 'block';
-        document.getElementById('tut-story-reset').style.display = 'inline';
-        document.getElementById('tut-s3-br').style.display = 'inline';
+        document.getElementById('tut-s3-explain').style.display = 'block';
         document.getElementById('tut-s3-next').style.display = 'inline-block';
-      }, 600);
-    });
+      }, 500);
+    }
   });
-  document.getElementById('tut-story-reset').addEventListener('click', function() {
-    storyChosen = false;
-    var labelEl = document.getElementById('tut-story-path-label');
-    labelEl.textContent = ''; labelEl.classList.remove('visible');
-    var outcomeEl = document.getElementById('tut-story-outcome');
-    outcomeEl.className = 'tut-story-outcome'; outcomeEl.textContent = '';
-    document.querySelectorAll('.tut-story-btn').forEach(function(b){b.disabled=false;b.classList.remove('tut-story-chosen');});
+
+  document.getElementById('tut-cave-leave').addEventListener('click', function() {
+    document.getElementById('tut-cave-leave').classList.add('chosen');
+    document.getElementById('tut-cave-inside').classList.remove('chosen');
+    clearBranchHighlights();
+    // highlight else branch: lines 3 (else), 4 (print leave)
+    document.getElementById('bl-3').classList.add('active');
+    document.getElementById('bl-4').classList.add('active');
+    var resultEl = document.getElementById('tut-cave-result');
+    resultEl.style.opacity = '0';
+    resultEl.innerHTML = 'you go home safely.';
+    setTimeout(function(){ resultEl.style.opacity = '1'; }, 20);
+    var r = this.getBoundingClientRect();
+    burst(r.left+r.width/2, r.top+r.height/2, 8);
+    if (!caveChosen) {
+      caveChosen = true;
+      setTimeout(function() {
+        document.getElementById('tut-s3-explain').style.display = 'block';
+        document.getElementById('tut-s3-next').style.display = 'inline-block';
+      }, 500);
+    }
   });
+
   document.getElementById('tut-s3-next').addEventListener('click', function() { goTo(5); });
 
-  // ── SCREEN 5: slider / if-else ────────────────────────────────────────────────
-  var slider    = document.getElementById('tut-slider');
-  var scoreValEl = document.getElementById('tut-score-val');
-  var sliderDisp = document.getElementById('tut-slider-disp');
-  var s4Output  = document.getElementById('tut-s4-output');
-  var s4Line    = document.getElementById('tut-s4-line');
-  var s4lastWin = null;
-  function updateStoryOutput(val) {
-    scoreValEl.textContent = val; sliderDisp.textContent = val;
-    var isWin = val > 50;
-    if (isWin !== s4lastWin) {
-      s4lastWin = isWin;
-      s4Line.classList.remove('visible');
-      if (isWin) {
-        s4Output.className = 'tut-story-output active-win';
-        s4Line.innerHTML = '<span class="tut-story-tag-win">you push through the pain and survive.</span>';
-      } else {
-        s4Output.className = 'tut-story-output active-lose';
-        s4Line.innerHTML = '<span class="tut-story-tag-lose">your wounds are too deep. game over.</span>';
-      }
-      requestAnimationFrame(function(){ s4Line.classList.add('visible'); });
-    }
-  }
-  updateStoryOutput(70);
-  slider.addEventListener('input', function() { updateStoryOutput(parseInt(this.value)); });
-  document.getElementById('tut-s4-next').addEventListener('click', function() { goTo(6); });
-
-  // ── SCREEN 6: loops ───────────────────────────────────────────────────────────
+  // ── SCREEN 5: loops step-through ──────────────────────────────────────────────
   var loopStep = 0;
-  var loopMax  = 5;
+  var loopValues = [5,4,3,2,1];
   var loopOut  = document.getElementById('tut-loop-out');
   var loopIVal = document.getElementById('tut-loop-i-val');
   var loopStepBtn = document.getElementById('tut-loop-step-btn');
   var loopComplete = document.getElementById('tut-loop-complete');
-  var loopLines = [];
+  var loopPlaceholder = document.getElementById('tut-loop-placeholder');
 
   loopStepBtn.addEventListener('click', function() {
-    if (loopStep >= loopMax) return;
+    if (loopStep >= 5) return;
+
+    if (loopStep === 0 && loopPlaceholder) {
+      loopPlaceholder.remove();
+      loopPlaceholder = null;
+    }
+
+    // highlight the for + print + sleep lines
+    document.getElementById('ll-for').classList.add('active');
+    document.getElementById('ll-print').classList.add('active');
+    document.getElementById('ll-sleep').classList.add('active');
+    document.getElementById('ll-end').classList.remove('active');
+    document.getElementById('ll-go').classList.remove('active');
+
+    var val = loopValues[loopStep];
     loopStep++;
-    // clear placeholder on first step
-    if (loopStep === 1) loopOut.innerHTML = '';
 
     loopIVal.style.transform = 'scale(1.4)';
     setTimeout(function(){ loopIVal.style.transform=''; }, 150);
-    loopIVal.textContent = loopStep;
+    loopIVal.textContent = val;
 
     var line = document.createElement('div');
     line.className = 'tut-loop-step-line';
-    line.innerHTML = '<span style="color:var(--muted)">step </span><span style="color:var(--accent);font-weight:700">'+loopStep+'</span>';
+    line.innerHTML = '  <span style="color:var(--accent);font-weight:700">'+val+'</span>';
     loopOut.appendChild(line);
     setTimeout(function(){ line.classList.add('show'); }, 20);
 
-    if (loopStep >= loopMax) {
-      loopStepBtn.disabled = true;
-      loopIVal.textContent = '✓';
+    if (loopStep >= 5) {
+      // show GO! after last step
       setTimeout(function() {
-        loopComplete.classList.add('show');
-        document.getElementById('tut-sloops-next').style.display = 'inline-block';
-        var r = loopOut.getBoundingClientRect();
-        burst(r.left+r.width/2, r.top+r.height/2, 14);
-      }, 300);
+        // highlight go line, clear others
+        document.getElementById('ll-for').classList.remove('active');
+        document.getElementById('ll-print').classList.remove('active');
+        document.getElementById('ll-sleep').classList.remove('active');
+        document.getElementById('ll-end').classList.add('active');
+        document.getElementById('ll-go').classList.add('active');
+
+        var goLine = document.createElement('div');
+        goLine.className = 'tut-loop-step-line';
+        goLine.innerHTML = '  <span style="color:#9ece6a;font-weight:700">GO!</span>';
+        loopOut.appendChild(goLine);
+        setTimeout(function(){ goLine.classList.add('show'); }, 20);
+
+        loopStepBtn.disabled = true;
+        loopIVal.textContent = '\u2713';
+        setTimeout(function() {
+          loopComplete.classList.add('show');
+          document.getElementById('tut-s4-next').style.display = 'inline-block';
+          var r = loopOut.getBoundingClientRect();
+          burst(r.left+r.width/2, r.top+r.height/2, 14);
+        }, 300);
+      }, 400);
     }
   });
-  document.getElementById('tut-sloops-next').addEventListener('click', function() { goTo(7); });
+  document.getElementById('tut-s4-next').addEventListener('click', function() { goTo(7); });
 
   // ── SCREEN 7: powers ──────────────────────────────────────────────────────────
   var powersUsed = {};
@@ -1554,11 +1625,12 @@
 
   function updatePowerCount() {
     var n = Object.keys(powersUsed).length;
+    powerCountEl.textContent = n;
     if (n >= 5) {
       s5nextBtn.disabled = false;
       s5nextBtn.style.borderColor = 'var(--accent)';
       s5nextBtn.style.fontWeight = '700';
-      powerNote.innerHTML = 'all powers unlocked! <span>ready to go</span>';
+      powerNote.innerHTML = 'all powers unlocked! <span>your cave game uses all of these.</span>';
     } else if (n >= 3) {
       s5nextBtn.disabled = false;
       powerNote.innerHTML = 'activate <span>'+n+'</span> / 5 powers to continue';
@@ -1641,6 +1713,8 @@
 
   // ── SCREEN 8: networking ──────────────────────────────────────────────────────
   var lbData = [];
+  var lbNetDone = false;
+
   document.querySelectorAll('.tut-net-tab').forEach(function(tab) {
     tab.addEventListener('click', function() {
       var target = this.getAttribute('data-tab');
@@ -1653,7 +1727,10 @@
 
   function renderLb() {
     var list = document.getElementById('tut-lb-list');
-    if (!lbData.length) { list.innerHTML='<div class="tut-lb-empty">no scores yet — add one below</div>'; return; }
+    if (!lbData.length) {
+      list.innerHTML='<div class="tut-lb-empty">no scores yet. add one below.</div>';
+      return;
+    }
     var sorted = lbData.slice().sort(function(a,b){ return b.score-a.score; }).slice(0,5);
     list.innerHTML = '';
     sorted.forEach(function(entry,i) {
@@ -1670,15 +1747,60 @@
   document.getElementById('tut-lb-add').addEventListener('click', function() {
     var nameEl = document.getElementById('tut-lb-name');
     var name = nameEl.value.trim() || ('player'+(lbData.length+1));
-    var score = Math.floor(Math.random()*80)+20;
-    lbData.push({name:name, score:score});
+    var targetScore = Math.floor(Math.random()*51)+50; // 50-100
+    var logEl = document.getElementById('tut-net-log');
+
+    logEl.textContent = 'calling net.rank("'+name+'", '+targetScore+')...';
+
+    // count up animation
+    var displayScore = 0;
+    var countInterval = setInterval(function() {
+      displayScore = Math.min(displayScore + Math.ceil(targetScore/12), targetScore);
+      logEl.textContent = 'calling net.rank("'+name+'", '+displayScore+')...';
+      if (displayScore >= targetScore) {
+        clearInterval(countInterval);
+        logEl.textContent = 'saved: '+name+' = '+targetScore;
+      }
+    }, 60);
+
+    lbData.push({name:name, score:targetScore});
     nameEl.value = '';
-    renderLb();
-    var r = this.getBoundingClientRect();
-    burst(r.left+r.width/2, r.top+r.height/2, 8);
+
+    setTimeout(function() {
+      renderLb();
+      var r = document.getElementById('tut-lb-add').getBoundingClientRect();
+      burst(r.left+r.width/2, r.top+r.height/2, 8);
+      if (!lbNetDone) {
+        lbNetDone = true;
+        setTimeout(function() {
+          document.getElementById('tut-snet-next').style.display = 'inline-block';
+        }, 300);
+      }
+    }, 300);
   });
 
   document.getElementById('tut-snet-next').addEventListener('click', function() { goTo(9); });
+
+  // KV demo
+  var kvLives = 3;
+  var kvCounter = document.getElementById('tut-kv-counter');
+
+  function animateKvCounter() {
+    kvCounter.style.transform = 'scale(1.3)';
+    setTimeout(function(){ kvCounter.style.transform = ''; }, 150);
+    kvCounter.textContent = kvLives;
+  }
+
+  document.getElementById('tut-kv-plus').addEventListener('click', function() {
+    kvLives = Math.min(kvLives+1, 9);
+    animateKvCounter();
+    var r = this.getBoundingClientRect();
+    burst(r.left+r.width/2, r.top+r.height/2, 6);
+  });
+  document.getElementById('tut-kv-minus').addEventListener('click', function() {
+    kvLives = Math.max(kvLives-1, 0);
+    animateKvCounter();
+  });
 
   // ── SCREEN 9: edit code + docs ────────────────────────────────────────────────
   document.getElementById('tut-editcode-copy-demo').addEventListener('click', function() {
@@ -1699,8 +1821,25 @@
     goTo(IDX_START);
   });
 
-  // ── SCREEN 10: starter picker ─────────────────────────────────────────────────
+  // ── SCREEN 10 (IDX_START): you built it ───────────────────────────────────────
   var previewIntervals = [];
+
+  // render cave code with syntax highlighting
+  (function() {
+    var el = document.getElementById('tut-s7-cave-code');
+    if (el) el.innerHTML = highlightLua(CAVE_GAME_CODE);
+  })();
+
+  document.getElementById('tut-s7-run-btn').addEventListener('click', function() {
+    if (typeof window.termRunLua === 'function') {
+      window.termRunLua(CAVE_GAME_CODE);
+    } else {
+      // fallback: open terminal and show message
+      if (typeof window.termOpen === 'function') window.termOpen();
+    }
+    var r = this.getBoundingClientRect();
+    burst(r.left+r.width/2, r.top+r.height/2, 20);
+  });
 
   var STARTER_CODES = {
     dice: [
@@ -1778,56 +1917,64 @@
 
     // dice preview
     var diceEl = document.getElementById('tut-prev-dice');
-    previewIntervals.push(setInterval(function() {
-      diceEl.innerHTML='<span style="color:var(--muted);font-size:0.75rem">rolling...</span>';
-      setTimeout(function(){
-        diceEl.innerHTML='<span style="font-size:1.8rem;font-weight:700;color:var(--accent)">'+Math.ceil(Math.random()*6)+'</span>';
-      }, 400);
-    }, 1400));
+    if (diceEl) {
+      previewIntervals.push(setInterval(function() {
+        diceEl.innerHTML='<span style="color:var(--muted);font-size:0.75rem">rolling...</span>';
+        setTimeout(function(){
+          diceEl.innerHTML='<span style="font-size:1.8rem;font-weight:700;color:var(--accent)">'+Math.ceil(Math.random()*6)+'</span>';
+        }, 400);
+      }, 1400));
+    }
 
     // guesser preview
     var guessEl = document.getElementById('tut-prev-guesser');
-    var guesserState = 0, guesserNum = Math.floor(Math.random()*10)+1;
-    previewIntervals.push(setInterval(function() {
-      if (guesserState===0) {
-        guessEl.innerHTML='guess: <span style="color:var(--accent);font-weight:700">'+guesserNum+'</span>';
-      } else {
-        var dir=Math.random()>0.5?'too high &uarr;':'too low &darr;';
-        var col=dir.indexOf('high')>=0?'var(--code-num,#e0af68)':'#7dcfff';
-        guessEl.innerHTML='<span style="color:'+col+'">'+dir+'</span>';
-        guesserNum=Math.floor(Math.random()*10)+1;
-      }
-      guesserState=(guesserState+1)%2;
-    }, 1200));
+    if (guessEl) {
+      var guesserState = 0, guesserNum = Math.floor(Math.random()*10)+1;
+      previewIntervals.push(setInterval(function() {
+        if (guesserState===0) {
+          guessEl.innerHTML='guess: <span style="color:var(--accent);font-weight:700">'+guesserNum+'</span>';
+        } else {
+          var dir=Math.random()>0.5?'too high &uarr;':'too low &darr;';
+          var col=dir.indexOf('high')>=0?'var(--code-num,#e0af68)':'#7dcfff';
+          guessEl.innerHTML='<span style="color:'+col+'">'+dir+'</span>';
+          guesserNum=Math.floor(Math.random()*10)+1;
+        }
+        guesserState=(guesserState+1)%2;
+      }, 1200));
+    }
 
     // story preview
     var storyEl = document.getElementById('tut-prev-story');
-    var storyState = 0;
-    var storyTexts = [
-      'you stand at a crossroads...',
-      '<span style="color:var(--muted);font-size:0.78rem">[i]nside&nbsp;&nbsp;[l]eave</span>',
-      '<span style="color:var(--accent)">you venture inside...</span>',
-      '<span style="color:var(--code-num,#e0af68)">you found treasure!</span>',
-    ];
-    storyEl.innerHTML = storyTexts[0];
-    previewIntervals.push(setInterval(function() {
-      storyState=(storyState+1)%storyTexts.length;
-      storyEl.innerHTML=storyTexts[storyState];
-    }, 1600));
+    if (storyEl) {
+      var storyState = 0;
+      var storyTexts = [
+        'you stand at a crossroads...',
+        '<span style="color:var(--muted);font-size:0.78rem">[i]nside&nbsp;&nbsp;[l]eave</span>',
+        '<span style="color:var(--accent)">you venture inside...</span>',
+        '<span style="color:var(--code-num,#e0af68)">you found treasure!</span>',
+      ];
+      storyEl.innerHTML = storyTexts[0];
+      previewIntervals.push(setInterval(function() {
+        storyState=(storyState+1)%storyTexts.length;
+        storyEl.innerHTML=storyTexts[storyState];
+      }, 1600));
+    }
 
     // countdown preview
     var cdEl = document.getElementById('tut-prev-countdown');
-    var cdNum = 5;
-    var cdColors = ['var(--code-err,#f7768e)','var(--code-num,#e0af68)','var(--code-num,#e0af68)','var(--accent)','var(--accent)'];
-    previewIntervals.push(setInterval(function() {
-      if (cdNum>0) {
-        cdEl.innerHTML='<span style="font-size:2rem;font-weight:700;color:'+(cdColors[cdNum-1]||'var(--accent)')+'">'+cdNum+'</span>';
-        cdNum--;
-      } else {
-        cdEl.innerHTML='<span style="font-size:1.4rem;font-weight:700;color:var(--accent)">GO!</span>';
-        cdNum=5;
-      }
-    }, 700));
+    if (cdEl) {
+      var cdNum = 5;
+      var cdColors = ['var(--code-err,#f7768e)','var(--code-num,#e0af68)','var(--code-num,#e0af68)','var(--accent)','var(--accent)'];
+      previewIntervals.push(setInterval(function() {
+        if (cdNum>0) {
+          cdEl.innerHTML='<span style="font-size:2rem;font-weight:700;color:'+(cdColors[cdNum-1]||'var(--accent)')+'">'+cdNum+'</span>';
+          cdNum--;
+        } else {
+          cdEl.innerHTML='<span style="font-size:1.4rem;font-weight:700;color:var(--accent)">GO!</span>';
+          cdNum=5;
+        }
+      }, 700));
+    }
   }
 
   document.querySelectorAll('.tut-starter-card').forEach(function(card) {
