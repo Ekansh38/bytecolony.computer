@@ -1924,6 +1924,17 @@ function toggleTheme() {
     });
     lua.lua_setglobal(L, toLua('_net_collect'));
 
+    // _fontsize(n) — set terminal font size (clamped 8–48)
+    var _defaultFontSize = parseFloat(getComputedStyle(output).fontSize);
+    lua.lua_pushcfunction(L, function(Ls) {
+      var sz = lua.lua_tonumber(Ls, 1) || _defaultFontSize;
+      sz = Math.max(8, Math.min(48, sz));
+      output.style.fontSize = sz + 'px';
+      if (inpRow) inpRow.style.fontSize = sz + 'px';
+      return 0;
+    });
+    lua.lua_setglobal(L, toLua('_fontsize'));
+
     var co = lua.lua_newthread(L);
 
     var sandbox = [
@@ -1939,6 +1950,7 @@ function toggleTheme() {
       '  getkey=function() _setprompt("__getkey__") return coroutine.yield() end,',
       '  pollkey=function() local k=_pollkey(); if _in_task then coroutine.yield(0) end; return k end,',
       '  write=function(...) local s="" for i=1,select("#",...)do s=s..tostring(select(i,...))end _iowrite(s); if _in_task then coroutine.yield(0) end end,',
+      '  fontsize=function(n) _fontsize(n) end,',
       '}',
       // auto-yield helper: yields in task context every N calls
       'local _ty_n=0',
@@ -2041,6 +2053,8 @@ function toggleTheme() {
       flushIoBuf();
       document.removeEventListener('keydown', _gameKeyCapture, true);
       _gameMode = false; _gameResume = null;
+      output.style.fontSize = '';
+      if (inpRow) inpRow.style.fontSize = '';
       if (termPrompt) termPrompt.innerHTML = DEFAULT_PROMPT;
     }
 
