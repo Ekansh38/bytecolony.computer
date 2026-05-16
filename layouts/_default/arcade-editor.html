@@ -275,6 +275,15 @@
   .ae-ref-line .cm-builtin  { color: var(--code-type); }
   .ae-ref-line .cm-def      { color: var(--code-fn); }
   .ae-ref-line .cm-muted    { color: var(--muted); }
+  .ae-ref-see {
+    font-size: 0.62rem; color: var(--muted); margin: 2px 0 10px;
+  }
+  .ae-ref-see-link {
+    color: var(--accent); cursor: pointer; text-decoration: none;
+    border-bottom: 1px dotted color-mix(in srgb, var(--accent) 40%, transparent);
+    margin-left: 6px;
+  }
+  .ae-ref-see-link:hover { border-bottom-style: solid; }
 
 
   /* ── action bar ── */
@@ -742,6 +751,8 @@
     { name: 'leaderboard', note: 'submit score + display top players (net API)', code: 'local name  = io.read("your name: ")\nlocal score = math.random(100, 999)\n\nnet.rank(name, score)\nprint("submitted score: " .. colored(tostring(score), color.yellow))\nprint("")\n\nlocal top = net.top(5)\nif #top == 0 then\n  print("no scores yet!")\nelse\n  print(colored("── top scores ──", color.cyan))\n  for i, e in ipairs(top) do\n    local rank = i .. "."\n    local nm   = e.name .. string.rep(" ", math.max(0, 14 - #e.name))\n    print(colored(rank .. " ", color.blue) .. nm .. colored(tostring(e.score), color.yellow))\n  end\nend' },
     { name: 'shared counter', note: 'count how many times your game has been played (net API)', code: 'local count = (tonumber(net.get("plays")) or 0) + 1\nnet.set("plays", tostring(count))\n\nprint(colored("this game has been played:", color.cyan))\nprint(colored(tostring(count) .. " times", color.yellow))' },
     { name: 'arrow key demo', note: 'instant keypress with io.getkey', code: 'print(colored("press arrow keys or letters", color.cyan))\nprint("press q to quit")\nprint("")\n\nwhile true do\n  local key = io.getkey()\n  if key == "q" then break end\n  print("you pressed: " .. colored(key, color.yellow))\nend\n\nprint("")\nprint("done!")' },
+    { name: 'metronome', note: 'concurrent tasks — timer + input', code: 'local bpm = 120\nlocal ms = math.floor(60 / bpm * 1000)\nlocal beat = 0\n\ntask.spawn(function()\n  while true do\n    beat = beat + 1\n    print(colored("TICK " .. beat, color.cyan))\n    sound.click()\n    sleep(ms)\n  end\nend)\n\ntask.spawn(function()\n  while true do\n    local k = io.pollkey()\n    if k == "q" then\n      print(colored("stopped at beat " .. beat, color.yellow))\n      task.stop()\n    end\n    sleep(50)\n  end\nend)\n\ntask.run()' },
+    { name: 'dual counters', note: 'two tasks running at different speeds', code: 'local a, b = 0, 0\n\ntask.spawn(function()\n  for i = 1, 10 do\n    a = i\n    clear()\n    print(colored("fast: " .. a, color.cyan) .. "  " .. colored("slow: " .. b, color.yellow))\n    sleep(200)\n  end\nend)\n\ntask.spawn(function()\n  for i = 1, 5 do\n    b = i\n    clear()\n    print(colored("fast: " .. a, color.cyan) .. "  " .. colored("slow: " .. b, color.yellow))\n    sleep(400)\n  end\nend)\n\ntask.run()\nprint(colored("both done!", color.green))\nsound.win()' },
     { name: 'dungeon crawler', note: 'WASD movement, rooms, and treasure', code: 'local W, H = 20, 12\nlocal px, py = 3, 3\nlocal coins = {}\nlocal walls = {}\nlocal score = 0\nlocal total = 8\n\n-- build walls (border + some inner)\nfor x = 1, W do walls[x..","..1] = true; walls[x..","..H] = true end\nfor y = 1, H do walls["1,"..y] = true; walls[W..","..y] = true end\nfor x = 8, 8 do for y = 2, 6 do walls[x..","..y] = true end end\nfor x = 13, 13 do for y = 7, 11 do walls[x..","..y] = true end end\nfor x = 5, 9 do walls[x..",9"] = true end\n\n-- scatter coins in open spaces\nmath.randomseed(os.time())\nwhile #coins < total do\n  local cx = math.random(2, W - 1)\n  local cy = math.random(2, H - 1)\n  local k = cx..","..cy\n  if not walls[k] and (cx ~= px or cy ~= py) then\n    local dup = false\n    for _, c in ipairs(coins) do if c.x == cx and c.y == cy then dup = true end end\n    if not dup then coins[#coins + 1] = {x = cx, y = cy} end\n  end\nend\n\nwhile true do\n  clear()\n  -- draw map\n  for y = 1, H do\n    local row = ""\n    for x = 1, W do\n      if x == px and y == py then\n        row = row .. colored("@", color.cyan)\n      elseif walls[x..","..y] then\n        row = row .. colored("#", color.yellow)\n      else\n        local got = false\n        for _, c in ipairs(coins) do\n          if c.x == x and c.y == y then row = row .. colored("$", color.green); got = true end\n        end\n        if not got then row = row .. colored(".", color.purple) end\n      end\n    end\n    print(row)\n  end\n  print(colored("coins: " .. score .. "/" .. total .. "  wasd to move  q to quit", color.cyan))\n\n  if score >= total then\n    print(colored("you got all the treasure!", color.green))\n    sound.win()\n    break\n  end\n\n  local k = io.pollkey()\n  local nx, ny = px, py\n  if k == "w" or k == "up" then ny = ny - 1 end\n  if k == "s" or k == "down" then ny = ny + 1 end\n  if k == "a" or k == "left" then nx = nx - 1 end\n  if k == "d" or k == "right" then nx = nx + 1 end\n  if k == "q" then break end\n\n  if not walls[nx..","..ny] then px = nx; py = ny end\n\n  -- collect coins\n  for i = #coins, 1, -1 do\n    if coins[i].x == px and coins[i].y == py then\n      table.remove(coins, i)\n      score = score + 1\n      sound.coin()\n    end\n  end\n\n  sleep(80)\nend' },
   ];
 
@@ -754,7 +765,7 @@
       'io.write(".")             -- keeps appending on same line',
       'print()                   -- blank line / flush',
     ]},
-    { title: 'input', lines: [
+    { title: 'input', see: ['arrow key demo', 'dungeon crawler'], lines: [
       'local name = io.read("your name: ")  -- shows prompt, waits for enter',
       'local age = tonumber(io.read("age: "))  -- string → number',
       '',
@@ -852,7 +863,7 @@
       'x = 10                    -- global (leaks everywhere)',
       'local x = 10              -- local (safe)',
     ]},
-    { title: 'if / else', lines: [
+    { title: 'if / else', see: ['dice roller'], lines: [
       'if score > 100 then',
       '  print("you win!")',
       'elseif score > 50 then',
@@ -861,7 +872,7 @@
       '  print("keep going")',
       'end',
     ]},
-    { title: 'loops', lines: [
+    { title: 'loops', see: ['number guessing game'], lines: [
       'for i = 1, 5 do           -- count 1 to 5',
       '  print(i)',
       'end',
@@ -894,7 +905,7 @@
       'tostring(42)              -- "42"',
       'tonumber("42")            -- 42',
     ]},
-    { title: 'tables (lists & maps)', lines: [
+    { title: 'tables (lists & maps)', see: ['quiz game'], lines: [
       'local items = {"sword", "shield"}',
       'print(items[1])           -- "sword" (starts at 1)',
       'table.insert(items, "key")  -- add to end',
@@ -953,7 +964,7 @@
       'sound.buzz()              -- error buzz',
       'sound.beep(440, 0.2)      -- custom tone: freq(Hz), dur(s)',
     ]},
-    { title: 'timing & screen', lines: [
+    { title: 'timing & screen', see: ['bouncing ball', 'countdown'], lines: [
       'sleep(500)                -- pause 500ms',
       'sleep(1000)               -- pause 1 second',
       'clear()                   -- wipe terminal output',
@@ -965,34 +976,45 @@
       '  sleep(200)',
       'end',
     ]},
-    { title: 'tasks (concurrency)', lines: [
-      '-- run multiple things at once with cooperative tasks',
+    { title: 'tasks (concurrency)', see: ['metronome', 'dual counters'], lines: [
+      '-- run multiple things at the same time',
       '',
-      'task.spawn(function()      -- add a task',
+      'task.spawn(fn)             -- queue a function as a task',
+      'task.run()                 -- run all tasks (blocks until done)',
+      'task.stop()                -- stop all tasks from inside any task',
+      '',
+      '-- how it works:',
+      '-- 1. spawn() queues tasks      (nothing runs yet)',
+      '-- 2. run() starts a scheduler  (blocks here)',
+      '-- 3. each task runs until it hits sleep()',
+      '-- 4. scheduler switches to the next ready task',
+      '-- 5. when all tasks finish or stop() is called,',
+      '--    run() returns and code continues below it',
+      '',
+      '-- example: timer + input at the same time',
+      'task.spawn(function()',
       '  while true do',
       '    print("tick")',
-      '    sleep(1000)             -- sleep works inside tasks',
+      '    sleep(1000)',
       '  end',
       'end)',
       '',
-      'task.spawn(function()      -- add another task',
+      'task.spawn(function()',
       '  while true do',
-      '    local k = io.pollkey()  -- non-blocking input works!',
-      '    if k == "q" then',
-      '      task.stop()           -- kill all tasks, exit run()',
-      '    end',
+      '    local k = io.pollkey()',
+      '    if k == "q" then task.stop() end',
       '    sleep(50)',
       '  end',
       'end)',
       '',
-      'task.run()                  -- start scheduler (blocks)',
+      'task.run()                 -- runs both until q is pressed',
+      'print("done!")             -- continues here after stop()',
       '',
       '-- inside tasks you can use:',
       '--   sleep, print, clear, colored, sound, io.pollkey',
-      '-- NOT: io.getkey, io.read, net (these block)',
-      '-- task.stop() ends all tasks from inside any task',
+      '-- NOT: io.getkey, io.read, net (these block the whole game)',
     ]},
-    { title: 'net (persist data)', lines: [
+    { title: 'net (persist data)', see: ['leaderboard', 'shared counter'], lines: [
       '-- key-value store (scoped per game)',
       'net.set("high_score", "1500")  -- save a value',
       'local hs = net.get("high_score")  -- load ("" if unset)',
@@ -1087,8 +1109,15 @@
       var highlighted = sec.lines.map(function(line) {
         return highlightLua(line);
       }).join('');
+      var seeHtml = '';
+      if (sec.see && sec.see.length) {
+        seeHtml = '<div class="ae-ref-see">try: ' + sec.see.map(function(name) {
+          return '<a class="ae-ref-see-link" data-snippet="' + escHtml(name) + '">' + escHtml(name) + '</a>';
+        }).join(' ') + '</div>';
+      }
       return '<div class="ae-ref-section">' + escHtml(sec.title) + '</div>'
-        + '<div class="ae-ref">' + highlighted + '</div>';
+        + '<div class="ae-ref">' + highlighted + '</div>'
+        + seeHtml;
     }).join('');
   }
 
@@ -1134,6 +1163,28 @@
   });
 
   document.getElementById('ae-docs-body').addEventListener('click', function(e) {
+    // "see: snippet" links in reference
+    var seeLink = e.target.closest('.ae-ref-see-link');
+    if (seeLink) {
+      var name = seeLink.getAttribute('data-snippet');
+      activeTab = 'snippets';
+      document.querySelectorAll('.ae-docs-tab').forEach(function(t) {
+        t.classList.toggle('ae-tab-on', t.getAttribute('data-tab') === 'snippets');
+      });
+      renderDocsContent();
+      // scroll to the matching snippet
+      var snips = document.querySelectorAll('.ae-snip');
+      for (var si = 0; si < snips.length; si++) {
+        var sn = snips[si].querySelector('.ae-snip-name');
+        if (sn && sn.textContent === name) {
+          snips[si].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          snips[si].style.outline = '1px solid var(--accent)';
+          setTimeout(function(el) { el.style.outline = ''; }.bind(null, snips[si]), 1500);
+          break;
+        }
+      }
+      return;
+    }
     var btn = e.target.closest('.ae-snip-btn');
     if (!btn) return;
     var idx    = parseInt(btn.getAttribute('data-idx'));
