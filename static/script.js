@@ -1935,6 +1935,19 @@ function toggleTheme() {
     });
     lua.lua_setglobal(L, toLua('_fontsize'));
 
+    // _termsize() — returns cols, rows based on current font size
+    lua.lua_pushcfunction(L, function(Ls) {
+      var style = getComputedStyle(output);
+      var fontSize = parseFloat(style.fontSize);
+      var charW = fontSize * 0.6;
+      var w = output.clientWidth;
+      var h = output.clientHeight;
+      lua.lua_pushnumber(Ls, Math.floor(w / charW));
+      lua.lua_pushnumber(Ls, Math.floor(h / (fontSize * 1.4)));
+      return 2;
+    });
+    lua.lua_setglobal(L, toLua('_termsize'));
+
     var co = lua.lua_newthread(L);
 
     var sandbox = [
@@ -1951,6 +1964,8 @@ function toggleTheme() {
       '  pollkey=function() local k=_pollkey(); if _in_task then coroutine.yield(0) end; return k end,',
       '  write=function(...) local s="" for i=1,select("#",...)do s=s..tostring(select(i,...))end _iowrite(s); if _in_task then coroutine.yield(0) end end,',
       '  fontsize=function(n) _fontsize(n) end,',
+      '  width=function() local w,h=_termsize(); return w end,',
+      '  height=function() local w,h=_termsize(); return h end,',
       '}',
       // auto-yield helper: yields in task context every N calls
       'local _ty_n=0',
