@@ -915,6 +915,9 @@
     if (docsOpen) renderDocsContent();
     editor.refresh();
     docsTabBtn.classList.remove('ae-docs-pulse');
+    docsTabBtn.style.boxShadow = '';
+    docsTabBtn.style.background = '';
+    docsTabBtn.style.removeProperty('--glow-i');
     try { sessionStorage.setItem('ae_docs_seen', '1'); } catch(e) {}
   });
 
