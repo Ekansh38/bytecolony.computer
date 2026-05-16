@@ -1773,6 +1773,7 @@ function toggleTheme() {
 
     _gameMode = true;
     output.innerHTML = '';
+    output.style.fontSize = '';
 
     // game header bar (skip for test runs from editor/tutorial)
     if (game.id !== '_test_') {
@@ -2068,7 +2069,6 @@ function toggleTheme() {
       flushIoBuf();
       document.removeEventListener('keydown', _gameKeyCapture, true);
       _gameMode = false; _gameResume = null;
-      output.style.fontSize = '';
       if (termPrompt) termPrompt.innerHTML = DEFAULT_PROMPT;
     }
 
