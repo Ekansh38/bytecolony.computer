@@ -1881,8 +1881,10 @@ function toggleTheme() {
     lua.lua_pushcfunction(L, function(Ls) { iobuf = ''; output.innerHTML = ''; return 0; });
     lua.lua_setglobal(L, toLua('clear'));
 
-    // _pollkey() — non-blocking key read: returns last key pressed since last poll, or ""
+    // _pollkey() — non-blocking key read: returns held key or last tap, or ""
     var _keyBuf = '';
+    var _keysHeld = {};
+    var _lastHeld = '';
     function _normalizeKey(e) {
       var k = e.key;
       if (k === 'ArrowUp') return 'up';
@@ -1904,18 +1906,36 @@ function toggleTheme() {
         _gameMode = false; _gameResume = null;
         flushIoBuf();
         document.removeEventListener('keydown', _gameKeyCapture, true);
+        document.removeEventListener('keyup', _gameKeyRelease, true);
         if (termPrompt) termPrompt.innerHTML = DEFAULT_PROMPT;
         line('^C  game stopped.', 'term-line-err');
         output.scrollTop = output.scrollHeight;
+        _keysHeld = {}; _lastHeld = '';
         return;
       }
-      _keyBuf = _normalizeKey(e);
+      var k = _normalizeKey(e);
+      _keyBuf = k;
+      _keysHeld[k] = true;
+      _lastHeld = k;
+    }
+    function _gameKeyRelease(e) {
+      var k = _normalizeKey(e);
+      delete _keysHeld[k];
+      if (_lastHeld === k) _lastHeld = '';
     }
     document.addEventListener('keydown', _gameKeyCapture, true);
+    document.addEventListener('keyup', _gameKeyRelease, true);
 
     lua.lua_pushcfunction(L, function(Ls) {
-      var k = _keyBuf;
-      _keyBuf = '';
+      // return currently held key (instant, no repeat delay)
+      var k = '';
+      if (_lastHeld && _keysHeld[_lastHeld]) {
+        k = _lastHeld;
+      } else {
+        for (var key in _keysHeld) { k = key; break; }
+      }
+      if (!k) { k = _keyBuf; _keyBuf = ''; }
+      else { _keyBuf = ''; }
       lua.lua_pushstring(Ls, toLua(k));
       return 1;
     });
@@ -2102,6 +2122,8 @@ function toggleTheme() {
     function exitGame() {
       flushIoBuf();
       document.removeEventListener('keydown', _gameKeyCapture, true);
+      document.removeEventListener('keyup', _gameKeyRelease, true);
+      _keysHeld = {}; _lastHeld = '';
       _gameMode = false; _gameResume = null;
       if (termPrompt) termPrompt.innerHTML = DEFAULT_PROMPT;
     }
