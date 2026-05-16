@@ -2203,7 +2203,6 @@ function toggleTheme() {
             else if (k === 'Escape') k = 'escape';
             else if (k.length === 1) k = k.toLowerCase();
             else k = k.toLowerCase();
-            if (gkEl.parentNode) gkEl.parentNode.removeChild(gkEl);
             if (_gameMode) step(k);
           };
           document.addEventListener('keydown', handler, true);
