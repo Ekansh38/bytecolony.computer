@@ -1847,6 +1847,34 @@ function toggleTheme() {
     lua.lua_pushcfunction(L, function(Ls) { iobuf = ''; output.innerHTML = ''; return 0; });
     lua.lua_setglobal(L, toLua('clear'));
 
+    // _pollkey() — non-blocking key read: returns last key pressed since last poll, or ""
+    var _keyBuf = '';
+    function _normalizeKey(e) {
+      var k = e.key;
+      if (k === 'ArrowUp') return 'up';
+      if (k === 'ArrowDown') return 'down';
+      if (k === 'ArrowLeft') return 'left';
+      if (k === 'ArrowRight') return 'right';
+      if (k === ' ') return 'space';
+      if (k === 'Enter') return 'enter';
+      if (k === 'Escape') return 'escape';
+      if (k.length === 1) return k.toLowerCase();
+      return k.toLowerCase();
+    }
+    function _gameKeyCapture(e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      _keyBuf = _normalizeKey(e);
+    }
+    document.addEventListener('keydown', _gameKeyCapture, true);
+
+    lua.lua_pushcfunction(L, function(Ls) {
+      var k = _keyBuf;
+      _keyBuf = '';
+      lua.lua_pushstring(Ls, toLua(k));
+      return 1;
+    });
+    lua.lua_setglobal(L, toLua('_pollkey'));
+
     // _setprompt(s) — flush pending io.write, then set iobuf for JS step function
     lua.lua_pushcfunction(L, function(Ls) {
       flushIoBuf();
@@ -1884,6 +1912,7 @@ function toggleTheme() {
       'io={',
       '  read =function(prompt) if type(prompt)=="string" then _setprompt(prompt) end return coroutine.yield() end,',
       '  getkey=function() _setprompt("__getkey__") return coroutine.yield() end,',
+      '  pollkey=function() return _pollkey() end,',
       '  write=function(...) local s="" for i=1,select("#",...)do s=s..tostring(select(i,...))end _iowrite(s) end,',
       '}',
       // color: ANSI escape constants
@@ -1932,6 +1961,7 @@ function toggleTheme() {
 
     function exitGame() {
       flushIoBuf();
+      document.removeEventListener('keydown', _gameKeyCapture, true);
       _gameMode = false; _gameResume = null;
       if (termPrompt) termPrompt.innerHTML = DEFAULT_PROMPT;
     }
