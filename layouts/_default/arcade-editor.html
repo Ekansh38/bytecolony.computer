@@ -1037,11 +1037,15 @@
       'local hs = net.get("high_score")  -- load ("" if unset)',
       '',
       '-- leaderboard',
-      'net.rank("alice", 1500)   -- submit score',
+      'net.rank("alice", 1500)   -- submit score (must be a number)',
       'local top = net.top(10)   -- get top N',
       'for i, e in ipairs(top) do',
       '  print(i .. ". " .. e.name .. "  " .. e.score)',
       'end',
+      '',
+      '-- testing: each editor session gets its own isolated db',
+      '-- test data does NOT carry over when you publish',
+      '-- wipe published game data from the game page (needs edit code)',
     ]},
   ];
 

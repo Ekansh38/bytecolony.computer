@@ -94,10 +94,20 @@
   </div>
 
   <details class="ag-del-section">
+    <summary class="ag-del-summary">wipe game data</summary>
+    <div class="ag-del-form">
+      <p style="font-size:0.72rem;color:var(--muted);margin:0 0 8px">clears all saved key-value data and leaderboard scores for this game.</p>
+      <input type="password" id="ag-wipe-code" class="arc-code-inp" placeholder="edit code (xxxxx-xxxxx)">
+      <button id="ag-wipe-confirm" class="arc-del-confirm" style="background:var(--accent)">wipe data</button>
+      <span id="ag-wipe-status" class="arc-del-status"></span>
+    </div>
+  </details>
+
+  <details class="ag-del-section">
     <summary class="ag-del-summary">delete this game</summary>
     <div class="ag-del-form">
-      <input type="text" id="ag-code-inp" class="arc-code-inp" placeholder="edit code (xxxxx-xxxxx)">
-      <button id="ag-del-confirm" class="arc-del-confirm">confirm delete</button>
+      <input type="password" id="ag-code-inp" class="arc-code-inp" placeholder="edit code (xxxxx-xxxxx)">
+      <button id="ag-del-confirm" class="rc-del-confirm">confirm delete</button>
       <span id="ag-del-status" class="arc-del-status"></span>
     </div>
   </details>
@@ -333,6 +343,27 @@
 
       // wire edit-in-editor link
       document.getElementById('ag-edit-link').href = '/arcade/editor/?edit=' + encodeURIComponent(id);
+
+      // wipe game data
+      document.getElementById('ag-wipe-confirm').addEventListener('click', function() {
+        var code = document.getElementById('ag-wipe-code').value.trim();
+        var status = document.getElementById('ag-wipe-status');
+        if (!code) { status.textContent = 'enter your edit code'; return; }
+        this.disabled = true; this.textContent = 'wiping...'; status.textContent = '';
+        fetch('/api/net?game=' + encodeURIComponent(id), {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({op: 'clear', code: code})
+        }).then(function(r){return r.json();}).then(function(d){
+          if (d.ok) { status.textContent = 'done — ' + d.deleted + ' keys deleted'; status.style.color = 'var(--accent)'; }
+          else { status.textContent = d.error || 'error'; }
+          document.getElementById('ag-wipe-confirm').disabled = false;
+          document.getElementById('ag-wipe-confirm').textContent = 'wipe data';
+        }).catch(function(){
+          status.textContent = 'network error';
+          document.getElementById('ag-wipe-confirm').disabled = false;
+          document.getElementById('ag-wipe-confirm').textContent = 'wipe data';
+        });
+      });
 
       // delete
       document.getElementById('ag-del-confirm').addEventListener('click', function() {

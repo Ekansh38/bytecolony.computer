@@ -1776,7 +1776,7 @@ function toggleTheme() {
     output.style.fontSize = '';
 
     // game header bar (skip for test runs from editor/tutorial)
-    if (game.id !== '_test_') {
+    if (game.id.indexOf('_test_') !== 0) {
       var ghdr = document.createElement('div');
       ghdr.className = 'term-game-header';
       ghdr.innerHTML = '<span>▶ ' + (game.title || 'game') + '</span>'
@@ -2949,7 +2949,8 @@ function toggleTheme() {
   // expose for arcade page buttons
   window.termOpen   = open;
   window.termRun    = function(cmd) { output.innerHTML = ''; open(); setTimeout(function() { run(cmd); }, 80); };
-  window.termRunLua = function(code) { output.innerHTML = ''; open(); setTimeout(function() { loadFengari(function() { runLuaGame({ id: '_test_', title: 'test run', author: 'you', code: code }); }); }, 80); };
+  var _testId = '_test_' + Math.random().toString(36).slice(2, 8);
+  window.termRunLua = function(code) { output.innerHTML = ''; open(); setTimeout(function() { loadFengari(function() { runLuaGame({ id: _testId, title: 'test run', author: 'you', code: code }); }); }, 80); };
 
   // ── run a command ───────────────────────────────────────────
   function run(raw) {
