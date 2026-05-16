@@ -4,60 +4,67 @@
   .ag-lb-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     z-index: 9990;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    transition: opacity 0.3s ease;
   }
   .ag-lb-overlay.open { opacity: 1; pointer-events: auto; }
+
   .ag-lb {
     position: fixed;
     top: 0; right: 0; bottom: 0;
-    width: min(340px, 88vw);
-    background: var(--code-bg, #1a1b26);
-    border-left: 2px solid var(--border);
+    width: min(360px, 90vw);
+    background: var(--code-bg, #13141f);
+    border-left: 1px solid var(--border);
     z-index: 9991;
     transform: translateX(100%);
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     display: flex;
     flex-direction: column;
-    box-shadow: -8px 0 30px rgba(0,0,0,0.3);
+    box-shadow: -4px 0 24px rgba(0,0,0,0.5), -1px 0 0 var(--border);
   }
   .ag-lb.open { transform: translateX(0); }
+
   .ag-lb-header {
     display: flex;
     align-items: center;
-    padding: 20px 20px 14px;
-    gap: 12px;
+    padding: 18px 20px;
+    gap: 10px;
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
   }
-  .ag-lb-close {
-    background: none; border: 1px solid var(--border); color: var(--muted);
-    font-family: inherit; font-size: 0.7rem;
-    cursor: pointer; padding: 2px 8px; line-height: 1.4;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .ag-lb-close:hover { color: var(--fg); border-color: var(--fg); }
   .ag-lb-title {
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 700;
     color: var(--fg);
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     flex: 1;
   }
   .ag-lb-mode {
-    font-size: 0.58rem;
+    font-size: 0.6rem;
     color: var(--muted);
-    opacity: 0.55;
-    letter-spacing: 0.04em;
+    opacity: 0.6;
   }
+  .ag-lb-close {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.65rem;
+    cursor: pointer;
+    padding: 3px 10px;
+    line-height: 1.4;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .ag-lb-close:hover { color: var(--fg); border-color: var(--fg); }
+
   .ag-lb-search-row {
-    padding: 12px 20px;
+    padding: 14px 20px;
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
   }
@@ -67,14 +74,15 @@
     color: var(--fg);
     font-family: inherit;
     font-size: 0.75rem;
-    padding: 6px 10px;
+    padding: 7px 12px;
     outline: none;
     width: 100%;
     box-sizing: border-box;
     transition: border-color 0.15s;
   }
   .ag-lb-search:focus { border-color: var(--accent); }
-  .ag-lb-search::placeholder { color: var(--muted); opacity: 0.35; }
+  .ag-lb-search::placeholder { color: var(--muted); opacity: 0.4; }
+
   .ag-lb-body {
     flex: 1;
     overflow-y: auto;
@@ -86,30 +94,30 @@
     font-size: 0.78rem;
   }
   .ag-lb-table th {
-    font-size: 0.58rem;
+    font-size: 0.6rem;
     font-weight: 700;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-align: left;
     padding: 10px 20px;
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
-    background: var(--code-bg, #1a1b26);
+    background: var(--code-bg, #13141f);
   }
-  .ag-lb-table th:first-child { width: 32px; text-align: center; padding-right: 0; }
+  .ag-lb-table th:first-child { width: 36px; text-align: center; padding-right: 0; }
   .ag-lb-table th:last-child { text-align: right; }
   .ag-lb-table td {
-    padding: 8px 20px;
-    border-bottom: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
+    padding: 9px 20px;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
     color: var(--fg);
   }
   .ag-lb-table td:first-child {
     text-align: center;
     color: var(--muted);
     font-size: 0.68rem;
-    width: 32px;
+    width: 36px;
     padding-right: 0;
   }
   .ag-lb-table td:last-child {
@@ -128,16 +136,16 @@
   .ag-lb-empty {
     font-size: 0.78rem;
     color: var(--muted);
-    opacity: 0.4;
+    opacity: 0.45;
     padding: 60px 20px;
     text-align: center;
     line-height: 1.8;
   }
   .ag-lb-footer {
-    font-size: 0.6rem;
+    font-size: 0.62rem;
     color: var(--muted);
-    opacity: 0.5;
-    padding: 10px 20px;
+    opacity: 0.55;
+    padding: 12px 20px;
     border-top: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
@@ -187,23 +195,6 @@
     <button id="ag-lb-toggle" class="ag-action-btn" style="display:none">leaderboard</button>
   </div>
 
-  <div id="ag-lb-overlay" class="ag-lb-overlay"></div>
-  <div id="ag-lb" class="ag-lb">
-    <div class="ag-lb-header">
-      <button class="ag-lb-close" id="ag-lb-close">&times;</button>
-      <span class="ag-lb-title">leaderboard</span>
-      <span class="ag-lb-mode" id="ag-lb-mode"></span>
-    </div>
-    <div class="ag-lb-search-row">
-      <input type="text" class="ag-lb-search" id="ag-lb-search" placeholder="search player..." autocomplete="off" spellcheck="false">
-    </div>
-    <div class="ag-lb-body" id="ag-lb-body"></div>
-    <div class="ag-lb-footer" id="ag-lb-footer" style="display:none">
-      <span id="ag-lb-count"></span>
-      <span id="ag-lb-refresh" class="ag-lb-refresh-btn">refresh</span>
-    </div>
-  </div>
-
   <div class="ag-source-section">
     <div class="ag-source-header">
       <span class="ag-source-title">source</span>
@@ -243,6 +234,23 @@
 </div>
 
 <div id="ag-error" class="ag-error" style="display:none">game not found.</div>
+
+<div id="ag-lb-overlay" class="ag-lb-overlay"></div>
+<div id="ag-lb" class="ag-lb">
+  <div class="ag-lb-header">
+    <span class="ag-lb-title">leaderboard</span>
+    <span class="ag-lb-mode" id="ag-lb-mode"></span>
+    <button class="ag-lb-close" id="ag-lb-close">close</button>
+  </div>
+  <div class="ag-lb-search-row">
+    <input type="text" class="ag-lb-search" id="ag-lb-search" placeholder="search player..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="ag-lb-body" id="ag-lb-body"></div>
+  <div class="ag-lb-footer" id="ag-lb-footer" style="display:none">
+    <span id="ag-lb-count"></span>
+    <span id="ag-lb-refresh" class="ag-lb-refresh-btn">refresh</span>
+  </div>
+</div>
 
 <script>
 (function() {
@@ -334,8 +342,16 @@
       var lbPanel = document.getElementById('ag-lb');
       var lbOverlay = document.getElementById('ag-lb-overlay');
 
-      function openLb() { lbPanel.classList.add('open'); lbOverlay.classList.add('open'); fetchLb(); }
-      function closeLb() { lbPanel.classList.remove('open'); lbOverlay.classList.remove('open'); }
+      function openLb() {
+        lbPanel.classList.add('open'); lbOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        fetchLb();
+      }
+      function closeLb() {
+        lbPanel.classList.remove('open'); lbOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && lbPanel.classList.contains('open')) closeLb(); });
 
       document.getElementById('ag-lb-toggle').addEventListener('click', openLb);
       document.getElementById('ag-lb-close').addEventListener('click', closeLb);
