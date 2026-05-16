@@ -1924,11 +1924,12 @@ function toggleTheme() {
     });
     lua.lua_setglobal(L, toLua('_net_collect'));
 
-    // _fontsize(n) — set terminal font size (clamped 8–48)
-    var _defaultFontSize = parseFloat(getComputedStyle(output).fontSize);
+    // _fontsize(n) — set terminal font size by level 1–10
+    var _fontSizes = [14, 16, 18, 20, 24, 28, 32, 36, 42, 48];
     lua.lua_pushcfunction(L, function(Ls) {
-      var sz = lua.lua_tonumber(Ls, 1) || _defaultFontSize;
-      sz = Math.max(8, Math.min(48, sz));
+      var lvl = Math.floor(lua.lua_tonumber(Ls, 1) || 1);
+      lvl = Math.max(1, Math.min(10, lvl));
+      var sz = _fontSizes[lvl - 1];
       output.style.fontSize = sz + 'px';
       if (inpRow) inpRow.style.fontSize = sz + 'px';
       return 0;
