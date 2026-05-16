@@ -1925,12 +1925,12 @@ function toggleTheme() {
     });
     lua.lua_setglobal(L, toLua('_net_collect'));
 
-    // _fontsize(n) — set output font size by level 1–10 (output only, not input row)
-    var _fontSizes = [14, 16, 18, 20, 24, 28, 32, 36, 42, 48];
+    // _fontsize(n) — set output font size by level 1–15 (output only, not input row)
+    var _fontSizes = [14, 16, 18, 20, 24, 28, 32, 36, 42, 48, 56, 64, 72, 84, 96];
     lua.lua_pushcfunction(L, function(Ls) {
       if (lua.lua_type(Ls, 1) !== lua.LUA_TNUMBER) return 0;
       var lvl = Math.floor(lua.lua_tonumber(Ls, 1));
-      lvl = Math.max(1, Math.min(10, lvl));
+      lvl = Math.max(1, Math.min(15, lvl));
       output.style.fontSize = _fontSizes[lvl - 1] + 'px';
       return 0;
     });
