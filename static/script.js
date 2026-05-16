@@ -1924,14 +1924,13 @@ function toggleTheme() {
     });
     lua.lua_setglobal(L, toLua('_net_collect'));
 
-    // _fontsize(n) — set terminal font size by level 1–10
+    // _fontsize(n) — set output font size by level 1–10 (output only, not input row)
     var _fontSizes = [14, 16, 18, 20, 24, 28, 32, 36, 42, 48];
     lua.lua_pushcfunction(L, function(Ls) {
-      var lvl = Math.floor(lua.lua_tonumber(Ls, 1) || 1);
+      if (lua.lua_type(Ls, 1) !== lua.LUA_TNUMBER) return 0;
+      var lvl = Math.floor(lua.lua_tonumber(Ls, 1));
       lvl = Math.max(1, Math.min(10, lvl));
-      var sz = _fontSizes[lvl - 1];
-      output.style.fontSize = sz + 'px';
-      if (inpRow) inpRow.style.fontSize = sz + 'px';
+      output.style.fontSize = _fontSizes[lvl - 1] + 'px';
       return 0;
     });
     lua.lua_setglobal(L, toLua('_fontsize'));
@@ -2055,7 +2054,6 @@ function toggleTheme() {
       document.removeEventListener('keydown', _gameKeyCapture, true);
       _gameMode = false; _gameResume = null;
       output.style.fontSize = '';
-      if (inpRow) inpRow.style.fontSize = '';
       if (termPrompt) termPrompt.innerHTML = DEFAULT_PROMPT;
     }
 
