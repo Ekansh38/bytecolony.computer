@@ -154,11 +154,6 @@
     padding: 0; outline: none; width: 100%;
   }
   .ae-meta-field input::placeholder { color: var(--muted); opacity: 0.4; }
-  .ae-meta-prev {
-    font-size: 0.65rem; color: var(--muted); opacity: 0.5;
-    margin-top: 2px; overflow: hidden;
-    text-overflow: ellipsis; white-space: nowrap;
-  }
   .ae-field-title  { flex: 2.5; }
   .ae-field-author { flex: 1.5; }
   .ae-field-desc   { flex: 3; }
@@ -404,12 +399,10 @@
         <div class="ae-meta-field ae-field-title">
           <span class="ae-meta-lbl">title</span>
           <input id="ae-upd-title" type="text" placeholder="leave blank to keep" maxlength="50" autocomplete="off" spellcheck="false">
-          <span class="ae-meta-prev" id="ae-prev-title"></span>
         </div>
         <div class="ae-meta-field ae-field-desc">
           <span class="ae-meta-lbl">description</span>
           <input id="ae-upd-desc" type="text" placeholder="leave blank to keep" maxlength="200" autocomplete="off" spellcheck="false">
-          <span class="ae-meta-prev" id="ae-prev-desc"></span>
         </div>
         <div class="ae-meta-field ae-field-code">
           <span class="ae-meta-lbl">edit code</span>
@@ -701,8 +694,8 @@
       .then(function(game) {
         if (game.error) { modeEl.textContent = 'game not found'; return; }
         modeEl.innerHTML = 'editing &nbsp;<strong>' + game.title + '</strong>';
-        document.getElementById('ae-prev-title').textContent = 'current: ' + game.title;
-        document.getElementById('ae-prev-desc').textContent  = 'current: ' + (game.desc || '(none)');
+        document.getElementById('ae-upd-title').placeholder = game.title;
+        document.getElementById('ae-upd-desc').placeholder  = game.desc || '(no description)';
         if (!hadDraft) { setCode(game.code || ''); updateCharCount(); }
       })
       .catch(function() { modeEl.textContent = 'error loading game'; });
