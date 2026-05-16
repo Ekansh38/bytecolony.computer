@@ -76,7 +76,7 @@
   .tut-screen {
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
+    align-items: center; justify-content: safe center;
     padding: 60px 24px 160px;
     overflow-y: auto;
     z-index: 5;
@@ -84,6 +84,10 @@
     pointer-events: none;
     transform: translateY(20px);
     transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  /* fallback for browsers without safe center */
+  @supports not (justify-content: safe center) {
+    .tut-screen { justify-content: flex-start; padding-top: 10vh; }
   }
   .tut-screen.tut-active {
     opacity: 1;
