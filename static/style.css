@@ -396,7 +396,6 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 
 @keyframes arc-fadein { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 @keyframes arc-pulse  { 0%,100%{opacity:1} 50%{opacity:0.45} }
-@keyframes arc-coin-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
 @keyframes arc-scan { 0%{transform:translateY(-100%)} 100%{transform:translateY(100%)} }
 @keyframes arc-glow-pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
 
@@ -502,19 +501,6 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
   margin-bottom: 8px;
 }
 .arc-stat-val { color: var(--accent); font-weight: 700; }
-.arc-hero-coins {
-  display: flex; justify-content: center; gap: 18px;
-  margin-top: 16px;
-}
-.arc-coin {
-  color: var(--accent);
-  font-size: 0.65rem;
-  opacity: 0.4;
-  animation: arc-coin-bob 2s ease-in-out infinite;
-}
-.arc-coin:nth-child(2) { animation-delay: 0.4s; }
-.arc-coin:nth-child(3) { animation-delay: 0.8s; }
-
 /* ── Arcade intro ── */
 .arc-intro {
   margin: 0 0 36px;
@@ -863,6 +849,50 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 }
 .arc-snippet-title { font-size: 0.82rem; color: var(--fg); font-weight: 600; display: block; }
 .arc-snippet-desc  { font-size: 0.74rem; color: var(--muted); display: block; margin-top: 2px; opacity: 0.75; }
+
+/* ── Snippet runner ── */
+.arc-snippet-runner {
+  border: 1px solid var(--border);
+  border-top: none;
+  background: var(--code-bg, #1a1b26);
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.arc-runner-bar {
+  padding: 4px 10px;
+  font-size: 0.68rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--fg) 3%, transparent);
+}
+.arc-runner-out {
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  min-height: 28px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* ── Game card hover preview ── */
+.arc-card-preview {
+  position: absolute;
+  left: 50%; top: 100%;
+  transform: translateX(-50%);
+  background: var(--code-bg, #1a1b26);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--muted);
+  white-space: pre;
+  max-width: 280px;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.arc-card:hover .arc-card-preview { opacity: 1; }
 
 /* ── Misc ── */
 .arc-source-block {

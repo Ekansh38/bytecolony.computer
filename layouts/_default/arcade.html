@@ -13,11 +13,6 @@
     <h1 class="arc-title-big" data-text="ARCADE">ARCADE</h1>
     <p class="arc-banner-tagline">visitor-submitted lua games · runs in the terminal</p>
     <div class="arc-stat-line" id="arc-stat-line"></div>
-    <div class="arc-hero-coins" aria-hidden="true">
-      <span class="arc-coin">✦</span>
-      <span class="arc-coin">✦</span>
-      <span class="arc-coin">✦</span>
-    </div>
   </div>
 </div>
 
@@ -82,6 +77,21 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
 
 <script>
 (function() {
+  // ── tagline typing effect ──
+  var taglineEl = document.querySelector('.arc-banner-tagline');
+  if (taglineEl) {
+    var taglineText = taglineEl.textContent;
+    taglineEl.textContent = '';
+    setTimeout(function() {
+      var ci = 0;
+      var iv = setInterval(function() {
+        taglineEl.textContent += taglineText[ci];
+        ci++;
+        if (ci >= taglineText.length) clearInterval(iv);
+      }, 30);
+    }, 300);
+  }
+
   var API = '/api/games';
   var LS_KEY = 'arcade_v1', LS_TTL = 5 * 60 * 1000;
   var MAX_CODE = 25000;
@@ -160,6 +170,18 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
     '-- ASKING THE PLAYER FOR INPUT',
     'local name = io.read("your name: ")        -- shows prompt, waits for enter',
     'local age  = tonumber(io.read("age: "))    -- tonumber turns "18" into 18',
+    '',
+    '-- INSTANT INPUT (no Enter needed)',
+    'local key = io.getkey()                   -- wait for single keypress',
+    '-- returns: "a", "space", "up", "down", "left", "right", "enter", etc.',
+    '',
+    '-- NUMBERED MENU',
+    'local pick = io.choice("choose:", {"sword", "bow", "staff"})',
+    '-- shows [1] sword  [2] bow  [3] staff, returns chosen string',
+    '',
+    '-- YES / NO',
+    'local ok = io.confirm("are you sure?")',
+    '-- shows prompt (y/n), returns true or false',
     '',
     '-- STORING VALUES IN VARIABLES',
     'local score = 0           -- number',
@@ -340,27 +362,33 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
       code: [
         'print(colored("THE CAVE", color.yellow))',
         'print("you stand at the entrance of a dark cave.")',
-        'print("torchlight flickers on the walls.")',
         'print("")',
         '',
+        'local name = io.read("your name? ")',
+        'print("brave soul " .. name .. ".")',
+        'print("")',
         'local choice = io.read("go [i]nside or [l]eave? ")',
         '',
         'if choice == "i" then',
-        '  print("")',
         '  print(colored("you venture inside...", color.cyan))',
         '  sleep(1000)',
-        '  local found = math.random(1, 2)',
-        '  if found == 1 then',
-        '    print(colored("you find a chest full of gold!", color.yellow))',
+        '  clear()',
+        '  if math.random(1, 2) == 1 then',
+        '    print(colored("you find a chest of gold!", color.yellow))',
         '    sound.win()',
+        '    print("")',
+        '    print(colored("YOU WIN!", color.green))',
         '  else',
-        '    print(colored("a bat swoops past! you run out screaming.", color.red))',
+        '    print(colored("a bat swoops! you flee.", color.red))',
         '    sound.lose()',
+        '    print("")',
+        '    print(colored("GAME OVER", color.red))',
         '  end',
         'else',
-        '  print("")',
-        '  print("smart choice. some caves are best left alone.")',
+        '  print("smart choice. you go home safely.")',
         '  sound.click()',
+        '  print("")',
+        '  print("THE END.")',
         'end',
       ].join('\n'),
     },
@@ -496,12 +524,17 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
         + (s.desc ? '<span class="arc-snippet-desc">' + s.desc + '</span>' : '')
         + '</div>'
         + '<div style="display:flex;gap:6px;flex-shrink:0">'
+        + '<button class="ag-copy-btn arc-snippet-run" data-idx="' + idx + '">&#9654; run</button>'
         + '<button class="arc-snippet-use ag-copy-btn" data-idx="' + idx + '" style="opacity:0.7">open in editor</button>'
         + '<button class="ag-copy-btn arc-snippet-copy" data-idx="' + idx + '">copy</button>'
         + '</div>'
         + '</div>'
         + '<pre class="arc-source-block arc-snippet-code" style="margin:0;font-size:0.82rem;line-height:1.7">'
         + highlightLua(s.code) + '</pre>'
+        + '<div class="arc-snippet-runner" style="display:none" data-idx="' + idx + '">'
+        + '<div class="arc-runner-bar">output</div>'
+        + '<div class="arc-runner-out"></div>'
+        + '</div>'
         + '</div>';
     }).join('');
 
@@ -520,9 +553,194 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
         var code = SNIPPETS[parseInt(useBtn.getAttribute('data-idx'))].code;
         try { sessionStorage.setItem('arcade_prefill_code', code); } catch(e2) {}
         window.location.href = '/arcade/editor/';
+        return;
+      }
+      var runBtn = e.target.closest('.arc-snippet-run');
+      if (runBtn) {
+        var idx = parseInt(runBtn.getAttribute('data-idx'));
+        runSnippet(idx);
       }
     });
   })();
+
+  // ── snippet runner ──
+  var RUNNER_COLORS = {
+    red: '#f7768e', green: '#9ece6a', yellow: '#e0af68',
+    cyan: '#7dcfff', blue: '#7aa2f7', purple: '#bb9af7'
+  };
+
+  function parseSnippetOutputs(code) {
+    var lines = code.split('\n');
+    var outputs = [];
+    var hasInteractive = false;
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+
+      // detect interactive lines
+      if (/\bio\.read\b/.test(line) || /\bio\.getkey\b/.test(line) || /\bio\.choice\b/.test(line) || /\bio\.confirm\b/.test(line) || /\bnet\./.test(line) || /^while\b/.test(line) || /^for\b/.test(line)) {
+        hasInteractive = true;
+        continue;
+      }
+
+      // sleep(N)
+      var sleepM = line.match(/^sleep\s*\(\s*(\d+)\s*\)/);
+      if (sleepM) {
+        outputs.push({ type: 'sleep', ms: parseInt(sleepM[1]) });
+        continue;
+      }
+
+      // clear()
+      if (/^clear\s*\(\s*\)/.test(line)) {
+        outputs.push({ type: 'clear' });
+        continue;
+      }
+
+      // print(...)
+      var printM = line.match(/^print\s*\((.+)\)\s*$/);
+      if (!printM) continue;
+
+      var inner = printM[1].trim();
+      var parts = parsePrintArg(inner);
+      if (parts !== null) {
+        outputs.push({ type: 'print', parts: parts });
+      }
+    }
+
+    if (hasInteractive) {
+      outputs.push({ type: 'print', parts: [{ text: '[interactive - open terminal to try]', color: null }] });
+    }
+
+    return outputs;
+  }
+
+  function parsePrintArg(expr) {
+    // split by .. for concatenation
+    var segments = splitConcat(expr);
+    var parts = [];
+    for (var i = 0; i < segments.length; i++) {
+      var seg = segments[i].trim();
+      // colored("text", color.X)
+      var colorM = seg.match(/^colored\s*\(\s*"([^"]*)"\s*,\s*color\.(\w+)\s*\)$/);
+      if (colorM) {
+        parts.push({ text: colorM[1], color: RUNNER_COLORS[colorM[2]] || null });
+        continue;
+      }
+      // plain string
+      var strM = seg.match(/^"([^"]*)"$/);
+      if (strM) {
+        parts.push({ text: strM[1], color: null });
+        continue;
+      }
+      // skip variables / expressions we cannot evaluate
+      return parts.length > 0 ? parts : null;
+    }
+    return parts;
+  }
+
+  function splitConcat(s) {
+    var parts = [];
+    var cur = '';
+    var depth = 0;
+    var inStr = false;
+    var strChar = '';
+    for (var i = 0; i < s.length; i++) {
+      var c = s[i];
+      if (inStr) {
+        cur += c;
+        if (c === '\\') { i++; cur += s[i] || ''; continue; }
+        if (c === strChar) inStr = false;
+        continue;
+      }
+      if (c === '"' || c === "'") { inStr = true; strChar = c; cur += c; continue; }
+      if (c === '(') { depth++; cur += c; continue; }
+      if (c === ')') { depth--; cur += c; continue; }
+      if (depth === 0 && c === '.' && s[i + 1] === '.') {
+        parts.push(cur);
+        cur = '';
+        i++; // skip second dot
+        continue;
+      }
+      cur += c;
+    }
+    if (cur.trim()) parts.push(cur);
+    return parts;
+  }
+
+  var activeRunnerTimeout = null;
+
+  function closeAllRunners() {
+    var runners = document.querySelectorAll('.arc-snippet-runner');
+    for (var i = 0; i < runners.length; i++) {
+      runners[i].style.display = 'none';
+      runners[i].querySelector('.arc-runner-out').innerHTML = '';
+    }
+    if (activeRunnerTimeout) { clearTimeout(activeRunnerTimeout); activeRunnerTimeout = null; }
+  }
+
+  function runSnippet(idx) {
+    closeAllRunners();
+    var code = SNIPPETS[idx].code;
+    var outputs = parseSnippetOutputs(code);
+    var runner = document.querySelector('.arc-snippet-runner[data-idx="' + idx + '"]');
+    if (!runner) return;
+    var outEl = runner.querySelector('.arc-runner-out');
+    runner.style.display = 'block';
+    outEl.innerHTML = '';
+
+    var pos = 0;
+
+    function typeText(el, text, cb) {
+      var ci = 0;
+      var iv = setInterval(function() {
+        el.textContent += text[ci];
+        ci++;
+        if (ci >= text.length) { clearInterval(iv); if (cb) cb(); }
+      }, 18);
+    }
+
+    function step() {
+      if (pos >= outputs.length) {
+        // auto-collapse after 5s idle
+        activeRunnerTimeout = setTimeout(function() { runner.style.display = 'none'; }, 5000);
+        return;
+      }
+      var item = outputs[pos];
+      pos++;
+
+      if (item.type === 'clear') {
+        outEl.innerHTML = '';
+        step();
+      } else if (item.type === 'sleep') {
+        setTimeout(step, item.ms);
+      } else if (item.type === 'print') {
+        var lineEl = document.createElement('div');
+        outEl.appendChild(lineEl);
+
+        var partIdx = 0;
+        function typePart() {
+          if (partIdx >= item.parts.length) { step(); return; }
+          var p = item.parts[partIdx];
+          partIdx++;
+          var span = document.createElement('span');
+          if (p.color) span.style.color = p.color;
+          lineEl.appendChild(span);
+          typeText(span, p.text, typePart);
+        }
+        typePart();
+      } else {
+        step();
+      }
+    }
+    step();
+  }
+
+  // close runner on click outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.arc-snippet') && !e.target.closest('.arc-snippet-runner')) {
+      closeAllRunners();
+    }
+  });
 
   // animated counter
   function animateCount(el, target, suffix) {
@@ -539,7 +757,10 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
   function fmt(iso) { var d = new Date(iso); return d.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}); }
   function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+  var _gamesData = [];
+
   function render(games) {
+    _gamesData = games;
     var gamesEl = document.getElementById('arc-games');
     var statEl  = document.getElementById('arc-stat-line');
 
@@ -600,6 +821,48 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
     });
   }
   load();
+
+  // ── game card hover preview (pointer devices only) ──
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    function extractPrintLines(code, max) {
+      if (!code) return [];
+      var lines = code.split('\n');
+      var out = [];
+      for (var i = 0; i < lines.length && out.length < max; i++) {
+        var line = lines[i].trim();
+        var m = line.match(/^print\s*\(\s*"([^"]*)"\s*\)\s*$/);
+        if (m) { out.push(m[1]); continue; }
+        var cm = line.match(/^print\s*\(\s*colored\s*\(\s*"([^"]*)"/);
+        if (cm) { out.push(cm[1]); }
+      }
+      return out;
+    }
+
+    document.getElementById('arc-games').addEventListener('mouseenter', function(e) {
+      var card = e.target.closest('.arc-card');
+      if (!card || card.querySelector('.arc-card-preview')) return;
+      var cards = card.parentElement.querySelectorAll('.arc-card');
+      var idx = -1;
+      for (var i = 0; i < cards.length; i++) { if (cards[i] === card) { idx = i; break; } }
+      if (idx < 0 || !_gamesData[idx] || !_gamesData[idx].code) return;
+      var plines = extractPrintLines(_gamesData[idx].code, 3);
+      if (!plines.length) return;
+      var preview = document.createElement('div');
+      preview.className = 'arc-card-preview';
+      preview.textContent = plines.join('\n');
+      card.appendChild(preview);
+      // trigger reflow for transition
+      preview.offsetWidth;
+      preview.style.opacity = '1';
+    }, true);
+
+    document.getElementById('arc-games').addEventListener('mouseleave', function(e) {
+      var card = e.target.closest('.arc-card');
+      if (!card) return;
+      var preview = card.querySelector('.arc-card-preview');
+      if (preview) preview.remove();
+    }, true);
+  }
 
   // textarea editor with line numbers
   var ta      = document.getElementById('arc-code');
