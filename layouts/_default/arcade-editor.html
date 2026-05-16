@@ -523,9 +523,8 @@
   var remixId = params.get('remix');
 
   function saveDraft() {
-    if (editId || remixId) return;
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+      localStorage.setItem(draftKey(), JSON.stringify({
         code:   editor ? editor.getValue() : '',
         title:  (document.getElementById('ae-title')  || {}).value || '',
         author: (document.getElementById('ae-author') || {}).value || '',
@@ -535,9 +534,13 @@
     } catch(e) {}
   }
 
+  function draftKey() {
+    return DRAFT_KEY + (editId ? '_edit_' + editId : remixId ? '_remix_' + remixId : '');
+  }
+
   function loadDraft() {
     try {
-      var d = JSON.parse(localStorage.getItem(DRAFT_KEY));
+      var d = JSON.parse(localStorage.getItem(draftKey()));
       if (!d) return false;
       var age = Date.now() - (d.t || 0);
       if (age > 7 * 24 * 60 * 60 * 1000) return false; // expire after 7 days
@@ -551,7 +554,7 @@
   }
 
   function clearDraft() {
-    try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
+    try { localStorage.removeItem(draftKey()); } catch(e) {}
   }
 
   var saveTimer;
@@ -691,6 +694,8 @@
     submitBtn.style.display = 'none';
     updateBtn.style.display = 'inline-block';
 
+    // load local draft if available (unsaved edits survive reload)
+    var hadDraft = loadDraft();
     fetch('/api/games?id=' + encodeURIComponent(editId))
       .then(function(r) { return r.json(); })
       .then(function(game) {
@@ -698,19 +703,28 @@
         modeEl.innerHTML = 'editing &nbsp;<strong>' + game.title + '</strong>';
         document.getElementById('ae-prev-title').textContent = 'current: ' + game.title;
         document.getElementById('ae-prev-desc').textContent  = 'current: ' + (game.desc || '(none)');
-        setCode(game.code || '');
-        updateCharCount();
+        if (!hadDraft) { setCode(game.code || ''); updateCharCount(); }
       })
       .catch(function() { modeEl.textContent = 'error loading game'; });
+    // wire autosave on text inputs
+    ['ae-title', 'ae-author', 'ae-desc'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', scheduleSave);
+    });
 
   } else if (remixId) {
     modeEl.textContent = 'remix';
     document.getElementById('ae-title').value = 'remix-' + remixId.slice(0, 20);
+    var hadRemixDraft = loadDraft();
     fetch('/api/games?id=' + encodeURIComponent(remixId))
       .then(function(r) { return r.json(); })
       .then(function(game) {
-        if (!game.error) { setCode(game.code || ''); updateCharCount(); }
+        if (!game.error && !hadRemixDraft) { setCode(game.code || ''); updateCharCount(); }
       });
+    ['ae-title', 'ae-author', 'ae-desc'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', scheduleSave);
+    });
 
   } else {
     modeEl.textContent = 'new game';
@@ -1292,6 +1306,7 @@
     }).then(function(r) { return r.json(); }).then(function(data) {
       if (data.ok) {
         try { localStorage.removeItem('arcade_v1'); } catch(e) {}
+        clearDraft();
         setStatus('updated!', 'ok');
         btn.disabled = false; btn.textContent = 'publish update';
         var destId = data.newId || editId;
