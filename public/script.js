@@ -246,17 +246,20 @@ function toggleTheme() {
       if (b.y > H-MARGIN) fy -= TURN*(1-(H-b.y)/MARGIN);
 
       // cursor interaction: gentle attract from afar, scatter when close
+      // tap-to-scatter: burst widens repel radius and amplifies force
       if (_mouseActive) {
+        var burstR = CURSOR_REPEL_R + _burstStrength * 180; // 60 → 240px during burst
+        var burstW = CURSOR_REPEL_W + _burstStrength * 0.35; // 0.08 → 0.43 during burst
         dx = _mouseX - b.x; dy = _mouseY - b.y;
         d2 = dx*dx + dy*dy;
         if (d2 > 1) {
           d = Math.sqrt(d2);
-          if (d < CURSOR_REPEL_R) {
-            var repel = (1 - d / CURSOR_REPEL_R);
-            repel = repel * repel;  // quadratic falloff
-            fx -= (dx/d) * repel * CURSOR_REPEL_W;
-            fy -= (dy/d) * repel * CURSOR_REPEL_W;
-          } else if (d < CURSOR_ATTRACT_R) {
+          if (d < burstR) {
+            var repel = (1 - d / burstR);
+            repel = repel * repel;
+            fx -= (dx/d) * repel * burstW;
+            fy -= (dy/d) * repel * burstW;
+          } else if (_burstStrength < 0.1 && d < CURSOR_ATTRACT_R) {
             var attract = (1 - (d - CURSOR_REPEL_R) / (CURSOR_ATTRACT_R - CURSOR_REPEL_R));
             fx += (dx/d) * attract * CURSOR_ATTRACT_W;
             fy += (dy/d) * attract * CURSOR_ATTRACT_W;
@@ -282,6 +285,7 @@ function toggleTheme() {
   var CURSOR_ATTRACT_R = 200, CURSOR_REPEL_R = 60;
   var CURSOR_ATTRACT_W = 0.0004, CURSOR_REPEL_W = 0.08;
   var CURSOR_IDLE_MS = 2000;
+  var _burstStrength = 0; // tap-to-scatter: decays each frame
 
   document.addEventListener('mousemove', function(e) {
     _mouseX = e.clientX; _mouseY = e.clientY;
@@ -305,6 +309,7 @@ function toggleTheme() {
     if (!t) return;
     _mouseX = t.clientX; _mouseY = t.clientY;
     _mouseActive = true;
+    _burstStrength = 1.0; // trigger scatter burst
     clearTimeout(_mouseTimer);
     _mouseTimer = setTimeout(function() { _mouseActive = false; }, CURSOR_IDLE_MS);
   }, { passive: true });
@@ -631,6 +636,7 @@ function toggleTheme() {
     if (document.hidden) { requestAnimationFrame(loop); return; }
     lifeCurrentSpeed  += (lifeSpeedLevel  - lifeCurrentSpeed)  * 0.07;
     boidsCurrentSpeed += (boidsSpeedLevel - boidsCurrentSpeed) * 0.07;
+    if (_burstStrength > 0.001) _burstStrength *= 0.92; else _burstStrength = 0;
 
     // decay trail heat every frame for smooth fade regardless of sim speed
     if (TRAIL_ON && trailHeat) {
@@ -2489,19 +2495,23 @@ function toggleTheme() {
 
     colorscheme: function (args) {
       if (args.length > 1) { tooMany('colorscheme'); return; }
-      var ALL = ['tokyo-night', 'gruvbox', 'kanagawa', 'flexoki-light', 'rose-pine', 'ayu-light'];
       var cur  = document.documentElement.getAttribute('data-theme');
       var name = args[0];
       if (!name) {
-        var out = ALL.map(function (t) {
+        var out = THEMES.map(function (t) {
           return (t === cur ? '* ' : '  ') + t;
         }).join('\n');
+        if (cur === 'hacker') out += '\n* hacker';
         line(out, 'term-line-pre');
-      } else if (ALL.indexOf(name) >= 0) {
+      } else if (name === 'hacker') {
+        applyTheme('hacker');
+        line('colorscheme → hacker', 'term-line-ok');
+        line('> welcome to the matrix.', 'term-line-ok');
+      } else if (THEMES.indexOf(name) >= 0) {
         applyTheme(name);
         line('colorscheme → ' + name, 'term-line-ok');
       } else {
-        line('unknown colorscheme. try: ' + ALL.join(', '), 'term-line-err');
+        line('unknown colorscheme. try: ' + THEMES.join(', '), 'term-line-err');
       }
     },
     theme: function (args) { CMDS.colorscheme(args); },
@@ -3129,6 +3139,51 @@ function toggleTheme() {
   var _testId = '_test_' + Math.random().toString(36).slice(2, 8);
   window.termRunLua = function(code) { output.innerHTML = ''; open(); setTimeout(function() { loadFengari(function() { runLuaGame({ id: _testId, title: 'test run', author: 'you', code: code }); }); }, 80); };
 
+  // ── ghost text (fish-style autocomplete preview) ─────────────
+  var ghostHidden = document.getElementById('term-ghost-hidden');
+  var ghostSuffix = document.getElementById('term-ghost-suffix');
+  var _ghostText = '';
+
+  function getGhostSuggestion(val) {
+    if (!val || _gameMode) return '';
+    var parts = val.trimStart().split(/\s+/);
+    var isCmd = parts.length === 1;
+    var typed = parts[parts.length - 1];
+    if (!typed) return '';
+
+    var hits;
+    if (isCmd) {
+      var paramKeys = window.getBgParams ? Object.keys(window.getBgParams()) : [];
+      hits = CMD_NAMES.concat(paramKeys).filter(function (c) { return c.indexOf(typed) === 0 && c !== typed; });
+    } else {
+      var cmd = parts[0].toLowerCase();
+      var pos = parts.length - 2;
+      hits = completeArg(cmd, pos, typed).filter(function (s) { return s !== typed; });
+    }
+
+    if (hits.length === 1) return hits[0].slice(typed.length);
+    if (hits.length > 1) {
+      var cp = commonPrefix(hits);
+      if (cp.length > typed.length) return cp.slice(typed.length);
+    }
+    // history suggestion as fallback
+    for (var i = 0; i < hist.length; i++) {
+      if (hist[i].indexOf(val) === 0 && hist[i] !== val) return hist[i].slice(val.length);
+    }
+    return '';
+  }
+
+  function updateGhost() {
+    var val = inp.value;
+    _ghostText = getGhostSuggestion(val);
+    if (ghostHidden && ghostSuffix) {
+      ghostHidden.textContent = val;
+      ghostSuffix.textContent = _ghostText;
+    }
+  }
+
+  inp.addEventListener('input', updateGhost);
+
   // ── run a command ───────────────────────────────────────────
   function run(raw) {
     var cmd = raw.trim();
@@ -3162,6 +3217,7 @@ function toggleTheme() {
   inp.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
       var v = inp.value; inp.value = '';
+      _ghostText = ''; updateGhost();
       if (_gameMode) {
         if (v.trim() === 'quit' || v.trim() === 'exit' || v.trim() === 'q') {
           _gameMode = false; _gameResume = null;
@@ -3174,15 +3230,22 @@ function toggleTheme() {
         }
         // all other game input handled by inline input in output area
       } else { run(v); }
+    } else if (e.key === 'ArrowRight' && _ghostText && inp.selectionStart === inp.value.length) {
+      e.preventDefault();
+      inp.value += _ghostText;
+      _ghostText = ''; updateGhost();
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (histIdx < hist.length - 1) inp.value = hist[++histIdx] || '';
+      updateGhost();
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (histIdx > 0) inp.value = hist[--histIdx] || '';
       else { histIdx = -1; inp.value = ''; }
+      updateGhost();
     } else if (e.key === 'Tab') {
       e.preventDefault(); inp.value = complete(inp.value);
+      updateGhost();
     } else if (e.key === 'Escape') {
       close();
     }

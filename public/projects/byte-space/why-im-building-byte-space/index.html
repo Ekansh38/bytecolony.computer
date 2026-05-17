@@ -156,7 +156,10 @@ Anyway, hope you understand why I find this idea so interesting and check out th
       <div id="term-output"></div>
       <div id="term-input-row">
         <span id="term-prompt" class="term-prompt">~$&nbsp;</span>
-        <input id="term-input" type="text" autocomplete="off" autocorrect="off" spellcheck="false">
+        <div id="term-input-wrap">
+          <input id="term-input" type="text" autocomplete="off" autocorrect="off" spellcheck="false">
+          <span id="term-ghost"><span id="term-ghost-hidden"></span><span id="term-ghost-suffix"></span></span>
+        </div>
       </div>
     </div>
   </div>
