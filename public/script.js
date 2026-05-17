@@ -52,27 +52,19 @@ function toggleTheme() {
   document.addEventListener('DOMContentLoaded', function () {
     applyTheme(document.documentElement.getAttribute('data-theme'));
 
-    // Theme picker (nerdy :colorscheme style)
-    var pickerBtn  = document.getElementById('theme-picker-btn');
-    var pickerMenu = document.getElementById('theme-picker-menu');
-    if (pickerBtn && pickerMenu) {
-      pickerBtn.addEventListener('click', function (e) {
+    // Desktop settings panel
+    var dsWrap  = document.getElementById('d-settings');
+    var dsBtn   = document.getElementById('d-settings-btn');
+    var dsPanel = document.getElementById('d-settings-panel');
+    if (dsWrap && dsBtn && dsPanel) {
+      dsBtn.addEventListener('click', function (e) {
         e.stopPropagation();
-        pickerMenu.classList.toggle('open');
+        var opening = !dsWrap.classList.contains('open');
+        dsWrap.classList.toggle('open');
+        if (opening && window._buildDesktopSettings) window._buildDesktopSettings();
       });
-      document.addEventListener('click', function () {
-        pickerMenu.classList.remove('open');
-      });
-      pickerMenu.addEventListener('click', function (e) { e.stopPropagation(); });
-      var items = document.querySelectorAll('.tp-item');
-      for (var i = 0; i < items.length; i++) {
-        items[i].addEventListener('click', (function (item) {
-          return function () {
-            applyTheme(item.getAttribute('data-t'));
-            pickerMenu.classList.remove('open');
-          };
-        })(items[i]));
-      }
+      document.addEventListener('click', function () { dsWrap.classList.remove('open'); });
+      dsPanel.addEventListener('click', function (e) { e.stopPropagation(); });
     }
 
     // Mobile settings sheet
@@ -998,57 +990,131 @@ function toggleTheme() {
     'dracula':          '#bd93f9',
     'rose-pine':        '#b4637a',
     'github-light':     '#0969da',
-    'papercolor-light': '#005f87'
+    'papercolor-light': '#005f87',
+    'hacker':           '#00ff41'
   };
 
-  function rebuildPresetPicker() {
-    var menu = document.getElementById('preset-picker-menu');
-    if (!menu) return;
-    menu.innerHTML = '';
-    var header = document.createElement('div');
-    header.className = 'tp-header';
-    header.textContent = ':preset';
-    menu.appendChild(header);
-    var names = window.getPresetNames();
-    names.forEach(function (name) {
-      var p = PRESETS[name];
-      var btn = document.createElement('button');
-      btn.className = 'tp-item' + (activePreset === name ? ' active' : '');
-      var themeTag = p.theme && THEME_ACCENTS[p.theme]
-        ? '<span class="tp-swatch" style="background:' + THEME_ACCENTS[p.theme] + '" title="' + p.theme + '"></span>'
-        : '<span class="tp-variant">any</span>';
-      btn.innerHTML = '<span class="tp-arrow">▶</span>' + name + themeTag;
-      btn.addEventListener('click', function () {
-        window.applyPreset(name);
-        document.getElementById('preset-picker-menu').classList.remove('open');
+  // ── desktop settings panel builder ──
+  var DS_SLIDERS = [
+    { key: 'life.speed',   label: 'life speed',  min: 1, max: 20, step: 1 },
+    { key: 'life.cell',    label: 'cell size',    min: 1, max: 40, step: 1 },
+    { key: 'life.opacity', label: 'life opacity', min: 1, max: 100, step: 1 },
+    { key: 'life.glow',    label: 'life glow',    min: 0, max: 100, step: 1 },
+    { key: 'life.rainbow', label: 'rainbow',      min: 0, max: 3,   step: 1 },
+    { key: 'boids.speed',  label: 'boid speed',   min: 1, max: 20, step: 1 },
+    { key: 'boids.n',      label: 'boid count',   min: 1, max: 300, step: 1 },
+    { key: 'boids.size',   label: 'boid size',    min: 1, max: 80,  step: 1 },
+    { key: 'boids.opacity',label: 'boid opacity', min: 1, max: 100, step: 1 },
+    { key: 'boids.glow',   label: 'boid glow',    min: 0, max: 100, step: 1 },
+    { key: 'trail.on',     label: 'trail',        min: 0, max: 1,   step: 1 },
+  ];
+
+  function _buildDesktopSettings() {
+    // themes
+    var themesC = document.getElementById('ds-themes');
+    if (themesC) {
+      themesC.innerHTML = '';
+      var cur = document.documentElement.getAttribute('data-theme');
+      THEMES.forEach(function (t) {
+        var dot = document.createElement('button');
+        dot.className = 'ds-theme-dot' + (t === cur ? ' active' : '');
+        dot.innerHTML = '<span class="ds-dot-inner" style="background:' +
+          (THEME_ACCENTS[t] || 'var(--accent)') + '"></span>' +
+          '<span class="ds-dot-label">' + t + '</span>';
+        dot.addEventListener('click', function () {
+          applyTheme(t);
+          _buildDesktopSettings();
+        });
+        themesC.appendChild(dot);
       });
-      menu.appendChild(btn);
-    });
+    }
+
+    // mode seg
+    var seg = document.getElementById('ds-mode-seg');
+    if (seg) {
+      var curMode = window.getBgMode ? window.getBgMode() : 'boids';
+      var btns = seg.querySelectorAll('button');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle('active', btns[i].getAttribute('data-mode') === curMode);
+        btns[i].onclick = (function (btn) {
+          return function () {
+            if (window.setBgMode) window.setBgMode(btn.getAttribute('data-mode'));
+            _buildDesktopSettings();
+          };
+        })(btns[i]);
+      }
+    }
+
+    // presets
+    var presetsC = document.getElementById('ds-presets');
+    if (presetsC) {
+      presetsC.innerHTML = '';
+      var names = window.getPresetNames ? window.getPresetNames() : [];
+      names.forEach(function (name) {
+        var btn = document.createElement('button');
+        btn.className = 'ds-preset' + (activePreset === name ? ' active' : '');
+        btn.textContent = name;
+        btn.addEventListener('click', function () {
+          window.applyPreset(name);
+          _buildDesktopSettings();
+        });
+        presetsC.appendChild(btn);
+      });
+    }
+
+    // sliders
+    var slidersC = document.getElementById('ds-sliders');
+    if (slidersC) {
+      slidersC.innerHTML = '';
+      var params = window.getBgParams ? window.getBgParams() : {};
+      var mode = window.getBgMode ? window.getBgMode() : 'boids';
+      DS_SLIDERS.forEach(function (s) {
+        // filter by mode relevance
+        if (s.key.indexOf('life.') === 0 && mode !== 'life' && mode !== 'combo') return;
+        if (s.key.indexOf('boids.') === 0 && mode !== 'boids' && mode !== 'combo') return;
+        if (s.key.indexOf('trail.') === 0 && mode !== 'boids' && mode !== 'combo') return;
+
+        var val = params[s.key] != null ? params[s.key] : 0;
+        var row = document.createElement('div');
+        row.className = 'ds-slider-row';
+
+        var label = document.createElement('span');
+        label.className = 'ds-slider-label';
+        label.textContent = s.label;
+
+        var input = document.createElement('input');
+        input.type = 'range';
+        input.className = 'ds-slider';
+        input.min = s.min; input.max = s.max; input.step = s.step;
+        input.value = val;
+
+        var valSpan = document.createElement('span');
+        valSpan.className = 'ds-slider-val';
+        valSpan.textContent = Math.round(val);
+
+        input.addEventListener('input', function () {
+          var v = parseFloat(input.value);
+          valSpan.textContent = Math.round(v);
+          if (window.setParam) window.setParam(s.key, v);
+        });
+
+        row.appendChild(label);
+        row.appendChild(input);
+        row.appendChild(valSpan);
+        slidersC.appendChild(row);
+      });
+    }
   }
-  window._rebuildPresetPicker = rebuildPresetPicker;
+  window._buildDesktopSettings = _buildDesktopSettings;
+  window._rebuildPresetPicker = _buildDesktopSettings;
 
   document.addEventListener('DOMContentLoaded', function () {
-    // restore individual params (overrides preset defaults with any manually-changed values)
     var PARAM_KEYS = ['life.cell','life.opacity','life.glow','life.autofill','life.rainbow',
       'boids.n','boids.size','boids.tick','boids.opacity','boids.glow','boids.perception','boids.separation',
       'trail.on','trail.size','trail.glow','trail.decay'];
-    // restore individual params — each param saves itself, so manual
-    // tweaks via terminal persist without a preset overwriting them
     for (var ki = 0; ki < PARAM_KEYS.length; ki++) {
       var sv = localStorage.getItem('p:' + PARAM_KEYS[ki]);
       if (sv !== null) _origSetParam(PARAM_KEYS[ki], parseFloat(sv));
-    }
-    rebuildPresetPicker();
-    var ppBtn  = document.getElementById('preset-picker-btn');
-    var ppMenu = document.getElementById('preset-picker-menu');
-    if (ppBtn && ppMenu) {
-      ppBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        rebuildPresetPicker();
-        ppMenu.classList.toggle('open');
-      });
-      document.addEventListener('click', function () { ppMenu.classList.remove('open'); });
-      ppMenu.addEventListener('click', function (e) { e.stopPropagation(); });
     }
   });
 
@@ -1764,7 +1830,7 @@ function toggleTheme() {
       // ── phase 2: element deletion ───────────────────────────
       setTimeout(function () {
         var sel = 'nav, .social, .tagline, li, p, h3, h2, footer, ' +
-                  '.nav, h1, header, section, article, #theme-picker, main';
+                  '.nav, h1, header, section, article, #d-settings, main';
         var nodeList = document.querySelectorAll(sel);
         var els = [];
         for (var i = 0; i < nodeList.length; i++) els.push(nodeList[i]);

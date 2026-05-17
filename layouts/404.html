@@ -62,7 +62,8 @@ body > header, body > footer { display: none; }
   var W, H, dpr;
 
   // boids
-  var N = 180;
+  var _mobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  var N = _mobile ? 60 : 180;
   var boids = [];
   var mouse = { x: -9999, y: -9999 };
 

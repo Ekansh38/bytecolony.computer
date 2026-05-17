@@ -163,36 +163,27 @@
     };
   </script>
 
-  <div id="preset-picker">
-    <button id="preset-picker-btn">:preset</button>
-    <div id="preset-picker-menu"></div>
-  </div>
-
-  <div id="theme-picker">
-    <button id="theme-picker-btn">:colorscheme</button>
-    <div id="theme-picker-menu">
-      <div class="tp-header">select colorscheme</div>
-      <button class="tp-item" data-t="tokyo-night">
-        <span class="tp-arrow">▶</span>tokyo-night<span class="tp-variant">dark</span>
-      </button>
-      <button class="tp-item" data-t="gruvbox">
-        <span class="tp-arrow">▶</span>gruvbox<span class="tp-variant">dark</span>
-      </button>
-      <button class="tp-item" data-t="dracula">
-        <span class="tp-arrow">▶</span>dracula<span class="tp-variant">dark</span>
-      </button>
-      <button class="tp-item" data-t="rose-pine">
-        <span class="tp-arrow">▶</span>rose-pine<span class="tp-variant">light</span>
-      </button>
-      <button class="tp-item" data-t="github-light">
-        <span class="tp-arrow">▶</span>github-light<span class="tp-variant">light</span>
-      </button>
-      <button class="tp-item" data-t="papercolor-light">
-        <span class="tp-arrow">▶</span>papercolor-light<span class="tp-variant">light</span>
-      </button>
-      <button class="tp-item" data-t="hacker">
-        <span class="tp-arrow">▶</span>hacker<span class="tp-variant">dark</span>
-      </button>
+  <div id="d-settings">
+    <button id="d-settings-btn">:settings</button>
+    <div id="d-settings-panel">
+      <div class="ds-section">
+        <div class="ds-title">colorscheme</div>
+        <div class="ds-themes" id="ds-themes"></div>
+      </div>
+      <div class="ds-section">
+        <div class="ds-title">background</div>
+        <div class="ds-seg" id="ds-mode-seg">
+          <button data-mode="life">life</button>
+          <button data-mode="boids">boids</button>
+          <button data-mode="combo">combo</button>
+          <button data-mode="off">off</button>
+        </div>
+        <div class="ds-presets" id="ds-presets"></div>
+      </div>
+      <div class="ds-section" id="ds-sliders-section">
+        <div class="ds-title">params</div>
+        <div class="ds-sliders" id="ds-sliders"></div>
+      </div>
     </div>
   </div>
 
