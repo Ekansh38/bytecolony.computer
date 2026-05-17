@@ -22,7 +22,7 @@ function applyTheme(name) {
   if (window._invalidateAccentCache) window._invalidateAccentCache();
   var isLight = LIGHT_THEMES.indexOf(name) >= 0;
   var t = document.getElementById('t');
-  if (t) t.textContent = isLight ? '[light]' : '[dark]';
+  if (t) t.textContent = '[theme]';
   var items = document.querySelectorAll('.tp-item, .ms-item');
   for (var i = 0; i < items.length; i++)
     items[i].classList.toggle('active', items[i].getAttribute('data-t') === name);
@@ -112,12 +112,14 @@ function toggleTheme() {
   var ctx = canvas.getContext('2d');
 
   var MODES = ['life', 'boids', 'combo', 'off'];
-  // one-time migration: if mobile sim was previously disabled, re-enable it
+  // one-time migration: if sim was previously disabled, re-enable it
   var _savedMode = localStorage.getItem('bgMode');
-  if (_isMobile && !localStorage.getItem('_msim2')) {
-    localStorage.setItem('_msim2', '1');
-    if (!_savedMode || _savedMode === 'off') _savedMode = 'boids';
-    localStorage.setItem('bgMode', _savedMode);
+  if (!localStorage.getItem('_msim3')) {
+    localStorage.setItem('_msim3', '1');
+    if (_savedMode === 'off') {
+      _savedMode = _isMobile ? 'boids' : 'combo';
+      localStorage.setItem('bgMode', _savedMode);
+    }
   }
   if (!_savedMode) _savedMode = _isMobile ? 'boids' : 'combo';
   var modeIdx = Math.max(0, MODES.indexOf(_savedMode));
