@@ -235,7 +235,6 @@
   /* ── build cards ── */
   var grid = document.getElementById('themez-grid');
   if (!grid) return;
-  var sims = [];
 
   Object.keys(PRESETS).forEach(function(name) {
     var preset = PRESETS[name];
@@ -282,30 +281,14 @@
       boids = new MiniBoids(W, H, bn, p['boids.size']||14);
     }
 
-    sims.push({ ctx:ctx, canvas:canvas, W:W, H:H, life:life, boids:boids, p:p,
-      accentRgb:accentRgb, bg:theme.bg, showLife:showLife, showBoids:showBoids });
+    /* warmup and render static snapshot */
+    ctx.fillStyle = theme.bg;
+    ctx.fillRect(0,0,W,H);
+    if (showLife) { for (var s=0;s<30;s++) life.step(); }
+    if (showBoids) { for (var s=0;s<40;s++) boids.step(p['boids.perception']||80, p['boids.separation']||40); }
+    if (showLife) life.draw(ctx,W,H,accentRgb,p['life.glow']||0,p['life.opacity']||9,p['life.rainbow']||0);
+    if (showBoids) boids.draw(ctx,accentRgb,p['boids.opacity']||14,p['boids.glow']||0,p['boids.size']||14);
   });
-
-  /* ── animation loop ── */
-  var frame = 0;
-  function loop() {
-    for (var i=0;i<sims.length;i++) {
-      var s = sims[i];
-      s.ctx.fillStyle = s.bg;
-      s.ctx.fillRect(0,0,s.W,s.H);
-      if (s.showLife && frame%4===0) s.life.step();
-      if (s.showLife) s.life.draw(s.ctx,s.W,s.H,s.accentRgb,
-        s.p['life.glow']||0, s.p['life.opacity']||9, s.p['life.rainbow']||0);
-      if (s.showBoids) {
-        s.boids.step(s.p['boids.perception']||80, s.p['boids.separation']||40);
-        s.boids.draw(s.ctx, s.accentRgb, s.p['boids.opacity']||14,
-          s.p['boids.glow']||0, s.p['boids.size']||14);
-      }
-    }
-    frame++;
-    requestAnimationFrame(loop);
-  }
-  loop();
 })();
 </script>
 {{ end }}
