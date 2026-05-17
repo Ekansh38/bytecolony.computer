@@ -962,10 +962,12 @@ function toggleTheme() {
       desc:'dark glow',
       params:{'boids.n':50,  'boids.size':20, 'boids.tick':1.0, 'boids.opacity':85, 'boids.glow':70,
               'boids.perception':100, 'boids.separation':60} },
-    dusk:      { sim:'boids', lspeed:null, bspeed:14, theme:'dracula',
-      desc:'purple glow',
-      params:{'boids.n':40,  'boids.size':28, 'boids.tick':0.9, 'boids.opacity':75, 'boids.glow':65,
-              'boids.perception':120, 'boids.separation':80} },
+    dusk:      { sim:'combo', lspeed:15, bspeed:14, theme:'dracula',
+      desc:'purple glow + life',
+      params:{'life.cell':7,  'life.opacity':9,  'life.glow':0,  'life.autofill':50, 'life.rainbow':0,
+              'boids.n':40,  'boids.size':28, 'boids.tick':0.9, 'boids.opacity':75, 'boids.glow':65,
+              'boids.perception':120, 'boids.separation':80,
+              'trail.on':0} },
     soft:      { sim:'boids', lspeed:null, bspeed:10, theme:'rose-pine',
       desc:'slow drift',
       params:{'boids.n':20,  'boids.size':45, 'boids.tick':0.5, 'boids.opacity':60, 'boids.glow':30,
@@ -1022,8 +1024,8 @@ function toggleTheme() {
     var PARAM_KEYS = ['life.cell','life.opacity','life.glow','life.autofill','life.rainbow',
       'boids.n','boids.size','boids.tick','boids.opacity','boids.glow','boids.perception','boids.separation',
       'trail.on','trail.size','trail.glow','trail.decay'];
-    var savedPreset = localStorage.getItem('preset');
-    if (savedPreset && PRESETS[savedPreset]) window.applyPreset(savedPreset);
+    // restore individual params — each param saves itself, so manual
+    // tweaks via terminal persist without a preset overwriting them
     for (var ki = 0; ki < PARAM_KEYS.length; ki++) {
       var sv = localStorage.getItem('p:' + PARAM_KEYS[ki]);
       if (sv !== null) _origSetParam(PARAM_KEYS[ki], parseFloat(sv));
@@ -1061,7 +1063,7 @@ function toggleTheme() {
     var names = window.getPresetNames ? window.getPresetNames() : [];
     var active = window.getActivePreset ? window.getActivePreset() : null;
     // mobile subset: curated lighter presets
-    var MOBILE_PRESETS = ['default','mist','bloom','chromatic','flock','midnight','swarm','soft'];
+    var MOBILE_PRESETS = ['default','mist','bloom','chromatic','flock','midnight','dusk','swarm','soft'];
     names.forEach(function (name) {
       if (MOBILE_PRESETS.indexOf(name) < 0) return;
       var btn = document.createElement('button');
@@ -1111,7 +1113,6 @@ function toggleTheme() {
     var keys = Object.keys(p.params);
     for (var i = 0; i < keys.length; i++) window.setParam(keys[i], p.params[keys[i]]);
     activePreset = name;
-    localStorage.setItem('preset', name);
     if (window._rebuildPresetPicker) window._rebuildPresetPicker();
     _rebuildMobilePresets();
     _updateMobileMode();
