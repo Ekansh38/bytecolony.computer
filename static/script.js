@@ -982,7 +982,7 @@ function toggleTheme() {
               'trail.on':0} },
     soft:      { sim:'combo', lspeed:10, bspeed:10, theme:'rose-pine',
       desc:'gentle layers',
-      params:{'life.cell':10, 'life.opacity':30, 'life.glow':20, 'life.autofill':40, 'life.rainbow':0,
+      params:{'life.cell':7, 'life.opacity':30, 'life.glow':20, 'life.autofill':40, 'life.rainbow':0,
               'boids.n':20,  'boids.size':45, 'boids.tick':0.5, 'boids.opacity':60, 'boids.glow':30,
               'boids.perception':150, 'boids.separation':100, 'trail.on':0} },
     swarm:     { sim:'boids', lspeed:null, bspeed:20, theme:'gruvbox',
@@ -998,6 +998,12 @@ function toggleTheme() {
       params:{'life.cell':6,  'life.opacity':50, 'life.glow':25, 'life.autofill':50, 'life.rainbow':3,
               'boids.n':60,  'boids.size':18, 'boids.tick':1.2, 'boids.opacity':20, 'boids.glow':15,
               'boids.perception':100, 'boids.separation':50,
+              'trail.on':0} },
+    canvas:    { sim:'combo', lspeed:10, bspeed:10, theme:'github-light',
+      desc:'light rainbow',
+      params:{'life.cell':7,  'life.opacity':30, 'life.glow':20, 'life.autofill':40, 'life.rainbow':3,
+              'boids.n':20,  'boids.size':45, 'boids.tick':0.5, 'boids.opacity':60, 'boids.glow':30,
+              'boids.perception':150, 'boids.separation':100,
               'trail.on':0} },
   };
 
@@ -1156,25 +1162,61 @@ function toggleTheme() {
     label.className = 'ds-slider-label';
     label.textContent = s.label;
 
-    var input = document.createElement('input');
-    input.type = 'range';
-    input.className = 'ds-slider';
-    input.min = s.min; input.max = s.max; input.step = s.step;
-    input.value = val;
+    var slider = document.createElement('input');
+    slider.type = 'range';
+    slider.className = 'ds-slider';
+    slider.min = s.min; slider.max = s.max; slider.step = s.step;
+    slider.value = val;
 
     var valSpan = document.createElement('span');
     valSpan.className = 'ds-slider-val';
     valSpan.textContent = Math.round(val);
 
-    input.addEventListener('input', function () {
-      var v = parseFloat(input.value);
+    var numInput = document.createElement('input');
+    numInput.type = 'text';
+    numInput.inputMode = 'numeric';
+    numInput.className = 'ds-slider-val-input';
+    numInput.value = Math.round(val);
+    numInput.style.display = 'none';
+
+    function applyTyped() {
+      var v = parseFloat(numInput.value);
+      if (isNaN(v)) v = parseFloat(s.min);
+      v = Math.max(parseFloat(s.min), Math.min(parseFloat(s.max), v));
+      slider.value = v;
       valSpan.textContent = Math.round(v);
+      numInput.style.display = 'none';
+      valSpan.style.display = '';
+      if (window.setParam) window.setParam(s.key, v);
+    }
+
+    valSpan.addEventListener('click', function () {
+      numInput.value = valSpan.textContent;
+      valSpan.style.display = 'none';
+      numInput.style.display = '';
+      numInput.focus();
+      numInput.select();
+    });
+    numInput.addEventListener('blur', applyTyped);
+    numInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); numInput.blur(); }
+      if (e.key === 'Escape') {
+        numInput.style.display = 'none';
+        valSpan.style.display = '';
+      }
+    });
+
+    slider.addEventListener('input', function () {
+      var v = parseFloat(slider.value);
+      valSpan.textContent = Math.round(v);
+      numInput.value = Math.round(v);
       if (window.setParam) window.setParam(s.key, v);
     });
 
     row.appendChild(label);
-    row.appendChild(input);
+    row.appendChild(slider);
     row.appendChild(valSpan);
+    row.appendChild(numInput);
     return row;
   }
 

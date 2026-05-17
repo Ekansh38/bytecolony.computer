@@ -1794,6 +1794,27 @@ body.page #bg-canvas { opacity: 0.25; }
     text-align: right;
     flex-shrink: 0;
     font-variant-numeric: tabular-nums;
+    cursor: text;
+    border-radius: 4px;
+    padding: 2px 4px;
+    transition: background 0.15s;
+  }
+  .ds-slider-val:hover {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .ds-slider-val-input {
+    font: inherit;
+    font-size: 0.68rem;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    width: 34px;
+    text-align: right;
+    padding: 2px 4px;
+    outline: none;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
   }
   .ds-slider {
     flex: 1;
