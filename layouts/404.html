@@ -1,27 +1,11 @@
 {{ define "main" }}
 
 <div class="four04">
-  <canvas id="rain-canvas"></canvas>
-  <div class="four04-scanlines"></div>
-
+  <canvas id="four04-canvas"></canvas>
   <div class="four04-content">
-    <pre class="four04-ascii" aria-hidden="true">
-██╗  ██╗ ██████╗ ██╗  ██╗
-██║  ██║██╔═══██╗██║  ██║
-███████║██║   ██║███████║
-╚════██║██║   ██║╚════██║
-     ██║╚██████╔╝     ██║
-     ╚═╝ ╚═════╝      ╚═╝</pre>
-    <div class="four04-glitch-wrap">
-      <span class="four04-big" data-text="404">404</span>
-    </div>
-    <div class="four04-sub">SEGMENTATION FAULT</div>
-    <div class="four04-term">
-      <span class="four04-prompt">root@void:~#</span>
-      <span class="four04-typed"></span><span class="four04-cursor">█</span>
-    </div>
-    <div class="four04-msg"></div>
-    <a href="/" class="four04-home">← return to reality</a>
+    <p class="four04-num">404</p>
+    <p class="four04-msg">this page doesn't exist.</p>
+    <a href="/" class="four04-link">← back home</a>
   </div>
 </div>
 
@@ -32,289 +16,182 @@
   background: var(--bg);
   overflow: hidden;
 }
-#rain-canvas {
-  position: absolute; inset: 0; z-index: 0;
-  width: 100%; height: 100%; opacity: 0.12;
-}
-.four04-scanlines {
-  position: absolute; inset: 0; z-index: 1;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.03) 2px,
-    rgba(0,0,0,0.03) 4px
-  );
-  pointer-events: none;
-  animation: scanFlicker 8s infinite;
-}
-@keyframes scanFlicker {
-  0%, 95%, 100% { opacity: 1; }
-  96% { opacity: 0.6; }
-  97% { opacity: 1; }
-  98% { opacity: 0.4; }
+#four04-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
 }
 .four04-content {
-  position: relative; z-index: 2;
+  position: relative; z-index: 1;
   text-align: center;
-  padding: 20px;
+  pointer-events: none;
 }
-.four04-ascii {
-  font-size: clamp(0.35rem, 1.5vw, 0.7rem);
-  line-height: 1.2;
-  color: var(--accent);
-  opacity: 0.15;
-  margin-bottom: 10px;
-  animation: asciiPulse 4s ease-in-out infinite;
-}
-@keyframes asciiPulse {
-  0%, 100% { opacity: 0.12; transform: scale(1); }
-  50% { opacity: 0.2; transform: scale(1.01); }
-}
-.four04-glitch-wrap {
-  position: relative;
-  margin-bottom: 8px;
-}
-.four04-big {
-  font-size: clamp(5rem, 20vw, 12rem);
+.four04-num {
+  font-size: clamp(6rem, 22vw, 14rem);
   font-weight: 700;
   color: var(--fg);
-  position: relative;
-  display: inline-block;
-  animation: glitch 3s infinite;
-  text-shadow: 0 0 20px var(--accent);
+  opacity: 0.06;
+  line-height: 1;
+  margin: 0;
+  letter-spacing: -0.02em;
 }
-.four04-big::before,
-.four04-big::after {
-  content: attr(data-text);
-  position: absolute; top: 0; left: 0;
-  width: 100%; height: 100%;
-  overflow: hidden;
-}
-.four04-big::before {
-  color: #ff00ff;
-  animation: glitchLeft 2s infinite;
-  clip-path: inset(0 0 65% 0);
-  opacity: 0.7;
-}
-.four04-big::after {
-  color: #00ffff;
-  animation: glitchRight 2.5s infinite;
-  clip-path: inset(35% 0 0 0);
-  opacity: 0.7;
-}
-@keyframes glitch {
-  0%, 90%, 100% { transform: translate(0); }
-  92% { transform: translate(-3px, 1px); }
-  94% { transform: translate(3px, -1px); }
-  96% { transform: translate(-1px, 2px); }
-  98% { transform: translate(2px, -2px); }
-}
-@keyframes glitchLeft {
-  0%, 85%, 100% { transform: translate(0); }
-  87% { transform: translate(-4px, 0); }
-  89% { transform: translate(2px, 0); }
-  91% { transform: translate(-1px, 0); }
-}
-@keyframes glitchRight {
-  0%, 80%, 100% { transform: translate(0); }
-  82% { transform: translate(3px, 0); }
-  84% { transform: translate(-2px, 0); }
-  86% { transform: translate(4px, 0); }
-}
-.four04-sub {
-  font-size: clamp(0.7rem, 2vw, 1rem);
-  color: var(--accent);
-  letter-spacing: 0.3em;
-  margin-bottom: 32px;
-  animation: flicker 1.5s infinite alternate;
-}
-@keyframes flicker {
-  0%, 90%, 100% { opacity: 1; }
-  91% { opacity: 0.4; }
-  93% { opacity: 1; }
-  95% { opacity: 0.2; }
-  97% { opacity: 0.9; }
-}
-.four04-term {
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin-bottom: 12px;
-  min-height: 1.4em;
-}
-.four04-prompt { color: var(--accent); margin-right: 8px; }
-.four04-typed { color: var(--fg); }
-.four04-cursor {
-  color: var(--accent);
-  animation: blink 1s step-end infinite;
-  font-size: 0.75em;
-}
-@keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
 .four04-msg {
-  font-size: 0.8rem;
   color: var(--muted);
-  min-height: 3em;
-  margin-bottom: 28px;
-  white-space: pre-line;
+  font-size: 0.9rem;
+  margin: 12px 0 28px;
 }
-.four04-home {
-  display: inline-block;
+.four04-link {
+  pointer-events: auto;
   color: var(--accent);
-  border: 1px solid var(--accent);
-  padding: 10px 24px;
-  text-decoration: none;
   font-size: 0.85rem;
-  transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
+  text-decoration: none;
+  transition: opacity 0.2s;
 }
-.four04-home::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: var(--accent);
-  transform: translateX(-101%);
-  transition: transform 0.3s ease;
-}
-.four04-home:hover::before { transform: translateX(0); }
-.four04-home:hover { color: var(--bg); }
-.four04-home span { position: relative; z-index: 1; }
-.four04-home:active { transform: scale(0.95); }
+.four04-link:hover { opacity: 0.7; }
 
-/* hide the site header/footer on 404 */
-.four04 ~ footer,
-body > header { display: none; }
+body > header, body > footer { display: none; }
 </style>
 
 <script>
 (function() {
-  // hide header/footer for full-screen takeover
-  var h = document.querySelector('header');
-  var f = document.querySelector('footer');
-  if (h) h.style.display = 'none';
-  if (f) f.style.display = 'none';
+  document.querySelector('header').style.display = 'none';
+  var f = document.querySelector('footer'); if (f) f.style.display = 'none';
 
-  // ── matrix rain ──────────────────────────────────────────────
-  var canvas = document.getElementById('rain-canvas');
-  if (canvas) {
-    var ctx = canvas.getContext('2d');
-    var W, H, cols, drops;
-    var chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'.split('');
+  var canvas = document.getElementById('four04-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W, H, dpr;
 
-    function resize() {
-      W = canvas.width = canvas.offsetWidth;
-      H = canvas.height = canvas.offsetHeight;
-      var sz = 14;
-      cols = Math.floor(W / sz);
-      drops = [];
-      for (var i = 0; i < cols; i++) drops[i] = Math.random() * -100 | 0;
-    }
+  // boids
+  var N = 180;
+  var boids = [];
+  var mouse = { x: -9999, y: -9999 };
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    W = canvas.offsetWidth;
+    H = canvas.offsetHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function init() {
     resize();
-    window.addEventListener('resize', resize);
+    boids = [];
+    for (var i = 0; i < N; i++) {
+      var angle = Math.random() * Math.PI * 2;
+      boids.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: Math.cos(angle) * 1.5,
+        vy: Math.sin(angle) * 1.5
+      });
+    }
+  }
 
-    var accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#7aa2f7';
+  var SEP_R = 24, ALI_R = 60, COH_R = 80;
+  var SEP_W = 0.08, ALI_W = 0.045, COH_W = 0.005;
+  var MAX_V = 2.8, MOUSE_R = 140, MOUSE_W = 0.15;
 
-    function draw() {
-      ctx.fillStyle = 'rgba(0,0,0,0.05)';
-      ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = accent;
-      ctx.font = '13px JetBrains Mono, monospace';
-      for (var i = 0; i < cols; i++) {
-        if (drops[i] < 0) { drops[i]++; continue; }
-        var ch = chars[Math.random() * chars.length | 0];
-        ctx.globalAlpha = 0.4 + Math.random() * 0.6;
-        ctx.fillText(ch, i * 14, drops[i] * 14);
-        if (drops[i] * 14 > H && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
+  function step() {
+    for (var i = 0; i < N; i++) {
+      var b = boids[i];
+      var sx = 0, sy = 0, ax = 0, ay = 0, cx = 0, cy = 0;
+      var sc = 0, ac = 0, cc = 0;
+
+      for (var j = 0; j < N; j++) {
+        if (i === j) continue;
+        var o = boids[j];
+        var dx = o.x - b.x, dy = o.y - b.y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < SEP_R && d > 0) { sx -= dx / d; sy -= dy / d; sc++; }
+        if (d < ALI_R) { ax += o.vx; ay += o.vy; ac++; }
+        if (d < COH_R) { cx += o.x; cy += o.y; cc++; }
       }
-      ctx.globalAlpha = 1;
-      requestAnimationFrame(draw);
-    }
-    draw();
-  }
 
-  // ── typewriter sequence ──────────────────────────────────────
-  var typed = document.querySelector('.four04-typed');
-  var msg = document.querySelector('.four04-msg');
-  if (!typed || !msg) return;
+      if (sc) { b.vx += sx / sc * SEP_W; b.vy += sy / sc * SEP_W; }
+      if (ac) { b.vx += (ax / ac - b.vx) * ALI_W; b.vy += (ay / ac - b.vy) * ALI_W; }
+      if (cc) { b.vx += (cx / cc - b.x) * COH_W; b.vy += (cy / cc - b.y) * COH_W; }
 
-  var commands = [
-    { cmd: 'locate page', delay: 800 },
-    { cmd: 'cat /dev/null', delay: 600 },
-    { cmd: 'sudo find / -name "this-page"', delay: 500 },
-  ];
-  var messages = [
-    'ERROR: page evaporated into the void',
-    'the bits you seek have returned to entropy.',
-    'perhaps they never existed at all...',
-  ];
-  var cmdIdx = 0, charIdx = 0;
+      // mouse attract
+      var mdx = mouse.x - b.x, mdy = mouse.y - b.y;
+      var md = Math.sqrt(mdx * mdx + mdy * mdy);
+      if (md < MOUSE_R && md > 0) {
+        b.vx += (mdx / md) * MOUSE_W;
+        b.vy += (mdy / md) * MOUSE_W;
+      }
 
-  function typeCmd() {
-    if (cmdIdx >= commands.length) {
-      // done — show final message
-      typed.textContent = '';
-      msg.textContent = '';
-      typeMsg(0, 0);
-      return;
-    }
-    var c = commands[cmdIdx];
-    if (charIdx === 0) typed.textContent = '';
-    if (charIdx < c.cmd.length) {
-      typed.textContent += c.cmd[charIdx];
-      charIdx++;
-      setTimeout(typeCmd, 40 + Math.random() * 60);
-    } else {
-      // "execute" — show result briefly
-      setTimeout(function() {
-        msg.textContent = messages[cmdIdx] || '';
-        msg.style.color = 'var(--accent)';
-        cmdIdx++; charIdx = 0;
-        setTimeout(function() {
-          msg.style.color = '';
-          msg.textContent = '';
-          typeCmd();
-        }, 1200);
-      }, 400);
+      var spd = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+      if (spd > MAX_V) { b.vx = (b.vx / spd) * MAX_V; b.vy = (b.vy / spd) * MAX_V; }
+
+      b.x += b.vx; b.y += b.vy;
+
+      // wrap
+      if (b.x < 0) b.x += W; if (b.x > W) b.x -= W;
+      if (b.y < 0) b.y += H; if (b.y > H) b.y -= H;
     }
   }
 
-  function typeMsg(mi, ci) {
-    var final = [
-      'process exited with code 404.',
-      'the page you requested does not exist in this timeline.',
-    ];
-    if (mi >= final.length) return;
-    if (ci < final[mi].length) {
-      msg.textContent += final[mi][ci];
-      setTimeout(function() { typeMsg(mi, ci + 1); }, 25);
-    } else {
-      msg.textContent += '\n';
-      setTimeout(function() { typeMsg(mi + 1, 0); }, 300);
-    }
+  function getAccent() {
+    return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#7aa2f7';
   }
 
-  setTimeout(typeCmd, 1000);
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var accent = getAccent();
 
-  // ── random glitch bursts on the big 404 text ─────────────────
-  var big = document.querySelector('.four04-big');
-  if (big) {
-    var orig = big.textContent;
-    var glitchChars = '!@#$%^&*░▒▓█▄▀■□';
-    setInterval(function() {
-      if (Math.random() > 0.7) {
-        var g = '';
-        for (var i = 0; i < orig.length; i++) {
-          g += Math.random() > 0.5 ? glitchChars[Math.random() * glitchChars.length | 0] : orig[i];
+    // draw connections
+    ctx.strokeStyle = accent;
+    for (var i = 0; i < N; i++) {
+      for (var j = i + 1; j < N; j++) {
+        var dx = boids[i].x - boids[j].x;
+        var dy = boids[i].y - boids[j].y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 50) {
+          ctx.globalAlpha = (1 - d / 50) * 0.15;
+          ctx.beginPath();
+          ctx.moveTo(boids[i].x, boids[i].y);
+          ctx.lineTo(boids[j].x, boids[j].y);
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
         }
-        big.textContent = g;
-        big.setAttribute('data-text', g);
-        setTimeout(function() {
-          big.textContent = orig;
-          big.setAttribute('data-text', orig);
-        }, 80 + Math.random() * 120);
       }
-    }, 2000);
+    }
+
+    // draw boids as small dots
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = accent;
+    for (var i = 0; i < N; i++) {
+      ctx.beginPath();
+      ctx.arc(boids[i].x, boids[i].y, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
   }
+
+  function loop() {
+    step();
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  init();
+  loop();
+
+  window.addEventListener('resize', resize);
+  canvas.addEventListener('mousemove', function(e) {
+    var r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+  });
+  canvas.addEventListener('mouseleave', function() { mouse.x = -9999; mouse.y = -9999; });
+  canvas.addEventListener('touchmove', function(e) {
+    var r = canvas.getBoundingClientRect();
+    var t = e.touches[0];
+    mouse.x = t.clientX - r.left;
+    mouse.y = t.clientY - r.top;
+  }, { passive: true });
+  canvas.addEventListener('touchend', function() { mouse.x = -9999; mouse.y = -9999; });
 })();
 </script>
 
