@@ -976,6 +976,16 @@ function toggleTheme() {
       desc:'fast dense',
       params:{'boids.n':300, 'boids.size':6,  'boids.tick':3.5, 'boids.opacity':22, 'boids.glow':0,
               'boids.perception':60,  'boids.separation':30} },
+    prismatic: { sim:'life',  lspeed:25, bspeed:null,
+      desc:'position rainbow',
+      params:{'life.cell':5,  'life.opacity':65, 'life.glow':30, 'life.autofill':55, 'life.rainbow':3,
+              'trail.on':0} },
+    aurora:    { sim:'combo', lspeed:20, bspeed:12, theme:'tokyo-night',
+      desc:'rainbow + boids',
+      params:{'life.cell':6,  'life.opacity':50, 'life.glow':25, 'life.autofill':50, 'life.rainbow':3,
+              'boids.n':60,  'boids.size':18, 'boids.tick':1.2, 'boids.opacity':20, 'boids.glow':15,
+              'boids.perception':100, 'boids.separation':50,
+              'trail.on':0} },
   };
 
   window.getPresetNames = function () { return Object.keys(PRESETS); };
@@ -996,18 +1006,21 @@ function toggleTheme() {
 
   // ── desktop settings panel builder ──
   var DS_SLIDERS = [
-    { key: 'life.speed',   label: 'life speed',  min: 1, max: 20, step: 1 },
-    { key: 'life.cell',    label: 'cell size',    min: 1, max: 40, step: 1 },
-    { key: 'life.opacity', label: 'life opacity', min: 1, max: 100, step: 1 },
-    { key: 'life.glow',    label: 'life glow',    min: 0, max: 100, step: 1 },
-    { key: 'life.rainbow', label: 'rainbow',      min: 0, max: 3,   step: 1 },
-    { key: 'boids.speed',  label: 'boid speed',   min: 1, max: 20, step: 1 },
-    { key: 'boids.n',      label: 'boid count',   min: 1, max: 300, step: 1 },
-    { key: 'boids.size',   label: 'boid size',    min: 1, max: 80,  step: 1 },
-    { key: 'boids.opacity',label: 'boid opacity', min: 1, max: 100, step: 1 },
-    { key: 'boids.glow',   label: 'boid glow',    min: 0, max: 100, step: 1 },
-    { key: 'trail.on',     label: 'trail',        min: 0, max: 1,   step: 1 },
+    { key: 'life.speed',      label: 'speed',      min: 0, max: 100, step: 1, mode: 'life' },
+    { key: 'life.cell',       label: 'cell size',   min: 1, max: 80,  step: 1, mode: 'life' },
+    { key: 'life.opacity',    label: 'opacity',     min: 1, max: 100, step: 1, mode: 'life' },
+    { key: 'life.glow',       label: 'glow',        min: 0, max: 100, step: 1, mode: 'life' },
+    { key: 'life.autofill',   label: 'autofill',    min: 0, max: 100, step: 1, mode: 'life' },
+    { key: 'boids.speed',     label: 'speed',       min: 0, max: 100, step: 1, mode: 'boids' },
+    { key: 'boids.n',         label: 'count',       min: 1, max: 1000,step: 1, mode: 'boids' },
+    { key: 'boids.size',      label: 'size',        min: 1, max: 200, step: 1, mode: 'boids' },
+    { key: 'boids.opacity',   label: 'opacity',     min: 1, max: 100, step: 1, mode: 'boids' },
+    { key: 'boids.glow',      label: 'glow',        min: 0, max: 100, step: 1, mode: 'boids' },
+    { key: 'boids.perception',label: 'perception',  min: 1, max: 500, step: 1, mode: 'boids' },
+    { key: 'boids.separation',label: 'separation',  min: 0, max: 300, step: 1, mode: 'boids' },
   ];
+  var RAINBOW_LABELS = ['off', 'time', 'age', 'position'];
+  var _dsBuilt = false;
 
   function _buildDesktopSettings() {
     // themes
@@ -1051,9 +1064,11 @@ function toggleTheme() {
       presetsC.innerHTML = '';
       var names = window.getPresetNames ? window.getPresetNames() : [];
       names.forEach(function (name) {
+        var p = PRESETS[name];
         var btn = document.createElement('button');
         btn.className = 'ds-preset' + (activePreset === name ? ' active' : '');
-        btn.textContent = name;
+        btn.innerHTML = '<span class="ds-preset-name">' + name + '</span>' +
+          '<span class="ds-preset-desc">' + (p.desc || '') + '</span>';
         btn.addEventListener('click', function () {
           window.applyPreset(name);
           _buildDesktopSettings();
@@ -1062,49 +1077,128 @@ function toggleTheme() {
       });
     }
 
-    // sliders
+    // sliders + controls
     var slidersC = document.getElementById('ds-sliders');
-    if (slidersC) {
-      slidersC.innerHTML = '';
-      var params = window.getBgParams ? window.getBgParams() : {};
-      var mode = window.getBgMode ? window.getBgMode() : 'boids';
+    if (!slidersC) return;
+    slidersC.innerHTML = '';
+    var params = window.getBgParams ? window.getBgParams() : {};
+    var mode = window.getBgMode ? window.getBgMode() : 'boids';
+
+    if (mode === 'off') {
+      slidersC.innerHTML = '<div class="ds-empty">background disabled</div>';
+      return;
+    }
+
+    var showLife  = mode === 'life' || mode === 'combo';
+    var showBoids = mode === 'boids' || mode === 'combo';
+
+    // group headers + sliders
+    if (showLife) {
+      slidersC.appendChild(_dsGroupLabel('life'));
       DS_SLIDERS.forEach(function (s) {
-        // filter by mode relevance
-        if (s.key.indexOf('life.') === 0 && mode !== 'life' && mode !== 'combo') return;
-        if (s.key.indexOf('boids.') === 0 && mode !== 'boids' && mode !== 'combo') return;
-        if (s.key.indexOf('trail.') === 0 && mode !== 'boids' && mode !== 'combo') return;
-
-        var val = params[s.key] != null ? params[s.key] : 0;
-        var row = document.createElement('div');
-        row.className = 'ds-slider-row';
-
-        var label = document.createElement('span');
-        label.className = 'ds-slider-label';
-        label.textContent = s.label;
-
-        var input = document.createElement('input');
-        input.type = 'range';
-        input.className = 'ds-slider';
-        input.min = s.min; input.max = s.max; input.step = s.step;
-        input.value = val;
-
-        var valSpan = document.createElement('span');
-        valSpan.className = 'ds-slider-val';
-        valSpan.textContent = Math.round(val);
-
-        input.addEventListener('input', function () {
-          var v = parseFloat(input.value);
-          valSpan.textContent = Math.round(v);
-          if (window.setParam) window.setParam(s.key, v);
-        });
-
-        row.appendChild(label);
-        row.appendChild(input);
-        row.appendChild(valSpan);
-        slidersC.appendChild(row);
+        if (s.mode !== 'life') return;
+        slidersC.appendChild(_dsSliderRow(s, params));
       });
+      // rainbow segmented
+      slidersC.appendChild(_dsRainbowControl(params));
+    }
+    if (showBoids) {
+      slidersC.appendChild(_dsGroupLabel('boids'));
+      DS_SLIDERS.forEach(function (s) {
+        if (s.mode !== 'boids') return;
+        slidersC.appendChild(_dsSliderRow(s, params));
+      });
+      // trail toggle
+      slidersC.appendChild(_dsTrailToggle(params));
     }
   }
+
+  function _dsGroupLabel(text) {
+    var d = document.createElement('div');
+    d.className = 'ds-group-label';
+    d.textContent = text;
+    return d;
+  }
+
+  function _dsSliderRow(s, params) {
+    var val = params[s.key] != null ? params[s.key] : 0;
+    var row = document.createElement('div');
+    row.className = 'ds-slider-row';
+
+    var label = document.createElement('span');
+    label.className = 'ds-slider-label';
+    label.textContent = s.label;
+
+    var input = document.createElement('input');
+    input.type = 'range';
+    input.className = 'ds-slider';
+    input.min = s.min; input.max = s.max; input.step = s.step;
+    input.value = val;
+
+    var valSpan = document.createElement('span');
+    valSpan.className = 'ds-slider-val';
+    valSpan.textContent = Math.round(val);
+
+    input.addEventListener('input', function () {
+      var v = parseFloat(input.value);
+      valSpan.textContent = Math.round(v);
+      if (window.setParam) window.setParam(s.key, v);
+    });
+
+    row.appendChild(label);
+    row.appendChild(input);
+    row.appendChild(valSpan);
+    return row;
+  }
+
+  function _dsRainbowControl(params) {
+    var cur = params['life.rainbow'] || 0;
+    var row = document.createElement('div');
+    row.className = 'ds-control-row';
+    var label = document.createElement('span');
+    label.className = 'ds-slider-label';
+    label.textContent = 'rainbow';
+    row.appendChild(label);
+
+    var seg = document.createElement('div');
+    seg.className = 'ds-mini-seg';
+    RAINBOW_LABELS.forEach(function (lbl, i) {
+      var btn = document.createElement('button');
+      btn.textContent = lbl;
+      btn.className = i === cur ? 'active' : '';
+      btn.addEventListener('click', function () {
+        if (window.setParam) window.setParam('life.rainbow', i);
+        seg.querySelectorAll('button').forEach(function (b, j) {
+          b.classList.toggle('active', j === i);
+        });
+      });
+      seg.appendChild(btn);
+    });
+    row.appendChild(seg);
+    return row;
+  }
+
+  function _dsTrailToggle(params) {
+    var on = params['trail.on'] ? true : false;
+    var row = document.createElement('div');
+    row.className = 'ds-control-row';
+    var label = document.createElement('span');
+    label.className = 'ds-slider-label';
+    label.textContent = 'trail';
+    row.appendChild(label);
+
+    var toggle = document.createElement('button');
+    toggle.className = 'ds-toggle' + (on ? ' active' : '');
+    toggle.innerHTML = '<span class="ds-toggle-knob"></span>';
+    toggle.addEventListener('click', function () {
+      on = !on;
+      toggle.classList.toggle('active', on);
+      if (window.setParam) window.setParam('trail.on', on ? 1 : 0);
+    });
+    row.appendChild(toggle);
+    return row;
+  }
+
   window._buildDesktopSettings = _buildDesktopSettings;
   window._rebuildPresetPicker = _buildDesktopSettings;
 
@@ -1137,7 +1231,7 @@ function toggleTheme() {
     var names = window.getPresetNames ? window.getPresetNames() : [];
     var active = window.getActivePreset ? window.getActivePreset() : null;
     // mobile subset: curated lighter presets
-    var MOBILE_PRESETS = ['default','mist','bloom','chromatic','flock','midnight','dusk','swarm','soft'];
+    var MOBILE_PRESETS = ['default','mist','bloom','chromatic','prismatic','aurora','flock','midnight','dusk','swarm','soft'];
     names.forEach(function (name) {
       if (MOBILE_PRESETS.indexOf(name) < 0) return;
       var btn = document.createElement('button');
