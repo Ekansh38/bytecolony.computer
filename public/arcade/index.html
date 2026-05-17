@@ -521,23 +521,27 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
   <div id="d-settings">
     <button id="d-settings-btn">:settings</button>
     <div id="d-settings-panel">
-      <div class="ds-section">
-        <div class="ds-title">colorscheme</div>
-        <div class="ds-themes" id="ds-themes"></div>
-      </div>
-      <div class="ds-section">
-        <div class="ds-title">background</div>
-        <div class="ds-seg" id="ds-mode-seg">
-          <button data-mode="life">life</button>
-          <button data-mode="boids">boids</button>
-          <button data-mode="combo">combo</button>
-          <button data-mode="off">off</button>
+      <div class="ds-col ds-col-left">
+        <div class="ds-section">
+          <div class="ds-title">colorscheme</div>
+          <div class="ds-themes" id="ds-themes"></div>
         </div>
-        <div class="ds-presets" id="ds-presets"></div>
+        <div class="ds-section">
+          <div class="ds-title">background</div>
+          <div class="ds-seg" id="ds-mode-seg">
+            <button data-mode="life">life</button>
+            <button data-mode="boids">boids</button>
+            <button data-mode="combo">combo</button>
+            <button data-mode="off">off</button>
+          </div>
+          <div class="ds-presets" id="ds-presets"></div>
+        </div>
       </div>
-      <div class="ds-section" id="ds-sliders-section">
-        <div class="ds-title">params</div>
-        <div class="ds-sliders" id="ds-sliders"></div>
+      <div class="ds-col ds-col-right">
+        <div class="ds-section">
+          <div class="ds-title">params</div>
+          <div class="ds-sliders" id="ds-sliders"></div>
+        </div>
       </div>
     </div>
   </div>
