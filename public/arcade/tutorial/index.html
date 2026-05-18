@@ -506,12 +506,11 @@
   }
   @media (max-width: 540px) { .tut-two-panel { grid-template-columns: 1fr; } }
   .tut-cave-choice-btn {
-    width: 100%; padding: 12px 16px;
+    flex: 1; padding: 12px 16px;
     border: 1px solid var(--border); background: transparent;
     font-family: inherit; font-size: 0.88rem; color: var(--fg);
-    cursor: pointer; text-align: left;
+    cursor: pointer; text-align: center;
     transition: border-color 0.15s, background 0.15s;
-    margin-bottom: 8px; display: block;
   }
   .tut-cave-choice-btn:hover { border-color: var(--accent); }
   .tut-cave-choice-btn.chosen {
@@ -1198,18 +1197,18 @@
       <div class="tut-step-tag">04 / 12</div>
       <div class="tut-heading">if/else. the cave choice.</div>
       <div class="tut-body">if the player types 'i', run one thing. otherwise, run another.</div>
-      <div class="tut-two-panel">
-        <div>
-          <div class="tut-cave-prompt-row" style="font-size:0.85rem;margin-bottom:10px;white-space:pre;display:flex;align-items:center">go [i]nside or [l]eave? <input class="tut-cave-inp" id="tut-cave-choice-inp" autocomplete="off" spellcheck="false" style="flex:1"></div>
-          <div id="tut-cave-result" style="font-size:0.82rem;color:var(--fg);margin-top:10px;min-height:24px;line-height:1.6;opacity:0;transition:opacity 0.3s"></div>
-        </div>
-        <div class="tut-branch-code" id="tut-branch-code"><span class="tut-branch-line" id="bl-0"><span class="lh-kw2">local</span> choice <span class="lh-op">=</span> io.<span class="lh-fn">read</span>(<span class="lh-str">"[i]nside or [l]eave? "</span>)</span>
+      <div style="font-size:0.85rem;margin-bottom:12px">go inside or leave?</div>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <button class="tut-cave-choice-btn" id="tut-cave-btn-i">go inside</button>
+        <button class="tut-cave-choice-btn" id="tut-cave-btn-l">leave</button>
+      </div>
+      <div id="tut-cave-result" style="font-size:0.82rem;color:var(--fg);min-height:24px;line-height:1.6;opacity:0;transition:opacity 0.3s;margin-bottom:14px"></div>
+      <div class="tut-branch-code" id="tut-branch-code" style="font-size:0.82rem;line-height:1.85"><span class="tut-branch-line" id="bl-0"><span class="lh-kw2">local</span> choice <span class="lh-op">=</span> io.<span class="lh-fn">read</span>(<span class="lh-str">"[i]nside or [l]eave? "</span>)</span>
 <span class="tut-branch-line" id="bl-1"><span class="lh-kw">if</span> choice <span class="lh-op">==</span> <span class="lh-str">"i"</span> <span class="lh-kw">then</span></span>
 <span class="tut-branch-line" id="bl-2">  <span class="lh-builtin">print</span>(<span class="lh-str">"you venture inside..."</span>)</span>
 <span class="tut-branch-line" id="bl-3"><span class="lh-kw">else</span></span>
 <span class="tut-branch-line" id="bl-4">  <span class="lh-builtin">print</span>(<span class="lh-str">"you go home safely."</span>)</span>
 <span class="tut-branch-line" id="bl-5"><span class="lh-kw">end</span></span></div>
-      </div>
       <div id="tut-s4-explain" style="display:none;font-size:0.82rem;color:var(--muted);margin-bottom:14px;line-height:1.6">that's branching. your game reacts to the player.</div>
       <button class="tut-btn" id="tut-s4-next" style="display:none;margin-top:12px">continue &#8594;</button>
     </div>
@@ -2250,17 +2249,15 @@ greet("player")</textarea>
     document.querySelectorAll('.tut-branch-line').forEach(function(l){ l.classList.remove('active'); });
   }
 
-  var caveChoiceInp = document.getElementById('tut-cave-choice-inp');
-  caveChoiceInp.addEventListener('keydown', function(e) {
-    if (e.key !== 'Enter') return;
-    var v = caveChoiceInp.value.trim().toLowerCase();
-    if (v !== 'i' && v !== 'l') return;
-    caveChoiceInp.disabled = true;
-    caveChoiceInp.style.opacity = '0.6';
+  function doCaveChoice(v) {
     clearBranchHighlights();
     var resultEl = document.getElementById('tut-cave-result');
     resultEl.style.opacity = '0';
-    var r = caveChoiceInp.getBoundingClientRect();
+    var btnI = document.getElementById('tut-cave-btn-i');
+    var btnL = document.getElementById('tut-cave-btn-l');
+    btnI.classList.toggle('chosen', v === 'i');
+    btnL.classList.toggle('chosen', v === 'l');
+    var r = (v === 'i' ? btnI : btnL).getBoundingClientRect();
     burst(r.left+r.width/2, r.top+r.height/2, 8);
 
     if (v === 'i') {
@@ -2280,14 +2277,9 @@ greet("player")</textarea>
         document.getElementById('tut-s4-next').style.display = 'inline-block';
       }, 500);
     }
-    
-    setTimeout(function() {
-      caveChoiceInp.disabled = false;
-      caveChoiceInp.style.opacity = '1';
-      caveChoiceInp.value = '';
-      caveChoiceInp.focus();
-    }, 600);
-  });
+  }
+  document.getElementById('tut-cave-btn-i').addEventListener('click', function() { doCaveChoice('i'); });
+  document.getElementById('tut-cave-btn-l').addEventListener('click', function() { doCaveChoice('l'); });
 
   document.getElementById('tut-s4-next').addEventListener('click', function() { goTo(6); });
 
