@@ -97,6 +97,7 @@
       {{ with .Site.GetPage "/tools" }}{{ range .Pages -}}
       {{ printf "tools/%s" .File.BaseFileName | jsonify | safeJS }}: { type: "file", title: {{ .Title | jsonify | safeJS }}, stack: {{ default "" .Params.stack | jsonify | safeJS }}, status: {{ default "" .Params.status | jsonify | safeJS }}, body: {{ .Plain | jsonify | safeJS }}, url: {{ .RelPermalink | jsonify | safeJS }} },
       {{ end }}{{ end }}
+      'guestbook': { type: 'dir', url: '/guestbook/' },
       'picks': { type: 'dir' },
       {{ with .Site.GetPage "/picks" }}{{ range .Pages -}}
       {{ printf "picks/%s" .File.BaseFileName | jsonify | safeJS }}: { type: "file", title: {{ .Title | jsonify | safeJS }}, body: {{ .Plain | jsonify | safeJS }}, status: {{ default "" .Params.type_label | jsonify | safeJS }}, url: {{ .RelPermalink | jsonify | safeJS }} },

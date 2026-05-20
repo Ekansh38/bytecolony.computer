@@ -49,6 +49,7 @@
     <a href="/tools">tools</a>
     <a href="/arcade">arcade</a>
     <a href="/picks">picks</a>
+    <a href="/guestbook">guestbook</a>
   </nav>
   <div class="social">
     <a href="https://github.com/ekansh38" target="_blank" rel="noopener noreferrer">github ↗</a>
@@ -60,21 +61,81 @@
 
 
   
+<style>
+  .gb-form { margin-bottom: 32px; }
+  .gb-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .gb-row input {
+    flex: 1; background: var(--code-bg); border: 1px solid var(--border);
+    color: var(--fg); font: inherit; font-size: 0.88rem;
+    padding: 8px 10px; outline: none;
+  }
+  .gb-row input:focus { border-color: var(--accent); }
+  .gb-row button {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--accent); font: inherit; font-size: 0.85rem;
+    padding: 8px 14px; cursor: pointer; white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .gb-row button:hover { border-color: var(--accent); }
+  .gb-row button:disabled { opacity: 0.5; cursor: default; }
+  #gb-msg {
+    width: 100%; background: var(--code-bg); border: 1px solid var(--border);
+    color: var(--fg); font: inherit; font-size: 0.88rem;
+    padding: 8px 10px; outline: none; resize: vertical; min-height: 60px;
+  }
+  #gb-msg:focus { border-color: var(--accent); }
+  #gb-status { font-size: 0.82rem; margin-top: 6px; min-height: 1.2em; }
+
+  .gb-entry { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .gb-entry:first-child { border-top: 1px solid var(--border); }
+  .gb-entry-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .gb-entry-name { font-weight: 700; font-size: 0.92rem; }
+  .gb-entry-date { color: var(--muted); font-size: 0.78rem; }
+  .gb-entry-msg { color: var(--fg); font-size: 0.88rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+
+  .gb-del-btn {
+    background: none; border: none; color: var(--muted); font: inherit;
+    font-size: 0.72rem; cursor: pointer; padding: 0 4px; opacity: 0.4;
+    transition: opacity 0.15s, color 0.15s;
+  }
+  .gb-del-btn:hover { opacity: 1; color: #f7768e; }
+  #gb-admin-toggle {
+    background: none; border: none; color: var(--muted); font: inherit;
+    font-size: 0.78rem; cursor: pointer; padding: 0; opacity: 0.3;
+    transition: opacity 0.15s;
+  }
+  #gb-admin-toggle:hover { opacity: 0.7; }
+  #gb-admin-bar {
+    display: none; margin-top: 12px; gap: 8px; align-items: center;
+  }
+  #gb-admin-bar.open { display: flex; }
+  #gb-admin-code {
+    background: var(--code-bg); border: 1px solid var(--border);
+    color: var(--fg); font: inherit; font-size: 0.82rem;
+    padding: 4px 8px; width: 160px; outline: none;
+  }
+</style>
+
 <h1 style="margin-bottom:6px;">guestbook</h1>
-<p style="color:var(--muted);margin-bottom:32px;">leave a note. no account needed.</p>
+<p style="color:var(--muted);margin-bottom:24px;">leave a note. say something nice, say something mean, say anything. no account needed.</p>
 
 <div class="gb-form">
   <div class="gb-row">
-    <input id="gb-name" type="text" placeholder="name" maxlength="50" autocomplete="off" spellcheck="false">
-    <button id="gb-submit">leave a note →</button>
+    <input id="gb-name" type="text" placeholder="name (optional)" maxlength="50" autocomplete="off" spellcheck="false">
+    <button id="gb-submit">sign</button>
   </div>
-  <textarea id="gb-msg" placeholder="message (max 280 chars)" maxlength="280" rows="2" spellcheck="false"></textarea>
-  
+  <textarea id="gb-msg" placeholder="your message" maxlength="500" rows="3" spellcheck="false"></textarea>
   <input id="gb-hp" type="text" tabindex="-1" autocomplete="off" style="display:none">
   <div id="gb-status"></div>
 </div>
 
-<hr style="margin:32px 0;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+  <h3 style="margin:0;">entries</h3>
+  <button id="gb-admin-toggle">[admin]</button>
+</div>
+<div id="gb-admin-bar">
+  <input id="gb-admin-code" type="password" placeholder="master code" autocomplete="off">
+</div>
 
 <div id="gb-entries">
   <p style="color:var(--muted)">loading...</p>
@@ -82,35 +143,62 @@
 
 <script>
 (function() {
-  var API      = '/api/guestbook';
-  var CACHE_TTL = 60000; 
-  var _entries  = null;
-  var _cacheAt  = 0;
+  var API = '/api/guestbook';
+  var _entries = null;
 
-  function fmt(iso) {
-    var d = new Date(iso);
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  function fmt(d) {
+    if (!d) return '';
+    
+    var parts = d.split('T')[0].split('-');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[parseInt(parts[1],10)-1] + ' ' + parseInt(parts[2],10) + ', ' + parts[0];
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function getAdminCode() {
+    return (document.getElementById('gb-admin-code') || {}).value || '';
   }
 
   function render(entries) {
     var el = document.getElementById('gb-entries');
+    var admin = getAdminCode().length > 0;
     if (!entries.length) {
       el.innerHTML = '<p style="color:var(--muted)">no entries yet. be the first.</p>';
       return;
     }
     el.innerHTML = entries.map(function(e) {
-      return '<div class="gb-entry">'
-        + '<span class="gb-entry-name">' + esc(e.name) + '</span>'
+      return '<div class="gb-entry" data-id="' + esc(e.id || '') + '">'
+        + '<div class="gb-entry-head">'
+        + '<span class="gb-entry-name">' + esc(e.name || 'anonymous') + '</span>'
+        + '<span style="display:flex;align-items:center;gap:8px;">'
         + '<span class="gb-entry-date">' + fmt(e.date) + '</span>'
+        + (admin && e.id ? '<button class="gb-del-btn" data-id="' + esc(e.id) + '">delete</button>' : '')
+        + '</span>'
+        + '</div>'
         + '<div class="gb-entry-msg">' + esc(e.message) + '</div>'
         + '</div>';
     }).join('');
-  }
 
-  function esc(s) {
-    return String(s)
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    if (admin) {
+      el.querySelectorAll('.gb-del-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var id = this.getAttribute('data-id');
+          if (!id) return;
+          this.textContent = '...';
+          fetch(API, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id, code: getAdminCode() })
+          }).then(function(r) { return r.json(); }).then(function(d) {
+            if (d.ok) { _entries = _entries.filter(function(e) { return e.id !== id; }); render(_entries); }
+            else { btn.textContent = d.error || 'error'; }
+          }).catch(function() { btn.textContent = 'error'; });
+        });
+      });
+    }
   }
 
   function setStatus(msg, color) {
@@ -119,14 +207,9 @@
     el.style.color = color || 'var(--muted)';
   }
 
-  function loadEntries(force) {
-    if (!force && _entries && Date.now() - _cacheAt < CACHE_TTL) {
-      render(_entries);
-      return;
-    }
-    fetch(API).then(function(r){ return r.json(); }).then(function(data) {
+  function loadEntries() {
+    fetch(API, { cache: 'no-store' }).then(function(r) { return r.json(); }).then(function(data) {
       _entries = data;
-      _cacheAt = Date.now();
       render(data);
     }).catch(function() {
       document.getElementById('gb-entries').innerHTML = '<p style="color:var(--muted)">couldn\'t load entries.</p>';
@@ -135,43 +218,45 @@
 
   loadEntries();
 
+  
+  document.getElementById('gb-admin-toggle').addEventListener('click', function() {
+    var bar = document.getElementById('gb-admin-bar');
+    bar.classList.toggle('open');
+    if (bar.classList.contains('open')) document.getElementById('gb-admin-code').focus();
+  });
+  document.getElementById('gb-admin-code').addEventListener('input', function() {
+    if (_entries) render(_entries);
+  });
+
+  
   document.getElementById('gb-submit').addEventListener('click', function() {
     var name    = document.getElementById('gb-name').value.trim();
     var message = document.getElementById('gb-msg').value.trim();
     var hp      = document.getElementById('gb-hp').value;
 
-    if (!name || !message) { setStatus('name and message are both required.'); return; }
+    if (!message) { setStatus('write something!'); return; }
 
-    var btn = document.getElementById('gb-submit');
+    var btn = this;
     btn.disabled = true;
-    btn.textContent = 'sending...';
+    btn.textContent = '...';
     setStatus('');
 
     fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name, message: message, hp: hp })
+      body: JSON.stringify({ name: name || '', message: message, hp: hp })
     })
-    .then(function(r){ return r.json(); })
+    .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (data.ok) {
-        document.getElementById('gb-name').value = '';
-        document.getElementById('gb-msg').value = '';
-        setStatus('note left. thanks.', 'var(--accent)');
-        
-        var newEntry = { name: name, message: message, date: new Date().toISOString() };
-        _entries = [newEntry].concat(_entries || []);
-        _cacheAt = Date.now();
-        render(_entries);
-      } else {
-        setStatus(data.error || 'something went wrong.');
-      }
+      if (data.error) { setStatus(data.error); return; }
+      document.getElementById('gb-name').value = '';
+      document.getElementById('gb-msg').value = '';
+      setStatus('signed. thanks!', 'var(--accent)');
+      _entries = [data].concat(_entries || []);
+      render(_entries);
     })
     .catch(function() { setStatus('network error. try again.'); })
-    .finally(function() {
-      btn.disabled = false;
-      btn.textContent = 'leave a note →';
-    });
+    .finally(function() { btn.disabled = false; btn.textContent = 'sign'; });
   });
 })();
 </script>
@@ -243,12 +328,13 @@
       "tools/iris": { type: "file", title: "iris", stack: "Python", status: "active", body: "Every 20 minutes, look at something 20 feet away for 20 seconds. Iris puts a live countdown in your menu bar (👁 14:23) and plays an audio cue when it\u0026rsquo;s time. Pause or snooze from the menu. Starts automatically on login via a LaunchAgent.\nActually use this one.\n", url: "/tools/iris/" },
       "tools/cx": { type: "file", title: "cx", stack: "Go", status: "in progress", body: "Terminal-based AI chat for developers. Bring your own API key, pick any model, conversations stay local. No account, no cloud sync, no dashboard.\n", url: "/tools/cx/" },
       
+      'guestbook': { type: 'dir', url: '/guestbook/' },
       'picks': { type: 'dir' },
       "picks/clean-code-horrible-performance": { type: "file", title: "Clean Code, Horrible Performance", body: "Makes the case that \u0026ldquo;clean code\u0026rdquo; principles actively produce slow software. Muratori benchmarks the actual cost of polymorphism, getters/setters, and small functions, and it\u0026rsquo;s not small. Changed how I think about abstractions.\n", status: "article", url: "/picks/clean-code-horrible-performance/" },
       "picks/code-hidden-language": { type: "file", title: "Code: The Hidden Language of Computer Hardware and Software", body: "Builds a computer from first principles. Starts with flashlights and Morse code, ends with a working CPU. The best explanation of how computers actually work that I\u0026rsquo;ve ever read.\n", status: "book", url: "/picks/code-hidden-language/" },
       "picks/linux": { type: "file", title: "Linux", body: "A brilliant open-source operating system. Lightweight, performant, transparent, and really well-made overall. I love it for desktop use, server use, and especially embedded systems. Using Linux feels like holding a nicely crafted glass cube, whereas Windows feels like some brown plastic. At least Mac is Unix-based.\n", status: "software", url: "/picks/linux/" },
       "picks/neovim": { type: "file", title: "Neovim", body: "My editor. Peak editor. Best editor (for me). Also I really like the plugins and just the whole system in general. Very nice!\n", status: "software", url: "/picks/neovim/" },
-      "picks/vim-motions": { type: "file", title: "Vim Motions", body: "The language of text editing. Once you learn the grammar (verbs like delete, change, yank combined with nouns like word, inner \u0026quot;, a paragraph) you stop thinking about keystrokes and start thinking about intent. Available everywhere: Neovim, VS Code, JetBrains, even your browser.\n", status: "software", url: "/picks/vim-motions/" },
+      "picks/vim-motions": { type: "file", title: "Vim Motions", body: "I just couldn\u0026rsquo;t live without them. They are so good, so fast, and I need them. They are perfect in every way (mostly). You don\u0026rsquo;t even need to touch the mouse. All editing happens on your nice comfy little keyboard.\n", status: "software", url: "/picks/vim-motions/" },
       
       
      

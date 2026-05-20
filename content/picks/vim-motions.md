@@ -6,4 +6,4 @@ link: "https://vim.org"
 date: 2026-05-20
 ---
 
-The language of text editing. Once you learn the grammar (verbs like `d`elete, `c`hange, `y`ank combined with nouns like `w`ord, `i`nner `"`, `a` `p`aragraph) you stop thinking about keystrokes and start thinking about intent. Available everywhere: Neovim, VS Code, JetBrains, even your browser.
+I just couldn't live without them. They are so good, so fast, and I need them. They are perfect in every way (mostly). You don't even need to touch the mouse. All editing happens on your nice comfy little keyboard.
