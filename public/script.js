@@ -683,6 +683,7 @@ function toggleTheme() {
     } else {
       ctx.clearRect(0, 0, W, H);
     }
+    drawGhost();
     requestAnimationFrame(loop);
   }
 
@@ -775,9 +776,13 @@ function toggleTheme() {
       ' &nbsp;·&nbsp; click to place &nbsp;·&nbsp; <span class="sh-esc">esc to cancel</span>';
   }
 
+  // ghost preview state
+  var _ghostGX = -1, _ghostGY = -1, _ghostPat = null, _ghostStart = 0;
+
   function cancelSpawn() {
     window._pendingSpawn = null;
     window._pendingSpawnCount = 0;
+    _ghostPat = null; _ghostGX = -1; _ghostGY = -1;
     if (spawnOverlay) spawnOverlay.classList.remove('active');
     _trailGX = -1; _trailGY = -1;
     _trailBlocked = true;
@@ -786,6 +791,18 @@ function toggleTheme() {
   window.cancelSpawn = cancelSpawn;
 
   if (spawnOverlay) {
+    spawnOverlay.addEventListener('mousemove', function(e) {
+      var name = window._pendingSpawn;
+      if (!name) { _ghostPat = null; return; }
+      _ghostGX = Math.floor(e.clientX / CELL);
+      _ghostGY = Math.floor(e.clientY / CELL);
+      _ghostPat = SPAWN_PATTERNS[name] || null;
+      if (!_ghostStart) _ghostStart = performance.now();
+    });
+    spawnOverlay.addEventListener('mouseleave', function() {
+      _ghostPat = null; _ghostGX = -1; _ghostGY = -1;
+    });
+
     spawnOverlay.addEventListener('click', function (e) {
       var name = window._pendingSpawn;
       if (!name) return;
@@ -798,9 +815,27 @@ function toggleTheme() {
       if (window._pendingSpawnCount <= 0) {
         cancelSpawn();
       } else {
+        _ghostStart = performance.now();
         updateSpawnHint();
       }
     });
+  }
+
+  function drawGhost() {
+    if (!_ghostPat || _ghostGX < 0) return;
+    var t = (performance.now() - _ghostStart) * 0.003;
+    var pulse = 0.4 + 0.25 * Math.sin(t); // 0.15–0.65 opacity pulse
+    var glowPulse = 6 + 4 * Math.sin(t);
+    ctx.save();
+    ctx.shadowColor = accentRgba(0.9);
+    ctx.shadowBlur  = glowPulse;
+    ctx.fillStyle   = accentRgba(pulse);
+    for (var i = 0; i < _ghostPat.length; i++) {
+      var x = ((_ghostGX + _ghostPat[i][0]) % GW + GW) % GW;
+      var y = ((_ghostGY + _ghostPat[i][1]) % GH + GH) % GH;
+      ctx.fillRect(x * CELL + 1, y * CELL + 1, CELL - 2, CELL - 2);
+    }
+    ctx.restore();
   }
 
   window.queueSpawn = function (name, count) {
