@@ -58,6 +58,12 @@ module.exports = async (req, res) => {
     if (req.method === 'GET') {
       res.setHeader('Cache-Control', 'no-store');
       const entries = await fetchAll();
+      // backfill id for legacy entries so they can be deleted
+      let dirty = false;
+      for (const e of entries) {
+        if (!e.id) { e.id = 'legacy_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); dirty = true; }
+      }
+      if (dirty) await rebuildList(entries);
       return res.status(200).json(entries.map(e => ({
         id: e.id, name: e.name, context: e.context || '', message: e.message, date: e.date
       })));
