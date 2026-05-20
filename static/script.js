@@ -1406,29 +1406,59 @@ function toggleTheme() {
 
   // ── resizable terminal ────────────────────────────────────────
   (function() {
-    var handle = document.getElementById('term-resize');
-    var box    = document.getElementById('term-box');
-    if (!handle || !box) return;
-    var dragging = false, startY = 0, startH = 0;
-    handle.addEventListener('mousedown', function(e) {
+    var handle  = document.getElementById('term-resize');
+    var handleL = document.getElementById('term-resize-l');
+    var handleR = document.getElementById('term-resize-r');
+    var box     = document.getElementById('term-box');
+    if (!box) return;
+
+    // restore saved size
+    try {
+      var saved = JSON.parse(localStorage.getItem('term-size'));
+      if (saved) {
+        if (saved.h) box.style.height = Math.max(180, Math.min(saved.h, window.innerHeight * 0.92)) + 'px';
+        if (saved.w) box.style.width  = Math.max(320, Math.min(saved.w, window.innerWidth  * 0.95)) + 'px';
+      }
+    } catch(e) {}
+
+    function saveSize() {
+      try { localStorage.setItem('term-size', JSON.stringify({ h: box.offsetHeight, w: box.offsetWidth })); } catch(e) {}
+    }
+
+    var axis = null, startX = 0, startY = 0, startW = 0, startH = 0, side = 0;
+
+    function startDrag(e, a, s) {
       e.preventDefault();
-      dragging = true; startY = e.clientY; startH = box.offsetHeight;
+      axis = a; side = s || 0;
+      startX = e.clientX; startY = e.clientY;
+      startW = box.offsetWidth; startH = box.offsetHeight;
       box.style.transition = 'none';
-      document.body.style.cursor = 'ns-resize';
+      document.body.style.cursor = a === 'y' ? 'ns-resize' : 'ew-resize';
       document.body.style.userSelect = 'none';
-    });
+    }
+
+    if (handle)  handle.addEventListener('mousedown',  function(e) { startDrag(e, 'y'); });
+    if (handleL) handleL.addEventListener('mousedown', function(e) { startDrag(e, 'x', -1); });
+    if (handleR) handleR.addEventListener('mousedown', function(e) { startDrag(e, 'x',  1); });
+
     document.addEventListener('mousemove', function(e) {
-      if (!dragging) return;
-      var h = startH + (startY - e.clientY);
-      h = Math.max(180, Math.min(h, window.innerHeight * 0.92));
-      box.style.height = h + 'px';
+      if (!axis) return;
+      if (axis === 'y') {
+        var h = startH + (startY - e.clientY);
+        box.style.height = Math.max(180, Math.min(h, window.innerHeight * 0.92)) + 'px';
+      } else {
+        var dx = (e.clientX - startX) * side;
+        var w = startW + dx * 2; // grow both sides since box is centered
+        box.style.width = Math.max(320, Math.min(w, window.innerWidth * 0.95)) + 'px';
+      }
     });
     document.addEventListener('mouseup', function() {
-      if (!dragging) return;
-      dragging = false;
+      if (!axis) return;
+      axis = null;
       box.style.transition = '';
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
+      saveSize();
     });
   })();
   var _gameMode = false, _gameResume = null;
