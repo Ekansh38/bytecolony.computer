@@ -62,76 +62,115 @@
 
   
 <style>
-  .gb-form { margin-bottom: 32px; }
-  .gb-row { display: flex; gap: 8px; margin-bottom: 8px; }
-  .gb-row input {
-    flex: 1; background: var(--code-bg); border: 1px solid var(--border);
-    color: var(--fg); font: inherit; font-size: 0.88rem;
-    padding: 8px 10px; outline: none;
+  .gb-intro { color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+
+  .gb-form {
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 36px;
   }
-  .gb-row input:focus { border-color: var(--accent); }
-  .gb-row button {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--accent); font: inherit; font-size: 0.85rem;
-    padding: 8px 14px; cursor: pointer; white-space: nowrap;
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .gb-row button:hover { border-color: var(--accent); }
-  .gb-row button:disabled { opacity: 0.5; cursor: default; }
-  #gb-msg {
+  .gb-field { margin-bottom: 10px; }
+  .gb-field:last-of-type { margin-bottom: 0; }
+  .gb-label { display: block; color: var(--muted); font-size: 0.78rem; margin-bottom: 4px; }
+  .gb-input {
     width: 100%; background: var(--code-bg); border: 1px solid var(--border);
     color: var(--fg); font: inherit; font-size: 0.88rem;
-    padding: 8px 10px; outline: none; resize: vertical; min-height: 60px;
+    padding: 8px 10px; outline: none; box-sizing: border-box;
+    transition: border-color 0.15s;
   }
-  #gb-msg:focus { border-color: var(--accent); }
-  #gb-status { font-size: 0.82rem; margin-top: 6px; min-height: 1.2em; }
+  .gb-input:focus { border-color: var(--accent); }
+  textarea.gb-input { resize: vertical; min-height: 70px; }
+  .gb-anon-hint { color: var(--muted); font-size: 0.75rem; margin-top: 3px; }
+  .gb-form-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+  #gb-submit {
+    background: transparent; border: 1px solid var(--accent);
+    color: var(--accent); font: inherit; font-size: 0.88rem;
+    padding: 8px 20px; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  #gb-submit:hover { background: var(--accent); color: var(--bg); }
+  #gb-submit:disabled { opacity: 0.4; cursor: default; }
+  #gb-status { font-size: 0.82rem; min-height: 1.2em; }
+  #gb-identity-toggle {
+    background: none; border: none; color: var(--accent); font: inherit;
+    font-size: 0.78rem; cursor: pointer; padding: 0;
+    transition: color 0.15s;
+  }
+  #gb-identity-toggle:hover { text-decoration: underline; }
+  #gb-identity-fields { display: none; }
+  #gb-identity-fields.open { display: block; }
 
-  .gb-entry { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .gb-entry {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
   .gb-entry:first-child { border-top: 1px solid var(--border); }
-  .gb-entry-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-  .gb-entry-name { font-weight: 700; font-size: 0.92rem; }
-  .gb-entry-date { color: var(--muted); font-size: 0.78rem; }
-  .gb-entry-msg { color: var(--fg); font-size: 0.88rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
-
+  .gb-entry-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .gb-entry-who { display: flex; flex-direction: column; gap: 1px; }
+  .gb-entry-name { font-weight: 700; font-size: 0.95rem; }
+  .gb-entry-context { color: var(--muted); font-size: 0.78rem; }
+  .gb-entry-date { color: var(--muted); font-size: 0.75rem; flex-shrink: 0; }
+  .gb-entry-msg {
+    font-size: 0.9rem; line-height: 1.6;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .gb-entry-actions { display: flex; align-items: center; gap: 8px; }
   .gb-del-btn {
     background: none; border: none; color: var(--muted); font: inherit;
-    font-size: 0.72rem; cursor: pointer; padding: 0 4px; opacity: 0.4;
+    font-size: 0.7rem; cursor: pointer; padding: 0; opacity: 0.4;
     transition: opacity 0.15s, color 0.15s;
   }
   .gb-del-btn:hover { opacity: 1; color: #f7768e; }
+
   #gb-admin-toggle {
     background: none; border: none; color: var(--muted); font: inherit;
-    font-size: 0.78rem; cursor: pointer; padding: 0; opacity: 0.3;
+    font-size: 0.75rem; cursor: pointer; padding: 0; opacity: 0.25;
     transition: opacity 0.15s;
   }
-  #gb-admin-toggle:hover { opacity: 0.7; }
-  #gb-admin-bar {
-    display: none; margin-top: 12px; gap: 8px; align-items: center;
-  }
-  #gb-admin-bar.open { display: flex; }
+  #gb-admin-toggle:hover { opacity: 0.6; }
+  #gb-admin-bar { display: none; margin-bottom: 12px; }
+  #gb-admin-bar.open { display: block; }
   #gb-admin-code {
     background: var(--code-bg); border: 1px solid var(--border);
     color: var(--fg); font: inherit; font-size: 0.82rem;
-    padding: 4px 8px; width: 160px; outline: none;
+    padding: 5px 8px; width: 180px; outline: none;
   }
+  .gb-count { color: var(--muted); font-size: 0.82rem; }
 </style>
 
-<h1 style="margin-bottom:6px;">guestbook</h1>
-<p style="color:var(--muted);margin-bottom:24px;">leave a note. say something nice, say something mean, say anything. no account needed.</p>
+<div class="project-title">guestbook</div>
+<p class="gb-intro">leave a message, a review, feedback, whatever you want. anonymous by default. you can optionally say who you are if you'd like people to know.</p>
 
 <div class="gb-form">
-  <div class="gb-row">
-    <input id="gb-name" type="text" placeholder="name (optional)" maxlength="50" autocomplete="off" spellcheck="false">
-    <button id="gb-submit">sign</button>
+  <div class="gb-field">
+    <textarea id="gb-msg" class="gb-input" placeholder="write something..." maxlength="500" rows="3" spellcheck="false"></textarea>
   </div>
-  <textarea id="gb-msg" placeholder="your message" maxlength="500" rows="3" spellcheck="false"></textarea>
+
+  <div id="gb-identity-fields">
+    <div class="gb-field">
+      <label class="gb-label">name</label>
+      <input id="gb-name" class="gb-input" type="text" placeholder="anonymous" maxlength="50" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="gb-field">
+      <label class="gb-label">who are you? <span style="opacity:0.6">(optional, e.g. "friend from school", "fellow dev", "recruiter")</span></label>
+      <input id="gb-context" class="gb-input" type="text" placeholder="" maxlength="100" autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+
   <input id="gb-hp" type="text" tabindex="-1" autocomplete="off" style="display:none">
-  <div id="gb-status"></div>
+
+  <div class="gb-form-footer">
+    <div>
+      <button id="gb-submit">sign the guestbook</button>
+      <div id="gb-status"></div>
+    </div>
+    <button id="gb-identity-toggle">add your name</button>
+  </div>
 </div>
 
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-  <h3 style="margin:0;">entries</h3>
-  <button id="gb-admin-toggle">[admin]</button>
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+  <span class="gb-count" id="gb-count"></span>
+  <button id="gb-admin-toggle">[mod]</button>
 </div>
 <div id="gb-admin-bar">
   <input id="gb-admin-code" type="password" placeholder="master code" autocomplete="off">
@@ -148,7 +187,6 @@
 
   function fmt(d) {
     if (!d) return '';
-    
     var parts = d.split('T')[0].split('-');
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return months[parseInt(parts[1],10)-1] + ' ' + parseInt(parts[2],10) + ', ' + parts[0];
@@ -164,19 +202,28 @@
 
   function render(entries) {
     var el = document.getElementById('gb-entries');
+    var countEl = document.getElementById('gb-count');
     var admin = getAdminCode().length > 0;
+
+    countEl.textContent = entries.length ? entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies') : '';
+
     if (!entries.length) {
-      el.innerHTML = '<p style="color:var(--muted)">no entries yet. be the first.</p>';
+      el.innerHTML = '<p style="color:var(--muted)">no entries yet. be the first to sign.</p>';
       return;
     }
     el.innerHTML = entries.map(function(e) {
-      return '<div class="gb-entry" data-id="' + esc(e.id || '') + '">'
-        + '<div class="gb-entry-head">'
-        + '<span class="gb-entry-name">' + esc(e.name || 'anonymous') + '</span>'
-        + '<span style="display:flex;align-items:center;gap:8px;">'
+      var nameStr = esc(e.name || 'anonymous');
+      var isAnon = !e.name || e.name === 'anonymous';
+      return '<div class="gb-entry">'
+        + '<div class="gb-entry-header">'
+        + '<div class="gb-entry-who">'
+        + '<span class="gb-entry-name"' + (isAnon ? ' style="color:var(--muted);font-weight:400"' : '') + '>' + nameStr + '</span>'
+        + (e.context ? '<span class="gb-entry-context">' + esc(e.context) + '</span>' : '')
+        + '</div>'
+        + '<div class="gb-entry-actions">'
         + '<span class="gb-entry-date">' + fmt(e.date) + '</span>'
-        + (admin && e.id ? '<button class="gb-del-btn" data-id="' + esc(e.id) + '">delete</button>' : '')
-        + '</span>'
+        + (admin && e.id ? '<button class="gb-del-btn" data-id="' + esc(e.id) + '">del</button>' : '')
+        + '</div>'
         + '</div>'
         + '<div class="gb-entry-msg">' + esc(e.message) + '</div>'
         + '</div>';
@@ -194,8 +241,8 @@
             body: JSON.stringify({ id: id, code: getAdminCode() })
           }).then(function(r) { return r.json(); }).then(function(d) {
             if (d.ok) { _entries = _entries.filter(function(e) { return e.id !== id; }); render(_entries); }
-            else { btn.textContent = d.error || 'error'; }
-          }).catch(function() { btn.textContent = 'error'; });
+            else { btn.textContent = 'err'; }
+          }).catch(function() { btn.textContent = 'err'; });
         });
       });
     }
@@ -219,6 +266,17 @@
   loadEntries();
 
   
+  var idToggle = document.getElementById('gb-identity-toggle');
+  var idFields = document.getElementById('gb-identity-fields');
+  var idOpen = false;
+  idToggle.addEventListener('click', function() {
+    idOpen = !idOpen;
+    idFields.classList.toggle('open', idOpen);
+    idToggle.textContent = idOpen ? 'hide name fields' : 'add your name';
+    if (idOpen) document.getElementById('gb-name').focus();
+  });
+
+  
   document.getElementById('gb-admin-toggle').addEventListener('click', function() {
     var bar = document.getElementById('gb-admin-bar');
     bar.classList.toggle('open');
@@ -230,8 +288,9 @@
 
   
   document.getElementById('gb-submit').addEventListener('click', function() {
-    var name    = document.getElementById('gb-name').value.trim();
     var message = document.getElementById('gb-msg').value.trim();
+    var name    = document.getElementById('gb-name').value.trim();
+    var context = document.getElementById('gb-context').value.trim();
     var hp      = document.getElementById('gb-hp').value;
 
     if (!message) { setStatus('write something!'); return; }
@@ -244,19 +303,20 @@
     fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name || '', message: message, hp: hp })
+      body: JSON.stringify({ name: name, context: context, message: message, hp: hp })
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.error) { setStatus(data.error); return; }
-      document.getElementById('gb-name').value = '';
       document.getElementById('gb-msg').value = '';
-      setStatus('signed. thanks!', 'var(--accent)');
+      document.getElementById('gb-name').value = '';
+      document.getElementById('gb-context').value = '';
+      setStatus('signed!', 'var(--accent)');
       _entries = [data].concat(_entries || []);
       render(_entries);
     })
     .catch(function() { setStatus('network error. try again.'); })
-    .finally(function() { btn.disabled = false; btn.textContent = 'sign'; });
+    .finally(function() { btn.disabled = false; btn.textContent = 'sign the guestbook'; });
   });
 })();
 </script>
@@ -334,7 +394,7 @@
       "picks/code-hidden-language": { type: "file", title: "Code: The Hidden Language of Computer Hardware and Software", body: "This book helped me visualize how computers work from the bottom up. I couldn\u0026rsquo;t stop reading. I finished the whole book in almost three days. It\u0026rsquo;s so interesting, super well written, and just absolutely a great read. This changed my perspective on CS forever.\n", status: "book", url: "/picks/code-hidden-language/" },
       "picks/linux": { type: "file", title: "Linux", body: "A brilliant open-source operating system. Lightweight, performant, transparent, and really well-made overall. I love it for desktop use, server use, and especially embedded systems. Using Linux feels like holding a nicely crafted glass cube, whereas Windows feels like some brown plastic. At least Mac is Unix-based.\n", status: "software", url: "/picks/linux/" },
       "picks/neovim": { type: "file", title: "Neovim", body: "My editor. Peak editor. Best editor (for me). Also I really like the plugins and just the whole system in general. Very nice!\n", status: "software", url: "/picks/neovim/" },
-      "picks/obsidian": { type: "file", title: "Obsidian", body: "A great free note-taking tool. I love the customizability, the graph view, and how well it supports a Zettelkasten-style approach to managing knowledge. A little bummed it\u0026rsquo;s not fully open source, but whatever. I actually built a similar alternative as a Neo4j plugin that I also use heavily.\n", status: "software", url: "/picks/obsidian/" },
+      "picks/obsidian": { type: "file", title: "Obsidian", body: "A great free note-taking tool. I love the customizability, the graph view, and how well it supports a Zettelkasten-style approach to managing knowledge. A little bummed it\u0026rsquo;s not fully open source, but whatever. I actually built a similar alternative as a Neovim plugin that I also use heavily.\n", status: "software", url: "/picks/obsidian/" },
       "picks/vim-motions": { type: "file", title: "Vim Motions", body: "I just couldn\u0026rsquo;t live without them. They are so good, so fast, and I need them. They are perfect in every way (mostly). You don\u0026rsquo;t even need to touch the mouse. All editing happens on your nice comfy little keyboard.\n", status: "software", url: "/picks/vim-motions/" },
       
       

@@ -60,19 +60,20 @@ module.exports = async (req, res) => {
       res.setHeader('Cache-Control', 'no-store');
       const entries = await fetchAll();
       return res.status(200).json(entries.map(e => ({
-        id: e.id, name: e.name, message: e.message, date: e.date
+        id: e.id, name: e.name, context: e.context || '', message: e.message, date: e.date
       })));
     }
 
     // POST: add entry
     if (req.method === 'POST') {
       const body = await getBody(req);
-      const { name, message, hp } = body;
+      const { name, context, message, hp } = body;
 
       // honeypot: bots fill this hidden field
       if (hp) return res.status(200).json({ ok: true });
 
       const n = (name || '').trim().slice(0, MAX_NAME) || 'anonymous';
+      const c = (context || '').trim().slice(0, 100);
       const m = (message || '').trim().slice(0, MAX_MSG);
       if (!m) return res.status(400).json({ error: 'message is required' });
 
@@ -87,6 +88,7 @@ module.exports = async (req, res) => {
       const entry = {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         name: n,
+        ...(c ? { context: c } : {}),
         message: m,
         date: new Date().toISOString().split('T')[0]
       };

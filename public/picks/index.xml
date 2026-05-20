@@ -41,7 +41,7 @@
       <link>https://ekanshgoenka.com/picks/obsidian/</link>
       <pubDate>Wed, 20 May 2026 00:00:00 +0000</pubDate>
       <guid>https://ekanshgoenka.com/picks/obsidian/</guid>
-      <description>&lt;p&gt;A great free note-taking tool. I love the customizability, the graph view, and how well it supports a Zettelkasten-style approach to managing knowledge. A little bummed it&amp;rsquo;s not fully open source, but whatever. I actually built a similar alternative as a Neo4j plugin that I also use heavily.&lt;/p&gt;</description>
+      <description>&lt;p&gt;A great free note-taking tool. I love the customizability, the graph view, and how well it supports a Zettelkasten-style approach to managing knowledge. A little bummed it&amp;rsquo;s not fully open source, but whatever. I actually built a similar alternative as a Neovim plugin that I also use heavily.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Vim Motions</title>
