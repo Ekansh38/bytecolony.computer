@@ -50,6 +50,19 @@
     <a href="/arcade">arcade</a>
     <a href="/picks">picks</a>
   </nav>
+  <button class="m-nav-btn" id="m-nav-btn">menu</button>
+  <div class="m-nav-overlay" id="m-nav-overlay">
+    <div class="m-nav-sheet">
+      <a href="/projects">projects</a>
+      <a href="/writing">writing</a>
+      <a href="/music">music</a>
+      <a href="/games">games</a>
+      <a href="/tools">tools</a>
+      <a href="/arcade">arcade</a>
+      <a href="/picks">picks</a>
+      <button class="m-nav-cancel" id="m-nav-cancel">cancel</button>
+    </div>
+  </div>
   <div class="social">
     <a href="https://github.com/ekansh38" target="_blank" rel="noopener noreferrer">github ↗</a>
     <a href="https://www.youtube.com/@byte_colony" target="_blank" rel="noopener noreferrer" title="bytecolony">youtube ↗</a>
@@ -145,7 +158,7 @@
       'picks': { type: 'dir' },
       "picks/clean-code-horrible-performance": { type: "file", title: "Clean Code, Horrible Performance", body: "Makes the case that \u0026ldquo;clean code\u0026rdquo; principles actively produce slow software. Muratori benchmarks the actual cost of polymorphism, getters/setters, and small functions, and it\u0026rsquo;s not small. Changed how I think about abstractions.\n", status: "article", url: "/picks/clean-code-horrible-performance/" },
       "picks/code-hidden-language": { type: "file", title: "Code: The Hidden Language of Computer Hardware and Software", body: "Builds a computer from first principles. Starts with flashlights and Morse code, ends with a working CPU. The best explanation of how computers actually work that I\u0026rsquo;ve ever read.\n", status: "book", url: "/picks/code-hidden-language/" },
-      "picks/linux": { type: "file", title: "Linux", body: "A phenomenal open-source operating system. Lean, lightweight, performant, and really well-made overall. I love it for desktop use, server use, and especially embedded systems. I also love learning from it, and it\u0026rsquo;s beautiful that it\u0026rsquo;s open-source. A great piece of engineering. Using Linux feels like holding a nicely crafted glass cube, whereas Windows feels like some brown plastic. At least Mac is Unix-based.\n", status: "software", url: "/picks/linux/" },
+      "picks/linux": { type: "file", title: "Linux", body: "A brilliant open-source operating system. Lightweight, performant, transparent, and really well-made overall. I love it for desktop use, server use, and especially embedded systems. I also love learning from it, and it\u0026rsquo;s beautiful that it\u0026rsquo;s open-source. A great piece of engineering. Using Linux feels like holding a nicely crafted glass cube, whereas Windows feels like some brown plastic. At least Mac is Unix-based.\n", status: "software", url: "/picks/linux/" },
       "picks/neovim": { type: "file", title: "Neovim", body: "My editor. Modal editing rewires how you think about text manipulation. Once you internalize the grammar (verb + noun: diw, ci\u0026quot;, gqap) everything else feels slow. The plugin ecosystem and Lua config make it endlessly customizable without being bloated.\n", status: "software", url: "/picks/neovim/" },
       "picks/vim-motions": { type: "file", title: "Vim Motions", body: "The language of text editing. Once you learn the grammar (verbs like delete, change, yank combined with nouns like word, inner \u0026quot;, a paragraph) you stop thinking about keystrokes and start thinking about intent. Available everywhere: Neovim, VS Code, JetBrains, even your browser.\n", status: "software", url: "/picks/vim-motions/" },
       

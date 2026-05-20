@@ -52,6 +52,21 @@ function toggleTheme() {
   document.addEventListener('DOMContentLoaded', function () {
     applyTheme(document.documentElement.getAttribute('data-theme'));
 
+    // Mobile nav sheet
+    var mNavBtn = document.getElementById('m-nav-btn');
+    var mNavOverlay = document.getElementById('m-nav-overlay');
+    var mNavCancel = document.getElementById('m-nav-cancel');
+    if (mNavBtn && mNavOverlay) {
+      mNavBtn.addEventListener('click', function() {
+        mNavOverlay.classList.add('open');
+      });
+      function closeMNav() { mNavOverlay.classList.remove('open'); }
+      if (mNavCancel) mNavCancel.addEventListener('click', closeMNav);
+      mNavOverlay.addEventListener('click', function(e) {
+        if (e.target === mNavOverlay) closeMNav();
+      });
+    }
+
     // Desktop settings slide-in panel
     var dsOverlay = document.getElementById('ds-overlay');
     var dsPanel   = document.getElementById('ds-panel');
