@@ -23,7 +23,6 @@ async function kv(commands) {
 
 const MAX_NAME = 50;
 const MAX_MSG  = 500;
-const RATE_TTL = 600; // seconds: 1 post per 10 min per IP
 const MAX_KEEP = 200;
 
 async function getBody(req) {
@@ -77,14 +76,6 @@ module.exports = async (req, res) => {
       const m = (message || '').trim().slice(0, MAX_MSG);
       if (!m) return res.status(400).json({ error: 'message is required' });
 
-      // rate limit by IP
-      const ip = req.headers['x-forwarded-for']?.split(',')[0] || 'unknown';
-      const rateKey = `gb_rate:${ip}`;
-      const [rateCheck] = await kv([['get', rateKey]]);
-      if (rateCheck?.result) {
-        return res.status(429).json({ error: 'one message per 10 minutes please' });
-      }
-
       const entry = {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         name: n,
@@ -95,8 +86,7 @@ module.exports = async (req, res) => {
 
       await kv([
         ['lpush', 'guestbook', JSON.stringify(entry)],
-        ['ltrim', 'guestbook', '0', String(MAX_KEEP - 1)],
-        ['set', rateKey, '1', 'ex', String(RATE_TTL)]
+        ['ltrim', 'guestbook', '0', String(MAX_KEEP - 1)]
       ]);
 
       return res.status(201).json(entry);

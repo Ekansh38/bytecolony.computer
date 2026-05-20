@@ -91,12 +91,6 @@
   #gb-submit:hover { background: var(--accent); color: var(--bg); }
   #gb-submit:disabled { opacity: 0.4; cursor: default; }
   #gb-status { font-size: 0.82rem; min-height: 1.2em; }
-  #gb-identity-toggle {
-    background: none; border: none; color: var(--accent); font: inherit;
-    font-size: 0.78rem; cursor: pointer; padding: 0;
-    transition: color 0.15s;
-  }
-  #gb-identity-toggle:hover { text-decoration: underline; }
   #gb-identity-fields { display: none; }
   #gb-identity-fields.open { display: block; }
 
@@ -111,7 +105,7 @@
   .gb-entry-context { color: var(--muted); font-size: 0.78rem; }
   .gb-entry-date { color: var(--muted); font-size: 0.75rem; flex-shrink: 0; }
   .gb-entry-msg {
-    font-size: 0.9rem; line-height: 1.6;
+    font-size: 1rem; line-height: 1.65;
     white-space: pre-wrap; word-break: break-word;
   }
   .gb-entry-actions { display: flex; align-items: center; gap: 8px; }
@@ -139,7 +133,7 @@
 </style>
 
 <div class="project-title">guestbook</div>
-<p class="gb-intro">leave a message, a review, feedback, whatever you want. anonymous by default. you can optionally say who you are if you'd like people to know.</p>
+<p class="gb-intro">leave a message! say something nice or mean. you can optionally say who you are for people to know, or put in a funny name.</p>
 
 <div class="gb-form">
   <div class="gb-field">
@@ -152,7 +146,7 @@
       <input id="gb-name" class="gb-input" type="text" placeholder="anonymous" maxlength="50" autocomplete="off" spellcheck="false">
     </div>
     <div class="gb-field">
-      <label class="gb-label">who are you? <span style="opacity:0.6">(optional, e.g. "friend from school", "fellow dev", "recruiter")</span></label>
+      <label class="gb-label">who are you? <span style="opacity:0.6">(optional, e.g. "teacher", "friend from school", "fellow dev")</span></label>
       <input id="gb-context" class="gb-input" type="text" placeholder="" maxlength="100" autocomplete="off" spellcheck="false">
     </div>
   </div>
@@ -164,7 +158,6 @@
       <button id="gb-submit">sign the guestbook</button>
       <div id="gb-status"></div>
     </div>
-    <button id="gb-identity-toggle">add your name</button>
   </div>
 </div>
 
@@ -266,17 +259,6 @@
   loadEntries();
 
   
-  var idToggle = document.getElementById('gb-identity-toggle');
-  var idFields = document.getElementById('gb-identity-fields');
-  var idOpen = false;
-  idToggle.addEventListener('click', function() {
-    idOpen = !idOpen;
-    idFields.classList.toggle('open', idOpen);
-    idToggle.textContent = idOpen ? 'hide name fields' : 'add your name';
-    if (idOpen) document.getElementById('gb-name').focus();
-  });
-
-  
   document.getElementById('gb-admin-toggle').addEventListener('click', function() {
     var bar = document.getElementById('gb-admin-bar');
     bar.classList.toggle('open');
@@ -287,13 +269,24 @@
   });
 
   
+  var idFields = document.getElementById('gb-identity-fields');
+  var idRevealed = false;
+
   document.getElementById('gb-submit').addEventListener('click', function() {
     var message = document.getElementById('gb-msg').value.trim();
+    if (!message) { setStatus('write something!'); return; }
+
+    if (!idRevealed) {
+      idRevealed = true;
+      idFields.classList.add('open');
+      document.getElementById('gb-name').focus();
+      setStatus('add your name or just hit sign again to post anonymously.', 'var(--muted)');
+      return;
+    }
+
     var name    = document.getElementById('gb-name').value.trim();
     var context = document.getElementById('gb-context').value.trim();
     var hp      = document.getElementById('gb-hp').value;
-
-    if (!message) { setStatus('write something!'); return; }
 
     var btn = this;
     btn.disabled = true;
