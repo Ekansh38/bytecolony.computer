@@ -625,12 +625,12 @@
   // ── vim ex commands ──
   if (CodeMirror.Vim) {
     CodeMirror.Vim.defineEx('write', 'w', function() {
-      saveDraft(); showSaved(); setStatus('written', 'ok');
+      autoFormat(); saveDraft(); showSaved(); setStatus('written', 'ok');
       setTimeout(function() { setStatus('', ''); }, 1200);
     });
     CodeMirror.Vim.defineEx('quit',  'q',  function() { window.location.href = '/arcade'; });
-    CodeMirror.Vim.defineEx('wq',    'wq', function() { saveDraft(); window.location.href = '/arcade'; });
-    CodeMirror.Vim.defineEx('x',     'x',  function() { saveDraft(); window.location.href = '/arcade'; });
+    CodeMirror.Vim.defineEx('wq',    'wq', function() { autoFormat(); saveDraft(); window.location.href = '/arcade'; });
+    CodeMirror.Vim.defineEx('x',     'x',  function() { autoFormat(); saveDraft(); window.location.href = '/arcade'; });
   }
 
   // ── create editor ──
