@@ -130,9 +130,9 @@ module.exports = async (req, res) => {
     // ── PATCH: update a game's code ───────────────────────────────────────────
     if (req.method === 'PATCH') {
       if (!id) return res.status(400).json({ error: 'id required' });
-      const { code, newCode, newTitle, newDesc, lbMode, locked } = await getBody(req);
+      const { code, newCode, newTitle, newDesc, newAuthor, lbMode, locked } = await getBody(req);
       if (!code) return res.status(400).json({ error: 'edit code required' });
-      if (!newCode && !newTitle && newDesc === undefined && !lbMode && locked === undefined) return res.status(400).json({ error: 'nothing to update' });
+      if (!newCode && !newTitle && newDesc === undefined && !newAuthor && !lbMode && locked === undefined) return res.status(400).json({ error: 'nothing to update' });
 
       const all = await fetchAll();
       const game = all.find(g => g.id === id);
@@ -154,6 +154,7 @@ module.exports = async (req, res) => {
         }
       }
       if (newDesc !== undefined) patch.desc  = newDesc.trim().slice(0, MAX_DESC);
+      if (newAuthor)            patch.author = newAuthor.trim().slice(0, MAX_AUTHOR);
       if (lbMode === 'asc' || lbMode === 'desc') patch.lbMode = lbMode;
       if (locked !== undefined) patch.locked = !!locked;
 

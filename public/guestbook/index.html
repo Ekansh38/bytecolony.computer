@@ -219,7 +219,7 @@
         + (admin && e.id ? '<button class="gb-del-btn" data-id="' + esc(e.id) + '">del</button>' : '')
         + '</div>'
         + '</div>'
-        + '<div class="gb-entry-msg">' + esc(e.message) + '</div>'
+        + '<div class="gb-entry-msg">' + esc(e.message || '') + '</div>'
         + '</div>';
     }).join('');
 

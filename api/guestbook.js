@@ -64,8 +64,8 @@ module.exports = async (req, res) => {
         if (!e.id) { e.id = 'legacy_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); dirty = true; }
       }
       if (dirty) await rebuildList(entries);
-      return res.status(200).json(entries.map(e => ({
-        id: e.id, name: e.name, context: e.context || '', message: e.message, date: e.date
+      return res.status(200).json(entries.filter(e => e.message).map(e => ({
+        id: e.id, name: e.name || 'anonymous', context: e.context || '', message: e.message, date: e.date
       })));
     }
 

@@ -297,6 +297,10 @@
       <div class="ag-manage-field">
         <input type="password" id="ag-manage-code" class="ag-manage-inp" placeholder="edit code" autocomplete="off" spellcheck="false">
       </div>
+      <div class="ag-manage-field" style="display:flex;gap:6px;align-items:center">
+        <input type="text" id="ag-manage-author" class="ag-manage-inp" placeholder="new author name" autocomplete="off" spellcheck="false" style="flex:1">
+        <button id="ag-author-save" class="ag-manage-btn ag-manage-muted">update author</button>
+      </div>
       <div class="ag-manage-actions">
         <button id="ag-wipe-confirm" class="ag-manage-btn ag-manage-muted">clear leaderboard</button>
         <button id="ag-del-confirm" class="ag-manage-btn ag-manage-danger">delete game</button>
@@ -538,6 +542,32 @@
         }).catch(function(){
           manageStatus.textContent = 'network error'; manageStatus.style.color = '';
           self.disabled = false; self.textContent = 'delete game';
+        });
+      });
+
+      
+      document.getElementById('ag-manage-author').value = game.author || '';
+      document.getElementById('ag-author-save').addEventListener('click', function() {
+        var code = getManageCode();
+        var newAuthor = (document.getElementById('ag-manage-author').value || '').trim();
+        if (!code) { manageStatus.textContent = 'enter edit code'; return; }
+        if (!newAuthor) { manageStatus.textContent = 'enter a name'; return; }
+        this.disabled = true; this.textContent = 'saving...'; manageStatus.textContent = '';
+        var self = this;
+        fetch('/api/games?id=' + encodeURIComponent(id), {
+          method: 'PATCH', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({code: code, newAuthor: newAuthor})
+        }).then(function(r){return r.json();}).then(function(d){
+          if (d.ok) {
+            manageStatus.textContent = 'author updated'; manageStatus.style.color = 'var(--accent)';
+            document.getElementById('ag-author').textContent = newAuthor;
+          } else {
+            manageStatus.textContent = d.error || 'error'; manageStatus.style.color = '';
+          }
+          self.disabled = false; self.textContent = 'update author';
+        }).catch(function(){
+          manageStatus.textContent = 'network error'; manageStatus.style.color = '';
+          self.disabled = false; self.textContent = 'update author';
         });
       });
   }
