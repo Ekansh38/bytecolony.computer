@@ -603,6 +603,38 @@
   var remixId  = params.get('remix');
   var editCode = params.get('code');
 
+  function autoFormat() {
+    var src = editor.getValue();
+    var lines = src.split('\n');
+    var out = [];
+    var indent = 0;
+    var OPEN  = /^(function|if|for|while|repeat|else|elseif)\b/;
+    var CLOSE = /^(end|else|elseif|until)\b/;
+    for (var i = 0; i < lines.length; i++) {
+      var trimmed = lines[i].trim();
+      if (!trimmed) { out.push(''); continue; }
+      
+      var closes = CLOSE.test(trimmed);
+      
+      if (closes && indent > 0) indent--;
+      var pad = '';
+      for (var j = 0; j < indent; j++) pad += '    ';
+      out.push(pad + trimmed);
+      
+      
+      
+      var hasOpen = OPEN.test(trimmed);
+      var hasInlineEnd = /\bend\b/.test(trimmed) && !/^(end|else|elseif)/.test(trimmed);
+      if (hasOpen && !hasInlineEnd) indent++;
+    }
+    var formatted = out.join('\n');
+    if (formatted !== src) {
+      var cursor = editor.getCursor();
+      editor.setValue(formatted);
+      editor.setCursor(Math.min(cursor.line, out.length - 1), cursor.ch);
+    }
+  }
+
   function saveDraft() {
     try {
       localStorage.setItem(draftKey(), JSON.stringify({
@@ -672,17 +704,17 @@
     matchBrackets: true,
     autoCloseBrackets: true,
     autoRefresh: true,
-    indentUnit: 2,
-    tabSize: 2,
+    indentUnit: 4,
+    tabSize: 4,
     indentWithTabs: false,
     extraKeys: {
       'Tab': function(cm) {
         if (cm.somethingSelected()) { cm.indentSelection('add'); }
-        else { cm.replaceSelection('  ', 'end'); }
+        else { cm.replaceSelection('    ', 'end'); }
       },
       'Shift-Tab': function(cm) { cm.indentSelection('subtract'); },
-      'Cmd-S': function() { saveDraft(); showSaved(); },
-      'Ctrl-S': function() { saveDraft(); showSaved(); },
+      'Cmd-S': function() { autoFormat(); saveDraft(); showSaved(); },
+      'Ctrl-S': function() { autoFormat(); saveDraft(); showSaved(); },
     },
   });
 
