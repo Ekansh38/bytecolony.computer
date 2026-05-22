@@ -1,6 +1,6 @@
-baseURL = "https://ekanshgoenka.com/"
+baseURL = "https://bytecolony.computer/"
 languageCode = "en-us"
-title = "Ekansh Goenka"
+title = "Byte Colony"
 
 [markup.goldmark.renderer]
   unsafe = true

@@ -1568,13 +1568,13 @@ function toggleTheme() {
     var pb = document.getElementById('term-path');
     var loc = cwd ? '~/' + cwd : '~';
     if (ps) ps.textContent = loc + '$\u00a0';
-    if (pb) pb.textContent = 'ekansh@site:' + loc;
+    if (pb) pb.textContent = 'colony@site:' + loc;
   }
 
   var NEOFETCH = [
-    'ekansh@site',
+    'colony@site',
     '──────────────────────────',
-    'age       12',
+    'age       13',
     'editor    vim',
     'hobbies   bjj  music  cs  reading',
     '',
@@ -1968,7 +1968,7 @@ function toggleTheme() {
     df:      'df',
     env:     'env\n  SITE  COLORSCHEME  BG_MODE  BG_SPEED(%)  all params',
     history: 'history',
-    curl:    'curl -L <url>\n  curl -L ekanshgoenka.com',
+    curl:    'curl -L <url>\n  curl -L bytecolony.computer',
     neofetch: 'neofetch',
   };
 
@@ -2063,7 +2063,7 @@ function toggleTheme() {
     var deletions = [
       ['removing /usr/bin...', 'term-line-ok'],
       ['removing /etc...', 'term-line-ok'],
-      ['removing /home/ekansh...', 'term-line-ok'],
+      ['removing /home/colony...', 'term-line-ok'],
       ['removing /var/log...', 'term-line-ok'],
       ['removing /sys/kernel...', 'term-line-ok'],
       ['removing /proc...', 'term-line-ok'],
@@ -2878,7 +2878,7 @@ function toggleTheme() {
 
     whoami: function (args) {
       if (args.length) { tooMany('whoami'); return; }
-      line('ekansh goenka. 12. building things. bjj. music.');
+      line('byte colony. 13. building things. bjj. music.');
     },
 
     neofetch: function (args) {
@@ -3124,7 +3124,7 @@ function toggleTheme() {
         '   89  life.sim             1.7    0.9',
         '  102  terminal.js          0.3    0.2',
         '  256  music-brain          0.1    ?.?',
-        ' 1337  ekansh               99.9   ∞',
+        ' 1337  colony               99.9   ∞',
       ].join('\n'), 'term-line-pre');
     },
 
@@ -3140,7 +3140,7 @@ function toggleTheme() {
         'mem: 512M total  341M used  171M free',
         '',
         '  PID  USER     %CPU  %MEM  COMMAND',
-        ' 1337  ekansh   99.9  ∞     ekansh',
+        ' 1337  colony   99.9  ∞     colony',
         '   88  www      ' + (p['boids.n']||120)/6|0 + '.1   1.4   boids (n=' + (p['boids.n']||120) + ')',
         '   89  www       1.7   0.9   life (cell=' + (p['life.cell']||7) + 'px)',
         '  102  www       0.3   0.2   terminal.js',
@@ -3176,7 +3176,7 @@ function toggleTheme() {
       if (args.length) { tooMany('df'); return; }
       line([
         'Filesystem        Size     Used     Avail    Use%  Mounted on',
-        '/dev/brain        10.0PB   9.8PB    0.2PB    98%   /home/ekansh',
+        '/dev/brain        10.0PB   9.8PB    0.2PB    98%   /home/colony',
         '/dev/internet      ∞        ∞        ∞       ??%   /www',
         'tmpfs             16G      0.2G     15.8G     1%   /tmp',
       ].join('\n'), 'term-line-pre');
@@ -3189,7 +3189,7 @@ function toggleTheme() {
       var speed  = window.getBgSpeed ? window.getBgSpeed() : 5;
       var params = window.getBgParams ? window.getBgParams() : {};
       var vars = [
-        'SITE=ekanshgoenka.com',
+        'SITE=bytecolony.computer',
         'COLORSCHEME=' + theme,
         'BG_MODE=' + mode,
         'BG_SPEED=' + speed,
@@ -3232,8 +3232,8 @@ function toggleTheme() {
     q:      function (args) { if (args.length) { tooMany('q'); return; } close(); },
     echo:   function (args) { line(args.join(' ')); },
     curl:   function (args) {
-      var isSite = args.some(function (a) { return a.indexOf('ekanshgoenka') >= 0; });
-      if (!isSite) { line('try: curl -L ekanshgoenka.com', 'term-line-ok'); return; }
+      var isSite = args.some(function (a) { return a.indexOf('bytecolony') >= 0; });
+      if (!isSite) { line('try: curl -L bytecolony.computer', 'term-line-ok'); return; }
 
       var CW = 66, CH = 13;
       var BG_TEXT = 'USE  A  BROWSER,  YOU  NERD';
@@ -3306,7 +3306,7 @@ function toggleTheme() {
         output.scrollTop = output.scrollHeight;
       }, 80);
     },
-    sudo:   function ()  { line('ekansh is not in the sudoers file. this incident will be reported.', 'term-line-err'); },
+    sudo:   function ()  { line('colony is not in the sudoers file. this incident will be reported.', 'term-line-err'); },
     vim:    function (args) { if (args.length) { tooMany('vim'); return; } line('you\'re already in vim (spiritually).', 'term-line-ok'); },
     rm: function (a) {
       var flags = a.filter(function (x) { return x[0] === '-'; }).join('');
@@ -3492,7 +3492,7 @@ function toggleTheme() {
       help:        function (p) { return p === 0 ? HELP_KEYS : []; },
       man:         function (p) { return p === 0 ? CMD_NAMES.concat(Object.keys(HELP_TOPICS)).sort() : []; },
       which:       function (p) { return p === 0 ? CMD_NAMES : []; },
-      curl:        function (p) { return p === 0 ? ['-L'] : p === 1 ? ['ekanshgoenka.com'] : []; },
+      curl:        function (p) { return p === 0 ? ['-L'] : p === 1 ? ['bytecolony.computer'] : []; },
       rm:          function ()  { return completePath(typed); },
       play:        function (p) { return p === 0 ? _gameIds() : []; },
       source:      function (p) { return p === 0 ? _gameIds() : []; },
