@@ -1,4 +1,4 @@
-# ekanshgoenka.com
+# bytecolony.computer
 
 Personal site with a terminal aesthetic. Projects, writing, music, and games. Has a working in-browser terminal emulator, multiple colorschemes, and a particle background. Built to actually be fun to use.
 
