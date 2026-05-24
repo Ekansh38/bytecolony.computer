@@ -1,0 +1,160 @@
+/* ── THEMES ─────────────────────────────────────────────────── */
+
+/* Tokyo Night (dark, default) */
+:root,
+[data-theme="tokyo-night"] {
+  --bg: #1a1b26;
+  --fg: #a9b1d6;
+  --muted: #565f89;
+  --accent: #7aa2f7;
+  --border: #292e42;
+  --shadow: rgba(0,0,0,0.55);
+  --code-bg: #13141f;
+  --code-fg: #a9b1d6;
+  --code-kw: #bb9af7;
+  --code-type: #2ac3de;
+  --code-fn: #7aa2f7;
+  --code-str: #9ece6a;
+  --code-num: #ff9e64;
+  --code-op: #89ddff;
+  --code-cmt: #565f89;
+  --code-err: #f7768e;
+  --code-attr: #73daca;
+}
+
+/* Rosé Pine Dawn (light) */
+[data-theme="rose-pine"] {
+  --bg: #faf4ed;
+  --fg: #575279;
+  --muted: #9893a5;
+  --accent: #b4637a;
+  --border: #f2e9e1;
+  --shadow: transparent;
+  --code-bg: #fffcf8;
+  --code-fg: #575279;
+  --code-kw: #b4637a;
+  --code-type: #286983;
+  --code-fn: #56949f;
+  --code-str: #907aa9;
+  --code-num: #ea9d34;
+  --code-op: #286983;
+  --code-cmt: #9893a5;
+  --code-err: #b4637a;
+  --code-attr: #56949f;
+}
+
+/* Gruvbox Dark */
+[data-theme="gruvbox"] {
+  --bg: #282828;
+  --fg: #ebdbb2;
+  --muted: #928374;
+  --accent: #d79921;
+  --border: #3c3836;
+  --shadow: rgba(0,0,0,0.55);
+  --code-bg: #1d2021;
+  --code-fg: #ebdbb2;
+  --code-kw: #fb4934;
+  --code-type: #8ec07c;
+  --code-fn: #fabd2f;
+  --code-str: #b8bb26;
+  --code-num: #d3869b;
+  --code-op: #83a598;
+  --code-cmt: #928374;
+  --code-err: #fb4934;
+  --code-attr: #8ec07c;
+}
+
+/* Dracula (dark) */
+[data-theme="dracula"] {
+  --bg: #282a36;
+  --fg: #f8f8f2;
+  --muted: #6272a4;
+  --accent: #bd93f9;
+  --border: #44475a;
+  --shadow: rgba(0,0,0,0.55);
+  --code-bg: #21222c;
+  --code-fg: #f8f8f2;
+  --code-kw: #ff79c6;
+  --code-type: #8be9fd;
+  --code-fn: #50fa7b;
+  --code-str: #f1fa8c;
+  --code-num: #bd93f9;
+  --code-op: #ff79c6;
+  --code-cmt: #6272a4;
+  --code-err: #ff5555;
+  --code-attr: #8be9fd;
+}
+
+/* Github Light */
+[data-theme="github-light"] {
+  --bg: #ffffff;
+  --fg: #1f2328;
+  --muted: #656d76;
+  --accent: #0969da;
+  --border: #d1d9e0;
+  --shadow: transparent;
+  --code-bg: #f6f8fa;
+  --code-fg: #1f2328;
+  --code-kw: #cf222e;
+  --code-type: #953800;
+  --code-fn: #8250df;
+  --code-str: #0a3069;
+  --code-num: #0550ae;
+  --code-op: #cf222e;
+  --code-cmt: #656d76;
+  --code-err: #cf222e;
+  --code-attr: #0a3069;
+}
+
+/* Papercolor Light */
+[data-theme="papercolor-light"] {
+  --bg: #eeeeee;
+  --fg: #444444;
+  --muted: #878787;
+  --accent: #005f87;
+  --border: #d0d0d0;
+  --shadow: transparent;
+  --code-bg: #fafafa;
+  --code-fg: #444444;
+  --code-kw: #d70000;
+  --code-type: #005f87;
+  --code-fn: #0087af;
+  --code-str: #5f8700;
+  --code-num: #af005f;
+  --code-op: #0087af;
+  --code-cmt: #878787;
+  --code-err: #d70000;
+  --code-attr: #008700;
+}
+
+/* Hacker (secret, terminal-only) */
+[data-theme="hacker"] {
+  --bg: #0a0a0a;
+  --fg: #00ff41;
+  --muted: #00802080;
+  --accent: #00ff41;
+  --border: #003300;
+  --shadow: rgba(0,255,65,0.1);
+  --code-bg: #050505;
+  --code-fg: #00ff41;
+  --code-kw: #39ff14;
+  --code-type: #00e5ff;
+  --code-fn: #00ff41;
+  --code-str: #7fff00;
+  --code-num: #00ffcc;
+  --code-op: #39ff14;
+  --code-cmt: #003300;
+  --code-err: #ff0040;
+  --code-attr: #00e5ff;
+}
+[data-theme="hacker"] body {
+  text-shadow: 0 0 8px rgba(0,255,65,0.3);
+}
+[data-theme="hacker"] ::selection {
+  background: rgba(0,255,65,0.25);
+}
+
+::selection {
+  background: rgba(122, 162, 247, 0.25);
+}
+
