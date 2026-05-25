@@ -30,6 +30,7 @@
       <div class="adm-section-header">
         <span class="adm-section-status" id="preset-status"></span>
         <div class="adm-section-actions">
+          <button id="preset-new" class="adm-btn adm-btn-sm">+ new preset</button>
           <button id="preset-save" class="adm-btn adm-btn-sm adm-btn-primary">save all</button>
         </div>
       </div>
@@ -329,7 +330,7 @@
       title.textContent = name;
       var meta = document.createElement('span');
       meta.className = 'adm-card-meta';
-      meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : '') + (p.desc ? ' · ' + p.desc : '');
+      meta.textContent = p.sim + (p.theme ? ' / ' + p.theme : '') + (p.desc ? ' / ' + p.desc : '');
 
       var actions = document.createElement('span');
       actions.className = 'adm-card-actions';
@@ -358,8 +359,8 @@
       var topGrid = document.createElement('div');
       topGrid.className = 'adm-param-grid';
       topGrid.style.marginBottom = '10px';
-      topGrid.appendChild(mkSelect('sim', p.sim, SIMS, function (v) { p.sim = v; meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : ''); liveApply(name, p); }));
-      topGrid.appendChild(mkSelect('theme', p.theme || '', [''].concat(THEMES), function (v) { p.theme = v || undefined; swatch.style.background = themeColors[v] || 'var(--accent)'; meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : ''); liveApply(name, p); }));
+      topGrid.appendChild(mkSelect('sim', p.sim, SIMS, function (v) { p.sim = v; meta.textContent = p.sim + (p.theme ? ' / ' + p.theme : ''); liveApply(name, p); }));
+      topGrid.appendChild(mkSelect('theme', p.theme || '', [''].concat(THEMES), function (v) { p.theme = v || undefined; swatch.style.background = themeColors[v] || 'var(--accent)'; meta.textContent = p.sim + (p.theme ? ' / ' + p.theme : ''); liveApply(name, p); }));
       topGrid.appendChild(mkText('desc', p.desc || '', function (v) { p.desc = v; }));
       body.appendChild(topGrid);
 
@@ -405,7 +406,45 @@
         e.stopPropagation();
         if (originalPresets[name]) {
           presets[name] = JSON.parse(JSON.stringify(originalPresets[name]));
-          renderPresets();
+          var p2 = presets[name];
+          // update sliders in-place instead of re-rendering
+          body.innerHTML = '';
+          var topGrid2 = document.createElement('div');
+          topGrid2.className = 'adm-param-grid';
+          topGrid2.style.marginBottom = '10px';
+          topGrid2.appendChild(mkSelect('sim', p2.sim, SIMS, function (v) { p2.sim = v; meta.textContent = p2.sim + (p2.theme ? ' / ' + p2.theme : ''); liveApply(name, p2); }));
+          topGrid2.appendChild(mkSelect('theme', p2.theme || '', [''].concat(THEMES), function (v) { p2.theme = v || undefined; swatch.style.background = themeColors[v] || 'var(--accent)'; meta.textContent = p2.sim + (p2.theme ? ' / ' + p2.theme : ''); liveApply(name, p2); }));
+          topGrid2.appendChild(mkText('desc', p2.desc || '', function (v) { p2.desc = v; }));
+          body.appendChild(topGrid2);
+          var speedGrid2 = document.createElement('div');
+          speedGrid2.className = 'adm-param-grid';
+          speedGrid2.style.marginBottom = '10px';
+          SPEED_SLIDERS.forEach(function (s) {
+            speedGrid2.appendChild(mkSlider(s.label, p2[s.key], s.min, s.max, s.step, function (v) { p2[s.key] = v; liveApply(name, p2); }));
+          });
+          body.appendChild(speedGrid2);
+          if (p2.params) {
+            var paramLabel2 = document.createElement('div');
+            paramLabel2.style.cssText = 'font-size:0.78rem;color:var(--muted);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;';
+            paramLabel2.textContent = 'params';
+            body.appendChild(paramLabel2);
+            var paramGrid2 = document.createElement('div');
+            paramGrid2.className = 'adm-param-grid';
+            PARAM_SLIDERS.forEach(function (s) {
+              if (p2.params[s.key] != null) {
+                paramGrid2.appendChild(mkSlider(s.label, p2.params[s.key], s.min, s.max, s.step, function (v) { p2.params[s.key] = v; liveApply(name, p2); }));
+              }
+            });
+            body.appendChild(paramGrid2);
+          }
+          var actionsRow2 = document.createElement('div');
+          actionsRow2.className = 'adm-preset-actions';
+          actionsRow2.appendChild(previewBtn);
+          actionsRow2.appendChild(resetBtn);
+          body.appendChild(actionsRow2);
+          meta.textContent = p2.sim + (p2.theme ? ' / ' + p2.theme : '') + (p2.desc ? ' / ' + p2.desc : '');
+          swatch.style.background = themeColors[p2.theme] || 'var(--accent)';
+          liveApply(name, p2);
         }
       });
 
@@ -474,6 +513,29 @@
     return el;
   }
 
+  // New preset
+  document.getElementById('preset-new').addEventListener('click', function () {
+    var name = prompt('preset name:');
+    if (!name || !name.trim()) return;
+    name = name.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    if (presets[name]) { alert('"' + name + '" already exists'); return; }
+    presets[name] = {
+      sim: 'combo', theme: '', desc: '',
+      lspeed: 40, bspeed: 40,
+      params: {
+        'life.cell': 10, 'life.opacity': 40, 'life.glow': 0, 'life.autofill': 30, 'life.rainbow': 0,
+        'boids.n': 120, 'boids.size': 6, 'boids.tick': 1, 'boids.opacity': 80, 'boids.glow': 0,
+        'boids.perception': 100, 'boids.separation': 50,
+        'trail.on': 0, 'trail.size': 3, 'trail.glow': 0, 'trail.decay': 15
+      }
+    };
+    renderPresets();
+    // scroll to bottom and expand the new card
+    var cards = document.querySelectorAll('#preset-list .adm-card');
+    var last = cards[cards.length - 1];
+    if (last) { last.classList.add('expanded'); last.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  });
+
   // Save presets
   document.getElementById('preset-save').addEventListener('click', function () {
     document.getElementById('preset-status').textContent = 'saving...';
@@ -522,7 +584,7 @@
 
       var meta = document.createElement('span');
       meta.className = 'adm-card-meta';
-      meta.textContent = (e.context ? e.context + ' · ' : '') + (e.date || '');
+      meta.textContent = (e.context ? e.context + ' /' : '') + (e.date || '');
 
       var actions = document.createElement('span');
       actions.className = 'adm-card-actions';
@@ -597,7 +659,7 @@
 
       var meta = document.createElement('span');
       meta.className = 'adm-card-meta';
-      meta.textContent = (g.author || 'anon') + ' · ' + (g.date || '');
+      meta.textContent = (g.author || 'anon') + ' / ' + (g.date || '');
 
       var actions = document.createElement('span');
       actions.className = 'adm-card-actions';
@@ -631,7 +693,7 @@
       body.innerHTML =
         '<div class="adm-arc-desc">' + (g.desc || 'no description') + '</div>' +
         '<div style="margin-top:8px;font-size:0.78rem;color:var(--muted);">' +
-        'id: ' + (g.id || '') + ' · lb: ' + (g.lbMode || 'none') + (g.locked ? ' · locked' : '') +
+        'id: ' + (g.id || '') + ' / lb: ' + (g.lbMode || 'none') + (g.locked ? ' / locked' : '') +
         '</div>';
 
       card.appendChild(bar);

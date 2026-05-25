@@ -244,12 +244,12 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 .post-signoff {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   margin-top: 48px;
   padding-top: 20px;
   border-top: 1px solid var(--border);
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.88rem;
 }
 
 .links { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }

@@ -19,16 +19,17 @@
   .gb-input:focus { border-color: var(--accent); }
   textarea.gb-input { resize: vertical; min-height: 70px; }
   .gb-anon-hint { color: var(--muted); font-size: 0.75rem; margin-top: 3px; }
-  .gb-form-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+  .gb-form-footer { margin-top: 14px; }
   #gb-submit {
     background: transparent; border: 1px solid var(--accent);
-    color: var(--accent); font: inherit; font-size: 0.88rem;
-    padding: 8px 20px; cursor: pointer;
+    color: var(--accent); font: inherit; font-size: 1rem;
+    padding: 12px 32px; cursor: pointer;
     transition: background 0.15s, color 0.15s;
+    width: 100%;
   }
   #gb-submit:hover { background: var(--accent); color: var(--bg); }
   #gb-submit:disabled { opacity: 0.4; cursor: default; }
-  #gb-status { font-size: 0.82rem; min-height: 1.2em; }
+  #gb-status { font-size: 0.82rem; min-height: 1.2em; margin-top: 8px; }
   #gb-identity-fields { display: none; }
   #gb-identity-fields.open { display: block; }
 
