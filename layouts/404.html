@@ -5,6 +5,7 @@
   <canvas id="four04-canvas"></canvas>
   <div id="four04-glow"></div>
   <div class="four04-content">
+    <div class="four04-ant">{{ partial "ant.html" (dict "w" "80" "h" "56") }}</div>
     <p class="four04-num">404</p>
     <p class="four04-msg">this page doesn't exist.</p>
     <a href="/" class="four04-link">← back home</a>
@@ -67,6 +68,11 @@
   transition: opacity 0.2s;
 }
 .four04-link:hover { opacity: 0.7; }
+.four04-ant { margin-bottom: 16px; color: var(--accent); opacity: 0.35; animation: ant-confused 2.5s ease-in-out infinite; }
+@keyframes ant-confused {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
 
 body > header, body > footer { display: none; }
 </style>

@@ -20,6 +20,7 @@
     {{ range .ByDate.Reverse }}
     <li class="writing-li">
       <div>
+        {{ partial "ant.html" (dict "w" "14" "h" "10") }}
         {{ with .Params.project }}<a href="/projects/{{ . }}/" class="writing-project">{{ . }}</a> / {{ end }}
         <a href="{{ .Permalink }}">{{ .Title }}</a>
       </div>
@@ -33,7 +34,10 @@
   <ul>
     {{ range . }}
     <li class="writing-li">
-      <a href="{{ .Permalink }}">{{ .Title }}</a>
+      <div>
+        {{ partial "ant.html" (dict "w" "14" "h" "10") }}
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+      </div>
       <span class="yr">{{ .Date.Format "2006" }}</span>
     </li>
     {{ end }}

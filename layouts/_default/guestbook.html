@@ -49,6 +49,9 @@
   }
   .gb-entry-actions { display: flex; align-items: center; gap: 8px; }
   .gb-count { color: var(--muted); font-size: 0.82rem; }
+  .gb-loading { display: inline-flex; align-items: center; gap: 6px; }
+  .gb-loading .ant-icon { animation: ant-walk 0.6s steps(2) infinite; }
+  @keyframes ant-walk { 0% { transform: translateX(0); } 100% { transform: translateX(4px); } }
 </style>
 
 <div class="project-title">guestbook</div>
@@ -85,7 +88,7 @@
 </div>
 
 <div id="gb-entries">
-  <p style="color:var(--muted)">loading...</p>
+  <p style="color:var(--muted)" class="gb-loading">{{ partial "ant.html" (dict "w" "14" "h" "10") }} loading...</p>
 </div>
 
 <script>

@@ -202,6 +202,8 @@ body.projects li, body.home li { padding: 14px 0; }
 
 .writing-li { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
 .writing-li a { color: var(--fg); }
+.writing-li > div { display: inline-flex; align-items: baseline; gap: 8px; }
+.writing-li .ant-icon { flex-shrink: 0; opacity: 0.4; position: relative; top: 1px; }
 .writing-project { display: inline-block; color: var(--muted) !important; font-size: 0.75rem; letter-spacing: 0.03em; margin-top: 2px; }
 .writing-project:hover { color: var(--accent) !important; }
 

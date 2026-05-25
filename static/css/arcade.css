@@ -39,7 +39,9 @@
 }
 
 /* ── Loading ── */
-.arc-loading-state { color:var(--muted); padding:24px 0; }
+.arc-loading-state { color:var(--muted); padding:24px 0; display:inline-flex; align-items:center; gap:6px; }
+.arc-loading-state .ant-icon { animation: ant-walk-arc 0.6s steps(2) infinite; }
+@keyframes ant-walk-arc { 0% { transform:translateX(0); } 100% { transform:translateX(4px); } }
 
 /* ── Games section ── */
 .arc-games-section { margin-bottom: 12px; }
