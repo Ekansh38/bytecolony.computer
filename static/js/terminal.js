@@ -515,7 +515,6 @@
 
     color:   'color\n  bg  fg  accent  muted  border',
     whoami:  'whoami',
-    pwd:     'pwd',
     cowsay:  'cowsay [text]\n  cowsay hello world',
     top:     'top',
     ps:      'ps',

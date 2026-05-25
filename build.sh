@@ -20,10 +20,10 @@ done
 
 # Minify CSS
 for f in public/css/*.css; do
-  $ESBUILD "$f" --minify --outfile="$f" --allow-overwrite --loader=css
+  $ESBUILD "$f" --minify --outfile="$f" --allow-overwrite
 done
 
 # Minify work.css
 if [ -f public/work.css ]; then
-  $ESBUILD public/work.css --minify --outfile=public/work.css --allow-overwrite --loader=css
+  $ESBUILD public/work.css --minify --outfile=public/work.css --allow-overwrite
 fi
