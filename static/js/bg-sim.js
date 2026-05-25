@@ -943,6 +943,7 @@
   };
 
   window.getPresetNames = function () { return Object.keys(PRESETS); };
+  window._getPresetData = function (name) { return PRESETS[name] || null; };
   window.getPresetsForMode = function (mode) {
     return Object.keys(PRESETS).filter(function (k) { return PRESETS[k].sim === mode; });
   };

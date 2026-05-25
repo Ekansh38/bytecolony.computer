@@ -1,462 +1,349 @@
 {{ define "main" }}
-<div id="te-app">
+<div id="admin-app">
   <!-- Auth gate -->
-  <div id="te-auth">
-    <div class="te-auth-box">
-      <h2>theme editor</h2>
-      <p class="te-auth-hint">enter master code</p>
-      <div class="te-auth-row">
-        <input type="password" id="te-code" placeholder="master code" autocomplete="off">
-        <button id="te-login">enter</button>
+  <div id="admin-auth">
+    <div class="adm-auth-box">
+      <h2>admin</h2>
+      <p class="adm-auth-hint">enter master code</p>
+      <div class="adm-auth-row">
+        <input type="password" id="adm-code" placeholder="master code" autocomplete="off">
+        <button id="adm-login" class="adm-btn adm-btn-primary">enter</button>
       </div>
-      <p id="te-auth-err"></p>
+      <p id="adm-auth-err"></p>
     </div>
   </div>
 
-  <!-- Editor (hidden until auth) -->
-  <div id="te-editor" style="display:none;">
-    <div class="te-header">
-      <h2>theme editor</h2>
-      <div class="te-header-actions">
-        <button id="te-add" class="te-btn">+ new theme</button>
-        <button id="te-save" class="te-btn te-btn-primary">save all</button>
-        <button id="te-import-css" class="te-btn">import from CSS</button>
-      </div>
+  <!-- Admin panel (hidden until auth) -->
+  <div id="admin-panel" style="display:none;">
+    <div class="adm-top">
+      <h2>admin</h2>
+      <button id="adm-logout" class="adm-btn adm-btn-sm">logout</button>
     </div>
-    <p id="te-status"></p>
 
-    <div id="te-theme-list"></div>
+    <div class="adm-tabs">
+      <button class="adm-tab active" data-tab="presets">presets</button>
+      <button class="adm-tab" data-tab="guestbook">guestbook</button>
+      <button class="adm-tab" data-tab="arcade">arcade</button>
+    </div>
+
+    <div class="adm-tab-content" id="tab-presets">
+      <div class="adm-section-header">
+        <span class="adm-section-status" id="preset-status"></span>
+        <div class="adm-section-actions">
+          <button id="preset-seed" class="adm-btn adm-btn-sm">seed from code</button>
+          <button id="preset-save" class="adm-btn adm-btn-sm adm-btn-primary">save all</button>
+        </div>
+      </div>
+      <div id="preset-list"></div>
+    </div>
+
+    <div class="adm-tab-content" id="tab-guestbook" style="display:none;">
+      <div class="adm-section-header">
+        <span class="adm-section-status" id="gb-status"></span>
+      </div>
+      <div id="gb-list"></div>
+    </div>
+
+    <div class="adm-tab-content" id="tab-arcade" style="display:none;">
+      <div class="adm-section-header">
+        <span class="adm-section-status" id="arc-status"></span>
+      </div>
+      <div id="arc-list"></div>
+    </div>
   </div>
 </div>
 
 <style>
-  /* hide site header/footer on editor page */
   header, footer { display: none !important; }
-  body { max-width: 1100px !important; }
+  body { max-width: 1000px !important; }
+  #admin-app { padding: 20px 0; }
 
-  #te-app { padding: 20px 0; }
-
-  /* ── Auth ── */
-  #te-auth {
-    display: flex; align-items: center; justify-content: center;
-    min-height: 60vh;
-  }
-  .te-auth-box { text-align: center; }
-  .te-auth-box h2 { margin-bottom: 12px; color: var(--fg); }
-  .te-auth-hint { color: var(--muted); margin-bottom: 16px; font-size: 0.9rem; }
-  .te-auth-row { display: flex; gap: 8px; justify-content: center; }
-  .te-auth-row input {
+  /* Auth */
+  #admin-auth { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+  .adm-auth-box { text-align: center; }
+  .adm-auth-box h2 { margin-bottom: 12px; color: var(--fg); }
+  .adm-auth-hint { color: var(--muted); margin-bottom: 16px; font-size: 0.9rem; }
+  .adm-auth-row { display: flex; gap: 8px; justify-content: center; }
+  .adm-auth-row input {
     background: var(--code-bg); border: 1px solid var(--border); color: var(--fg);
-    font-family: inherit; font-size: inherit; padding: 8px 14px; outline: none;
-    width: 240px;
+    font-family: inherit; font-size: inherit; padding: 8px 14px; outline: none; width: 240px;
   }
-  .te-auth-row input:focus { border-color: var(--accent); }
-  #te-auth-err { color: var(--code-err); margin-top: 10px; font-size: 0.85rem; min-height: 1.2em; }
+  .adm-auth-row input:focus { border-color: var(--accent); }
+  #adm-auth-err { color: var(--code-err); margin-top: 10px; font-size: 0.85rem; min-height: 1.2em; }
 
-  /* ── Buttons ── */
-  .te-btn {
+  /* Buttons */
+  .adm-btn {
     background: none; border: 1px solid var(--border); color: var(--muted);
-    font-family: inherit; font-size: 0.88rem; padding: 6px 14px; cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
+    font-family: inherit; font-size: 0.85rem; padding: 6px 14px; cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
   }
-  .te-btn:hover { color: var(--accent); border-color: var(--accent); }
-  .te-btn-primary { color: var(--accent); border-color: var(--accent); }
-  .te-btn-primary:hover { background: var(--accent); color: var(--bg); }
-  .te-btn-danger { color: var(--code-err); border-color: var(--code-err); }
-  .te-btn-danger:hover { background: var(--code-err); color: var(--bg); }
-  .te-btn-sm { font-size: 0.8rem; padding: 4px 10px; }
+  .adm-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .adm-btn-primary { color: var(--accent); border-color: var(--accent); }
+  .adm-btn-primary:hover { background: var(--accent); color: var(--bg); }
+  .adm-btn-danger:hover { background: var(--code-err); color: var(--bg); border-color: var(--code-err); }
+  .adm-btn-sm { font-size: 0.78rem; padding: 4px 10px; }
 
-  /* ── Header ── */
-  .te-header {
+  /* Top bar */
+  .adm-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .adm-top h2 { margin: 0; color: var(--fg); }
+
+  /* Tabs */
+  .adm-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .adm-tab {
+    background: none; border: none; border-bottom: 2px solid transparent;
+    color: var(--muted); font-family: inherit; font-size: 0.9rem;
+    padding: 10px 20px; cursor: pointer; transition: color 0.15s, border-color 0.15s;
+  }
+  .adm-tab:hover { color: var(--fg); }
+  .adm-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Section header */
+  .adm-section-header {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
   }
-  .te-header h2 { margin: 0; color: var(--fg); }
-  .te-header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .adm-section-status { font-size: 0.82rem; color: var(--muted); }
+  .adm-section-actions { display: flex; gap: 6px; }
 
-  #te-status {
-    font-size: 0.85rem; min-height: 1.2em; margin-bottom: 16px;
-    color: var(--muted); transition: color 0.2s;
-  }
-  #te-status.success { color: var(--code-str); }
-  #te-status.error { color: var(--code-err); }
-
-  /* ── Theme cards ── */
-  #te-theme-list { display: flex; flex-direction: column; gap: 0; }
-
-  .te-theme {
-    border: 1px solid var(--border); padding: 20px; margin-bottom: -1px;
+  /* Cards (shared) */
+  .adm-card {
+    border: 1px solid var(--border); padding: 14px 16px; margin-bottom: -1px;
     transition: border-color 0.15s;
   }
-  .te-theme:first-child { border-radius: 4px 4px 0 0; }
-  .te-theme:last-child { border-radius: 0 0 4px 4px; }
-  .te-theme:only-child { border-radius: 4px; }
-  .te-theme.expanded { border-color: var(--accent); }
+  .adm-card:first-child { border-radius: 4px 4px 0 0; }
+  .adm-card:last-child { border-radius: 0 0 4px 4px; margin-bottom: 0; }
+  .adm-card:only-child { border-radius: 4px; }
 
-  .te-theme-bar {
-    display: flex; align-items: center; gap: 12px; cursor: pointer;
-    user-select: none;
+  .adm-card-bar {
+    display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;
   }
-  .te-theme-arrow {
-    color: var(--muted); font-size: 0.8rem; transition: transform 0.2s;
-    width: 16px; text-align: center; flex-shrink: 0;
+  .adm-card-arrow {
+    color: var(--muted); font-size: 0.7rem; transition: transform 0.2s;
+    width: 14px; text-align: center; flex-shrink: 0;
   }
-  .te-theme.expanded .te-theme-arrow { transform: rotate(90deg); }
+  .adm-card.expanded .adm-card-arrow { transform: rotate(90deg); }
+  .adm-card-title { font-weight: 700; font-size: 0.92rem; flex: 1; }
+  .adm-card-meta { color: var(--muted); font-size: 0.78rem; }
+  .adm-card-actions { display: flex; gap: 6px; }
+  .adm-card-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .adm-card.expanded .adm-card-body { display: block; }
 
-  .te-theme-name {
-    font-weight: 700; font-size: 1rem; flex: 1;
+  /* Preset-specific */
+  .adm-preset-swatch {
+    width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0;
   }
-  .te-theme-swatch {
-    width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border);
-    flex-shrink: 0;
+  .adm-param-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px;
   }
-  .te-theme-actions { display: flex; gap: 6px; }
+  .adm-param {
+    display: flex; align-items: center; gap: 6px; padding: 4px 8px;
+    background: var(--code-bg); border-radius: 3px; font-size: 0.8rem;
+  }
+  .adm-param label { color: var(--muted); flex: 1; white-space: nowrap; }
+  .adm-param input[type="number"], .adm-param input[type="text"], .adm-param select {
+    background: var(--bg); border: 1px solid var(--border); color: var(--fg);
+    font-family: inherit; font-size: 0.8rem; padding: 2px 6px; outline: none; width: 70px;
+  }
+  .adm-param input:focus, .adm-param select:focus { border-color: var(--accent); }
 
-  /* ── Expanded body ── */
-  .te-theme-body { display: none; margin-top: 18px; }
-  .te-theme.expanded .te-theme-body { display: block; }
+  /* Guestbook entry */
+  .adm-gb-msg { font-size: 0.88rem; line-height: 1.6; margin-top: 4px; white-space: pre-wrap; word-break: break-word; }
+  .adm-gb-context { color: var(--muted); font-size: 0.78rem; }
 
-  .te-theme-rename {
-    display: flex; gap: 8px; align-items: center; margin-bottom: 16px;
-  }
-  .te-theme-rename input {
-    background: var(--code-bg); border: 1px solid var(--border); color: var(--fg);
-    font-family: inherit; font-size: 0.9rem; padding: 5px 10px; outline: none;
-    width: 200px;
-  }
-  .te-theme-rename input:focus { border-color: var(--accent); }
-
-  .te-var-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 10px;
-  }
-  .te-var {
-    display: flex; align-items: center; gap: 8px;
-    padding: 6px 10px; border-radius: 3px;
-    background: var(--code-bg);
-  }
-  .te-var-label {
-    font-size: 0.8rem; color: var(--muted); flex: 1;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .te-var-color {
-    width: 28px; height: 28px; border: 1px solid var(--border);
-    border-radius: 3px; cursor: pointer; padding: 0;
-    background: none; flex-shrink: 0;
-  }
-  .te-var-color::-webkit-color-swatch-wrapper { padding: 0; }
-  .te-var-color::-webkit-color-swatch { border: none; border-radius: 2px; }
-  .te-var-hex {
-    background: none; border: none; color: var(--fg);
-    font-family: inherit; font-size: 0.8rem; width: 75px;
-    outline: none; padding: 2px 0;
-  }
-  .te-var-hex:focus { color: var(--accent); }
-
-  /* ── Preview strip ── */
-  .te-preview {
-    margin-top: 16px; padding: 16px; border-radius: 4px;
-    display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
-    transition: all 0.2s;
-  }
-  .te-preview-text { font-size: 0.9rem; }
-  .te-preview-muted { font-size: 0.82rem; }
-  .te-preview-accent { font-weight: 700; }
-  .te-preview-code {
-    font-size: 0.8rem; padding: 4px 8px; border-radius: 3px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* ── Light mode toggle ── */
-  .te-light-toggle {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
-  }
-  .te-light-toggle label { font-size: 0.85rem; color: var(--muted); cursor: pointer; }
-  .te-light-toggle input { cursor: pointer; }
-
-  /* ── Duplicate overlay ── */
-  .te-duplicate-name {
-    display: flex; gap: 8px; align-items: center; margin-top: 10px;
-  }
+  /* Arcade entry */
+  .adm-arc-desc { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+  .adm-arc-author { color: var(--muted); font-size: 0.78rem; }
 </style>
 
 <script>
 (function () {
-  var VARS = [
-    'bg','fg','muted','accent','border','shadow',
-    'code-bg','code-fg','code-kw','code-type','code-fn',
-    'code-str','code-num','code-op','code-cmt','code-err','code-attr'
-  ];
-
-  var VAR_GROUPS = {
-    'core': ['bg','fg','muted','accent','border','shadow'],
-    'code': ['code-bg','code-fg','code-kw','code-type','code-fn','code-str','code-num','code-op','code-cmt','code-err','code-attr']
-  };
-
-  var masterCode = '';
-  var themes = {};
-  var dirty = false;
+  var API = '/api/themes';
+  var masterCode = localStorage.getItem('bc-admin-code') || '';
+  var presets = {};
 
   // ── Auth ──
-  var codeInput = document.getElementById('te-code');
-  var loginBtn = document.getElementById('te-login');
-  var authErr = document.getElementById('te-auth-err');
+  var codeInput = document.getElementById('adm-code');
+  var loginBtn = document.getElementById('adm-login');
+  var authErr = document.getElementById('adm-auth-err');
+
+  function headers() {
+    return { 'Content-Type': 'application/json', 'X-Master-Code': masterCode };
+  }
 
   function doLogin() {
     masterCode = codeInput.value.trim();
     if (!masterCode) { authErr.textContent = 'enter code'; return; }
     authErr.textContent = 'checking...';
-    // verify by fetching — then try a no-op to confirm code works
-    fetch('/api/themes', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'X-Master-Code': masterCode },
-      body: JSON.stringify({ name: '__auth_check__', vars: {} })
-    }).then(function (r) {
-      if (r.status === 403) { authErr.textContent = 'wrong code'; return; }
-      // clean up test theme if created
-      fetch('/api/themes', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json', 'X-Master-Code': masterCode },
-        body: JSON.stringify({ name: '__auth_check__' })
-      });
-      document.getElementById('te-auth').style.display = 'none';
-      document.getElementById('te-editor').style.display = 'block';
-      loadThemes();
-    }).catch(function () { authErr.textContent = 'network error'; });
+    fetch(API + '?action=verify', { headers: { 'X-Master-Code': masterCode } })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d.ok) { authErr.textContent = 'wrong code'; return; }
+        localStorage.setItem('bc-admin-code', masterCode);
+        showPanel();
+      })
+      .catch(function () { authErr.textContent = 'network error'; });
   }
 
   loginBtn.addEventListener('click', doLogin);
   codeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
 
-  // ── Load themes ──
-  function loadThemes() {
-    setStatus('loading...');
-    fetch('/api/themes').then(function (r) { return r.json(); }).then(function (data) {
-      themes = data.themes || {};
-      // if DB is empty, seed from current CSS
-      if (!Object.keys(themes).length) {
-        themes = readThemesFromCSS();
-        setStatus('seeded from CSS — click save to persist');
-        dirty = true;
-      } else {
-        setStatus('loaded ' + Object.keys(themes).length + ' themes');
-      }
-      render();
-    }).catch(function (err) { setStatus('error: ' + err.message, true); });
+  // auto-login if saved
+  if (masterCode) {
+    fetch(API + '?action=verify', { headers: { 'X-Master-Code': masterCode } })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d.ok) showPanel(); })
+      .catch(function () {});
   }
 
-  // ── Read current themes from CSS (for initial seed) ──
-  function readThemesFromCSS() {
-    var result = {};
-    var sheets = document.styleSheets;
-    for (var s = 0; s < sheets.length; s++) {
-      try {
-        var rules = sheets[s].cssRules;
-        for (var r = 0; r < rules.length; r++) {
-          var rule = rules[r];
-          if (!rule.selectorText) continue;
-          var match = rule.selectorText.match(/\[data-theme="([^"]+)"\]/);
-          if (!match) continue;
-          var name = match[1];
-          result[name] = {};
-          for (var v = 0; v < VARS.length; v++) {
-            var val = rule.style.getPropertyValue('--' + VARS[v]).trim();
-            if (val) result[name][VARS[v]] = val;
-          }
+  function showPanel() {
+    document.getElementById('admin-auth').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    loadPresets();
+  }
+
+  // Logout
+  document.getElementById('adm-logout').addEventListener('click', function () {
+    localStorage.removeItem('bc-admin-code');
+    masterCode = '';
+    document.getElementById('admin-panel').style.display = 'none';
+    document.getElementById('admin-auth').style.display = 'flex';
+    codeInput.value = '';
+    authErr.textContent = '';
+  });
+
+  // ── Tabs ──
+  document.querySelectorAll('.adm-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.adm-tab').forEach(function (t) { t.classList.remove('active'); });
+      document.querySelectorAll('.adm-tab-content').forEach(function (c) { c.style.display = 'none'; });
+      tab.classList.add('active');
+      var target = document.getElementById('tab-' + tab.getAttribute('data-tab'));
+      if (target) target.style.display = 'block';
+      // lazy load
+      if (tab.getAttribute('data-tab') === 'guestbook') loadGuestbook();
+      if (tab.getAttribute('data-tab') === 'arcade') loadArcade();
+    });
+  });
+
+  // ══════════════════════════════════════════════════════════════
+  // PRESETS
+  // ══════════════════════════════════════════════════════════════
+  var THEMES = ['tokyo-night','gruvbox','dracula','rose-pine','github-light','papercolor-light','hacker'];
+  var SIMS = ['combo','life','boids'];
+
+  function loadPresets() {
+    document.getElementById('preset-status').textContent = 'loading...';
+    fetch(API + '?action=presets')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        presets = d.presets || {};
+        if (!Object.keys(presets).length) {
+          document.getElementById('preset-status').textContent = 'no presets in DB — click "seed from code" to import';
+        } else {
+          document.getElementById('preset-status').textContent = Object.keys(presets).length + ' presets';
         }
-      } catch (e) { /* cross-origin sheet */ }
-    }
-    return result;
+        renderPresets();
+      })
+      .catch(function (err) { document.getElementById('preset-status').textContent = 'error: ' + err.message; });
   }
 
-  // ── Status ──
-  function setStatus(msg, isErr) {
-    var el = document.getElementById('te-status');
-    el.textContent = msg;
-    el.className = isErr ? 'error' : (msg.indexOf('saved') >= 0 ? 'success' : '');
-    if (!isErr && msg.indexOf('saved') >= 0) {
-      setTimeout(function () { el.textContent = ''; el.className = ''; }, 3000);
-    }
-  }
-
-  // ── Parse color to hex (for color input) ──
-  function toHex(color) {
-    if (!color) return '#000000';
-    color = color.trim();
-    if (/^#[0-9a-f]{6}$/i.test(color)) return color;
-    if (/^#[0-9a-f]{3}$/i.test(color)) {
-      return '#' + color[1]+color[1] + color[2]+color[2] + color[3]+color[3];
-    }
-    // try rgba/rgb
-    var m = color.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
-    if (m) {
-      return '#' + [m[1],m[2],m[3]].map(function(x) {
-        return parseInt(x).toString(16).padStart(2,'0');
-      }).join('');
-    }
-    return '#000000';
-  }
-
-  // ── Render ──
-  function render() {
-    var list = document.getElementById('te-theme-list');
+  function renderPresets() {
+    var list = document.getElementById('preset-list');
     list.innerHTML = '';
-    var names = Object.keys(themes);
-    names.forEach(function (name) {
-      var vars = themes[name];
+    Object.keys(presets).forEach(function (name) {
+      var p = presets[name];
       var card = document.createElement('div');
-      card.className = 'te-theme';
+      card.className = 'adm-card';
 
-      // Bar
       var bar = document.createElement('div');
-      bar.className = 'te-theme-bar';
+      bar.className = 'adm-card-bar';
 
       var arrow = document.createElement('span');
-      arrow.className = 'te-theme-arrow';
+      arrow.className = 'adm-card-arrow';
       arrow.textContent = '\u25B6';
 
-      var nameEl = document.createElement('span');
-      nameEl.className = 'te-theme-name';
-      nameEl.textContent = name;
-
       var swatch = document.createElement('span');
-      swatch.className = 'te-theme-swatch';
-      swatch.style.background = vars.accent || '#888';
+      swatch.className = 'adm-preset-swatch';
+      // color from theme accent
+      var themeColors = {'tokyo-night':'#7aa2f7','gruvbox':'#d79921','dracula':'#bd93f9','rose-pine':'#b4637a','github-light':'#0969da','papercolor-light':'#005f87','hacker':'#00ff41'};
+      swatch.style.background = themeColors[p.theme] || 'var(--accent)';
+
+      var title = document.createElement('span');
+      title.className = 'adm-card-title';
+      title.textContent = name;
+
+      var meta = document.createElement('span');
+      meta.className = 'adm-card-meta';
+      meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : '') + (p.desc ? ' · ' + p.desc : '');
 
       var actions = document.createElement('span');
-      actions.className = 'te-theme-actions';
-
-      var dupBtn = document.createElement('button');
-      dupBtn.className = 'te-btn te-btn-sm';
-      dupBtn.textContent = 'duplicate';
-      dupBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var newName = name + '-copy';
-        var i = 2;
-        while (themes[newName]) { newName = name + '-copy-' + i; i++; }
-        themes[newName] = JSON.parse(JSON.stringify(vars));
-        dirty = true;
-        render();
-      });
-
+      actions.className = 'adm-card-actions';
       var delBtn = document.createElement('button');
-      delBtn.className = 'te-btn te-btn-sm te-btn-danger';
+      delBtn.className = 'adm-btn adm-btn-sm adm-btn-danger';
       delBtn.textContent = 'delete';
       delBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         if (!confirm('delete "' + name + '"?')) return;
-        delete themes[name];
-        dirty = true;
-        render();
+        delete presets[name];
+        renderPresets();
       });
-
-      actions.appendChild(dupBtn);
       actions.appendChild(delBtn);
 
       bar.appendChild(arrow);
       bar.appendChild(swatch);
-      bar.appendChild(nameEl);
+      bar.appendChild(title);
+      bar.appendChild(meta);
       bar.appendChild(actions);
-
-      bar.addEventListener('click', function () {
-        card.classList.toggle('expanded');
-      });
+      bar.addEventListener('click', function () { card.classList.toggle('expanded'); });
 
       // Body
       var body = document.createElement('div');
-      body.className = 'te-theme-body';
+      body.className = 'adm-card-body';
 
-      // Rename row
-      var renameRow = document.createElement('div');
-      renameRow.className = 'te-theme-rename';
-      var renameLabel = document.createElement('span');
-      renameLabel.textContent = 'name:';
-      renameLabel.style.cssText = 'font-size:0.85rem;color:var(--muted);';
-      var renameInput = document.createElement('input');
-      renameInput.type = 'text';
-      renameInput.value = name;
-      renameInput.addEventListener('change', function () {
-        var newName = renameInput.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
-        if (!newName || newName === name) { renameInput.value = name; return; }
-        if (themes[newName]) { renameInput.value = name; setStatus('name already exists', true); return; }
-        themes[newName] = themes[name];
-        delete themes[name];
-        dirty = true;
-        render();
-      });
-      renameRow.appendChild(renameLabel);
-      renameRow.appendChild(renameInput);
-      body.appendChild(renameRow);
+      // Top-level fields
+      var topGrid = document.createElement('div');
+      topGrid.className = 'adm-param-grid';
+      topGrid.style.marginBottom = '10px';
 
-      // Variable groups
-      Object.keys(VAR_GROUPS).forEach(function (group) {
-        var groupLabel = document.createElement('div');
-        groupLabel.style.cssText = 'font-size:0.8rem;color:var(--muted);margin:12px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;';
-        groupLabel.textContent = group;
-        body.appendChild(groupLabel);
+      // sim
+      var simParam = mkSelect('sim', p.sim, SIMS, function (v) { p.sim = v; meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : ''); });
+      topGrid.appendChild(simParam);
+      // theme
+      var themeParam = mkSelect('theme', p.theme || '', [''].concat(THEMES), function (v) { p.theme = v || undefined; swatch.style.background = themeColors[v] || 'var(--accent)'; meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : ''); });
+      topGrid.appendChild(themeParam);
+      // desc
+      topGrid.appendChild(mkText('desc', p.desc || '', function (v) { p.desc = v; }));
+      // lspeed, bspeed
+      topGrid.appendChild(mkNum('lspeed', p.lspeed, function (v) { p.lspeed = v; }));
+      topGrid.appendChild(mkNum('bspeed', p.bspeed, function (v) { p.bspeed = v; }));
+      body.appendChild(topGrid);
 
-        var grid = document.createElement('div');
-        grid.className = 'te-var-grid';
+      // Params
+      if (p.params) {
+        var paramLabel = document.createElement('div');
+        paramLabel.style.cssText = 'font-size:0.78rem;color:var(--muted);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;';
+        paramLabel.textContent = 'params';
+        body.appendChild(paramLabel);
 
-        VAR_GROUPS[group].forEach(function (v) {
-          var row = document.createElement('div');
-          row.className = 'te-var';
-
-          var label = document.createElement('span');
-          label.className = 'te-var-label';
-          label.textContent = '--' + v;
-
-          var colorInput = document.createElement('input');
-          colorInput.type = 'color';
-          colorInput.className = 'te-var-color';
-          colorInput.value = toHex(vars[v] || '');
-
-          var hexInput = document.createElement('input');
-          hexInput.type = 'text';
-          hexInput.className = 'te-var-hex';
-          hexInput.value = vars[v] || '';
-
-          colorInput.addEventListener('input', function () {
-            vars[v] = colorInput.value;
-            hexInput.value = colorInput.value;
-            swatch.style.background = vars.accent || '#888';
-            updatePreview(previewEl, vars);
-            dirty = true;
-          });
-
-          hexInput.addEventListener('change', function () {
-            var val = hexInput.value.trim();
-            vars[v] = val;
-            colorInput.value = toHex(val);
-            swatch.style.background = vars.accent || '#888';
-            updatePreview(previewEl, vars);
-            dirty = true;
-          });
-
-          row.appendChild(label);
-          row.appendChild(colorInput);
-          row.appendChild(hexInput);
-          grid.appendChild(row);
+        var paramGrid = document.createElement('div');
+        paramGrid.className = 'adm-param-grid';
+        Object.keys(p.params).forEach(function (key) {
+          paramGrid.appendChild(mkNum(key, p.params[key], function (v) { p.params[key] = v; }));
         });
+        body.appendChild(paramGrid);
+      }
 
-        body.appendChild(grid);
-      });
-
-      // Preview
-      var previewEl = document.createElement('div');
-      previewEl.className = 'te-preview';
-      updatePreview(previewEl, vars);
-      body.appendChild(previewEl);
-
-      // Apply to site button
+      // Apply button
       var applyBtn = document.createElement('button');
-      applyBtn.className = 'te-btn';
+      applyBtn.className = 'adm-btn adm-btn-sm';
       applyBtn.textContent = 'preview on site';
-      applyBtn.style.marginTop = '12px';
+      applyBtn.style.marginTop = '10px';
       applyBtn.addEventListener('click', function (e) {
         e.stopPropagation();
-        applyThemeToSite(name, vars);
-        setStatus('previewing "' + name + '" on site');
+        if (window.applyPreset && typeof window.applyPreset === 'function') {
+          // temporarily inject into PRESETS
+          window.applyPreset(name);
+        }
       });
       body.appendChild(applyBtn);
 
@@ -466,93 +353,240 @@
     });
   }
 
-  function updatePreview(el, vars) {
-    el.style.background = vars.bg || '#1a1b26';
-    el.style.borderLeft = '3px solid ' + (vars.accent || '#7aa2f7');
-    el.innerHTML =
-      '<span class="te-preview-text" style="color:' + (vars.fg || '#a9b1d6') + '">regular text</span>' +
-      '<span class="te-preview-muted" style="color:' + (vars.muted || '#565f89') + '">muted</span>' +
-      '<span class="te-preview-accent" style="color:' + (vars.accent || '#7aa2f7') + '">accent</span>' +
-      '<span class="te-preview-code" style="background:' + (vars['code-bg'] || '#13141f') + ';color:' + (vars['code-fn'] || '#7aa2f7') + '">fn()</span>' +
-      '<span class="te-preview-code" style="background:' + (vars['code-bg'] || '#13141f') + ';color:' + (vars['code-str'] || '#9ece6a') + '">"string"</span>' +
-      '<span class="te-preview-code" style="background:' + (vars['code-bg'] || '#13141f') + ';color:' + (vars['code-kw'] || '#bb9af7') + '">keyword</span>' +
-      '<span class="te-preview-code" style="background:' + (vars['code-bg'] || '#13141f') + ';color:' + (vars['code-err'] || '#f7768e') + '">error</span>';
-  }
-
-  function applyThemeToSite(name, vars) {
-    var styleId = 'te-live-preview';
-    var existing = document.getElementById(styleId);
-    if (existing) existing.remove();
-    var style = document.createElement('style');
-    style.id = styleId;
-    var css = ':root, [data-theme] {';
-    VARS.forEach(function (v) {
-      if (vars[v]) css += ' --' + v + ': ' + vars[v] + ';';
+  function mkNum(label, value, onChange) {
+    var el = document.createElement('div');
+    el.className = 'adm-param';
+    var lbl = document.createElement('label');
+    lbl.textContent = label;
+    var inp = document.createElement('input');
+    inp.type = 'number';
+    inp.step = 'any';
+    inp.value = value != null ? value : '';
+    inp.addEventListener('change', function () {
+      var v = inp.value === '' ? null : parseFloat(inp.value);
+      onChange(v);
     });
-    css += ' }';
-    style.textContent = css;
-    document.head.appendChild(style);
+    el.appendChild(lbl);
+    el.appendChild(inp);
+    return el;
   }
 
-  // ── Save ──
-  document.getElementById('te-save').addEventListener('click', function () {
-    setStatus('saving...');
-    fetch('/api/themes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Master-Code': masterCode },
-      body: JSON.stringify({ themes: themes })
-    }).then(function (r) { return r.json(); }).then(function (data) {
-      if (data.error) { setStatus('error: ' + data.error, true); return; }
-      dirty = false;
-      setStatus('saved ' + data.count + ' themes (v' + data.version + ')');
-      // clear client cache so next reload fetches fresh
-      localStorage.removeItem('bc-themes');
-      localStorage.removeItem('bc-themes-version');
-    }).catch(function (err) { setStatus('error: ' + err.message, true); });
-  });
+  function mkText(label, value, onChange) {
+    var el = document.createElement('div');
+    el.className = 'adm-param';
+    var lbl = document.createElement('label');
+    lbl.textContent = label;
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.value = value;
+    inp.style.width = '120px';
+    inp.addEventListener('change', function () { onChange(inp.value); });
+    el.appendChild(lbl);
+    el.appendChild(inp);
+    return el;
+  }
 
-  // ── Add new theme ──
-  document.getElementById('te-add').addEventListener('click', function () {
-    var name = prompt('theme name (lowercase, dashes):');
-    if (!name) return;
-    name = name.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
-    if (themes[name]) { setStatus('already exists', true); return; }
-    themes[name] = {
-      bg: '#1a1b26', fg: '#a9b1d6', muted: '#565f89', accent: '#7aa2f7',
-      border: '#292e42', shadow: 'rgba(0,0,0,0.55)',
-      'code-bg': '#13141f', 'code-fg': '#a9b1d6', 'code-kw': '#bb9af7',
-      'code-type': '#2ac3de', 'code-fn': '#7aa2f7', 'code-str': '#9ece6a',
-      'code-num': '#ff9e64', 'code-op': '#89ddff', 'code-cmt': '#565f89',
-      'code-err': '#f7768e', 'code-attr': '#73daca'
-    };
-    dirty = true;
-    render();
-  });
+  function mkSelect(label, value, options, onChange) {
+    var el = document.createElement('div');
+    el.className = 'adm-param';
+    var lbl = document.createElement('label');
+    lbl.textContent = label;
+    var sel = document.createElement('select');
+    options.forEach(function (o) {
+      var opt = document.createElement('option');
+      opt.value = o; opt.textContent = o || '(none)';
+      if (o === value) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', function () { onChange(sel.value); });
+    el.appendChild(lbl);
+    el.appendChild(sel);
+    return el;
+  }
 
-  // ── Import from CSS ──
-  document.getElementById('te-import-css').addEventListener('click', function () {
-    var cssThemes = readThemesFromCSS();
-    var count = 0;
-    Object.keys(cssThemes).forEach(function (name) {
-      if (!themes[name]) {
-        themes[name] = cssThemes[name];
-        count++;
-      } else {
-        // merge missing vars
-        Object.keys(cssThemes[name]).forEach(function (v) {
-          if (!themes[name][v]) themes[name][v] = cssThemes[name][v];
-        });
+  // Seed from code
+  document.getElementById('preset-seed').addEventListener('click', function () {
+    if (typeof window.getPresetNames !== 'function') {
+      document.getElementById('preset-status').textContent = 'bg-sim not loaded on this page';
+      return;
+    }
+    var names = window.getPresetNames();
+    names.forEach(function (n) {
+      if (!presets[n]) {
+        // read from the live PRESETS object
+        var p = window._getPresetData ? window._getPresetData(n) : null;
+        if (p) presets[n] = JSON.parse(JSON.stringify(p));
       }
     });
-    dirty = true;
-    render();
-    setStatus('imported ' + Object.keys(cssThemes).length + ' themes from CSS (' + count + ' new)');
+    renderPresets();
+    document.getElementById('preset-status').textContent = 'seeded ' + names.length + ' presets from code — click save';
   });
 
-  // ── Warn on unsaved changes ──
-  window.addEventListener('beforeunload', function (e) {
-    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+  // Save presets
+  document.getElementById('preset-save').addEventListener('click', function () {
+    document.getElementById('preset-status').textContent = 'saving...';
+    fetch(API, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ action: 'save-presets', presets: presets })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d.error) { document.getElementById('preset-status').textContent = 'error: ' + d.error; return; }
+      document.getElementById('preset-status').textContent = 'saved ' + d.count + ' presets';
+    }).catch(function (err) { document.getElementById('preset-status').textContent = 'error: ' + err.message; });
   });
+
+  // ══════════════════════════════════════════════════════════════
+  // GUESTBOOK
+  // ══════════════════════════════════════════════════════════════
+  var gbLoaded = false;
+  function loadGuestbook() {
+    if (gbLoaded) return;
+    gbLoaded = true;
+    document.getElementById('gb-status').textContent = 'loading...';
+    fetch(API + '?action=guestbook', { headers: headers() })
+      .then(function (r) { return r.json(); })
+      .then(function (entries) {
+        if (entries.error) { document.getElementById('gb-status').textContent = entries.error; return; }
+        document.getElementById('gb-status').textContent = entries.length + ' entries';
+        renderGuestbook(entries);
+      })
+      .catch(function (err) { document.getElementById('gb-status').textContent = 'error: ' + err.message; });
+  }
+
+  function renderGuestbook(entries) {
+    var list = document.getElementById('gb-list');
+    list.innerHTML = '';
+    if (!entries.length) { list.innerHTML = '<p style="color:var(--muted)">no entries</p>'; return; }
+    entries.forEach(function (e) {
+      var card = document.createElement('div');
+      card.className = 'adm-card';
+
+      var bar = document.createElement('div');
+      bar.className = 'adm-card-bar';
+
+      var title = document.createElement('span');
+      title.className = 'adm-card-title';
+      title.textContent = e.name || 'anonymous';
+
+      var meta = document.createElement('span');
+      meta.className = 'adm-card-meta';
+      meta.textContent = (e.context ? e.context + ' · ' : '') + (e.date || '');
+
+      var actions = document.createElement('span');
+      actions.className = 'adm-card-actions';
+      var delBtn = document.createElement('button');
+      delBtn.className = 'adm-btn adm-btn-sm adm-btn-danger';
+      delBtn.textContent = 'delete';
+      delBtn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (!confirm('delete entry by "' + (e.name || 'anonymous') + '"?')) return;
+        delBtn.textContent = '...';
+        fetch(API, {
+          method: 'POST',
+          headers: headers(),
+          body: JSON.stringify({ action: 'delete-guestbook', id: e.id })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d.ok) { card.remove(); }
+          else { delBtn.textContent = 'err'; }
+        }).catch(function () { delBtn.textContent = 'err'; });
+      });
+      actions.appendChild(delBtn);
+
+      bar.appendChild(title);
+      bar.appendChild(meta);
+      bar.appendChild(actions);
+
+      var msg = document.createElement('div');
+      msg.className = 'adm-gb-msg';
+      msg.textContent = e.message || '';
+
+      card.appendChild(bar);
+      card.appendChild(msg);
+      list.appendChild(card);
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // ARCADE
+  // ══════════════════════════════════════════════════════════════
+  var arcLoaded = false;
+  function loadArcade() {
+    if (arcLoaded) return;
+    arcLoaded = true;
+    document.getElementById('arc-status').textContent = 'loading...';
+    fetch(API + '?action=games', { headers: headers() })
+      .then(function (r) { return r.json(); })
+      .then(function (games) {
+        if (games.error) { document.getElementById('arc-status').textContent = games.error; return; }
+        document.getElementById('arc-status').textContent = games.length + ' games';
+        renderArcade(games);
+      })
+      .catch(function (err) { document.getElementById('arc-status').textContent = 'error: ' + err.message; });
+  }
+
+  function renderArcade(games) {
+    var list = document.getElementById('arc-list');
+    list.innerHTML = '';
+    if (!games.length) { list.innerHTML = '<p style="color:var(--muted)">no games</p>'; return; }
+    games.forEach(function (g) {
+      var card = document.createElement('div');
+      card.className = 'adm-card';
+
+      var bar = document.createElement('div');
+      bar.className = 'adm-card-bar';
+
+      var arrow = document.createElement('span');
+      arrow.className = 'adm-card-arrow';
+      arrow.textContent = '\u25B6';
+
+      var title = document.createElement('span');
+      title.className = 'adm-card-title';
+      title.textContent = g.title || g.id;
+
+      var meta = document.createElement('span');
+      meta.className = 'adm-card-meta';
+      meta.textContent = (g.author || 'anon') + ' · ' + (g.date || '');
+
+      var actions = document.createElement('span');
+      actions.className = 'adm-card-actions';
+      var delBtn = document.createElement('button');
+      delBtn.className = 'adm-btn adm-btn-sm adm-btn-danger';
+      delBtn.textContent = 'delete';
+      delBtn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (!confirm('delete "' + (g.title || g.id) + '"?')) return;
+        delBtn.textContent = '...';
+        fetch(API, {
+          method: 'POST',
+          headers: headers(),
+          body: JSON.stringify({ action: 'delete-game', id: g.id })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d.ok) { card.remove(); }
+          else { delBtn.textContent = 'err'; }
+        }).catch(function () { delBtn.textContent = 'err'; });
+      });
+      actions.appendChild(delBtn);
+
+      bar.appendChild(arrow);
+      bar.appendChild(title);
+      bar.appendChild(meta);
+      bar.appendChild(actions);
+      bar.addEventListener('click', function () { card.classList.toggle('expanded'); });
+
+      // Body with game details
+      var body = document.createElement('div');
+      body.className = 'adm-card-body';
+      body.innerHTML =
+        '<div class="adm-arc-desc">' + (g.desc || 'no description') + '</div>' +
+        '<div style="margin-top:8px;font-size:0.78rem;color:var(--muted);">' +
+        'id: ' + (g.id || '') + ' · lb: ' + (g.lbMode || 'none') + (g.locked ? ' · locked' : '') +
+        '</div>';
+
+      card.appendChild(bar);
+      card.appendChild(body);
+      list.appendChild(card);
+    });
+  }
 })();
 </script>
 {{ end }}

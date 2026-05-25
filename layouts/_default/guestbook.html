@@ -47,29 +47,6 @@
     white-space: pre-wrap; word-break: break-word;
   }
   .gb-entry-actions { display: flex; align-items: center; gap: 8px; }
-  .gb-del-btn {
-    background: none; border: none; color: var(--muted); font: inherit;
-    font-size: 0.7rem; cursor: pointer; padding: 0; opacity: 0.4;
-    transition: opacity 0.15s, color 0.15s;
-  }
-  .gb-del-btn:hover { opacity: 1; color: #f7768e; }
-
-  #gb-admin-toggle {
-    background: none; border: none; color: var(--muted); font: inherit;
-    font-size: 0.75rem; cursor: pointer; padding: 0; opacity: 0.25;
-    transition: opacity 0.15s;
-    display: none;
-    pointer-events: none;
-  }
-  #gb-admin-toggle.visible { display: inline; pointer-events: auto; }
-  #gb-admin-toggle:hover { opacity: 0.6; }
-  #gb-admin-bar { display: none; margin-bottom: 12px; }
-  #gb-admin-bar.open { display: block; }
-  #gb-admin-code {
-    background: var(--code-bg); border: 1px solid var(--border);
-    color: var(--fg); font: inherit; font-size: 0.82rem;
-    padding: 5px 8px; width: 180px; outline: none;
-  }
   .gb-count { color: var(--muted); font-size: 0.82rem; }
 </style>
 
@@ -104,10 +81,6 @@
 
 <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
   <span class="gb-count" id="gb-count"></span>
-  <button id="gb-admin-toggle">[mod]</button>
-</div>
-<div id="gb-admin-bar">
-  <input id="gb-admin-code" type="password" placeholder="master code" autocomplete="off">
 </div>
 
 <div id="gb-entries">
@@ -130,14 +103,9 @@
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  function getAdminCode() {
-    return (document.getElementById('gb-admin-code') || {}).value || '';
-  }
-
   function render(entries) {
     var el = document.getElementById('gb-entries');
     var countEl = document.getElementById('gb-count');
-    var admin = getAdminCode().length > 0;
 
     countEl.textContent = entries.length ? entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies') : '';
 
@@ -155,30 +123,11 @@
         + '</div>'
         + '<div class="gb-entry-actions">'
         + '<span class="gb-entry-date">' + fmt(e.date) + '</span>'
-        + (admin && e.id ? '<button class="gb-del-btn" data-id="' + esc(e.id) + '">del</button>' : '')
         + '</div>'
         + '</div>'
         + '<div class="gb-entry-msg">' + esc(e.message || '') + '</div>'
         + '</div>';
     }).join('');
-
-    if (admin) {
-      el.querySelectorAll('.gb-del-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var id = this.getAttribute('data-id');
-          if (!id) return;
-          this.textContent = '...';
-          fetch(API, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: id, code: getAdminCode() })
-          }).then(function(r) { return r.json(); }).then(function(d) {
-            if (d.ok) { _entries = _entries.filter(function(e) { return e.id !== id; }); render(_entries); }
-            else { btn.textContent = 'err'; }
-          }).catch(function() { btn.textContent = 'err'; });
-        });
-      });
-    }
   }
 
   function setStatus(msg, color) {
@@ -197,22 +146,6 @@
   }
 
   loadEntries();
-
-  // admin — only wire up if ?mod is present
-  var _modEnabled = new URLSearchParams(window.location.search).has('mod');
-  if (_modEnabled) {
-    document.getElementById('gb-admin-toggle').classList.add('visible');
-  }
-  if (_modEnabled) {
-    document.getElementById('gb-admin-toggle').addEventListener('click', function() {
-      var bar = document.getElementById('gb-admin-bar');
-      bar.classList.toggle('open');
-      if (bar.classList.contains('open')) document.getElementById('gb-admin-code').focus();
-    });
-    document.getElementById('gb-admin-code').addEventListener('input', function() {
-      if (_entries) render(_entries);
-    });
-  }
 
   // submit: first click opens name fields, second click sends
   var idFields = document.getElementById('gb-identity-fields');
