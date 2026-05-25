@@ -10,7 +10,7 @@
   </div>
   <div class="arc-intro-row">
     <span class="arc-intro-key">play</span>
-    <span class="arc-intro-val">press <kbd>[:]</kbd> to open the terminal → type <code>play &lt;id&gt;</code> or click a game and hit play</span>
+    <span class="arc-intro-val">press <kbd class="arc-kbd">[:]</kbd> to open the terminal → type <code class="arc-ic">play &lt;id&gt;</code> or click a game and hit play</span>
   </div>
   <div class="arc-intro-row">
     <span class="arc-intro-key">make</span>
@@ -22,24 +22,23 @@
   </div>
 </div>
 
-<hr>
-<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;">
-  <h2 style="margin:0;">games</h2>
-  <span id="arc-stat-line" style="color:var(--muted);font-size:0.82rem;"></span>
+<div class="arc-games-section">
+  <div class="arc-games-header">
+    <span class="arc-games-label">games</span>
+  </div>
+  <div id="arc-games"><div class="arc-loading-state">loading...</div></div>
 </div>
-<div id="arc-games"><p style="color:var(--muted)">loading...</p></div>
 
-<hr>
-<h2>write a game</h2>
-<p style="color:var(--muted);margin-bottom:16px;">syntax highlighting · run &amp; submit in one place · guided intro for beginners · no experience required</p>
-<button id="arc-write-btn" style="background:transparent;border:1px solid var(--accent);color:var(--accent);font:inherit;font-size:0.88rem;padding:8px 20px;cursor:pointer;transition:background 0.15s,color 0.15s;">open editor →</button>
+<div class="arc-cta-section">
+  <div class="arc-cta-title">write a game</div>
+  <div class="arc-cta-desc">syntax highlighting · run &amp; submit in one place · guided intro for beginners · no experience required</div>
+  <button id="arc-write-btn" class="arc-cta-btn">open editor →</button>
+</div>
 <script>
 document.getElementById('arc-write-btn').addEventListener('click', function() {
   var pref = localStorage.getItem('arcade_intro');
   window.location.href = (pref === 'expert' || pref === 'done') ? '/arcade/editor/' : '/arcade/tutorial/';
 });
-document.getElementById('arc-write-btn').addEventListener('mouseenter', function() { this.style.background = 'var(--accent)'; this.style.color = 'var(--bg)'; });
-document.getElementById('arc-write-btn').addEventListener('mouseleave', function() { this.style.background = 'transparent'; this.style.color = 'var(--accent)'; });
 </script>
 
 <script>
@@ -49,31 +48,29 @@ document.getElementById('arc-write-btn').addEventListener('mouseleave', function
 
   function lsGet() { try { var d = JSON.parse(localStorage.getItem(LS_KEY)); if (d && Date.now() - d.t < LS_TTL) return d.v; } catch(e) {} return null; }
   function lsSet(v) { try { localStorage.setItem(LS_KEY, JSON.stringify({t: Date.now(), v: v})); } catch(e) {} }
-  function lsBust() { try { localStorage.removeItem(LS_KEY); } catch(e) {} }
 
   function fmt(iso) { var d = new Date(iso); return d.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}); }
   function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-  var _gamesData = [];
-
   function render(games) {
-    _gamesData = games;
     var gamesEl = document.getElementById('arc-games');
-    var statEl  = document.getElementById('arc-stat-line');
-
-    if (statEl) statEl.textContent = games.length ? games.length + ' game' + (games.length !== 1 ? 's' : '') : '';
 
     if (!games.length) {
-      gamesEl.innerHTML = '<p style="color:var(--muted)">no games yet. submit one below.</p>';
+      gamesEl.innerHTML = '<p style="color:var(--muted);padding:20px 0">no games yet. submit one below.</p>';
       return;
     }
-    gamesEl.innerHTML = '<ul>' + games.map(function(g) {
-      return '<li style="margin-bottom:4px;">'
-        + '<a href="/arcade/game/?id=' + esc(g.id) + '">' + esc(g.title) + '</a>'
-        + '<span style="color:var(--muted);font-size:0.82rem;"> · by ' + esc(g.author) + ' · ' + fmt(g.date) + '</span>'
-        + (g.desc ? '<span style="color:var(--muted);font-size:0.82rem;"> · ' + esc(g.desc) + '</span>' : '')
-        + '</li>';
-    }).join('') + '</ul>';
+
+    gamesEl.innerHTML = games.map(function(g, i) {
+      return '<a class="arc-card' + (g.locked ? ' arc-card-draft' : '') + '" href="/arcade/game/?id=' + esc(g.id) + '" style="animation-delay:' + (i * 0.045) + 's">'
+        + '<span class="arc-card-num">' + String(i + 1).padStart(2, '0') + '</span>'
+        + '<div class="arc-card-body">'
+        + '<span class="arc-card-title">' + esc(g.title) + (g.locked ? ' <span class="arc-draft-badge">draft</span>' : '') + '</span>'
+        + '<span class="arc-card-meta">by ' + esc(g.author) + ' &middot; ' + fmt(g.date) + '</span>'
+        + (g.desc ? '<span class="arc-card-desc">' + esc(g.desc) + '</span>' : '')
+        + '</div>'
+        + '<span class="arc-card-play">' + (g.locked ? '🔒' : '▶ play') + '</span>'
+        + '</a>';
+    }).join('');
   }
 
   function fetchFresh(onDone) {
