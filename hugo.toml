@@ -12,7 +12,8 @@ title = "Byte Colony"
   lineNos = false
 
 [params]
-  tagline = "helly · belly · shmelly"
+  tagline = "a journey underground"
+  pitch   = "My adventure underground as I feed my interest in computers!"
   github  = "https://github.com/ekansh38"
   youtube = "https://www.youtube.com/@byte_colony"
   itchio  = "https://byte-colony.itch.io/"
