@@ -150,8 +150,6 @@
     '  sys    neofetch  top  ps  df  env  history  whoami',
     '  fun    cowsay  rm -rf /',
     '  arcade games  play  scores  source  delete',
-    '',
-    '  :     open   ·   esc   close   ·   tab   autocomplete',
   ].join('\n');
 
   var HELP_TOPICS = {
