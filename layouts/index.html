@@ -1,5 +1,7 @@
 {{ define "main" }}
 
+<div class="hero-pitch">{{ .Site.Params.pitch }}</div>
+
 <div class="bio">{{ .Content }}</div>
 
 {{ $projects := .Site.GetPage "/projects" }}
