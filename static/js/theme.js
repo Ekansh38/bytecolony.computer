@@ -34,8 +34,70 @@ function toggleTheme() {
   if (THEMES.indexOf(saved) < 0) saved = 'tokyo-night';
   applyTheme(saved);
 
+  // ── DB theme loader: fetch once, cache in localStorage ──
+  var THEME_VARS = ['bg','fg','muted','accent','border','shadow','code-bg','code-fg','code-kw','code-type','code-fn','code-str','code-num','code-op','code-cmt','code-err','code-attr'];
+
+  function injectDbThemes(themesObj) {
+    var id = 'db-themes';
+    var existing = document.getElementById(id);
+    if (existing) existing.remove();
+    var css = '';
+    Object.keys(themesObj).forEach(function (name) {
+      var vars = themesObj[name];
+      css += '[data-theme="' + name + '"] {';
+      THEME_VARS.forEach(function (v) {
+        if (vars[v]) css += ' --' + v + ': ' + vars[v] + ';';
+      });
+      css += ' }\n';
+    });
+    if (css) {
+      var style = document.createElement('style');
+      style.id = id;
+      style.textContent = css;
+      document.head.appendChild(style);
+    }
+    // update THEMES array with any new DB themes
+    Object.keys(themesObj).forEach(function (name) {
+      if (THEMES.indexOf(name) < 0) THEMES.push(name);
+    });
+  }
+
+  // apply cached themes immediately (no flicker)
+  var cached = localStorage.getItem('bc-themes');
+  if (cached) { try { injectDbThemes(JSON.parse(cached)); } catch (e) {} }
+
+  // fetch fresh on first visit or reload (non-blocking)
+  if (!cached || performance.navigation.type === 1) {
+    fetch('/api/themes').then(function (r) { return r.json(); }).then(function (data) {
+      if (data.themes) {
+        var cachedVer = parseInt(localStorage.getItem('bc-themes-version') || '0', 10);
+        if (data.version !== cachedVer || !cached) {
+          localStorage.setItem('bc-themes', JSON.stringify(data.themes));
+          localStorage.setItem('bc-themes-version', String(data.version));
+          injectDbThemes(data.themes);
+          // re-apply current theme to pick up changes
+          applyTheme(document.documentElement.getAttribute('data-theme'));
+        }
+      }
+    }).catch(function () { /* silent — CSS fallback works fine */ });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     applyTheme(document.documentElement.getAttribute('data-theme'));
+
+    // First-visit theme hint
+    if (!localStorage.getItem('theme-hint-seen')) {
+      setTimeout(function () {
+        var toast = document.getElementById('copy-toast');
+        if (!toast) return;
+        toast.textContent = 'try [theme] or [=] to customize';
+        toast.classList.add('show');
+        setTimeout(function () {
+          toast.classList.remove('show');
+          localStorage.setItem('theme-hint-seen', '1');
+        }, 4000);
+      }, 2000);
+    }
 
     // Desktop settings slide-in panel
     var dsOverlay = document.getElementById('ds-overlay');

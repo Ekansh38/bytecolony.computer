@@ -1,0 +1,558 @@
+{{ define "main" }}
+<div id="te-app">
+  <!-- Auth gate -->
+  <div id="te-auth">
+    <div class="te-auth-box">
+      <h2>theme editor</h2>
+      <p class="te-auth-hint">enter master code</p>
+      <div class="te-auth-row">
+        <input type="password" id="te-code" placeholder="master code" autocomplete="off">
+        <button id="te-login">enter</button>
+      </div>
+      <p id="te-auth-err"></p>
+    </div>
+  </div>
+
+  <!-- Editor (hidden until auth) -->
+  <div id="te-editor" style="display:none;">
+    <div class="te-header">
+      <h2>theme editor</h2>
+      <div class="te-header-actions">
+        <button id="te-add" class="te-btn">+ new theme</button>
+        <button id="te-save" class="te-btn te-btn-primary">save all</button>
+        <button id="te-import-css" class="te-btn">import from CSS</button>
+      </div>
+    </div>
+    <p id="te-status"></p>
+
+    <div id="te-theme-list"></div>
+  </div>
+</div>
+
+<style>
+  /* hide site header/footer on editor page */
+  header, footer { display: none !important; }
+  body { max-width: 1100px !important; }
+
+  #te-app { padding: 20px 0; }
+
+  /* ── Auth ── */
+  #te-auth {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 60vh;
+  }
+  .te-auth-box { text-align: center; }
+  .te-auth-box h2 { margin-bottom: 12px; color: var(--fg); }
+  .te-auth-hint { color: var(--muted); margin-bottom: 16px; font-size: 0.9rem; }
+  .te-auth-row { display: flex; gap: 8px; justify-content: center; }
+  .te-auth-row input {
+    background: var(--code-bg); border: 1px solid var(--border); color: var(--fg);
+    font-family: inherit; font-size: inherit; padding: 8px 14px; outline: none;
+    width: 240px;
+  }
+  .te-auth-row input:focus { border-color: var(--accent); }
+  #te-auth-err { color: var(--code-err); margin-top: 10px; font-size: 0.85rem; min-height: 1.2em; }
+
+  /* ── Buttons ── */
+  .te-btn {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    font-family: inherit; font-size: 0.88rem; padding: 6px 14px; cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .te-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .te-btn-primary { color: var(--accent); border-color: var(--accent); }
+  .te-btn-primary:hover { background: var(--accent); color: var(--bg); }
+  .te-btn-danger { color: var(--code-err); border-color: var(--code-err); }
+  .te-btn-danger:hover { background: var(--code-err); color: var(--bg); }
+  .te-btn-sm { font-size: 0.8rem; padding: 4px 10px; }
+
+  /* ── Header ── */
+  .te-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+  }
+  .te-header h2 { margin: 0; color: var(--fg); }
+  .te-header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  #te-status {
+    font-size: 0.85rem; min-height: 1.2em; margin-bottom: 16px;
+    color: var(--muted); transition: color 0.2s;
+  }
+  #te-status.success { color: var(--code-str); }
+  #te-status.error { color: var(--code-err); }
+
+  /* ── Theme cards ── */
+  #te-theme-list { display: flex; flex-direction: column; gap: 0; }
+
+  .te-theme {
+    border: 1px solid var(--border); padding: 20px; margin-bottom: -1px;
+    transition: border-color 0.15s;
+  }
+  .te-theme:first-child { border-radius: 4px 4px 0 0; }
+  .te-theme:last-child { border-radius: 0 0 4px 4px; }
+  .te-theme:only-child { border-radius: 4px; }
+  .te-theme.expanded { border-color: var(--accent); }
+
+  .te-theme-bar {
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    user-select: none;
+  }
+  .te-theme-arrow {
+    color: var(--muted); font-size: 0.8rem; transition: transform 0.2s;
+    width: 16px; text-align: center; flex-shrink: 0;
+  }
+  .te-theme.expanded .te-theme-arrow { transform: rotate(90deg); }
+
+  .te-theme-name {
+    font-weight: 700; font-size: 1rem; flex: 1;
+  }
+  .te-theme-swatch {
+    width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+  .te-theme-actions { display: flex; gap: 6px; }
+
+  /* ── Expanded body ── */
+  .te-theme-body { display: none; margin-top: 18px; }
+  .te-theme.expanded .te-theme-body { display: block; }
+
+  .te-theme-rename {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 16px;
+  }
+  .te-theme-rename input {
+    background: var(--code-bg); border: 1px solid var(--border); color: var(--fg);
+    font-family: inherit; font-size: 0.9rem; padding: 5px 10px; outline: none;
+    width: 200px;
+  }
+  .te-theme-rename input:focus { border-color: var(--accent); }
+
+  .te-var-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .te-var {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; border-radius: 3px;
+    background: var(--code-bg);
+  }
+  .te-var-label {
+    font-size: 0.8rem; color: var(--muted); flex: 1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .te-var-color {
+    width: 28px; height: 28px; border: 1px solid var(--border);
+    border-radius: 3px; cursor: pointer; padding: 0;
+    background: none; flex-shrink: 0;
+  }
+  .te-var-color::-webkit-color-swatch-wrapper { padding: 0; }
+  .te-var-color::-webkit-color-swatch { border: none; border-radius: 2px; }
+  .te-var-hex {
+    background: none; border: none; color: var(--fg);
+    font-family: inherit; font-size: 0.8rem; width: 75px;
+    outline: none; padding: 2px 0;
+  }
+  .te-var-hex:focus { color: var(--accent); }
+
+  /* ── Preview strip ── */
+  .te-preview {
+    margin-top: 16px; padding: 16px; border-radius: 4px;
+    display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+    transition: all 0.2s;
+  }
+  .te-preview-text { font-size: 0.9rem; }
+  .te-preview-muted { font-size: 0.82rem; }
+  .te-preview-accent { font-weight: 700; }
+  .te-preview-code {
+    font-size: 0.8rem; padding: 4px 8px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Light mode toggle ── */
+  .te-light-toggle {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+  }
+  .te-light-toggle label { font-size: 0.85rem; color: var(--muted); cursor: pointer; }
+  .te-light-toggle input { cursor: pointer; }
+
+  /* ── Duplicate overlay ── */
+  .te-duplicate-name {
+    display: flex; gap: 8px; align-items: center; margin-top: 10px;
+  }
+</style>
+
+<script>
+(function () {
+  var VARS = [
+    'bg','fg','muted','accent','border','shadow',
+    'code-bg','code-fg','code-kw','code-type','code-fn',
+    'code-str','code-num','code-op','code-cmt','code-err','code-attr'
+  ];
+
+  var VAR_GROUPS = {
+    'core': ['bg','fg','muted','accent','border','shadow'],
+    'code': ['code-bg','code-fg','code-kw','code-type','code-fn','code-str','code-num','code-op','code-cmt','code-err','code-attr']
+  };
+
+  var masterCode = '';
+  var themes = {};
+  var dirty = false;
+
+  // ── Auth ──
+  var codeInput = document.getElementById('te-code');
+  var loginBtn = document.getElementById('te-login');
+  var authErr = document.getElementById('te-auth-err');
+
+  function doLogin() {
+    masterCode = codeInput.value.trim();
+    if (!masterCode) { authErr.textContent = 'enter code'; return; }
+    authErr.textContent = 'checking...';
+    // verify by fetching — then try a no-op to confirm code works
+    fetch('/api/themes', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Code': masterCode },
+      body: JSON.stringify({ name: '__auth_check__', vars: {} })
+    }).then(function (r) {
+      if (r.status === 403) { authErr.textContent = 'wrong code'; return; }
+      // clean up test theme if created
+      fetch('/api/themes', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Code': masterCode },
+        body: JSON.stringify({ name: '__auth_check__' })
+      });
+      document.getElementById('te-auth').style.display = 'none';
+      document.getElementById('te-editor').style.display = 'block';
+      loadThemes();
+    }).catch(function () { authErr.textContent = 'network error'; });
+  }
+
+  loginBtn.addEventListener('click', doLogin);
+  codeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+
+  // ── Load themes ──
+  function loadThemes() {
+    setStatus('loading...');
+    fetch('/api/themes').then(function (r) { return r.json(); }).then(function (data) {
+      themes = data.themes || {};
+      // if DB is empty, seed from current CSS
+      if (!Object.keys(themes).length) {
+        themes = readThemesFromCSS();
+        setStatus('seeded from CSS — click save to persist');
+        dirty = true;
+      } else {
+        setStatus('loaded ' + Object.keys(themes).length + ' themes');
+      }
+      render();
+    }).catch(function (err) { setStatus('error: ' + err.message, true); });
+  }
+
+  // ── Read current themes from CSS (for initial seed) ──
+  function readThemesFromCSS() {
+    var result = {};
+    var sheets = document.styleSheets;
+    for (var s = 0; s < sheets.length; s++) {
+      try {
+        var rules = sheets[s].cssRules;
+        for (var r = 0; r < rules.length; r++) {
+          var rule = rules[r];
+          if (!rule.selectorText) continue;
+          var match = rule.selectorText.match(/\[data-theme="([^"]+)"\]/);
+          if (!match) continue;
+          var name = match[1];
+          result[name] = {};
+          for (var v = 0; v < VARS.length; v++) {
+            var val = rule.style.getPropertyValue('--' + VARS[v]).trim();
+            if (val) result[name][VARS[v]] = val;
+          }
+        }
+      } catch (e) { /* cross-origin sheet */ }
+    }
+    return result;
+  }
+
+  // ── Status ──
+  function setStatus(msg, isErr) {
+    var el = document.getElementById('te-status');
+    el.textContent = msg;
+    el.className = isErr ? 'error' : (msg.indexOf('saved') >= 0 ? 'success' : '');
+    if (!isErr && msg.indexOf('saved') >= 0) {
+      setTimeout(function () { el.textContent = ''; el.className = ''; }, 3000);
+    }
+  }
+
+  // ── Parse color to hex (for color input) ──
+  function toHex(color) {
+    if (!color) return '#000000';
+    color = color.trim();
+    if (/^#[0-9a-f]{6}$/i.test(color)) return color;
+    if (/^#[0-9a-f]{3}$/i.test(color)) {
+      return '#' + color[1]+color[1] + color[2]+color[2] + color[3]+color[3];
+    }
+    // try rgba/rgb
+    var m = color.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if (m) {
+      return '#' + [m[1],m[2],m[3]].map(function(x) {
+        return parseInt(x).toString(16).padStart(2,'0');
+      }).join('');
+    }
+    return '#000000';
+  }
+
+  // ── Render ──
+  function render() {
+    var list = document.getElementById('te-theme-list');
+    list.innerHTML = '';
+    var names = Object.keys(themes);
+    names.forEach(function (name) {
+      var vars = themes[name];
+      var card = document.createElement('div');
+      card.className = 'te-theme';
+
+      // Bar
+      var bar = document.createElement('div');
+      bar.className = 'te-theme-bar';
+
+      var arrow = document.createElement('span');
+      arrow.className = 'te-theme-arrow';
+      arrow.textContent = '\u25B6';
+
+      var nameEl = document.createElement('span');
+      nameEl.className = 'te-theme-name';
+      nameEl.textContent = name;
+
+      var swatch = document.createElement('span');
+      swatch.className = 'te-theme-swatch';
+      swatch.style.background = vars.accent || '#888';
+
+      var actions = document.createElement('span');
+      actions.className = 'te-theme-actions';
+
+      var dupBtn = document.createElement('button');
+      dupBtn.className = 'te-btn te-btn-sm';
+      dupBtn.textContent = 'duplicate';
+      dupBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var newName = name + '-copy';
+        var i = 2;
+        while (themes[newName]) { newName = name + '-copy-' + i; i++; }
+        themes[newName] = JSON.parse(JSON.stringify(vars));
+        dirty = true;
+        render();
+      });
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'te-btn te-btn-sm te-btn-danger';
+      delBtn.textContent = 'delete';
+      delBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!confirm('delete "' + name + '"?')) return;
+        delete themes[name];
+        dirty = true;
+        render();
+      });
+
+      actions.appendChild(dupBtn);
+      actions.appendChild(delBtn);
+
+      bar.appendChild(arrow);
+      bar.appendChild(swatch);
+      bar.appendChild(nameEl);
+      bar.appendChild(actions);
+
+      bar.addEventListener('click', function () {
+        card.classList.toggle('expanded');
+      });
+
+      // Body
+      var body = document.createElement('div');
+      body.className = 'te-theme-body';
+
+      // Rename row
+      var renameRow = document.createElement('div');
+      renameRow.className = 'te-theme-rename';
+      var renameLabel = document.createElement('span');
+      renameLabel.textContent = 'name:';
+      renameLabel.style.cssText = 'font-size:0.85rem;color:var(--muted);';
+      var renameInput = document.createElement('input');
+      renameInput.type = 'text';
+      renameInput.value = name;
+      renameInput.addEventListener('change', function () {
+        var newName = renameInput.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
+        if (!newName || newName === name) { renameInput.value = name; return; }
+        if (themes[newName]) { renameInput.value = name; setStatus('name already exists', true); return; }
+        themes[newName] = themes[name];
+        delete themes[name];
+        dirty = true;
+        render();
+      });
+      renameRow.appendChild(renameLabel);
+      renameRow.appendChild(renameInput);
+      body.appendChild(renameRow);
+
+      // Variable groups
+      Object.keys(VAR_GROUPS).forEach(function (group) {
+        var groupLabel = document.createElement('div');
+        groupLabel.style.cssText = 'font-size:0.8rem;color:var(--muted);margin:12px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;';
+        groupLabel.textContent = group;
+        body.appendChild(groupLabel);
+
+        var grid = document.createElement('div');
+        grid.className = 'te-var-grid';
+
+        VAR_GROUPS[group].forEach(function (v) {
+          var row = document.createElement('div');
+          row.className = 'te-var';
+
+          var label = document.createElement('span');
+          label.className = 'te-var-label';
+          label.textContent = '--' + v;
+
+          var colorInput = document.createElement('input');
+          colorInput.type = 'color';
+          colorInput.className = 'te-var-color';
+          colorInput.value = toHex(vars[v] || '');
+
+          var hexInput = document.createElement('input');
+          hexInput.type = 'text';
+          hexInput.className = 'te-var-hex';
+          hexInput.value = vars[v] || '';
+
+          colorInput.addEventListener('input', function () {
+            vars[v] = colorInput.value;
+            hexInput.value = colorInput.value;
+            swatch.style.background = vars.accent || '#888';
+            updatePreview(previewEl, vars);
+            dirty = true;
+          });
+
+          hexInput.addEventListener('change', function () {
+            var val = hexInput.value.trim();
+            vars[v] = val;
+            colorInput.value = toHex(val);
+            swatch.style.background = vars.accent || '#888';
+            updatePreview(previewEl, vars);
+            dirty = true;
+          });
+
+          row.appendChild(label);
+          row.appendChild(colorInput);
+          row.appendChild(hexInput);
+          grid.appendChild(row);
+        });
+
+        body.appendChild(grid);
+      });
+
+      // Preview
+      var previewEl = document.createElement('div');
+      previewEl.className = 'te-preview';
+      updatePreview(previewEl, vars);
+      body.appendChild(previewEl);
+
+      // Apply to site button
+      var applyBtn = document.createElement('button');
+      applyBtn.className = 'te-btn';
+      applyBtn.textContent = 'preview on site';
+      applyBtn.style.marginTop = '12px';
+      applyBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        applyThemeToSite(name, vars);
+        setStatus('previewing "' + name + '" on site');
+      });
+      body.appendChild(applyBtn);
+
+      card.appendChild(bar);
+      card.appendChild(body);
+      list.appendChild(card);
+    });
+  }
+
+  function updatePreview(el, vars) {
+    el.style.background = vars.bg || '#1a1b26';
+    el.style.borderLeft = '3px solid ' + (vars.accent || '#7aa2f7');
+    el.innerHTML =
+      '<span class="te-preview-text" style="color:' + (vars.fg || '#a9b1d6') + '">regular text</span>' +
+      '<span class="te-preview-muted" style="color:' + (vars.muted || '#565f89') + '">muted</span>' +
+      '<span class="te-preview-accent" style="color:' + (vars.accent || '#7aa2f7') + '">accent</span>' +
+      '<span class="te-preview-code" style="background:' + (vars['code-bg'] || '#13141f') + ';color:' + (vars['code-fn'] || '#7aa2f7') + '">fn()</span>' +
+      '<span class="te-preview-code" style="background:' + (vars['code-bg'] || '#13141f') + ';color:' + (vars['code-str'] || '#9ece6a') + '">"string"</span>' +
+      '<span class="te-preview-code" style="background:' + (vars['code-bg'] || '#13141f') + ';color:' + (vars['code-kw'] || '#bb9af7') + '">keyword</span>' +
+      '<span class="te-preview-code" style="background:' + (vars['code-bg'] || '#13141f') + ';color:' + (vars['code-err'] || '#f7768e') + '">error</span>';
+  }
+
+  function applyThemeToSite(name, vars) {
+    var styleId = 'te-live-preview';
+    var existing = document.getElementById(styleId);
+    if (existing) existing.remove();
+    var style = document.createElement('style');
+    style.id = styleId;
+    var css = ':root, [data-theme] {';
+    VARS.forEach(function (v) {
+      if (vars[v]) css += ' --' + v + ': ' + vars[v] + ';';
+    });
+    css += ' }';
+    style.textContent = css;
+    document.head.appendChild(style);
+  }
+
+  // ── Save ──
+  document.getElementById('te-save').addEventListener('click', function () {
+    setStatus('saving...');
+    fetch('/api/themes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Code': masterCode },
+      body: JSON.stringify({ themes: themes })
+    }).then(function (r) { return r.json(); }).then(function (data) {
+      if (data.error) { setStatus('error: ' + data.error, true); return; }
+      dirty = false;
+      setStatus('saved ' + data.count + ' themes (v' + data.version + ')');
+      // clear client cache so next reload fetches fresh
+      localStorage.removeItem('bc-themes');
+      localStorage.removeItem('bc-themes-version');
+    }).catch(function (err) { setStatus('error: ' + err.message, true); });
+  });
+
+  // ── Add new theme ──
+  document.getElementById('te-add').addEventListener('click', function () {
+    var name = prompt('theme name (lowercase, dashes):');
+    if (!name) return;
+    name = name.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    if (themes[name]) { setStatus('already exists', true); return; }
+    themes[name] = {
+      bg: '#1a1b26', fg: '#a9b1d6', muted: '#565f89', accent: '#7aa2f7',
+      border: '#292e42', shadow: 'rgba(0,0,0,0.55)',
+      'code-bg': '#13141f', 'code-fg': '#a9b1d6', 'code-kw': '#bb9af7',
+      'code-type': '#2ac3de', 'code-fn': '#7aa2f7', 'code-str': '#9ece6a',
+      'code-num': '#ff9e64', 'code-op': '#89ddff', 'code-cmt': '#565f89',
+      'code-err': '#f7768e', 'code-attr': '#73daca'
+    };
+    dirty = true;
+    render();
+  });
+
+  // ── Import from CSS ──
+  document.getElementById('te-import-css').addEventListener('click', function () {
+    var cssThemes = readThemesFromCSS();
+    var count = 0;
+    Object.keys(cssThemes).forEach(function (name) {
+      if (!themes[name]) {
+        themes[name] = cssThemes[name];
+        count++;
+      } else {
+        // merge missing vars
+        Object.keys(cssThemes[name]).forEach(function (v) {
+          if (!themes[name][v]) themes[name][v] = cssThemes[name][v];
+        });
+      }
+    });
+    dirty = true;
+    render();
+    setStatus('imported ' + Object.keys(cssThemes).length + ' themes from CSS (' + count + ' new)');
+  });
+
+  // ── Warn on unsaved changes ──
+  window.addEventListener('beforeunload', function (e) {
+    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+  });
+})();
+</script>
+{{ end }}
