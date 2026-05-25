@@ -140,7 +140,7 @@ body.page :not(pre) > code {
 @media (max-width: 1000px) { #read-progress { display: none; } }
 
 h1 { font-size: 1.6rem; font-weight: 700; }
-h2 { color: var(--muted); margin: 56px 0 16px; font-size: 1.3rem; font-weight: 700; }
+h2 { color: var(--muted); margin: 40px 0 16px; font-size: 1.3rem; font-weight: 700; }
 
 .now-link { color: var(--muted); }
 .now-link:hover { color: var(--accent); text-decoration: none; }
@@ -200,10 +200,10 @@ body.projects li, body.home li { padding: 14px 0; }
 .toggle:active { transform: scale(0.92); }
 .header-controls { display: flex; gap: 10px; align-items: center; }
 
-.writing-li { display: flex; justify-content: space-between; gap: 8px; }
+.writing-li { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
 .writing-li a { color: var(--fg); }
-.writing-project { color: var(--accent) !important; font-size: 0.85em; opacity: 0.7; }
-.writing-project:hover { opacity: 1; }
+.writing-project { display: inline-block; color: var(--muted) !important; font-size: 0.75rem; letter-spacing: 0.03em; margin-top: 2px; }
+.writing-project:hover { color: var(--accent) !important; }
 
 .article-nav { display: flex; justify-content: space-between; margin-top: 40px; }
 .article-nav-next { margin-left: auto; }

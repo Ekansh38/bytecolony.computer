@@ -2,14 +2,23 @@
 
 <a href="{{ .Parent.Permalink }}" class="back">← {{ strings.ToLower .Parent.Title }}</a>
 
+{{ with .Params.project }}
+<div style="margin-bottom:16px;"><a href="/projects/{{ . }}/" class="writing-project" style="font-size:0.85rem;">↳ {{ . }}</a></div>
+{{ end }}
+
 <div class="project-title">{{ .Title }}</div>
-<div class="project-meta">{{ .Date.Format "2006-01-02" }}{{ with .Params.status }} · {{ . }}{{ end }}</div>
+<div class="project-meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.status }} · {{ . }}{{ end }}</div>
 
 {{ .Content }}
 
 <div class="article-nav">
   {{ with .NextInSection }}<a href="{{ .Permalink }}" class="article-nav-prev">← {{ .Title }}</a>{{ end }}
   {{ with .PrevInSection }}<a href="{{ .Permalink }}" class="article-nav-next">{{ .Title }} →</a>{{ end }}
+</div>
+
+<div class="post-signoff">
+  {{ partial "ant.html" (dict "w" "18" "h" "13") }}
+  <span>{{ .Date.Format "January 2, 2006" }}</span>
 </div>
 
 {{ end }}

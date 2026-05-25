@@ -5,6 +5,7 @@
 <div class="bio">{{ .Content }}</div>
 
 {{ $projects := .Site.GetPage "/projects" }}
+<hr>
 <h2><a href="/projects" class="now-link">projects</a></h2>
 <ul>
   {{ range $projects.Sections }}{{ if not .Params.shipped }}
@@ -15,6 +16,7 @@
   {{ end }}{{ end }}
 </ul>
 
+<hr>
 <h2>client work</h2>
 <ul>
   <li>
@@ -36,6 +38,7 @@
 </ul>
 
 {{/* EXPERIENCE SECTION — commented out, re-enable when ready
+<hr>
 <h2><a href="/experience" class="now-link">experience</a></h2>
 <ul>
   {{ range $experience.RegularPages }}
@@ -49,6 +52,7 @@
 */}}
 
 {{ $music := .Site.GetPage "/music" }}
+<hr>
 <h2><a href="/music" class="now-link">music</a></h2>
 <ul>
   {{ range $music.RegularPages }}
@@ -60,6 +64,7 @@
 </ul>
 
 {{ $games := .Site.GetPage "/games" }}
+<hr>
 <h2><a href="/games" class="now-link">games</a></h2>
 <ul>
   {{ range $games.RegularPages }}
@@ -71,6 +76,7 @@
 </ul>
 
 {{ $tools := .Site.GetPage "/tools" }}
+<hr>
 <h2><a href="/tools" class="now-link">tools</a></h2>
 <ul>
   {{ range $tools.RegularPages }}
@@ -81,6 +87,7 @@
   {{ end }}
 </ul>
 
+<hr>
 <h2><a href="/writing" class="now-link">writing</a></h2>
 {{ $writing := .Site.GetPage "/writing" }}
 {{ $projectArticles := slice }}
@@ -95,8 +102,8 @@
   {{ range $allPosts.ByDate.Reverse }}
   <li class="writing-li">
     <div>
-      {{ with .Params.project }}<a href="/projects/{{ . }}/" class="writing-project">{{ . }}</a> / {{ end }}
       <a href="{{ .Permalink }}">{{ .Title }}</a>
+      {{ with .Params.project }}<br><a href="/projects/{{ . }}/" class="writing-project">↳ {{ . }}</a>{{ end }}
     </div>
     <span class="yr">{{ .Date.Format "2006" }}</span>
   </li>
@@ -106,6 +113,7 @@
 <p style="color: var(--muted)">nothing yet</p>
 {{ end }}
 
+<hr>
 <h2>get in touch</h2>
 <p class="contact-blurb">whether it's a project, a question, or just to say hi:</p>
 <a href="#" class="copy-email contact-email" data-email="{{ .Site.Params.email }}">{{ .Site.Params.email }}<span class="email-expand"> · click to copy</span></a>
