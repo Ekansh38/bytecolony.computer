@@ -91,10 +91,3 @@ function toggleTheme() {
   });
 })();
 
-// ================================================================
-// BG EFFECT — switchable background simulation
-// Modes: life → boids → off
-// Click the mode button or press 'b' to cycle modes.
-// To remove: delete this section, the BG EFFECT block in style.css,
-//            <canvas id="bg-canvas"> and #bg-mode-btn from templates.
-// ================================================================

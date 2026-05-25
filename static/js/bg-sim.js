@@ -1,6 +1,3 @@
-// Click the mode button or press 'b' to cycle modes.
-// To remove: delete this section, the BG EFFECT block in style.css,
-//            <canvas id="bg-canvas"> and #bg-mode-btn from templates.
 // ================================================================
 (function () {
   // Reduced sim on touch-only devices (phones/tablets)
@@ -1313,6 +1310,3 @@
   };
   window.getActivePreset = function () { return activePreset; };
 })();
-// ================================================================
-// END BG EFFECT
-// ================================================================

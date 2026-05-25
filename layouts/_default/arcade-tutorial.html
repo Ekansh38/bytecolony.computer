@@ -1124,7 +1124,7 @@
         <span class="tut-str-block tut-str-lit" data-alts='"."|"!"|"!!"|", legend."'>"."</span>
       </div>
       <div style="font-size:0.72rem;color:var(--muted);margin-bottom:8px">result:</div>
-      <div class="tut-str-preview" id="tut-str-preview">brave soul <span style="color:var(--accent)">ekansh</span>.</div>
+      <div class="tut-str-preview" id="tut-str-preview">brave soul <span style="color:var(--accent)">player</span>.</div>
       <div class="tut-code-hl" style="margin-top:16px"><span class="lh-builtin">print</span>(<span class="lh-str">"brave soul "</span> <span class="lh-op">..</span> name <span class="lh-op">..</span> <span class="lh-str">"."</span>)</div>
       <div class="tut-success-msg tut-visible" id="tut-s3-success">three pieces joined into one string.</div>
       <button class="tut-btn" id="tut-s3-next" style="margin-top:12px">continue &#8594;</button>
@@ -1494,7 +1494,7 @@ greet("player")</textarea>
           <div class="tut-api-col">
             <div class="tut-api-name">io.read("prompt")</div>
             <div class="tut-api-desc">shows the prompt inline in the terminal, waits for Enter. returns the typed text as a string. use for names, answers, commands.</div>
-            <div class="tut-api-demo-out" id="eapi-io-out">name: <span style="color:var(--accent)">ekansh</span><br>hello, ekansh!</div>
+            <div class="tut-api-demo-out" id="eapi-io-out">name: <span style="color:var(--accent)">player</span><br>hello, player!</div>
           </div>
         </div>
         <div class="tut-api-row" data-eapi="getkey">
@@ -1534,7 +1534,7 @@ greet("player")</textarea>
           <div class="tut-api-col">
             <div class="tut-api-name">net.rank(name, score) / net.get/set</div>
             <div class="tut-api-desc">persistent leaderboard + key-value storage, scoped to your game. net.top(n) gets top entries.</div>
-            <div class="tut-api-demo-out" id="eapi-net-out">1. ekansh  99<br>2. guest   42</div>
+            <div class="tut-api-demo-out" id="eapi-net-out">1. player  99<br>2. guest   42</div>
           </div>
         </div>
       </div>
@@ -2067,7 +2067,7 @@ greet("player")</textarea>
   var varsInpRow = document.getElementById('tut-vars-inp-row');
   var varsInspector = document.getElementById('tut-vars-inspector');
   var varsDone = false;
-  var varsPlayerName = 'ekansh'; // default for string builder
+  var varsPlayerName = 'player'; // default for string builder
   varsInp.addEventListener('keydown', function(e) {
     if (e.key !== 'Enter') return;
     var val = this.value.trim() || 'stranger';
@@ -2454,9 +2454,9 @@ greet("player")</textarea>
         // typewriter simulation (no real input to avoid overflow)
         demoEl.innerHTML = 'your name: <span style="color:var(--muted)">typing...</span>';
         setTimeout(function() {
-          demoEl.innerHTML = 'your name: <span style="color:var(--accent);font-weight:700">ekansh</span>';
+          demoEl.innerHTML = 'your name: <span style="color:var(--accent);font-weight:700">player</span>';
           setTimeout(function() {
-            demoEl.innerHTML = 'hello, <span style="color:var(--accent);font-weight:700">ekansh</span>!';
+            demoEl.innerHTML = 'hello, <span style="color:var(--accent);font-weight:700">player</span>!';
             setTimeout(function() { demoEl.textContent = orig; demoLocked = false; }, 1200);
           }, 600);
         }, 800);
@@ -2814,7 +2814,7 @@ greet("player")</textarea>
         playWinSound();
       } else if (api==='net') {
         outEl = document.getElementById('eapi-net-out');
-        outEl.innerHTML = '1. ekansh  <span style="color:var(--accent)">99</span>\n2. guest   <span style="color:var(--accent)">42</span>';
+        outEl.innerHTML = '1. player  <span style="color:var(--accent)">99</span>\n2. guest   <span style="color:var(--accent)">42</span>';
       }
       if (outEl) outEl.classList.add('show');
     });
