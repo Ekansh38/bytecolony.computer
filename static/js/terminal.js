@@ -85,24 +85,6 @@
     line(['', 'community arcade'].concat(rows).concat(['', 'play <id> to start  \u00b7  /arcade to submit']).join('\n'), 'term-line-pre');
   }
 
-  var QUOTES = [
-    '"the best code is no code at all."  (jeff atwood)',
-    '"walking on water and developing software from a spec are easy if both are frozen."  (e.v. berard)',
-    '"first, solve the problem. then, write the code."  (john johnson)',
-    '"make it work, make it right, make it fast."  (kent beck)',
-    '"any fool can write code a computer understands. good programmers write code humans understand."  (fowler)',
-    '"debugging is twice as hard as writing the code in the first place."  (brian kernighan)',
-    '"the most dangerous phrase: \'we\'ve always done it this way\'."  (grace hopper)',
-    '"talk is cheap. show me the code."  (linus torvalds)',
-    '"programs must be written for people to read, and only incidentally for machines to execute."  (abelson)',
-    '"simplicity is the soul of efficiency."  (austin freeman)',
-    '"it works on my machine."  (every developer)',
-    '"weeks of coding can save you hours of planning."  (unknown)',
-    '"a language that doesn\'t affect the way you think about programming is not worth knowing."  (alan perlis)',
-    '"the computer was born to solve problems that did not exist before."  (bill gates)',
-    '"software is like entropy: it is difficult to grasp, weighs nothing, and obeys the second law of thermodynamics."  (norman augustine)',
-  ];
-
   // ── filesystem — populated by Hugo via baseof.html ─────────────────────────
   var FS = (typeof TERMINAL_DATA !== 'undefined') ? TERMINAL_DATA : { '': { type: 'dir' } };
   var cwd = '';

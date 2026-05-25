@@ -15,33 +15,40 @@
 
   // one canvas per cell for simplicity
   var canvases = [];
+  var contexts = [];
   for (var i = 0; i < CELLS; i++) {
     var c = document.createElement('canvas');
     c.width  = CELL_SIZE;
     c.height = CELL_SIZE;
     container.appendChild(c);
     canvases.push(c);
+    contexts.push(c.getContext('2d'));
   }
   document.body.appendChild(container);
 
-  function getCSSVar(name) {
-    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  var _cachedAccent = '';
+  var _cachedBorder = '';
+  var _lastFilled   = -1;
+
+  function refreshColors() {
+    var s = getComputedStyle(document.documentElement);
+    _cachedAccent = s.getPropertyValue('--accent').trim();
+    _cachedBorder = s.getPropertyValue('--border').trim();
   }
+  refreshColors();
 
   function draw(progress) {
-    // progress 0..1
     var filled = Math.round(progress * CELLS);
-    var accent = getCSSVar('--accent');
-    var border = getCSSVar('--border');
+    if (filled === _lastFilled) return;
+    _lastFilled = filled;
     for (var i = 0; i < CELLS; i++) {
-      var ctx = canvases[i].getContext('2d');
+      var ctx = contexts[i];
       ctx.clearRect(0, 0, CELL_SIZE, CELL_SIZE);
       if (i < filled) {
-        ctx.fillStyle = accent;
+        ctx.fillStyle = _cachedAccent;
         ctx.fillRect(0, 0, CELL_SIZE, CELL_SIZE);
       } else {
-        // empty cell: just a 1px border square
-        ctx.strokeStyle = border;
+        ctx.strokeStyle = _cachedBorder;
         ctx.lineWidth = 1;
         ctx.strokeRect(0.5, 0.5, CELL_SIZE - 1, CELL_SIZE - 1);
       }
@@ -62,8 +69,6 @@
   window.addEventListener('scroll', function () { draw(getProgress()); }, { passive: true });
 
   // redraw on theme change
-  var obs = new MutationObserver(function () { draw(getProgress()); });
+  var obs = new MutationObserver(function () { refreshColors(); _lastFilled = -1; draw(getProgress()); });
   obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 })();
-
-

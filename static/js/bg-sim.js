@@ -217,17 +217,21 @@
     _mouseTimer = setTimeout(function() { _mouseActive = false; }, 500);
   });
 
-  function isHome() { return window.location.pathname === '/'; }
-
   var _accentRgb = null;
+  var _accentCache = {};
   function accentRgba(alpha) {
     if (!_accentRgb) {
       var hex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
       _accentRgb = [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)];
+      _accentCache = {};
     }
-    return 'rgba('+_accentRgb[0]+','+_accentRgb[1]+','+_accentRgb[2]+','+alpha+')';
+    var key = alpha;
+    if (_accentCache[key]) return _accentCache[key];
+    var s = 'rgba('+_accentRgb[0]+','+_accentRgb[1]+','+_accentRgb[2]+','+alpha+')';
+    _accentCache[key] = s;
+    return s;
   }
-  window._invalidateAccentCache = function () { _accentRgb = null; };
+  window._invalidateAccentCache = function () { _accentRgb = null; _accentCache = {}; };
 
   function drawBoids(noClear) {
     if (!noClear) ctx.clearRect(0, 0, W, H);
