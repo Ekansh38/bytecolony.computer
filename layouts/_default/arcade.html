@@ -1,18 +1,8 @@
 {{ define "main" }}
-<style>
-  body { max-width: min(960px, 92vw) !important; }
-</style>
 
-<div class="arc-bg-dots" aria-hidden="true"></div>
+<div class="project-title">arcade</div>
+<p style="color:var(--muted);margin-bottom:24px;">visitor-submitted lua games · runs in the terminal</p>
 
-<!-- ── HERO ── -->
-<div class="arc-hero">
-  <h1 class="arc-title-big">arcade</h1>
-  <p class="arc-banner-tagline">visitor-submitted lua games · runs in the terminal</p>
-  <div class="arc-stat-line" id="arc-stat-line"></div>
-</div>
-
-<!-- ── INFO TABLE ── -->
 <div class="arc-intro">
   <div class="arc-intro-row">
     <span class="arc-intro-key">what</span>
@@ -20,7 +10,7 @@
   </div>
   <div class="arc-intro-row">
     <span class="arc-intro-key">play</span>
-    <span class="arc-intro-val">press <kbd class="arc-kbd">[:]</kbd> to open the terminal → type <code class="arc-ic">play &lt;id&gt;</code> or click a game and hit play</span>
+    <span class="arc-intro-val">press <kbd>[:]</kbd> to open the terminal → type <code>play &lt;id&gt;</code> or click a game and hit play</span>
   </div>
   <div class="arc-intro-row">
     <span class="arc-intro-key">make</span>
@@ -32,106 +22,34 @@
   </div>
 </div>
 
-<!-- ── GAMES GRID ── -->
-<div class="arc-games-section">
-  <div class="arc-games-header">
-    <span class="arc-games-label">games</span>
-  </div>
-  <div id="arc-games"><div class="arc-loading-state">fetching games...</div></div>
+<hr>
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;">
+  <h2 style="margin:0;">games</h2>
+  <span id="arc-stat-line" style="color:var(--muted);font-size:0.82rem;"></span>
 </div>
+<div id="arc-games"><p style="color:var(--muted)">loading...</p></div>
 
-<!-- ── WRITE A GAME CTA ── -->
-<div class="arc-cta-section">
-  <div class="arc-cta-title">write a game</div>
-  <div class="arc-cta-desc">syntax highlighting · run &amp; submit in one place · guided intro for beginners · no experience required</div>
-  <button id="arc-write-btn" class="arc-cta-btn">open editor →</button>
-</div>
+<hr>
+<h2>write a game</h2>
+<p style="color:var(--muted);margin-bottom:16px;">syntax highlighting · run &amp; submit in one place · guided intro for beginners · no experience required</p>
+<button id="arc-write-btn" style="background:transparent;border:1px solid var(--accent);color:var(--accent);font:inherit;font-size:0.88rem;padding:8px 20px;cursor:pointer;transition:background 0.15s,color 0.15s;">open editor →</button>
 <script>
 document.getElementById('arc-write-btn').addEventListener('click', function() {
   var pref = localStorage.getItem('arcade_intro');
   window.location.href = (pref === 'expert' || pref === 'done') ? '/arcade/editor/' : '/arcade/tutorial/';
 });
+document.getElementById('arc-write-btn').addEventListener('mouseenter', function() { this.style.background = 'var(--accent)'; this.style.color = 'var(--bg)'; });
+document.getElementById('arc-write-btn').addEventListener('mouseleave', function() { this.style.background = 'transparent'; this.style.color = 'var(--accent)'; });
 </script>
 
 <script>
 (function() {
   var API = '/api/games';
   var LS_KEY = 'arcade_v1', LS_TTL = 5 * 60 * 1000;
-  var MAX_CODE = 25000;
 
   function lsGet() { try { var d = JSON.parse(localStorage.getItem(LS_KEY)); if (d && Date.now() - d.t < LS_TTL) return d.v; } catch(e) {} return null; }
   function lsSet(v) { try { localStorage.setItem(LS_KEY, JSON.stringify({t: Date.now(), v: v})); } catch(e) {} }
   function lsBust() { try { localStorage.removeItem(LS_KEY); } catch(e) {} }
-
-  // lua syntax highlight - rich tokenizer
-  function hlEsc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  function highlightLua(code) {
-    var KW_CTL    = /^(if|then|else|elseif|end|while|do|for|in|return|break|repeat|until)$/;
-    var KW_DEF    = /^(local|function)$/;
-    var KW_VAL    = /^(true|false|nil)$/;
-    var KW_OP     = /^(and|or|not)$/;
-    var FN_STD    = /^(math|string|table|io|os|coroutine)$/;
-    var FN_BLT    = /^(print|tostring|tonumber|type|pairs|ipairs|pcall|xpcall|error|select|assert|next|rawget|rawset|setmetatable|getmetatable)$/;
-    var FN_ARC    = /^(sleep|clear|colored|color|sound|net|tasks)$/;
-    var MOPS      = ['~=','<=','>=','==','..','//'];
-
-    function tok(src) {
-      var out = '', i = 0;
-      while (i < src.length) {
-        var c = src[i];
-        // strings
-        if (c === '"' || c === "'") {
-          var j = i + 1;
-          while (j < src.length) { if (src[j] === '\\') { j += 2; } else if (src[j] === c) { j++; break; } else { j++; } }
-          out += '<span class="lh-str">' + hlEsc(src.slice(i, j)) + '</span>'; i = j; continue;
-        }
-        // numbers
-        if (/[0-9]/.test(c) || (c === '.' && /[0-9]/.test(src[i+1]||''))) {
-          var j = i;
-          if (src[j]==='0' && /[xX]/.test(src[j+1]||'')) { j+=2; while(/[0-9a-fA-F]/.test(src[j]||''))j++; }
-          else { while(/[0-9]/.test(src[j]||''))j++; if(src[j]==='.'){ j++; while(/[0-9]/.test(src[j]||''))j++; } if(/[eE]/.test(src[j]||'')){ j++; if(/[+-]/.test(src[j]||''))j++; while(/[0-9]/.test(src[j]||''))j++; } }
-          out += '<span class="lh-num">' + hlEsc(src.slice(i,j)) + '</span>'; i = j; continue;
-        }
-        // identifiers
-        if (/[a-zA-Z_]/.test(c)) {
-          var j = i; while(/[a-zA-Z0-9_]/.test(src[j]||''))j++;
-          var w = src.slice(i,j);
-          var rest = src.slice(j).replace(/^[ \t]*/,'');
-          var call = rest[0]==='(' || rest[0]==='{' || rest[0]==='"' || rest[0]==="'";
-          var cls = KW_CTL.test(w)?'lh-kw': KW_DEF.test(w)?'lh-kw2': KW_VAL.test(w)?'lh-val': KW_OP.test(w)?'lh-op': FN_ARC.test(w)?'lh-arcade': FN_STD.test(w)?'lh-std': (FN_BLT.test(w)&&call)?'lh-builtin': call?'lh-fn': null;
-          out += cls ? '<span class="'+cls+'">'+hlEsc(w)+'</span>' : hlEsc(w); i = j; continue;
-        }
-        // operators
-        if (/[+\-*\/%^#&|~<>=]/.test(c)) {
-          var m = ''; for(var o=0;o<MOPS.length;o++){if(src.slice(i,i+MOPS[o].length)===MOPS[o]){m=MOPS[o];break;}} if(!m)m=c;
-          out += '<span class="lh-op">'+hlEsc(m)+'</span>'; i+=m.length; continue;
-        }
-        out += hlEsc(c); i++;
-      }
-      return out;
-    }
-
-    return code.split('\n').map(function(line) {
-      // strip trailing comment (respecting strings)
-      var comment='', ci=-1, inS=false, sq='';
-      for(var k=0;k<line.length;k++){var ch=line[k]; if(inS){if(ch==='\\')k++;else if(ch===sq)inS=false;}else{if(ch==='"'||ch==="'"){inS=true;sq=ch;}else if(ch==='-'&&line[k+1]==='-'){ci=k;break;}}}
-      if(ci>=0){comment='<span class="lh-cmt">'+hlEsc(line.slice(ci))+'</span>';line=line.slice(0,ci);}
-      return tok(line)+comment;
-    }).join('\n');
-  }
-
-
-  // animated counter
-  function animateCount(el, target, suffix) {
-    var dur = 500, t0 = performance.now();
-    function tick() {
-      var p = Math.min((performance.now() - t0) / dur, 1);
-      var ease = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.round(ease * target) + suffix;
-      if (p < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }
 
   function fmt(iso) { var d = new Date(iso); return d.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}); }
   function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -143,33 +61,19 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
     var gamesEl = document.getElementById('arc-games');
     var statEl  = document.getElementById('arc-stat-line');
 
+    if (statEl) statEl.textContent = games.length ? games.length + ' game' + (games.length !== 1 ? 's' : '') : '';
+
     if (!games.length) {
-      if (statEl) statEl.innerHTML = '';
-      gamesEl.innerHTML = '<p style="color:var(--muted);padding:20px 0">no games yet. submit one below.</p>';
+      gamesEl.innerHTML = '<p style="color:var(--muted)">no games yet. submit one below.</p>';
       return;
     }
-
-    if (statEl) {
-      var countSpan = document.createElement('span');
-      countSpan.className = 'arc-stat-val';
-      countSpan.textContent = '0';
-      var suffix = ' game' + (games.length !== 1 ? 's' : '');
-      statEl.innerHTML = '';
-      statEl.appendChild(countSpan);
-      animateCount(countSpan, games.length, suffix);
-    }
-
-    gamesEl.innerHTML = games.map(function(g, i) {
-      return '<a class="arc-card' + (g.locked ? ' arc-card-draft' : '') + '" href="/arcade/game/?id=' + esc(g.id) + '" style="animation-delay:' + (i * 0.045) + 's">'
-        + '<span class="arc-card-num">' + String(i + 1).padStart(2, '0') + '</span>'
-        + '<div class="arc-card-body">'
-        + '<span class="arc-card-title">' + esc(g.title) + (g.locked ? ' <span class="arc-draft-badge">draft</span>' : '') + '</span>'
-        + '<span class="arc-card-meta">by ' + esc(g.author) + ' &middot; ' + fmt(g.date) + '</span>'
-        + (g.desc ? '<span class="arc-card-desc">' + esc(g.desc) + '</span>' : '')
-        + '</div>'
-        + '<span class="arc-card-play">' + (g.locked ? '🔒' : '▶ play') + '</span>'
-        + '</a>';
-    }).join('');
+    gamesEl.innerHTML = '<ul>' + games.map(function(g) {
+      return '<li style="margin-bottom:4px;">'
+        + '<a href="/arcade/game/?id=' + esc(g.id) + '">' + esc(g.title) + '</a>'
+        + '<span style="color:var(--muted);font-size:0.82rem;"> · by ' + esc(g.author) + ' · ' + fmt(g.date) + '</span>'
+        + (g.desc ? '<span style="color:var(--muted);font-size:0.82rem;"> · ' + esc(g.desc) + '</span>' : '')
+        + '</li>';
+    }).join('') + '</ul>';
   }
 
   function fetchFresh(onDone) {
@@ -185,7 +89,6 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
       var c = lsGet();
       if (c) {
         render(c);
-        // background refresh - silently update cache and re-render if data changed
         fetchFresh(function(fresh) {
           if (!fresh) return;
           if (JSON.stringify(fresh) !== JSON.stringify(c)) render(fresh);
@@ -193,198 +96,12 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
         return;
       }
     }
-    // no cache or forced: show loading, fetch, render
     fetchFresh(function(data) {
       if (data) { render(data); }
       else { document.getElementById('arc-games').innerHTML = '<p style="color:var(--muted)">couldn\'t load games.</p>'; }
     });
   }
   load();
-
-  // ── game card hover preview (pointer devices only) ──
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    function extractPrintLines(code, max) {
-      if (!code) return [];
-      var lines = code.split('\n');
-      var out = [];
-      for (var i = 0; i < lines.length && out.length < max; i++) {
-        var line = lines[i].trim();
-        var m = line.match(/^print\s*\(\s*"([^"]*)"\s*\)\s*$/);
-        if (m) { out.push(m[1]); continue; }
-        var cm = line.match(/^print\s*\(\s*colored\s*\(\s*"([^"]*)"/);
-        if (cm) { out.push(cm[1]); }
-      }
-      return out;
-    }
-
-    document.getElementById('arc-games').addEventListener('mouseenter', function(e) {
-      var card = e.target.closest('.arc-card');
-      if (!card || card.querySelector('.arc-card-preview')) return;
-      var cards = card.parentElement.querySelectorAll('.arc-card');
-      var idx = -1;
-      for (var i = 0; i < cards.length; i++) { if (cards[i] === card) { idx = i; break; } }
-      if (idx < 0 || !_gamesData[idx] || !_gamesData[idx].code) return;
-      var plines = extractPrintLines(_gamesData[idx].code, 3);
-      if (!plines.length) return;
-      var preview = document.createElement('div');
-      preview.className = 'arc-card-preview';
-      preview.textContent = plines.join('\n');
-      card.appendChild(preview);
-      // trigger reflow for transition
-      preview.offsetWidth;
-      preview.style.opacity = '1';
-    }, true);
-
-    document.getElementById('arc-games').addEventListener('mouseleave', function(e) {
-      var card = e.target.closest('.arc-card');
-      if (!card) return;
-      var preview = card.querySelector('.arc-card-preview');
-      if (preview) preview.remove();
-    }, true);
-  }
-
-  // textarea editor with line numbers
-  var ta      = document.getElementById('arc-code');
-  var hl      = document.getElementById('arc-hl');
-  var numsEl  = document.getElementById('arc-editor-nums');
-  var charCount = document.getElementById('arc-char-count');
-  var lastLineCount = 1;
-
-  function updateNums() {
-    var n = Math.max(1, ta.value.split('\n').length);
-    if (n === lastLineCount) return;
-    lastLineCount = n;
-    numsEl.textContent = Array.from({length: n}, function(_, i) { return i + 1; }).join('\n');
-  }
-
-  function setCode(code) { ta.value = code; updateHl(); ta.focus(); }
-  function updateHl() {
-    // auto-grow: textarea height = its scroll content height
-    ta.style.height = '0';
-    ta.style.height = ta.scrollHeight + 'px';
-    hl.innerHTML = highlightLua(ta.value) + '\n';
-    updateNums();
-    var c = ta.value.length;
-    charCount.textContent = c + ' / ' + MAX_CODE;
-    charCount.className = 'arc-char-count' + (c > MAX_CODE ? ' arc-char-over' : c > MAX_CODE * 0.85 ? ' arc-char-warn' : '');
-  }
-  ta.addEventListener('input', updateHl);
-  updateHl();
-
-  ta.addEventListener('keydown', function(e) {
-    var start = ta.selectionStart, end = ta.selectionEnd, val = ta.value;
-
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      e.preventDefault();
-      document.getElementById('arc-submit').click();
-      return;
-    }
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      ta.value = val.slice(0, start) + '  ' + val.slice(end);
-      ta.selectionStart = ta.selectionEnd = start + 2;
-      updateHl(); return;
-    }
-    if (e.key === 'Enter') {
-      var lineStart = val.lastIndexOf('\n', start - 1) + 1;
-      var indent = val.slice(lineStart, start).match(/^(\s*)/)[1];
-      if (/\b(then|do|else|function)\s*$/.test(val.slice(lineStart, start).trim())) indent += '  ';
-      e.preventDefault();
-      ta.value = val.slice(0, start) + '\n' + indent + val.slice(end);
-      ta.selectionStart = ta.selectionEnd = start + 1 + indent.length;
-      updateHl(); return;
-    }
-    var pairs = {'(':')', '[':']', '"':'"', "'":"'"};
-    if (pairs[e.key] && start === end) {
-      e.preventDefault();
-      ta.value = val.slice(0, start) + e.key + pairs[e.key] + val.slice(end);
-      ta.selectionStart = ta.selectionEnd = start + 1;
-      updateHl();
-    }
-  });
-
-  // slug preview
-  function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,28)||''; }
-  var slugPreview = document.getElementById('arc-slug-preview');
-  document.getElementById('arc-title').addEventListener('input', function() {
-    var slug = slugify(this.value);
-    if (slug) { slugPreview.textContent = 'id: ' + slug; slugPreview.style.display = 'block'; }
-    else { slugPreview.style.display = 'none'; }
-  });
-
-  // edit code copy button
-  document.getElementById('arc-editcode-copy').addEventListener('click', function() {
-    var btn = this;
-    var code = document.getElementById('arc-editcode').textContent;
-    navigator.clipboard.writeText(code).then(function() {
-      btn.textContent = 'copied!'; btn.classList.add('copied');
-      setTimeout(function() { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
-    });
-  });
-
-  // remix prefill
-  var remixId = new URLSearchParams(window.location.search).get('remix');
-  if (remixId) {
-    document.getElementById('arc-title').value = 'remix-' + remixId.slice(0, 20);
-    fetch(API + '?id=' + encodeURIComponent(remixId)).then(function(r){return r.json();}).then(function(d){
-      setCode(d.code || '');
-      document.getElementById('arc-title').scrollIntoView({behavior:'smooth'});
-    });
-  }
-
-  // test button
-  document.getElementById('arc-test').addEventListener('click', function() {
-    var code = ta.value.trim();
-    if (!code) { document.getElementById('arc-status').textContent = 'write some code first.'; return; }
-    if (window.termRunLua) { window.termRunLua(code); }
-    else { document.getElementById('arc-status').textContent = 'open [:] first.'; }
-  });
-
-  // submit
-  document.getElementById('arc-submit').addEventListener('click', function() {
-    var title  = document.getElementById('arc-title').value.trim();
-    var author = document.getElementById('arc-author').value.trim();
-    var desc   = document.getElementById('arc-desc').value.trim();
-    var code   = ta.value.trim();
-    var hp     = document.getElementById('arc-hp').value;
-    var status = document.getElementById('arc-status');
-    var btn    = document.getElementById('arc-submit');
-    if (!title || !author || !code) { status.textContent = 'title, name, and code required.'; status.style.color = 'var(--code-err)'; return; }
-
-    btn.disabled = true; btn.textContent = 'checking...'; status.textContent = '';
-
-    function doSubmit() {
-      btn.textContent = 'submitting...';
-      fetch(API, { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({title:title, author:author, desc:desc, code:code, hp:hp}) })
-      .then(function(r){return r.json();})
-      .then(function(data) {
-        if (data.ok) {
-          document.getElementById('arc-title').value = '';
-          document.getElementById('arc-author').value = '';
-          document.getElementById('arc-desc').value = '';
-          setCode('');
-          status.textContent = 'submitted! play: play ' + data.id;
-          status.style.color = 'var(--accent)';
-          document.getElementById('arc-editcode').textContent = data.editCode;
-          document.getElementById('arc-editcode-box').style.display = 'block';
-          lsBust(); load(true);
-        } else { status.textContent = data.error || 'something went wrong.'; status.style.color = 'var(--code-err)'; }
-      })
-      .catch(function(){ status.textContent = 'network error.'; status.style.color = 'var(--code-err)'; })
-      .finally(function(){ btn.disabled = false; btn.textContent = 'submit game →'; });
-    }
-
-    if (window.luaCheck) {
-      window.luaCheck(code, function(err) {
-        if (err) {
-          status.textContent = err;
-          status.style.color = '#f7768e';
-          btn.disabled = false; btn.textContent = 'submit game →';
-        } else { doSubmit(); }
-      });
-    } else { doSubmit(); }
-  });
 })();
 </script>
 {{ end }}
