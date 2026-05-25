@@ -865,25 +865,61 @@
   // ── presets ──────────────────────────────────────────────────
   // All speeds (lspeed/bspeed) are 0–100%. Opacity/glow/autofill params also 0–100%.
   var PRESETS = {
-    // default — exact site defaults + tokyo-night
+    // 1. default — site defaults + tokyo-night
     'default':  { sim:'combo', lspeed:15, bspeed:15, theme:'tokyo-night', desc:'site defaults',
       params:{'life.cell':7,  'life.opacity':9,  'life.glow':0,  'life.autofill':50, 'life.rainbow':0,
               'boids.n':120, 'boids.size':14, 'boids.tick':1.8, 'boids.opacity':14, 'boids.glow':0,
               'trail.on':0,  'trail.size':2,  'trail.glow':12, 'trail.decay':80} },
-    // ghost — same as default, any theme
+    // 2. dusk — purple glow + life
+    dusk:      { sim:'combo', lspeed:15, bspeed:14, theme:'dracula',
+      desc:'purple glow + life',
+      params:{'life.cell':9,  'life.opacity':9,  'life.glow':0,  'life.autofill':50, 'life.rainbow':0,
+              'boids.n':40,  'boids.size':28, 'boids.tick':0.9, 'boids.opacity':75, 'boids.glow':65,
+              'boids.perception':120, 'boids.separation':80,
+              'trail.on':0} },
+    // 3. soft — gentle layers
+    soft:      { sim:'combo', lspeed:10, bspeed:10, theme:'rose-pine',
+      desc:'gentle layers',
+      params:{'life.cell':9, 'life.opacity':30, 'life.glow':20, 'life.autofill':40, 'life.rainbow':0,
+              'boids.n':20,  'boids.size':45, 'boids.tick':0.5, 'boids.opacity':60, 'boids.glow':30,
+              'boids.perception':150, 'boids.separation':100, 'trail.on':0} },
+    // 4. aurora — rainbow + boids
+    aurora:    { sim:'combo', lspeed:20, bspeed:12, theme:'tokyo-night',
+      desc:'rainbow + boids',
+      params:{'life.cell':6,  'life.opacity':50, 'life.glow':25, 'life.autofill':50, 'life.rainbow':3,
+              'boids.n':60,  'boids.size':18, 'boids.tick':1.2, 'boids.opacity':20, 'boids.glow':15,
+              'boids.perception':100, 'boids.separation':50,
+              'trail.on':0} },
+    // 5. canvas — light rainbow
+    canvas:    { sim:'combo', lspeed:10, bspeed:10, theme:'github-light',
+      desc:'light rainbow',
+      params:{'life.cell':7,  'life.opacity':30, 'life.glow':20, 'life.autofill':40, 'life.rainbow':3,
+              'boids.n':20,  'boids.size':45, 'boids.tick':0.5, 'boids.opacity':60, 'boids.glow':30,
+              'boids.perception':150, 'boids.separation':100,
+              'trail.on':0} },
+    // 6. prismatic — position rainbow
+    prismatic: { sim:'life',  lspeed:30, bspeed:null,
+      desc:'position rainbow',
+      params:{'life.cell':4,  'life.opacity':80, 'life.glow':50, 'life.autofill':60, 'life.rainbow':3,
+              'trail.on':1, 'trail.glow':30, 'trail.decay':70, 'trail.size':2} },
+    // 7. swarm — fast dense
+    swarm:     { sim:'boids', lspeed:null, bspeed:20, theme:'gruvbox',
+      desc:'fast dense',
+      params:{'boids.n':300, 'boids.size':25, 'boids.tick':3.5, 'boids.opacity':22, 'boids.glow':0,
+              'boids.perception':60,  'boids.separation':30} },
+    // 8+
     ghost:     { sim:'combo', lspeed:15, bspeed:15, desc:'any theme',
       params:{'life.cell':7,  'life.opacity':9,  'life.glow':0,  'life.autofill':50, 'life.rainbow':0,
               'boids.n':120, 'boids.size':14, 'boids.tick':1.8, 'boids.opacity':14, 'boids.glow':0,
               'trail.on':0,  'trail.size':2,  'trail.glow':12, 'trail.decay':80} },
-    // mist — barely there life
-    mist:      { sim:'life',  lspeed:12, bspeed:null,
-      desc:'barely there',
-      params:{'life.cell':8,  'life.opacity':6,  'life.glow':0,  'life.autofill':40, 'life.rainbow':0,
-              'trail.on':0} },
     bloom:     { sim:'life',  lspeed:20, bspeed:null, theme:'tokyo-night',
       desc:'glow + trail',
       params:{'life.cell':5,  'life.opacity':70, 'life.glow':80, 'life.autofill':55, 'life.rainbow':0,
               'trail.on':1,   'trail.glow':45,   'trail.decay':60, 'trail.size':2} },
+    midnight:  { sim:'boids', lspeed:null, bspeed:15, theme:'tokyo-night',
+      desc:'dark glow',
+      params:{'boids.n':50,  'boids.size':20, 'boids.tick':1.0, 'boids.opacity':85, 'boids.glow':70,
+              'boids.perception':100, 'boids.separation':60} },
     ember:     { sim:'life',  lspeed:18, bspeed:null, theme:'gruvbox',
       desc:'warm glow',
       params:{'life.cell':8,  'life.opacity':35, 'life.glow':55, 'life.autofill':50, 'life.rainbow':0,
@@ -892,50 +928,18 @@
       desc:'rainbow',
       params:{'life.cell':6,  'life.opacity':55, 'life.glow':20, 'life.autofill':50, 'life.rainbow':1,
               'trail.on':0} },
+    mist:      { sim:'life',  lspeed:12, bspeed:null,
+      desc:'barely there',
+      params:{'life.cell':8,  'life.opacity':6,  'life.glow':0,  'life.autofill':40, 'life.rainbow':0,
+              'trail.on':0} },
     paper:     { sim:'life',  lspeed:12, bspeed:null, theme:'papercolor-light',
       desc:'soft cells',
       params:{'life.cell':10, 'life.opacity':20, 'life.glow':0,  'life.autofill':35, 'life.rainbow':0,
               'trail.on':0} },
-    // boids
     flock:     { sim:'boids', lspeed:null, bspeed:18,
       desc:'calm flock',
       params:{'boids.n':80,  'boids.size':15, 'boids.tick':1.4, 'boids.opacity':15, 'boids.glow':0,
               'boids.perception':80, 'boids.separation':40} },
-    midnight:  { sim:'boids', lspeed:null, bspeed:15, theme:'tokyo-night',
-      desc:'dark glow',
-      params:{'boids.n':50,  'boids.size':20, 'boids.tick':1.0, 'boids.opacity':85, 'boids.glow':70,
-              'boids.perception':100, 'boids.separation':60} },
-    dusk:      { sim:'combo', lspeed:15, bspeed:14, theme:'dracula',
-      desc:'purple glow + life',
-      params:{'life.cell':7,  'life.opacity':9,  'life.glow':0,  'life.autofill':50, 'life.rainbow':0,
-              'boids.n':40,  'boids.size':28, 'boids.tick':0.9, 'boids.opacity':75, 'boids.glow':65,
-              'boids.perception':120, 'boids.separation':80,
-              'trail.on':0} },
-    soft:      { sim:'combo', lspeed:10, bspeed:10, theme:'rose-pine',
-      desc:'gentle layers',
-      params:{'life.cell':7, 'life.opacity':30, 'life.glow':20, 'life.autofill':40, 'life.rainbow':0,
-              'boids.n':20,  'boids.size':45, 'boids.tick':0.5, 'boids.opacity':60, 'boids.glow':30,
-              'boids.perception':150, 'boids.separation':100, 'trail.on':0} },
-    swarm:     { sim:'boids', lspeed:null, bspeed:20, theme:'gruvbox',
-      desc:'fast dense',
-      params:{'boids.n':300, 'boids.size':6,  'boids.tick':3.5, 'boids.opacity':22, 'boids.glow':0,
-              'boids.perception':60,  'boids.separation':30} },
-    prismatic: { sim:'life',  lspeed:30, bspeed:null,
-      desc:'position rainbow',
-      params:{'life.cell':4,  'life.opacity':80, 'life.glow':50, 'life.autofill':60, 'life.rainbow':3,
-              'trail.on':1, 'trail.glow':30, 'trail.decay':70, 'trail.size':2} },
-    aurora:    { sim:'combo', lspeed:20, bspeed:12, theme:'tokyo-night',
-      desc:'rainbow + boids',
-      params:{'life.cell':6,  'life.opacity':50, 'life.glow':25, 'life.autofill':50, 'life.rainbow':3,
-              'boids.n':60,  'boids.size':18, 'boids.tick':1.2, 'boids.opacity':20, 'boids.glow':15,
-              'boids.perception':100, 'boids.separation':50,
-              'trail.on':0} },
-    canvas:    { sim:'combo', lspeed:10, bspeed:10, theme:'github-light',
-      desc:'light rainbow',
-      params:{'life.cell':7,  'life.opacity':30, 'life.glow':20, 'life.autofill':40, 'life.rainbow':3,
-              'boids.n':20,  'boids.size':45, 'boids.tick':0.5, 'boids.opacity':60, 'boids.glow':30,
-              'boids.perception':150, 'boids.separation':100,
-              'trail.on':0} },
   };
 
   window.getPresetNames = function () { return Object.keys(PRESETS); };
@@ -1253,7 +1257,7 @@
     var names = window.getPresetNames ? window.getPresetNames() : [];
     var active = window.getActivePreset ? window.getActivePreset() : null;
     // mobile subset: curated lighter presets
-    var MOBILE_PRESETS = ['default','mist','bloom','chromatic','prismatic','aurora','flock','midnight','dusk','swarm','soft'];
+    var MOBILE_PRESETS = ['default','dusk','soft','aurora','canvas','prismatic','swarm','ghost','bloom','midnight','ember','chromatic','mist','paper','flock'];
     names.forEach(function (name) {
       if (MOBILE_PRESETS.indexOf(name) < 0) return;
       var btn = document.createElement('button');
