@@ -30,7 +30,6 @@
       <div class="adm-section-header">
         <span class="adm-section-status" id="preset-status"></span>
         <div class="adm-section-actions">
-          <button id="preset-seed" class="adm-btn adm-btn-sm">seed from code</button>
           <button id="preset-save" class="adm-btn adm-btn-sm adm-btn-primary">save all</button>
         </div>
       </div>
@@ -231,6 +230,15 @@
   var THEMES = ['tokyo-night','gruvbox','dracula','rose-pine','github-light','papercolor-light','hacker'];
   var SIMS = ['combo','life','boids'];
 
+  function seedFromCode() {
+    if (typeof window.getPresetNames !== 'function') return;
+    var names = window.getPresetNames();
+    names.forEach(function (n) {
+      var p = window._getPresetData ? window._getPresetData(n) : null;
+      if (p) presets[n] = JSON.parse(JSON.stringify(p));
+    });
+  }
+
   function loadPresets() {
     document.getElementById('preset-status').textContent = 'loading...';
     fetch(API + '?action=presets')
@@ -238,7 +246,8 @@
       .then(function (d) {
         presets = d.presets || {};
         if (!Object.keys(presets).length) {
-          document.getElementById('preset-status').textContent = 'no presets in DB — click "seed from code" to import';
+          seedFromCode();
+          document.getElementById('preset-status').textContent = Object.keys(presets).length + ' presets (from code — save to persist)';
         } else {
           document.getElementById('preset-status').textContent = Object.keys(presets).length + ' presets';
         }
@@ -403,24 +412,6 @@
     el.appendChild(sel);
     return el;
   }
-
-  // Seed from code
-  document.getElementById('preset-seed').addEventListener('click', function () {
-    if (typeof window.getPresetNames !== 'function') {
-      document.getElementById('preset-status').textContent = 'bg-sim not loaded on this page';
-      return;
-    }
-    var names = window.getPresetNames();
-    names.forEach(function (n) {
-      if (!presets[n]) {
-        // read from the live PRESETS object
-        var p = window._getPresetData ? window._getPresetData(n) : null;
-        if (p) presets[n] = JSON.parse(JSON.stringify(p));
-      }
-    });
-    renderPresets();
-    document.getElementById('preset-status').textContent = 'seeded ' + names.length + ' presets from code — click save';
-  });
 
   // Save presets
   document.getElementById('preset-save').addEventListener('click', function () {
