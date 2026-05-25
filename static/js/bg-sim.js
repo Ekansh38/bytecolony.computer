@@ -949,6 +949,20 @@
     return Object.keys(PRESETS).filter(function (k) { return PRESETS[k].sim === mode; });
   };
 
+  // ── load DB presets (override hardcoded defaults) ─────────────────────────────
+  (function loadDbPresets() {
+    fetch('/api/themes?action=presets').then(function (r) { return r.json(); }).then(function (d) {
+      if (!d.presets || typeof d.presets !== 'object') return;
+      var keys = Object.keys(d.presets);
+      if (!keys.length) return;
+      for (var i = 0; i < keys.length; i++) {
+        PRESETS[keys[i]] = d.presets[keys[i]];
+      }
+      // rebuild pickers with updated presets
+      if (window._rebuildPresetPicker) window._rebuildPresetPicker();
+    }).catch(function () {});
+  })();
+
   // ── preset picker — shows all presets; applying one switches mode automatically ─
   var THEME_ACCENTS = {
     'tokyo-night':      '#7aa2f7',

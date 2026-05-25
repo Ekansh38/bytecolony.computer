@@ -149,9 +149,15 @@
     background: var(--accent); cursor: pointer;
   }
   .adm-param .adm-param-val {
-    color: var(--fg); font-size: 0.78rem; min-width: 36px; text-align: right;
+    color: var(--fg); font-size: 0.78rem; width: 48px; text-align: right;
     font-variant-numeric: tabular-nums;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 2px;
+    padding: 2px 4px; font-family: inherit; outline: none;
+    -moz-appearance: textfield;
   }
+  .adm-param .adm-param-val::-webkit-inner-spin-button,
+  .adm-param .adm-param-val::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .adm-param .adm-param-val:focus { border-color: var(--accent); }
   .adm-param input[type="text"], .adm-param select {
     background: var(--bg); border: 1px solid var(--border); color: var(--fg);
     font-family: inherit; font-size: 0.8rem; padding: 3px 8px; outline: none;
@@ -463,21 +469,32 @@
     el.className = 'adm-param';
     var lbl = document.createElement('label');
     lbl.textContent = label;
-    var valSpan = document.createElement('span');
-    valSpan.className = 'adm-param-val';
-    valSpan.textContent = value != null ? value : '-';
+    var numInp = document.createElement('input');
+    numInp.type = 'number';
+    numInp.className = 'adm-param-val';
+    numInp.min = min; numInp.max = max; numInp.step = step;
+    numInp.value = value != null ? value : min;
     var inp = document.createElement('input');
     inp.type = 'range';
     inp.min = min; inp.max = max; inp.step = step;
     inp.value = value != null ? value : min;
     inp.addEventListener('input', function () {
       var v = step < 1 ? parseFloat(inp.value) : parseInt(inp.value, 10);
-      valSpan.textContent = v;
+      numInp.value = v;
+      onChange(v);
+    });
+    numInp.addEventListener('change', function () {
+      var v = step < 1 ? parseFloat(numInp.value) : parseInt(numInp.value, 10);
+      if (isNaN(v)) v = min;
+      if (v < min) v = min;
+      if (v > max) v = max;
+      numInp.value = v;
+      inp.value = v;
       onChange(v);
     });
     el.appendChild(lbl);
     el.appendChild(inp);
-    el.appendChild(valSpan);
+    el.appendChild(numInp);
     return el;
   }
 
