@@ -90,7 +90,7 @@ function toggleTheme() {
       setTimeout(function () {
         var toast = document.getElementById('copy-toast');
         if (!toast) return;
-        toast.textContent = 'try [theme] or [=] to customize';
+        toast.textContent = 'try typing =';
         toast.classList.add('show');
         setTimeout(function () {
           toast.classList.remove('show');
