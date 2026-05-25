@@ -2,6 +2,10 @@
 
 <a href="{{ .Parent.Permalink }}" class="back">← {{ if .Parent.IsHome }}home{{ else }}{{ strings.ToLower .Parent.Title }}{{ end }}</a>
 
+{{ with .Params.project }}
+<div style="margin-bottom:16px;"><a href="/projects/{{ . }}/" class="writing-project" style="font-size:0.85rem;">{{ . }}</a> <span style="color:var(--muted);font-size:0.85rem;">/ project</span></div>
+{{ end }}
+
 <div class="project-title">{{ .Title }}</div>
 <div class="project-meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.status }} · {{ . }}{{ end }}</div>
 

@@ -6,15 +6,39 @@
 
 {{ .Content }}
 
-{{ with .RegularPages }}
-<ul>
-  {{ range . }}
-  <li class="writing-li">
-    <a href="{{ .Permalink }}">{{ .Title }}</a>
-    <span class="yr">{{ .Date.Format "2006" }}</span>
-  </li>
+{{ if eq .Section "writing" }}
+  {{/* writing page: show both /writing/ posts and project articles */}}
+  {{ $projectArticles := slice }}
+  {{ range (.Site.GetPage "/projects").Sections }}
+    {{ range .Pages }}
+      {{ $projectArticles = $projectArticles | append . }}
+    {{ end }}
   {{ end }}
-</ul>
+  {{ $allPosts := union .RegularPages $projectArticles }}
+  {{ with $allPosts }}
+  <ul>
+    {{ range .ByDate.Reverse }}
+    <li class="writing-li">
+      <div>
+        {{ with .Params.project }}<a href="/projects/{{ . }}/" class="writing-project">{{ . }}</a> / {{ end }}
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+      </div>
+      <span class="yr">{{ .Date.Format "2006" }}</span>
+    </li>
+    {{ end }}
+  </ul>
+  {{ end }}
+{{ else }}
+  {{ with .RegularPages }}
+  <ul>
+    {{ range . }}
+    <li class="writing-li">
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+      <span class="yr">{{ .Date.Format "2006" }}</span>
+    </li>
+    {{ end }}
+  </ul>
+  {{ end }}
 {{ end }}
 
 {{ end }}
