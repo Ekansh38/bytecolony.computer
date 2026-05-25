@@ -59,8 +59,9 @@
     font-size: 0.75rem; cursor: pointer; padding: 0; opacity: 0.25;
     transition: opacity 0.15s;
     display: none;
+    pointer-events: none;
   }
-  #gb-admin-toggle.visible { display: inline; }
+  #gb-admin-toggle.visible { display: inline; pointer-events: auto; }
   #gb-admin-toggle:hover { opacity: 0.6; }
   #gb-admin-bar { display: none; margin-bottom: 12px; }
   #gb-admin-bar.open { display: block; }
@@ -197,20 +198,21 @@
 
   loadEntries();
 
-  // show mod button only with ?mod param
-  if (new URLSearchParams(window.location.search).has('mod')) {
+  // admin — only wire up if ?mod is present
+  var _modEnabled = new URLSearchParams(window.location.search).has('mod');
+  if (_modEnabled) {
     document.getElementById('gb-admin-toggle').classList.add('visible');
   }
-
-  // admin toggle
-  document.getElementById('gb-admin-toggle').addEventListener('click', function() {
-    var bar = document.getElementById('gb-admin-bar');
-    bar.classList.toggle('open');
-    if (bar.classList.contains('open')) document.getElementById('gb-admin-code').focus();
-  });
-  document.getElementById('gb-admin-code').addEventListener('input', function() {
-    if (_entries) render(_entries);
-  });
+  if (_modEnabled) {
+    document.getElementById('gb-admin-toggle').addEventListener('click', function() {
+      var bar = document.getElementById('gb-admin-bar');
+      bar.classList.toggle('open');
+      if (bar.classList.contains('open')) document.getElementById('gb-admin-code').focus();
+    });
+    document.getElementById('gb-admin-code').addEventListener('input', function() {
+      if (_entries) render(_entries);
+    });
+  }
 
   // submit: first click opens name fields, second click sends
   var idFields = document.getElementById('gb-identity-fields');
