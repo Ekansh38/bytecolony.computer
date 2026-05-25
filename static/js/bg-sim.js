@@ -897,8 +897,8 @@
               'boids.n':20,  'boids.size':45, 'boids.tick':0.5, 'boids.opacity':60, 'boids.glow':30,
               'boids.perception':150, 'boids.separation':100,
               'trail.on':0} },
-    // 6. prismatic — position rainbow
-    prismatic: { sim:'life',  lspeed:30, bspeed:null,
+    // 6. prism — position rainbow
+    prism:     { sim:'life',  lspeed:30, bspeed:null,
       desc:'position rainbow',
       params:{'life.cell':4,  'life.opacity':80, 'life.glow':50, 'life.autofill':60, 'life.rainbow':3,
               'trail.on':1, 'trail.glow':30, 'trail.decay':70, 'trail.size':2} },
@@ -928,7 +928,7 @@
       desc:'rainbow',
       params:{'life.cell':6,  'life.opacity':55, 'life.glow':20, 'life.autofill':50, 'life.rainbow':1,
               'trail.on':0} },
-    mist:      { sim:'life',  lspeed:12, bspeed:null,
+    fog:       { sim:'life',  lspeed:12, bspeed:null,
       desc:'barely there',
       params:{'life.cell':8,  'life.opacity':6,  'life.glow':0,  'life.autofill':40, 'life.rainbow':0,
               'trail.on':0} },
@@ -936,7 +936,7 @@
       desc:'soft cells',
       params:{'life.cell':10, 'life.opacity':20, 'life.glow':0,  'life.autofill':35, 'life.rainbow':0,
               'trail.on':0} },
-    flock:     { sim:'boids', lspeed:null, bspeed:18,
+    drift:     { sim:'boids', lspeed:null, bspeed:18,
       desc:'calm flock',
       params:{'boids.n':80,  'boids.size':15, 'boids.tick':1.4, 'boids.opacity':15, 'boids.glow':0,
               'boids.perception':80, 'boids.separation':40} },
@@ -1257,7 +1257,7 @@
     var names = window.getPresetNames ? window.getPresetNames() : [];
     var active = window.getActivePreset ? window.getActivePreset() : null;
     // mobile subset: curated lighter presets
-    var MOBILE_PRESETS = ['default','dusk','soft','aurora','canvas','prismatic','swarm','ghost','bloom','midnight','ember','chromatic','mist','paper','flock'];
+    var MOBILE_PRESETS = ['default','dusk','soft','aurora','canvas','prism','swarm','ghost','bloom','midnight','ember','chromatic','fog','paper','drift'];
     names.forEach(function (name) {
       if (MOBILE_PRESETS.indexOf(name) < 0) return;
       var btn = document.createElement('button');
