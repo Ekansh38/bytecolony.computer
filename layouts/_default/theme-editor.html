@@ -132,18 +132,33 @@
     width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0;
   }
   .adm-param-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px;
   }
   .adm-param {
-    display: flex; align-items: center; gap: 6px; padding: 4px 8px;
+    display: flex; align-items: center; gap: 8px; padding: 6px 10px;
     background: var(--code-bg); border-radius: 3px; font-size: 0.8rem;
   }
-  .adm-param label { color: var(--muted); flex: 1; white-space: nowrap; }
-  .adm-param input[type="number"], .adm-param input[type="text"], .adm-param select {
-    background: var(--bg); border: 1px solid var(--border); color: var(--fg);
-    font-family: inherit; font-size: 0.8rem; padding: 2px 6px; outline: none; width: 70px;
+  .adm-param label { color: var(--muted); min-width: 70px; white-space: nowrap; flex-shrink: 0; }
+  .adm-param input[type="range"] {
+    flex: 1; accent-color: var(--accent); height: 4px; cursor: pointer;
+    -webkit-appearance: none; appearance: none; background: var(--border); border-radius: 2px; outline: none;
   }
+  .adm-param input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent); cursor: pointer;
+  }
+  .adm-param .adm-param-val {
+    color: var(--fg); font-size: 0.78rem; min-width: 36px; text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .adm-param input[type="text"], .adm-param select {
+    background: var(--bg); border: 1px solid var(--border); color: var(--fg);
+    font-family: inherit; font-size: 0.8rem; padding: 3px 8px; outline: none;
+  }
+  .adm-param input[type="text"] { width: 120px; }
+  .adm-param select { width: 140px; }
   .adm-param input:focus, .adm-param select:focus { border-color: var(--accent); }
+  .adm-preset-actions { display: flex; gap: 6px; margin-top: 12px; }
 
   /* Guestbook entry */
   .adm-gb-msg { font-size: 0.88rem; line-height: 1.6; margin-top: 4px; white-space: pre-wrap; word-break: break-word; }
@@ -256,9 +271,46 @@
       .catch(function (err) { document.getElementById('preset-status').textContent = 'error: ' + err.message; });
   }
 
+  var themeColors = {'tokyo-night':'#7aa2f7','gruvbox':'#d79921','dracula':'#bd93f9','rose-pine':'#b4637a','github-light':'#0969da','papercolor-light':'#005f87','hacker':'#00ff41'};
+  var originalPresets = {};
+
+  // slider definitions: key, label, min, max, step
+  var PARAM_SLIDERS = [
+    {key:'life.cell',label:'cell size',min:1,max:80,step:1},
+    {key:'life.opacity',label:'life opacity',min:0,max:100,step:1},
+    {key:'life.glow',label:'life glow',min:0,max:100,step:1},
+    {key:'life.autofill',label:'autofill',min:0,max:100,step:1},
+    {key:'life.rainbow',label:'rainbow',min:0,max:3,step:1},
+    {key:'boids.n',label:'boid count',min:1,max:1000,step:1},
+    {key:'boids.size',label:'boid size',min:1,max:200,step:1},
+    {key:'boids.tick',label:'boid speed',min:0.1,max:5,step:0.1},
+    {key:'boids.opacity',label:'boid opacity',min:0,max:100,step:1},
+    {key:'boids.glow',label:'boid glow',min:0,max:100,step:1},
+    {key:'boids.perception',label:'perception',min:1,max:500,step:1},
+    {key:'boids.separation',label:'separation',min:0,max:300,step:1},
+    {key:'trail.on',label:'trail',min:0,max:1,step:1},
+    {key:'trail.size',label:'trail size',min:1,max:10,step:1},
+    {key:'trail.glow',label:'trail glow',min:0,max:100,step:1},
+    {key:'trail.decay',label:'trail decay',min:0,max:100,step:1},
+  ];
+  var SPEED_SLIDERS = [
+    {key:'lspeed',label:'life speed',min:0,max:100,step:1},
+    {key:'bspeed',label:'boid speed',min:0,max:100,step:1},
+  ];
+
+  function liveApply(name, p) {
+    if (!window.applyPreset) return;
+    // inject preset data into the live sim
+    if (window._setPresetData) window._setPresetData(name, p);
+    window.applyPreset(name);
+  }
+
   function renderPresets() {
     var list = document.getElementById('preset-list');
     list.innerHTML = '';
+    // save originals for reset
+    if (!Object.keys(originalPresets).length) originalPresets = JSON.parse(JSON.stringify(presets));
+
     Object.keys(presets).forEach(function (name) {
       var p = presets[name];
       var card = document.createElement('div');
@@ -266,21 +318,15 @@
 
       var bar = document.createElement('div');
       bar.className = 'adm-card-bar';
-
       var arrow = document.createElement('span');
       arrow.className = 'adm-card-arrow';
       arrow.textContent = '\u25B6';
-
       var swatch = document.createElement('span');
       swatch.className = 'adm-preset-swatch';
-      // color from theme accent
-      var themeColors = {'tokyo-night':'#7aa2f7','gruvbox':'#d79921','dracula':'#bd93f9','rose-pine':'#b4637a','github-light':'#0969da','papercolor-light':'#005f87','hacker':'#00ff41'};
       swatch.style.background = themeColors[p.theme] || 'var(--accent)';
-
       var title = document.createElement('span');
       title.className = 'adm-card-title';
       title.textContent = name;
-
       var meta = document.createElement('span');
       meta.className = 'adm-card-meta';
       meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : '') + (p.desc ? ' · ' + p.desc : '');
@@ -305,29 +351,28 @@
       bar.appendChild(actions);
       bar.addEventListener('click', function () { card.classList.toggle('expanded'); });
 
-      // Body
       var body = document.createElement('div');
       body.className = 'adm-card-body';
 
-      // Top-level fields
+      // Top controls
       var topGrid = document.createElement('div');
       topGrid.className = 'adm-param-grid';
       topGrid.style.marginBottom = '10px';
-
-      // sim
-      var simParam = mkSelect('sim', p.sim, SIMS, function (v) { p.sim = v; meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : ''); });
-      topGrid.appendChild(simParam);
-      // theme
-      var themeParam = mkSelect('theme', p.theme || '', [''].concat(THEMES), function (v) { p.theme = v || undefined; swatch.style.background = themeColors[v] || 'var(--accent)'; meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : ''); });
-      topGrid.appendChild(themeParam);
-      // desc
+      topGrid.appendChild(mkSelect('sim', p.sim, SIMS, function (v) { p.sim = v; meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : ''); liveApply(name, p); }));
+      topGrid.appendChild(mkSelect('theme', p.theme || '', [''].concat(THEMES), function (v) { p.theme = v || undefined; swatch.style.background = themeColors[v] || 'var(--accent)'; meta.textContent = p.sim + (p.theme ? ' · ' + p.theme : ''); liveApply(name, p); }));
       topGrid.appendChild(mkText('desc', p.desc || '', function (v) { p.desc = v; }));
-      // lspeed, bspeed
-      topGrid.appendChild(mkNum('lspeed', p.lspeed, function (v) { p.lspeed = v; }));
-      topGrid.appendChild(mkNum('bspeed', p.bspeed, function (v) { p.bspeed = v; }));
       body.appendChild(topGrid);
 
-      // Params
+      // Speed sliders
+      var speedGrid = document.createElement('div');
+      speedGrid.className = 'adm-param-grid';
+      speedGrid.style.marginBottom = '10px';
+      SPEED_SLIDERS.forEach(function (s) {
+        speedGrid.appendChild(mkSlider(s.label, p[s.key], s.min, s.max, s.step, function (v) { p[s.key] = v; liveApply(name, p); }));
+      });
+      body.appendChild(speedGrid);
+
+      // Param sliders
       if (p.params) {
         var paramLabel = document.createElement('div');
         paramLabel.style.cssText = 'font-size:0.78rem;color:var(--muted);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;';
@@ -336,25 +381,37 @@
 
         var paramGrid = document.createElement('div');
         paramGrid.className = 'adm-param-grid';
-        Object.keys(p.params).forEach(function (key) {
-          paramGrid.appendChild(mkNum(key, p.params[key], function (v) { p.params[key] = v; }));
+        PARAM_SLIDERS.forEach(function (s) {
+          if (p.params[s.key] != null) {
+            paramGrid.appendChild(mkSlider(s.label, p.params[s.key], s.min, s.max, s.step, function (v) { p.params[s.key] = v; liveApply(name, p); }));
+          }
         });
         body.appendChild(paramGrid);
       }
 
-      // Apply button
-      var applyBtn = document.createElement('button');
-      applyBtn.className = 'adm-btn adm-btn-sm';
-      applyBtn.textContent = 'preview on site';
-      applyBtn.style.marginTop = '10px';
-      applyBtn.addEventListener('click', function (e) {
+      // Action buttons
+      var actionsRow = document.createElement('div');
+      actionsRow.className = 'adm-preset-actions';
+
+      var previewBtn = document.createElement('button');
+      previewBtn.className = 'adm-btn adm-btn-sm';
+      previewBtn.textContent = 'preview';
+      previewBtn.addEventListener('click', function (e) { e.stopPropagation(); liveApply(name, p); });
+
+      var resetBtn = document.createElement('button');
+      resetBtn.className = 'adm-btn adm-btn-sm';
+      resetBtn.textContent = 'reset';
+      resetBtn.addEventListener('click', function (e) {
         e.stopPropagation();
-        if (window.applyPreset && typeof window.applyPreset === 'function') {
-          // temporarily inject into PRESETS
-          window.applyPreset(name);
+        if (originalPresets[name]) {
+          presets[name] = JSON.parse(JSON.stringify(originalPresets[name]));
+          renderPresets();
         }
       });
-      body.appendChild(applyBtn);
+
+      actionsRow.appendChild(previewBtn);
+      actionsRow.appendChild(resetBtn);
+      body.appendChild(actionsRow);
 
       card.appendChild(bar);
       card.appendChild(body);
@@ -362,21 +419,26 @@
     });
   }
 
-  function mkNum(label, value, onChange) {
+  function mkSlider(label, value, min, max, step, onChange) {
     var el = document.createElement('div');
     el.className = 'adm-param';
     var lbl = document.createElement('label');
     lbl.textContent = label;
+    var valSpan = document.createElement('span');
+    valSpan.className = 'adm-param-val';
+    valSpan.textContent = value != null ? value : '-';
     var inp = document.createElement('input');
-    inp.type = 'number';
-    inp.step = 'any';
-    inp.value = value != null ? value : '';
-    inp.addEventListener('change', function () {
-      var v = inp.value === '' ? null : parseFloat(inp.value);
+    inp.type = 'range';
+    inp.min = min; inp.max = max; inp.step = step;
+    inp.value = value != null ? value : min;
+    inp.addEventListener('input', function () {
+      var v = step < 1 ? parseFloat(inp.value) : parseInt(inp.value, 10);
+      valSpan.textContent = v;
       onChange(v);
     });
     el.appendChild(lbl);
     el.appendChild(inp);
+    el.appendChild(valSpan);
     return el;
   }
 
@@ -388,7 +450,6 @@
     var inp = document.createElement('input');
     inp.type = 'text';
     inp.value = value;
-    inp.style.width = '120px';
     inp.addEventListener('change', function () { onChange(inp.value); });
     el.appendChild(lbl);
     el.appendChild(inp);
