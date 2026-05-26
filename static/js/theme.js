@@ -37,23 +37,6 @@ function toggleTheme() {
   document.addEventListener('DOMContentLoaded', function () {
     applyTheme(document.documentElement.getAttribute('data-theme'));
 
-    // First-visit: briefly glow the settings button
-    if (!localStorage.getItem('theme-hint-seen')) {
-      var hintBtn = document.getElementById('d-settings-btn');
-      if (hintBtn) {
-        setTimeout(function () {
-          hintBtn.style.color = 'var(--accent)';
-          hintBtn.style.textShadow = '0 0 8px var(--accent)';
-          hintBtn.style.transition = 'color 0.4s ease, text-shadow 0.4s ease';
-          setTimeout(function () {
-            hintBtn.style.color = '';
-            hintBtn.style.textShadow = '';
-            localStorage.setItem('theme-hint-seen', '1');
-          }, 1500);
-        }, 1500);
-      }
-    }
-
     // Desktop settings slide-in panel
     var dsOverlay = document.getElementById('ds-overlay');
     var dsPanel   = document.getElementById('ds-panel');
