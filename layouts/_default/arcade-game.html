@@ -206,7 +206,7 @@
     <button id="ag-lb-toggle" class="ag-action-btn" style="display:none">leaderboard</button>
   </div>
 
-  <div class="ag-source-section">
+  <div class="ag-source-section" id="ag-source-section">
     <div class="ag-source-header">
       <span class="ag-source-title">source</span>
       <button id="ag-copy" class="ag-copy-btn">copy</button>
@@ -308,11 +308,18 @@
       var lines = (game.code || '').split('\n').length;
       document.getElementById('ag-lines').textContent = lines;
 
-      // source with line numbers
-      document.getElementById('ag-source').innerHTML = highlightLua(game.code || '');
-      document.getElementById('ag-filename').textContent = id + '.lua';
-      var lineCount = (game.code || '').split('\n').length;
-      document.getElementById('ag-line-nums').textContent = Array.from({length: lineCount}, function(_, i) { return i + 1; }).join('\n');
+      // source with line numbers (hidden for closed-source games)
+      if (game.closedSource) {
+        document.getElementById('ag-source-section').style.display = 'none';
+        document.getElementById('ag-lines').textContent = 'closed source';
+        document.getElementById('ag-remix').style.display = 'none';
+        document.getElementById('ag-edit-link').style.display = 'none';
+      } else {
+        document.getElementById('ag-source').innerHTML = highlightLua(game.code || '');
+        document.getElementById('ag-filename').textContent = id + '.lua';
+        var lineCount = (game.code || '').split('\n').length;
+        document.getElementById('ag-line-nums').textContent = Array.from({length: lineCount}, function(_, i) { return i + 1; }).join('\n');
+      }
 
       document.getElementById('ag-content').style.display = 'block';
 

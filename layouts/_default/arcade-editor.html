@@ -407,6 +407,12 @@
             <input type="checkbox" id="ae-locked" style="accent-color:var(--accent)"> draft
           </label>
         </div>
+        <div class="ae-meta-field" style="max-width:120px">
+          <span class="ae-meta-lbl">source</span>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer;margin-top:2px">
+            <input type="checkbox" id="ae-closedsource" style="accent-color:var(--accent)"> closed source
+          </label>
+        </div>
       </div>
       <div class="ae-slug-hint" id="ae-slug" style="display:none"></div>
     </div>
@@ -433,6 +439,12 @@
           <span class="ae-meta-lbl">visibility</span>
           <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer;margin-top:2px">
             <input type="checkbox" id="ae-upd-locked" style="accent-color:var(--accent)"> draft
+          </label>
+        </div>
+        <div class="ae-meta-field" style="max-width:120px">
+          <span class="ae-meta-lbl">source</span>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer;margin-top:2px">
+            <input type="checkbox" id="ae-upd-closedsource" style="accent-color:var(--accent)"> closed source
           </label>
         </div>
         <div class="ae-meta-field ae-field-code">
@@ -774,6 +786,7 @@
         document.getElementById('ae-upd-desc').placeholder  = game.desc || '(no description)';
         if (game.lbMode) { var sel = document.getElementById('ae-upd-lbmode'); if (sel) sel.value = game.lbMode; }
         if (game.locked) { var lck = document.getElementById('ae-upd-locked'); if (lck) lck.checked = true; }
+        if (game.closedSource) { var cs = document.getElementById('ae-upd-closedsource'); if (cs) cs.checked = true; }
         if (!hadDraft) { setCode(game.code || ''); updateCharCount(); }
       })
       .catch(function() { modeEl.textContent = 'error loading game'; });
@@ -1375,7 +1388,7 @@
     btn.disabled = true; btn.textContent = 'submitting...'; setStatus('', '');
     fetch('/api/games', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: title, author: author, desc: desc, code: code, editCode: editCode, lbMode: (document.getElementById('ae-lbmode') || {}).value || 'desc', locked: !!(document.getElementById('ae-locked') || {}).checked }),
+      body: JSON.stringify({ title: title, author: author, desc: desc, code: code, editCode: editCode, lbMode: (document.getElementById('ae-lbmode') || {}).value || 'desc', locked: !!(document.getElementById('ae-locked') || {}).checked, closedSource: !!(document.getElementById('ae-closedsource') || {}).checked }),
     }).then(function(r) { return r.json(); }).then(function(data) {
       if (data.ok) {
         try { localStorage.removeItem('arcade_v1'); } catch(e) {}
@@ -1406,6 +1419,7 @@
     if (newDesc !== undefined && newDesc !== '') payload.newDesc = newDesc.trim();
     payload.lbMode = (document.getElementById('ae-upd-lbmode') || {}).value || 'desc';
     payload.locked = !!(document.getElementById('ae-upd-locked') || {}).checked;
+    payload.closedSource = !!(document.getElementById('ae-upd-closedsource') || {}).checked;
     fetch('/api/games?id=' + encodeURIComponent(editId), {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

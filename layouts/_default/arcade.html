@@ -64,7 +64,7 @@ document.getElementById('arc-write-btn').addEventListener('click', function() {
       return '<a class="arc-card' + (g.locked ? ' arc-card-draft' : '') + '" href="/arcade/game/?id=' + esc(g.id) + '" style="animation-delay:' + (i * 0.045) + 's">'
         + '<span class="arc-card-num">' + String(i + 1).padStart(2, '0') + '</span>'
         + '<div class="arc-card-body">'
-        + '<span class="arc-card-title">' + esc(g.title) + (g.locked ? ' <span class="arc-draft-badge">draft</span>' : '') + '</span>'
+        + '<span class="arc-card-title">' + esc(g.title) + (g.locked ? ' <span class="arc-draft-badge">draft</span>' : '') + (g.closedSource ? ' <span class="arc-draft-badge" style="border-color:var(--muted);color:var(--muted)">closed source</span>' : '') + '</span>'
         + '<span class="arc-card-meta">by ' + esc(g.author) + ' &middot; ' + fmt(g.date) + '</span>'
         + (g.desc ? '<span class="arc-card-desc">' + esc(g.desc) + '</span>' : '')
         + '</div>'
