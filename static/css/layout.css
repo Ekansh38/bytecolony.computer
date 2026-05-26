@@ -62,7 +62,7 @@ body { background: transparent; text-shadow: 0 0 18px var(--shadow), 0 0 6px var
   transition: opacity 0.4s ease;
 }
 
-body.page #bg-canvas, body.games #bg-canvas { opacity: 0.25; }
+body.page #bg-canvas, body.section.games #bg-canvas { opacity: 0.25; }
 
 
 /* Touch-only devices (phones/tablets) */
