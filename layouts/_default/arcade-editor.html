@@ -1,6 +1,7 @@
 {{ define "main" }}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/dialog/dialog.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/lint/lint.min.css">
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/dialog/dialog.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/keymap/vim.min.js"></script>
@@ -10,6 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/search/search.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/search/searchcursor.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/search/jump-to-line.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/addon/lint/lint.min.js"></script>
 
 <style>
   body { max-width: min(1200px, 96vw) !important; }
@@ -26,6 +28,15 @@
   .cm-arcade   { color: var(--accent)    !important; }
   .cm-std      { color: var(--code-attr) !important; }
   .cm-callee   { color: var(--code-fn)   !important; }
+
+  /* ── Lint styling ── */
+  .CodeMirror-lint-marker-error { color: var(--code-err, #f7768e); }
+  .CodeMirror-lint-tooltip {
+    background: var(--code-bg) !important; color: var(--fg) !important;
+    border: 1px solid var(--border) !important; border-radius: 3px;
+    font-family: inherit !important; font-size: 0.82rem;
+  }
+  .CodeMirror-lint-message-error { background: none; padding-left: 0; color: var(--code-err, #f7768e); }
 
   /* ── CodeMirror base ── */
   .CodeMirror {
@@ -631,6 +642,25 @@
     CodeMirror.Vim.defineEx('x',     'x',  function() { autoFormat(); saveDraft(); window.location.href = '/arcade'; });
   }
 
+  // ── Lua syntax linter (async, uses Fengari) ──
+  CodeMirror.registerHelper('lint', 'lua-arcade', function (text, options, editor) {
+    return new Promise(function (resolve) {
+      if (!window.luaCheck) { resolve([]); return; }
+      window.luaCheck(text, function (err) {
+        if (!err) { resolve([]); return; }
+        var m = err.match(/^line (\d+): (.+)/);
+        var line = m ? parseInt(m[1], 10) - 1 : 0;
+        var msg = m ? m[2] : err;
+        resolve([{
+          from: CodeMirror.Pos(line, 0),
+          to: CodeMirror.Pos(line),
+          message: msg,
+          severity: 'error'
+        }]);
+      });
+    });
+  });
+
   // ── create editor ──
   var editor = CodeMirror(document.getElementById('ae-editor'), {
     value: '',
@@ -643,6 +673,8 @@
     indentUnit: 4,
     tabSize: 4,
     indentWithTabs: false,
+    lint: { async: true, delay: 500 },
+    gutters: ['CodeMirror-lint-markers', 'CodeMirror-linenumbers'],
     extraKeys: {
       'Tab': function(cm) {
         if (cm.somethingSelected()) { cm.indentSelection('add'); }
