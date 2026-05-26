@@ -401,16 +401,17 @@
           <span class="ae-meta-lbl">edit code</span>
           <input id="ae-newcode" type="password" placeholder="choose a code" minlength="4" maxlength="50" autocomplete="off" spellcheck="false">
         </div>
-        <div class="ae-meta-field" style="max-width:130px">
-          <span class="ae-meta-lbl">options</span>
-          <div style="display:flex;flex-direction:column;gap:4px;margin-top:2px">
-            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer">
-              <input type="checkbox" id="ae-locked" style="accent-color:var(--accent)"> draft
-            </label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer">
-              <input type="checkbox" id="ae-closedsource" style="accent-color:var(--accent)"> closed
-            </label>
-          </div>
+        <div class="ae-meta-field" style="max-width:80px">
+          <span class="ae-meta-lbl">draft</span>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer;margin-top:2px" title="only visible with edit code">
+            <input type="checkbox" id="ae-locked" style="accent-color:var(--accent)"> hidden
+          </label>
+        </div>
+        <div class="ae-meta-field" style="max-width:110px">
+          <span class="ae-meta-lbl">closed source</span>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer;margin-top:2px" title="hides code from viewers">
+            <input type="checkbox" id="ae-closedsource" style="accent-color:var(--accent)"> hide code
+          </label>
         </div>
       </div>
       <div class="ae-slug-hint" id="ae-slug" style="display:none"></div>
@@ -435,15 +436,16 @@
           </select>
         </div>
         <div class="ae-meta-field" style="max-width:130px">
-          <span class="ae-meta-lbl">options</span>
-          <div style="display:flex;flex-direction:column;gap:4px;margin-top:2px">
-            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer">
-              <input type="checkbox" id="ae-upd-locked" style="accent-color:var(--accent)"> draft
-            </label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer">
-              <input type="checkbox" id="ae-upd-closedsource" style="accent-color:var(--accent)"> closed
-            </label>
-          </div>
+          <span class="ae-meta-lbl">draft</span>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer;margin-top:2px" title="only visible with edit code">
+            <input type="checkbox" id="ae-upd-locked" style="accent-color:var(--accent)"> hidden
+          </label>
+        </div>
+        <div class="ae-meta-field" style="max-width:110px">
+          <span class="ae-meta-lbl">closed source</span>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--muted);cursor:pointer;margin-top:2px" title="hides code from viewers">
+            <input type="checkbox" id="ae-upd-closedsource" style="accent-color:var(--accent)"> hide code
+          </label>
         </div>
         <div class="ae-meta-field ae-field-code">
           <span class="ae-meta-lbl">edit code</span>
