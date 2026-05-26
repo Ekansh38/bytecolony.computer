@@ -20,8 +20,8 @@
     {{ range .ByDate.Reverse }}
     <li class="writing-li">
       <div>
-        {{ with .Params.project }}<a href="/projects/{{ . }}/" class="writing-project">{{ . }}</a> / {{ end }}
         <a href="{{ .Permalink }}">{{ .Title }}</a>
+        {{ with .Params.project }}<br><a href="/projects/{{ . }}/" class="writing-project">↳ {{ . }}</a>{{ end }}
       </div>
       <span class="yr">{{ .Date.Format "2006" }}</span>
     </li>

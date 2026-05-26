@@ -6,15 +6,14 @@
 
 {{ .Content }}
 
-{{ with .RegularPages }}
 <ul>
-  {{ range . }}
-  <li class="writing-li">
-    <a href="{{ .Params.itchio }}" target="_blank">{{ .Title }}</a>
-    <span class="yr">{{ .Date.Format "2006" }}</span>
+  {{ range .RegularPages }}
+  <li>
+    <span class="li-name"><a href="{{ .Params.itchio }}" target="_blank" rel="noopener noreferrer">{{ .Title }}</a></span>:
+    <span class="li-desc">{{ .Params.summary }}</span>
+    <div class="li-meta">{{ .Params.engine }}{{ with .Params.team }} · {{ . }}{{ end }} · {{ .Date.Format "2006" }}{{ with .Params.itchio }} · <a href="{{ . }}" target="_blank">itch.io</a>{{ end }}</div>
   </li>
   {{ end }}
 </ul>
-{{ end }}
 
 {{ end }}
