@@ -58,7 +58,7 @@
   // flocking shapes. Soft trail via partial-fade instead of clearRect.
   // Each boid is a concave arrow pointing in its velocity direction.
 
-  var N          = _isMobile ? 40 : 120;
+  var N          = _isMobile ? 60 : 120;
   var MAX_SPEED  = 1.0,  MIN_SPEED  = 0.3;
   var PERCEPTION = 52,   SEP_DIST   = 38;
   var SEP_W      = 0.16, ALI_W      = 0.05, COH_W = 0.003;
@@ -813,8 +813,9 @@
         window.setBoidsSpeed(parseFloat(val));
         return true;
       case 'boids.n':
-        var maxN = _isMobile ? 60 : 1000;
-        N = Math.max(1, Math.min(maxN, Math.round(val)));
+        var n = Math.round(val);
+        if (_isMobile) n = Math.round(n / 2);
+        N = Math.max(1, Math.min(_isMobile ? 60 : 1000, n));
         if (MODES[modeIdx] === 'boids' || MODES[modeIdx] === 'combo') initBoids();
         return true;
       case 'boids.size':
