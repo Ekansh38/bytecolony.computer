@@ -1,5 +1,12 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+.skip-link {
+  position: absolute; left: -9999px; top: auto;
+  padding: 8px 16px; background: var(--accent); color: var(--bg);
+  font-size: 0.85rem; z-index: 9999; text-decoration: none;
+}
+.skip-link:focus { left: 8px; top: 8px; }
+
 /* ── Page transitions (cross-document View Transitions API) ── */
 @view-transition { navigation: auto; }
 ::view-transition-old(root) {
