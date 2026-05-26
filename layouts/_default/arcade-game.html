@@ -313,7 +313,6 @@
         document.getElementById('ag-source-section').style.display = 'none';
         document.getElementById('ag-lines').textContent = 'closed source';
         document.getElementById('ag-remix').style.display = 'none';
-        document.getElementById('ag-edit-link').style.display = 'none';
       } else {
         document.getElementById('ag-source').innerHTML = highlightLua(game.code || '');
         document.getElementById('ag-filename').textContent = id + '.lua';
@@ -354,11 +353,27 @@
         });
       });
 
-      // wire edit-in-editor link (include unlock code for drafts)
-      var editUrl = '/arcade/editor/?edit=' + encodeURIComponent(id);
-      var unlockCode = (document.getElementById('ag-locked-code') || {}).value || '';
-      if (unlockCode) editUrl += '&code=' + encodeURIComponent(unlockCode.trim());
-      document.getElementById('ag-edit-link').href = editUrl;
+      // wire edit-in-editor link
+      var editLink = document.getElementById('ag-edit-link');
+      if (game.closedSource) {
+        editLink.href = '#';
+        editLink.addEventListener('click', function (e) {
+          e.preventDefault();
+          var code = (document.getElementById('ag-manage-code').value || '').trim();
+          if (!code) {
+            managePanel.style.display = 'flex';
+            document.getElementById('ag-manage-code').focus();
+            document.getElementById('ag-manage-status').textContent = 'enter edit code to open editor';
+            return;
+          }
+          window.location.href = '/arcade/editor/?edit=' + encodeURIComponent(id) + '&code=' + encodeURIComponent(code);
+        });
+      } else {
+        var editUrl = '/arcade/editor/?edit=' + encodeURIComponent(id);
+        var unlockCode = (document.getElementById('ag-locked-code') || {}).value || '';
+        if (unlockCode) editUrl += '&code=' + encodeURIComponent(unlockCode.trim());
+        editLink.href = editUrl;
+      }
 
       // ── leaderboard slide-out ──
       var lbMode = game.lbMode || 'desc';
