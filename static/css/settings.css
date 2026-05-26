@@ -197,6 +197,12 @@
     border-color: var(--accent);
     color: var(--bg);
   }
+  .ds-preset-rand {
+    border-style: dashed;
+    font-size: 0.85rem;
+    min-width: 28px;
+    padding: 3px 8px;
+  }
 
   /* ── sliders & controls ── */
   .ds-sliders {

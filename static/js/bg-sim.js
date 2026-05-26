@@ -1050,6 +1050,19 @@
     var presetsC = document.getElementById('ds-presets');
     if (presetsC && !presetsC.childElementCount) {
       var names = window.getPresetNames ? window.getPresetNames() : [];
+      // random button
+      var rBtn = document.createElement('button');
+      rBtn.className = 'ds-preset ds-preset-rand';
+      rBtn.textContent = '↻';
+      rBtn.title = 'random preset';
+      rBtn.addEventListener('click', function () {
+        var n = window.getPresetNames ? window.getPresetNames() : [];
+        var pick = n.filter(function (x) { return x !== activePreset; });
+        if (!pick.length) return;
+        window.applyPreset(pick[Math.floor(Math.random() * pick.length)]);
+        _buildDesktopSettings();
+      });
+      presetsC.appendChild(rBtn);
       names.forEach(function (name) {
         var p = PRESETS[name];
         var btn = document.createElement('button');
@@ -1279,6 +1292,18 @@
     var active = window.getActivePreset ? window.getActivePreset() : null;
     // mobile subset: curated lighter presets
     var MOBILE_PRESETS = ['default','dusk','soft','aurora','canvas','prism','swarm','ghost','bloom','midnight','ember','chromatic','fog','paper','drift'];
+    // random button
+    var rBtn = document.createElement('button');
+    rBtn.className = 'ms-preset ms-preset-rand';
+    rBtn.textContent = '↻';
+    rBtn.addEventListener('click', function () {
+      var pool = names.filter(function (x) { return MOBILE_PRESETS.indexOf(x) >= 0 && x !== active; });
+      if (!pool.length) return;
+      window.applyPreset(pool[Math.floor(Math.random() * pool.length)]);
+      _rebuildMobilePresets();
+      _updateMobileMode();
+    });
+    container.appendChild(rBtn);
     names.forEach(function (name) {
       if (MOBILE_PRESETS.indexOf(name) < 0) return;
       var btn = document.createElement('button');

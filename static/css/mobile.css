@@ -181,6 +181,12 @@
   color: var(--bg);
   border-color: var(--accent);
 }
+.ms-preset-rand {
+  border-style: dashed;
+  font-size: 0.85rem;
+  min-width: 28px;
+  padding: 5px 10px;
+}
 
 /* ── SPAWN CLICK OVERLAY ─────────────────────────────────────── */
 #spawn-overlay {
