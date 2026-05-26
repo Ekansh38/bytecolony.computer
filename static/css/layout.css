@@ -68,5 +68,4 @@ body.page #bg-canvas { opacity: 0.25; }
 /* Touch-only devices (phones/tablets) */
 @media (hover: none) and (pointer: coarse) {
   #term-btn { display: none; }
-  .social { justify-content: center; }
 }
