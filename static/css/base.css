@@ -202,8 +202,6 @@ body.projects li, body.home li { padding: 14px 0; }
 
 .writing-li { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
 .writing-li a { color: var(--fg); }
-.writing-li > div { display: inline-flex; align-items: baseline; gap: 8px; }
-.writing-li .ant-icon { flex-shrink: 0; opacity: 0.4; position: relative; top: 1px; }
 .writing-project { display: inline-block; color: var(--muted) !important; font-size: 0.75rem; letter-spacing: 0.03em; margin-top: 2px; }
 .writing-project:hover { color: var(--accent) !important; }
 
@@ -243,14 +241,6 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 
 .ant-icon { color: var(--accent); vertical-align: middle; }
 
-.post-signoff {
-  margin-top: 56px;
-  padding-top: 28px;
-  border-top: 1px solid var(--border);
-  opacity: 0.2;
-  transition: opacity 0.3s;
-}
-.post-signoff:hover { opacity: 0.45; }
 
 .links { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
 .links a { color: var(--accent); }
