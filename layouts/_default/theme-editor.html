@@ -23,6 +23,7 @@
     <div class="adm-tabs">
       <button class="adm-tab active" data-tab="presets">presets</button>
       <button class="adm-tab" data-tab="guestbook">guestbook</button>
+      <button class="adm-tab" data-tab="comments">comments</button>
       <button class="adm-tab" data-tab="arcade">arcade</button>
     </div>
 
@@ -42,6 +43,13 @@
         <span class="adm-section-status" id="gb-status"></span>
       </div>
       <div id="gb-list"></div>
+    </div>
+
+    <div class="adm-tab-content" id="tab-comments" style="display:none;">
+      <div class="adm-section-header">
+        <span class="adm-section-status" id="cmt-status"></span>
+      </div>
+      <div id="cmt-list-admin"></div>
     </div>
 
     <div class="adm-tab-content" id="tab-arcade" style="display:none;">
@@ -242,6 +250,7 @@
       if (target) target.style.display = 'block';
       // lazy load
       if (tab.getAttribute('data-tab') === 'guestbook') loadGuestbook();
+      if (tab.getAttribute('data-tab') === 'comments') loadComments();
       if (tab.getAttribute('data-tab') === 'arcade') loadArcade();
     });
   });
@@ -715,6 +724,78 @@
 
       card.appendChild(bar);
       card.appendChild(body);
+      list.appendChild(card);
+    });
+  }
+  // ══════════════════════════════════════════════════════════════
+  // COMMENTS
+  // ══════════════════════════════════════════════════════════════
+  var cmtLoaded = false;
+  function loadComments() {
+    if (cmtLoaded) return;
+    cmtLoaded = true;
+    document.getElementById('cmt-status').textContent = 'loading...';
+    fetch('/api/comments?action=all', { headers: headers() })
+      .then(function (r) { return r.json(); })
+      .then(function (comments) {
+        if (comments.error) { document.getElementById('cmt-status').textContent = comments.error; return; }
+        document.getElementById('cmt-status').textContent = comments.length + ' comments';
+        renderComments(comments);
+      })
+      .catch(function (err) { document.getElementById('cmt-status').textContent = 'error: ' + err.message; });
+  }
+
+  function renderComments(comments) {
+    var list = document.getElementById('cmt-list-admin');
+    list.innerHTML = '';
+    if (!comments.length) { list.innerHTML = '<p style="color:var(--muted)">no comments</p>'; return; }
+    comments.forEach(function (c) {
+      var card = document.createElement('div');
+      card.className = 'adm-card';
+
+      var bar = document.createElement('div');
+      bar.className = 'adm-card-bar';
+
+      var title = document.createElement('span');
+      title.className = 'adm-card-title';
+      title.textContent = c.name || 'anonymous';
+
+      var meta = document.createElement('span');
+      meta.className = 'adm-card-meta';
+      var slug = c._slug || '';
+      var dateStr = c.date ? c.date.split('T')[0] : '';
+      meta.textContent = slug + (dateStr ? ' / ' + dateStr : '') + (c.replyTo ? ' / reply' : '');
+
+      var actions = document.createElement('span');
+      actions.className = 'adm-card-actions';
+      var delBtn = document.createElement('button');
+      delBtn.className = 'adm-btn adm-btn-sm adm-btn-danger';
+      delBtn.textContent = 'delete';
+      delBtn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (!confirm('delete comment by "' + (c.name || 'anonymous') + '"?')) return;
+        delBtn.textContent = '...';
+        fetch('/api/comments', {
+          method: 'POST',
+          headers: headers(),
+          body: JSON.stringify({ action: 'delete', id: c.id, slug: c._slug })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d.ok) { card.remove(); }
+          else { delBtn.textContent = 'err'; }
+        }).catch(function () { delBtn.textContent = 'err'; });
+      });
+      actions.appendChild(delBtn);
+
+      bar.appendChild(title);
+      bar.appendChild(meta);
+      bar.appendChild(actions);
+
+      var msg = document.createElement('div');
+      msg.className = 'adm-gb-msg';
+      msg.textContent = c.message || '';
+
+      card.appendChild(bar);
+      card.appendChild(msg);
       list.appendChild(card);
     });
   }

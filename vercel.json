@@ -43,6 +43,7 @@
     { "src": "/api/guestbook", "dest": "/api/guestbook.js" },
     { "src": "/api/games", "dest": "/api/games.js" },
     { "src": "/api/themes", "dest": "/api/themes.js" },
+    { "src": "/api/comments", "dest": "/api/comments.js" },
     { "handle": "filesystem" }
   ]
 }

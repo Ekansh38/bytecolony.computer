@@ -1,0 +1,214 @@
+<div class="comments-section">
+  <hr style="margin: 48px 0 28px;">
+  <h2 class="comments-title">comments</h2>
+
+  <div class="cmt-form">
+    <textarea id="cmt-msg" class="cmt-input" placeholder="write a comment..." maxlength="500" rows="3" spellcheck="false"></textarea>
+    <div class="cmt-form-row">
+      <input id="cmt-name" class="cmt-input cmt-name-input" type="text" placeholder="name (optional)" maxlength="50" autocomplete="off" spellcheck="false">
+      <button id="cmt-submit" class="cmt-btn">comment</button>
+    </div>
+    <input id="cmt-hp" type="text" tabindex="-1" autocomplete="off" style="display:none">
+    <div id="cmt-status" class="cmt-status"></div>
+  </div>
+
+  <div id="cmt-count" class="cmt-count"></div>
+  <div id="cmt-list">
+    <p style="color:var(--muted)">loading...</p>
+  </div>
+</div>
+
+<style>
+  .comments-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; }
+
+  .cmt-form { margin-bottom: 28px; }
+  .cmt-input {
+    width: 100%; background: var(--code-bg); border: 1px solid var(--border);
+    color: var(--fg); font: inherit; font-size: 0.88rem;
+    padding: 8px 10px; outline: none; box-sizing: border-box;
+    transition: border-color 0.15s;
+  }
+  .cmt-input:focus { border-color: var(--accent); }
+  textarea.cmt-input { resize: vertical; min-height: 70px; }
+  .cmt-form-row { display: flex; gap: 8px; margin-top: 8px; }
+  .cmt-name-input { flex: 1; }
+  .cmt-btn {
+    background: transparent; border: 1px solid var(--accent);
+    color: var(--accent); font: inherit; font-size: 0.88rem;
+    padding: 8px 20px; cursor: pointer; white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  .cmt-btn:hover { background: var(--accent); color: var(--bg); }
+  .cmt-btn:disabled { opacity: 0.4; cursor: default; }
+  .cmt-status { font-size: 0.82rem; color: var(--muted); min-height: 1.2em; margin-top: 6px; }
+  .cmt-count { color: var(--muted); font-size: 0.82rem; margin-bottom: 8px; }
+
+  .cmt-entry { padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .cmt-entry:first-child { border-top: 1px solid var(--border); }
+  .cmt-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .cmt-name { font-weight: 700; font-size: 0.92rem; }
+  .cmt-date { color: var(--muted); font-size: 0.75rem; }
+  .cmt-msg { font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+  .cmt-reply-btn {
+    background: none; border: none; color: var(--muted); font: inherit;
+    font-size: 0.75rem; cursor: pointer; padding: 4px 0; margin-top: 4px;
+  }
+  .cmt-reply-btn:hover { color: var(--accent); }
+
+  .cmt-replies { margin-left: 20px; border-left: 2px solid var(--border); padding-left: 16px; }
+  .cmt-replies .cmt-entry { border-top: none; padding: 10px 0; }
+  .cmt-replies .cmt-entry:first-child { border-top: none; }
+
+  .cmt-reply-form { margin: 8px 0 0 20px; padding-left: 16px; border-left: 2px solid var(--border); }
+  .cmt-reply-form textarea { min-height: 50px; font-size: 0.85rem; }
+  .cmt-reply-form .cmt-form-row { margin-top: 6px; }
+  .cmt-reply-form .cmt-btn { font-size: 0.82rem; padding: 6px 14px; }
+  .cmt-reply-form .cmt-name-input { font-size: 0.85rem; }
+</style>
+
+<script>
+(function () {
+  var SLUG = {{ .RelPermalink | jsonify }}.replace(/^\/|\/$/g, '').replace(/\//g, '-');
+  var API = '/api/comments?slug=' + encodeURIComponent(SLUG);
+  var _comments = [];
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function timeAgo(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    var now = Date.now();
+    var diff = Math.floor((now - d.getTime()) / 1000);
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+    if (diff < 2592000) return Math.floor(diff / 86400) + 'd ago';
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
+
+  function render() {
+    var el = document.getElementById('cmt-list');
+    var countEl = document.getElementById('cmt-count');
+    var total = _comments.length;
+    countEl.textContent = total ? total + ' comment' + (total === 1 ? '' : 's') : '';
+
+    if (!total) {
+      el.innerHTML = '<p style="color:var(--muted)">no comments yet. be the first.</p>';
+      return;
+    }
+
+    // separate top-level and replies
+    var topLevel = [];
+    var replies = {};
+    for (var i = 0; i < _comments.length; i++) {
+      var c = _comments[i];
+      if (c.replyTo) {
+        if (!replies[c.replyTo]) replies[c.replyTo] = [];
+        replies[c.replyTo].push(c);
+      } else {
+        topLevel.push(c);
+      }
+    }
+
+    el.innerHTML = topLevel.map(function (c) {
+      var reps = replies[c.id] || [];
+      var repHtml = '';
+      if (reps.length) {
+        repHtml = '<div class="cmt-replies">' + reps.map(function (r) {
+          return '<div class="cmt-entry">'
+            + '<div class="cmt-head"><span class="cmt-name">' + esc(r.name) + '</span><span class="cmt-date">' + timeAgo(r.date) + '</span></div>'
+            + '<div class="cmt-msg">' + esc(r.message) + '</div>'
+            + '</div>';
+        }).join('') + '</div>';
+      }
+      return '<div class="cmt-entry" data-id="' + esc(c.id) + '">'
+        + '<div class="cmt-head"><span class="cmt-name">' + esc(c.name) + '</span><span class="cmt-date">' + timeAgo(c.date) + '</span></div>'
+        + '<div class="cmt-msg">' + esc(c.message) + '</div>'
+        + '<button class="cmt-reply-btn" data-id="' + esc(c.id) + '">reply</button>'
+        + repHtml
+        + '</div>';
+    }).join('');
+
+    // attach reply handlers
+    el.querySelectorAll('.cmt-reply-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var parentId = btn.getAttribute('data-id');
+        // remove any existing reply forms
+        var existing = document.querySelector('.cmt-reply-form');
+        if (existing) existing.remove();
+        // create reply form
+        var form = document.createElement('div');
+        form.className = 'cmt-reply-form';
+        form.innerHTML = '<textarea class="cmt-input" placeholder="reply..." maxlength="500" rows="2" spellcheck="false"></textarea>'
+          + '<div class="cmt-form-row">'
+          + '<input class="cmt-input cmt-name-input" type="text" placeholder="name (optional)" maxlength="50" autocomplete="off" spellcheck="false">'
+          + '<button class="cmt-btn">reply</button>'
+          + '</div>';
+        btn.parentNode.insertBefore(form, btn.nextSibling);
+        form.querySelector('textarea').focus();
+        form.querySelector('.cmt-btn').addEventListener('click', function () {
+          var msg = form.querySelector('textarea').value.trim();
+          var name = form.querySelector('.cmt-name-input').value.trim();
+          if (!msg) return;
+          this.disabled = true;
+          this.textContent = '...';
+          submitComment(msg, name, parentId, function () { form.remove(); });
+        });
+      });
+    });
+  }
+
+  function setStatus(msg, color) {
+    var el = document.getElementById('cmt-status');
+    el.textContent = msg;
+    el.style.color = color || 'var(--muted)';
+  }
+
+  function submitComment(message, name, replyTo, cb) {
+    fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, message: message, hp: document.getElementById('cmt-hp').value, replyTo: replyTo || undefined })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (data.error) { setStatus(data.error); return; }
+      _comments.push(data);
+      render();
+      if (!replyTo) {
+        document.getElementById('cmt-msg').value = '';
+        document.getElementById('cmt-name').value = '';
+        setStatus('posted!', 'var(--accent)');
+      }
+      if (cb) cb();
+    })
+    .catch(function () { setStatus('network error. try again.'); })
+    .finally(function () {
+      var btn = document.getElementById('cmt-submit');
+      btn.disabled = false;
+      btn.textContent = 'comment';
+    });
+  }
+
+  // load
+  fetch(API, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (data) {
+    _comments = data;
+    render();
+  }).catch(function () {
+    document.getElementById('cmt-list').innerHTML = '<p style="color:var(--muted)">couldn\'t load comments.</p>';
+  });
+
+  // submit
+  document.getElementById('cmt-submit').addEventListener('click', function () {
+    var msg = document.getElementById('cmt-msg').value.trim();
+    if (!msg) { setStatus('write something!'); return; }
+    this.disabled = true;
+    this.textContent = '...';
+    setStatus('');
+    submitComment(msg, document.getElementById('cmt-name').value.trim());
+  });
+})();
+</script>
