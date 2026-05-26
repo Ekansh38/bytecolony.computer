@@ -17,7 +17,33 @@
 </ul>
 
 <hr>
-<h2>client work</h2>
+<h2><a href="/writing" class="now-link">writing</a></h2>
+{{ $writing := .Site.GetPage "/writing" }}
+{{ $projectArticles := slice }}
+{{ range (.Site.GetPage "/projects").Sections }}
+  {{ range .Pages }}
+    {{ $projectArticles = $projectArticles | append . }}
+  {{ end }}
+{{ end }}
+{{ $allPosts := union ($writing.RegularPages) $projectArticles }}
+{{ if $allPosts }}
+<ul>
+  {{ range $allPosts.ByDate.Reverse }}
+  <li class="writing-li">
+    <div>
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+      {{ with .Params.project }}<br><a href="/projects/{{ . }}/" class="writing-project">↳ {{ . }}</a>{{ end }}
+    </div>
+    <span class="yr">{{ .Date.Format "2006" }}</span>
+  </li>
+  {{ end }}
+</ul>
+{{ else }}
+<p style="color: var(--muted)">nothing yet</p>
+{{ end }}
+
+<hr>
+<h2><a href="/projects#client-work" class="now-link">client work</a></h2>
 <ul>
   <li>
     <span class="li-name"><a href="https://www.drchandnichopra.com" target="_blank" rel="noopener noreferrer">drchandnichopra.com</a></span>:
@@ -86,32 +112,6 @@
   </li>
   {{ end }}
 </ul>
-
-<hr>
-<h2><a href="/writing" class="now-link">writing</a></h2>
-{{ $writing := .Site.GetPage "/writing" }}
-{{ $projectArticles := slice }}
-{{ range (.Site.GetPage "/projects").Sections }}
-  {{ range .Pages }}
-    {{ $projectArticles = $projectArticles | append . }}
-  {{ end }}
-{{ end }}
-{{ $allPosts := union ($writing.RegularPages) $projectArticles }}
-{{ if $allPosts }}
-<ul>
-  {{ range $allPosts.ByDate.Reverse }}
-  <li class="writing-li">
-    <div>
-      <a href="{{ .Permalink }}">{{ .Title }}</a>
-      {{ with .Params.project }}<br><a href="/projects/{{ . }}/" class="writing-project">↳ {{ . }}</a>{{ end }}
-    </div>
-    <span class="yr">{{ .Date.Format "2006" }}</span>
-  </li>
-  {{ end }}
-</ul>
-{{ else }}
-<p style="color: var(--muted)">nothing yet</p>
-{{ end }}
 
 <hr>
 <h2>get in touch</h2>

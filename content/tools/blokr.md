@@ -1,7 +1,7 @@
 ---
 title: "blokr"
 weight: 2
-summary: "Block distracting sites behind a physical code you keep on paper. macOS only."
+summary: "Block distracting sites behind a physical code you keep on paper."
 stack: "Python"
 status: "active"
 github: "https://github.com/Ekansh38/blokr"
