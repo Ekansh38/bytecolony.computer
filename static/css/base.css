@@ -244,15 +244,13 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 .ant-icon { color: var(--accent); vertical-align: middle; }
 
 .post-signoff {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 48px;
-  padding-top: 20px;
+  margin-top: 56px;
+  padding-top: 28px;
   border-top: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 0.88rem;
+  opacity: 0.2;
+  transition: opacity 0.3s;
 }
+.post-signoff:hover { opacity: 0.45; }
 
 .links { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
 .links a { color: var(--accent); }

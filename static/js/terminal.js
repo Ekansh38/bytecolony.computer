@@ -119,13 +119,11 @@
     });
   }
 
-  var ANT_PROMPT = '<svg class="ant-icon" xmlns="http://www.w3.org/2000/svg" viewBox="75 95 175 125" shape-rendering="crispEdges" width="12" height="9" style="vertical-align:middle;color:var(--accent);margin:0 2px;"><rect x="210" y="100" width="10" height="10" fill="currentColor"/><rect x="240" y="100" width="10" height="10" fill="currentColor"/><rect x="200" y="110" width="10" height="60" fill="currentColor"/><rect x="230" y="110" width="10" height="20" fill="currentColor"/><rect x="210" y="130" width="20" height="20" fill="currentColor"/><rect x="110" y="140" width="20" height="40" fill="currentColor"/><rect x="160" y="140" width="20" height="40" fill="currentColor"/><rect x="190" y="140" width="10" height="20" fill="currentColor"/><rect x="230" y="140" width="10" height="20" fill="currentColor"/><rect x="100" y="150" width="10" height="30" fill="currentColor"/><rect x="130" y="150" width="10" height="30" fill="currentColor"/><rect x="150" y="150" width="10" height="30" fill="currentColor"/><rect x="180" y="150" width="10" height="30" fill="currentColor"/><rect x="220" y="150" width="10" height="20" fill="currentColor"/><rect x="90" y="160" width="10" height="20" fill="currentColor"/><rect x="140" y="160" width="10" height="10" fill="currentColor"/><rect x="210" y="160" width="10" height="10" fill="currentColor"/><rect x="80" y="170" width="10" height="10" fill="currentColor"/><rect x="110" y="180" width="10" height="10" fill="currentColor"/><rect x="160" y="180" width="10" height="10" fill="currentColor"/><rect x="190" y="180" width="10" height="10" fill="currentColor"/><rect x="100" y="190" width="10" height="10" fill="currentColor"/><rect x="170" y="190" width="10" height="10" fill="currentColor"/><rect x="200" y="190" width="10" height="10" fill="currentColor"/><rect x="90" y="200" width="10" height="10" fill="currentColor"/><rect x="180" y="200" width="10" height="10" fill="currentColor"/><rect x="210" y="200" width="10" height="10" fill="currentColor"/></svg>';
-
   function updatePrompt() {
     var ps = document.getElementById('term-prompt');
     var pb = document.getElementById('term-path');
     var loc = cwd ? '~/' + cwd : '~';
-    if (ps) ps.innerHTML = loc + '\u00a0' + ANT_PROMPT + '\u00a0';
+    if (ps) ps.textContent = loc + '$\u00a0';
     if (pb) pb.textContent = 'colony@site:' + loc;
   }
 
