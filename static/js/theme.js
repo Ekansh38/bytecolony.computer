@@ -37,18 +37,21 @@ function toggleTheme() {
   document.addEventListener('DOMContentLoaded', function () {
     applyTheme(document.documentElement.getAttribute('data-theme'));
 
-    // First-visit theme hint
+    // First-visit: briefly glow the settings button
     if (!localStorage.getItem('theme-hint-seen')) {
-      setTimeout(function () {
-        var toast = document.getElementById('copy-toast');
-        if (!toast) return;
-        toast.textContent = 'try typing =';
-        toast.classList.add('show');
+      var hintBtn = document.getElementById('d-settings-btn');
+      if (hintBtn) {
         setTimeout(function () {
-          toast.classList.remove('show');
-          localStorage.setItem('theme-hint-seen', '1');
-        }, 4000);
-      }, 2000);
+          hintBtn.style.color = 'var(--accent)';
+          hintBtn.style.textShadow = '0 0 8px var(--accent)';
+          hintBtn.style.transition = 'color 0.4s ease, text-shadow 0.4s ease';
+          setTimeout(function () {
+            hintBtn.style.color = '';
+            hintBtn.style.textShadow = '';
+            localStorage.setItem('theme-hint-seen', '1');
+          }, 1500);
+        }, 1500);
+      }
     }
 
     // Desktop settings slide-in panel
