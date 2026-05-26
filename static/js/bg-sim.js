@@ -955,6 +955,11 @@
       if (!d.presets || typeof d.presets !== 'object') return;
       var keys = Object.keys(d.presets);
       if (!keys.length) return;
+      // replace entirely — remove hardcoded presets not in DB
+      var old = Object.keys(PRESETS);
+      for (var i = 0; i < old.length; i++) {
+        if (!d.presets[old[i]]) delete PRESETS[old[i]];
+      }
       for (var i = 0; i < keys.length; i++) {
         PRESETS[keys[i]] = d.presets[keys[i]];
       }
