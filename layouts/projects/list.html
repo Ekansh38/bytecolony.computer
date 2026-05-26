@@ -5,7 +5,7 @@
 <div class="project-title">{{ .Title }}</div>
 <div class="project-meta">{{ .Params.stack }} · {{ .Params.status }}</div>
 
-{{ .Content }}
+<div class="project-content">{{ .Content }}</div>
 
 <div class="links">
   {{ with .Params.live }}<a href="{{ . }}" target="_blank">live site ↗</a>{{ end }}

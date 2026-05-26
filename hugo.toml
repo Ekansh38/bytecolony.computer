@@ -11,6 +11,10 @@ title = "Byte Colony"
   noClasses = false
   lineNos = false
 
+[outputs]
+  home = ["HTML", "RSS"]
+  section = ["HTML"]
+
 [params]
   tagline = "a journey underground"
   pitch   = "My adventure underground as I feed my interest in computers!"
