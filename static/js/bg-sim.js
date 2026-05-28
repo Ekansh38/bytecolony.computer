@@ -5,6 +5,7 @@
 
   var canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
+  if (_isMobile) { canvas.style.display = 'none'; return; }
   var ctx = canvas.getContext('2d');
 
   var MODES = ['life', 'boids', 'combo', 'off'];

@@ -11,22 +11,16 @@ function applyTheme(name) {
   var items = document.querySelectorAll('.tp-item');
   for (var i = 0; i < items.length; i++)
     items[i].classList.toggle('active', items[i].getAttribute('data-t') === name);
-  var dl = document.getElementById('ms-dark-light');
-  if (dl) {
-    var mode = isLight ? 'light' : 'dark';
-    var btns = dl.querySelectorAll('button');
-    for (var k = 0; k < btns.length; k++)
-      btns[k].classList.toggle('active', btns[k].getAttribute('data-ml') === mode);
-  }
 }
 
 function toggleTheme() {
-  var sheet = document.getElementById('m-sheet');
-  if (sheet) {
-    sheet.classList.add('open');
+  var isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (isMobile) {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var isLight = LIGHT_THEMES.indexOf(cur) >= 0;
+    applyTheme(isLight ? 'tokyo-night' : 'github-light');
     return;
   }
-  // fallback: cycle
   var cur = document.documentElement.getAttribute('data-theme');
   var idx = THEMES.indexOf(cur);
   applyTheme(THEMES[(idx + 1) % THEMES.length]);
@@ -77,25 +71,6 @@ function toggleTheme() {
       }
     });
 
-    // Mobile settings sheet
-    var mSheet = document.getElementById('m-sheet');
-    if (mSheet) {
-      mSheet.addEventListener('click', function (e) {
-        if (e.target === mSheet) mSheet.classList.remove('open');
-      });
-      var dlSeg = document.getElementById('ms-dark-light');
-      if (dlSeg) {
-        var dlBtns = dlSeg.querySelectorAll('button');
-        for (var j = 0; j < dlBtns.length; j++) {
-          dlBtns[j].addEventListener('click', (function (btn) {
-            return function () {
-              var mode = btn.getAttribute('data-ml');
-              applyTheme(mode === 'light' ? 'github-light' : 'tokyo-night');
-            };
-          })(dlBtns[j]));
-        }
-      }
-    }
   });
 })();
 
