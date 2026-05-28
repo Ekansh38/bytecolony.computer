@@ -173,6 +173,11 @@
   .adm-param input[type="text"] { width: 120px; }
   .adm-param select { width: 140px; }
   .adm-param input:focus, .adm-param select:focus { border-color: var(--accent); }
+  .adm-param-none { opacity: 0.4; }
+  .adm-param-none input[type="range"] { pointer-events: none; }
+  .adm-param-none .adm-param-val { color: var(--muted); }
+  .adm-none-toggle { transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .adm-none-toggle.active { background: var(--border); color: var(--fg); border-color: var(--muted); }
   .adm-preset-actions { display: flex; gap: 6px; margin-top: 12px; }
 
   /* Guestbook entry */
@@ -384,26 +389,23 @@
       speedGrid.className = 'adm-param-grid';
       speedGrid.style.marginBottom = '10px';
       SPEED_SLIDERS.forEach(function (s) {
-        speedGrid.appendChild(mkSlider(s.label, p[s.key], s.min, s.max, s.step, function (v) { p[s.key] = v; liveApply(name, p); }));
+        speedGrid.appendChild(mkSpeedSlider(s, p, name));
       });
       body.appendChild(speedGrid);
 
       // Param sliders
-      if (p.params) {
-        var paramLabel = document.createElement('div');
-        paramLabel.style.cssText = 'font-size:0.78rem;color:var(--muted);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;';
-        paramLabel.textContent = 'params';
-        body.appendChild(paramLabel);
+      if (!p.params) p.params = {};
+      var paramLabel = document.createElement('div');
+      paramLabel.style.cssText = 'font-size:0.78rem;color:var(--muted);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;';
+      paramLabel.textContent = 'params';
+      body.appendChild(paramLabel);
 
-        var paramGrid = document.createElement('div');
-        paramGrid.className = 'adm-param-grid';
-        PARAM_SLIDERS.forEach(function (s) {
-          if (p.params[s.key] != null) {
-            paramGrid.appendChild(mkSlider(s.label, p.params[s.key], s.min, s.max, s.step, function (v) { p.params[s.key] = v; liveApply(name, p); }));
-          }
-        });
-        body.appendChild(paramGrid);
-      }
+      var paramGrid = document.createElement('div');
+      paramGrid.className = 'adm-param-grid';
+      PARAM_SLIDERS.forEach(function (s) {
+        paramGrid.appendChild(mkParamSlider(s, p, name));
+      });
+      body.appendChild(paramGrid);
 
       // Action buttons
       var actionsRow = document.createElement('div');
@@ -435,23 +437,20 @@
           speedGrid2.className = 'adm-param-grid';
           speedGrid2.style.marginBottom = '10px';
           SPEED_SLIDERS.forEach(function (s) {
-            speedGrid2.appendChild(mkSlider(s.label, p2[s.key], s.min, s.max, s.step, function (v) { p2[s.key] = v; liveApply(name, p2); }));
+            speedGrid2.appendChild(mkSpeedSlider(s, p2, name));
           });
           body.appendChild(speedGrid2);
-          if (p2.params) {
-            var paramLabel2 = document.createElement('div');
-            paramLabel2.style.cssText = 'font-size:0.78rem;color:var(--muted);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;';
-            paramLabel2.textContent = 'params';
-            body.appendChild(paramLabel2);
-            var paramGrid2 = document.createElement('div');
-            paramGrid2.className = 'adm-param-grid';
-            PARAM_SLIDERS.forEach(function (s) {
-              if (p2.params[s.key] != null) {
-                paramGrid2.appendChild(mkSlider(s.label, p2.params[s.key], s.min, s.max, s.step, function (v) { p2.params[s.key] = v; liveApply(name, p2); }));
-              }
-            });
-            body.appendChild(paramGrid2);
-          }
+          if (!p2.params) p2.params = {};
+          var paramLabel2 = document.createElement('div');
+          paramLabel2.style.cssText = 'font-size:0.78rem;color:var(--muted);margin:8px 0 6px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;';
+          paramLabel2.textContent = 'params';
+          body.appendChild(paramLabel2);
+          var paramGrid2 = document.createElement('div');
+          paramGrid2.className = 'adm-param-grid';
+          PARAM_SLIDERS.forEach(function (s) {
+            paramGrid2.appendChild(mkParamSlider(s, p2, name));
+          });
+          body.appendChild(paramGrid2);
           var actionsRow2 = document.createElement('div');
           actionsRow2.className = 'adm-preset-actions';
           actionsRow2.appendChild(previewBtn);
@@ -536,6 +535,128 @@
     sel.addEventListener('change', function () { onChange(sel.value); });
     el.appendChild(lbl);
     el.appendChild(sel);
+    return el;
+  }
+
+  function mkSpeedSlider(s, p, presetName) {
+    var isNone = p[s.key] == null;
+    var el = document.createElement('div');
+    el.className = 'adm-param' + (isNone ? ' adm-param-none' : '');
+    var lbl = document.createElement('label');
+    lbl.textContent = s.label;
+    var noneBtn = document.createElement('button');
+    noneBtn.className = 'adm-btn adm-btn-sm adm-none-toggle' + (isNone ? ' active' : '');
+    noneBtn.textContent = 'none';
+    noneBtn.style.cssText = 'font-size:0.65rem;padding:2px 6px;margin-right:2px;flex-shrink:0;';
+    var inp = document.createElement('input');
+    inp.type = 'range'; inp.min = s.min; inp.max = s.max; inp.step = s.step;
+    inp.value = isNone ? 15 : p[s.key]; inp.disabled = isNone;
+    var numInp = document.createElement('input');
+    numInp.type = 'number'; numInp.className = 'adm-param-val';
+    numInp.min = s.min; numInp.max = s.max; numInp.step = s.step;
+    numInp.value = isNone ? '' : p[s.key]; numInp.disabled = isNone;
+    if (isNone) numInp.placeholder = '—';
+    noneBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      isNone = !isNone;
+      noneBtn.classList.toggle('active', isNone);
+      el.classList.toggle('adm-param-none', isNone);
+      inp.disabled = isNone; numInp.disabled = isNone;
+      if (isNone) { p[s.key] = null; numInp.value = ''; numInp.placeholder = '—'; }
+      else { p[s.key] = 15; inp.value = 15; numInp.value = 15; numInp.placeholder = ''; liveApply(presetName, p); }
+    });
+    inp.addEventListener('input', function () {
+      if (isNone) return;
+      var v = parseInt(inp.value, 10); numInp.value = v; p[s.key] = v; liveApply(presetName, p);
+    });
+    numInp.addEventListener('change', function () {
+      if (isNone) return;
+      var v = parseInt(numInp.value, 10);
+      if (isNaN(v)) v = s.min; v = Math.max(s.min, Math.min(s.max, v));
+      numInp.value = v; inp.value = v; p[s.key] = v; liveApply(presetName, p);
+    });
+    el.appendChild(lbl); el.appendChild(noneBtn); el.appendChild(inp); el.appendChild(numInp);
+    return el;
+  }
+
+  var PARAM_DEFAULTS = {
+    'life.cell':7,'life.opacity':9,'life.glow':0,'life.autofill':50,'life.rainbow':0,
+    'boids.n':120,'boids.size':14,'boids.tick':1.8,'boids.opacity':14,'boids.glow':0,
+    'boids.perception':52,'boids.separation':38,
+    'trail.on':0,'trail.size':2,'trail.glow':12,'trail.decay':80
+  };
+
+  function mkParamSlider(s, p, presetName) {
+    var isNone = p.params[s.key] == null;
+    var el = document.createElement('div');
+    el.className = 'adm-param' + (isNone ? ' adm-param-none' : '');
+
+    var lbl = document.createElement('label');
+    lbl.textContent = s.label;
+
+    var noneBtn = document.createElement('button');
+    noneBtn.className = 'adm-btn adm-btn-sm adm-none-toggle' + (isNone ? ' active' : '');
+    noneBtn.textContent = 'none';
+    noneBtn.style.cssText = 'font-size:0.65rem;padding:2px 6px;margin-right:2px;flex-shrink:0;';
+
+    var inp = document.createElement('input');
+    inp.type = 'range';
+    inp.min = s.min; inp.max = s.max; inp.step = s.step;
+    inp.value = isNone ? (PARAM_DEFAULTS[s.key] || s.min) : p.params[s.key];
+    inp.disabled = isNone;
+
+    var numInp = document.createElement('input');
+    numInp.type = 'number';
+    numInp.className = 'adm-param-val';
+    numInp.min = s.min; numInp.max = s.max; numInp.step = s.step;
+    numInp.value = isNone ? '' : (p.params[s.key] != null ? p.params[s.key] : s.min);
+    numInp.disabled = isNone;
+    if (isNone) numInp.placeholder = '—';
+
+    noneBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      isNone = !isNone;
+      noneBtn.classList.toggle('active', isNone);
+      el.classList.toggle('adm-param-none', isNone);
+      inp.disabled = isNone;
+      numInp.disabled = isNone;
+      if (isNone) {
+        delete p.params[s.key];
+        numInp.value = '';
+        numInp.placeholder = '—';
+      } else {
+        var def = PARAM_DEFAULTS[s.key] || parseFloat(s.min);
+        p.params[s.key] = def;
+        inp.value = def;
+        numInp.value = def;
+        numInp.placeholder = '';
+        liveApply(presetName, p);
+      }
+    });
+
+    inp.addEventListener('input', function () {
+      if (isNone) return;
+      var v = s.step < 1 ? parseFloat(inp.value) : parseInt(inp.value, 10);
+      numInp.value = v;
+      p.params[s.key] = v;
+      liveApply(presetName, p);
+    });
+    numInp.addEventListener('change', function () {
+      if (isNone) return;
+      var v = s.step < 1 ? parseFloat(numInp.value) : parseInt(numInp.value, 10);
+      if (isNaN(v)) v = parseFloat(s.min);
+      if (v < s.min) v = parseFloat(s.min);
+      if (v > s.max) v = parseFloat(s.max);
+      numInp.value = v;
+      inp.value = v;
+      p.params[s.key] = v;
+      liveApply(presetName, p);
+    });
+
+    el.appendChild(lbl);
+    el.appendChild(noneBtn);
+    el.appendChild(inp);
+    el.appendChild(numInp);
     return el;
   }
 
