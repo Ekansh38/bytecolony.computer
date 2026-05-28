@@ -1,6 +1,6 @@
 ---
 title: btop
-status: in production
+status: released
 tools: Logic Pro
 year: "2026"
 summary: "Bitcrushed and degraded samples. Layered percussion and synths."
