@@ -43,6 +43,13 @@
     white-space: pre-wrap; word-break: break-word;
   }
   .gb-count { color: var(--muted); font-size: 0.8rem; margin-bottom: 12px; }
+  .gb-load-more {
+    display: block; width: 100%; margin-top: 12px; padding: 10px;
+    background: none; border: 1px solid var(--border); border-radius: 4px;
+    color: var(--muted); font: inherit; font-size: 0.82rem; cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .gb-load-more:hover { color: var(--accent); border-color: var(--accent); }
 </style>
 
 <div class="project-title">guestbook</div>
@@ -69,6 +76,7 @@
 <div id="gb-entries">
   <p style="color:var(--muted)">loading...</p>
 </div>
+<button id="gb-load-more" class="gb-load-more" style="display:none">load more</button>
 
 <script>
 (function() {
@@ -92,40 +100,69 @@
   prefill(document.getElementById('gb-name'), STORAGE_KEY, 'gb-name-prefilled');
   prefill(document.getElementById('gb-context'), CONTEXT_KEY, 'gb-name-prefilled');
 
-  function fmt(d) {
-    if (!d) return '';
-    var parts = d.split('T')[0].split('-');
+  var PAGE_SIZE = 20;
+  var _shown = 0;
+
+  function smartDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    var now = Date.now();
+    var diff = Math.floor((now - d.getTime()) / 1000);
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+    if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return months[parseInt(parts[1],10)-1] + ' ' + parseInt(parts[2],10) + ', ' + parts[0];
+    return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
   }
 
   function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  function entryHtml(e) {
+    var nameStr = esc(e.name || 'anonymous');
+    return '<div class="gb-entry">'
+      + '<div class="gb-entry-header">'
+      + '<div class="gb-entry-who">'
+      + '<span class="gb-entry-name">' + nameStr + '</span>'
+      + (e.context ? '<span class="gb-entry-context">' + esc(e.context) + '</span>' : '')
+      + '</div>'
+      + '<span class="gb-entry-date">' + smartDate(e.date) + '</span>'
+      + '</div>'
+      + '<div class="gb-entry-msg">' + esc(e.message || '') + '</div>'
+      + '</div>';
+  }
+
   function render(entries) {
     var el = document.getElementById('gb-entries');
     var countEl = document.getElementById('gb-count');
+    var loadMore = document.getElementById('gb-load-more');
     countEl.textContent = entries.length ? entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies') : '';
 
     if (!entries.length) {
-      el.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">no entries yet. be the first to sign.</p>';
+      el.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">no entries yet. be the first.</p>';
+      loadMore.style.display = 'none';
       return;
     }
-    el.innerHTML = entries.map(function(e) {
-      var nameStr = esc(e.name || 'anonymous');
-      return '<div class="gb-entry">'
-        + '<div class="gb-entry-header">'
-        + '<div class="gb-entry-who">'
-        + '<span class="gb-entry-name">' + nameStr + '</span>'
-        + (e.context ? '<span class="gb-entry-context">' + esc(e.context) + '</span>' : '')
-        + '</div>'
-        + '<span class="gb-entry-date">' + fmt(e.date) + '</span>'
-        + '</div>'
-        + '<div class="gb-entry-msg">' + esc(e.message || '') + '</div>'
-        + '</div>';
-    }).join('');
+    _shown = Math.min(PAGE_SIZE, entries.length);
+    el.innerHTML = entries.slice(0, _shown).map(entryHtml).join('');
+    loadMore.style.display = _shown < entries.length ? '' : 'none';
   }
+
+  function showMore() {
+    if (!_entries) return;
+    var el = document.getElementById('gb-entries');
+    var loadMore = document.getElementById('gb-load-more');
+    var next = Math.min(_shown + PAGE_SIZE, _entries.length);
+    for (var i = _shown; i < next; i++) {
+      el.insertAdjacentHTML('beforeend', entryHtml(_entries[i]));
+    }
+    _shown = next;
+    loadMore.style.display = _shown < _entries.length ? '' : 'none';
+  }
+
+  document.getElementById('gb-load-more').addEventListener('click', showMore);
 
   function setStatus(msg, color) {
     var el = document.getElementById('gb-status');
