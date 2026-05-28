@@ -1,0 +1,17 @@
+{{ define "main" }}
+
+<a href="/" class="back">← home</a>
+
+<div class="project-title">{{ .Title }}</div>
+
+<ul>
+  {{ range .RegularPages }}
+  <li>
+    <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
+    <span class="li-desc">{{ .Params.summary }}</span>
+    <div class="li-meta">{{ .Params.tools }} · {{ .Params.year }} · {{ .Params.status }}</div>
+  </li>
+  {{ end }}
+</ul>
+
+{{ end }}
