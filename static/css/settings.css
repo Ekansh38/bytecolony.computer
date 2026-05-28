@@ -249,6 +249,15 @@
     margin-bottom: 10px;
     min-height: 28px;
   }
+  .ds-slider-none {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .ds-slider-none .ds-slider-val {
+    color: var(--muted);
+    font-style: italic;
+    cursor: default;
+  }
   .ds-slider-label {
     font-size: 0.68rem;
     color: var(--muted);
