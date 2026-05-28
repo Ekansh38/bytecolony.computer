@@ -1273,75 +1273,9 @@
     }
   });
 
-  // ── mobile sheet: mode seg + preset chips ──
-  function _updateMobileMode() {
-    var seg = document.getElementById('ms-mode-seg');
-    if (!seg) return;
-    var cur = window.getBgMode ? window.getBgMode() : 'boids';
-    var btns = seg.querySelectorAll('button');
-    for (var i = 0; i < btns.length; i++)
-      btns[i].classList.toggle('active', btns[i].getAttribute('data-mode') === cur);
-  }
-
-  function _rebuildMobilePresets() {
-    var container = document.getElementById('ms-presets');
-    if (!container) return;
-    container.innerHTML = '';
-    var cur = window.getBgMode ? window.getBgMode() : 'boids';
-    // show presets for current mode, plus "any" presets
-    var names = window.getPresetNames ? window.getPresetNames() : [];
-    var active = window.getActivePreset ? window.getActivePreset() : null;
-    // mobile subset: curated lighter presets
-    var MOBILE_PRESETS = ['default','dusk','soft','aurora','canvas','prism','swarm','ghost','bloom','midnight','ember','chromatic','fog','paper','drift'];
-    // random button
-    var rBtn = document.createElement('button');
-    rBtn.className = 'ms-preset ms-preset-rand';
-    rBtn.textContent = '↻';
-    rBtn.addEventListener('click', function () {
-      var pool = names.filter(function (x) { return MOBILE_PRESETS.indexOf(x) >= 0 && x !== active; });
-      if (!pool.length) return;
-      window.applyPreset(pool[Math.floor(Math.random() * pool.length)]);
-      _rebuildMobilePresets();
-      _updateMobileMode();
-    });
-    container.appendChild(rBtn);
-    names.forEach(function (name) {
-      if (MOBILE_PRESETS.indexOf(name) < 0) return;
-      var btn = document.createElement('button');
-      btn.className = 'ms-preset' + (active === name ? ' active' : '');
-      btn.textContent = name;
-      btn.addEventListener('click', function () {
-        window.applyPreset(name);
-        _rebuildMobilePresets();
-        _updateMobileMode();
-      });
-      container.appendChild(btn);
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    // mode segmented control
-    var seg = document.getElementById('ms-mode-seg');
-    if (seg) {
-      _updateMobileMode();
-      var mBtns = seg.querySelectorAll('button');
-      for (var i = 0; i < mBtns.length; i++) {
-        mBtns[i].addEventListener('click', (function (btn) {
-          return function () {
-            var mode = btn.getAttribute('data-mode');
-            if (window.setBgMode) window.setBgMode(mode);
-            _updateMobileMode();
-            _rebuildMobilePresets();
-          };
-        })(mBtns[i]));
-      }
-    }
-    _rebuildMobilePresets();
-  });
-
   // rebuild picker whenever mode changes
   var _origCycleMode = cycleMode;
-  cycleMode = function () { _origCycleMode(); rebuildPresetPicker(); _updateMobileMode(); _rebuildMobilePresets(); };
+  cycleMode = function () { _origCycleMode(); rebuildPresetPicker(); };
 
   var activePreset = null;
   window.applyPreset = function (name) {
@@ -1355,8 +1289,6 @@
     for (var i = 0; i < keys.length; i++) window.setParam(keys[i], p.params[keys[i]]);
     activePreset = name;
     if (window._rebuildPresetPicker) window._rebuildPresetPicker();
-    _rebuildMobilePresets();
-    _updateMobileMode();
     return true;
   };
   window.getActivePreset = function () { return activePreset; };

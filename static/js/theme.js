@@ -8,9 +8,16 @@ function applyTheme(name) {
   var isLight = LIGHT_THEMES.indexOf(name) >= 0;
   var t = document.getElementById('t');
   if (t) t.textContent = '[theme]';
-  var items = document.querySelectorAll('.tp-item, .ms-item');
+  var items = document.querySelectorAll('.tp-item');
   for (var i = 0; i < items.length; i++)
     items[i].classList.toggle('active', items[i].getAttribute('data-t') === name);
+  var dl = document.getElementById('ms-dark-light');
+  if (dl) {
+    var mode = isLight ? 'light' : 'dark';
+    var btns = dl.querySelectorAll('button');
+    for (var k = 0; k < btns.length; k++)
+      btns[k].classList.toggle('active', btns[k].getAttribute('data-ml') === mode);
+  }
 }
 
 function toggleTheme() {
@@ -72,20 +79,21 @@ function toggleTheme() {
 
     // Mobile settings sheet
     var mSheet = document.getElementById('m-sheet');
-    var mPanel = document.getElementById('m-sheet-panel');
-    if (mSheet && mPanel) {
-      // tap backdrop to close
+    if (mSheet) {
       mSheet.addEventListener('click', function (e) {
         if (e.target === mSheet) mSheet.classList.remove('open');
       });
-      // tap theme item
-      var mItems = mPanel.querySelectorAll('.ms-item');
-      for (var j = 0; j < mItems.length; j++) {
-        mItems[j].addEventListener('click', (function (item) {
-          return function () {
-            applyTheme(item.getAttribute('data-t'));
-          };
-        })(mItems[j]));
+      var dlSeg = document.getElementById('ms-dark-light');
+      if (dlSeg) {
+        var dlBtns = dlSeg.querySelectorAll('button');
+        for (var j = 0; j < dlBtns.length; j++) {
+          dlBtns[j].addEventListener('click', (function (btn) {
+            return function () {
+              var mode = btn.getAttribute('data-ml');
+              applyTheme(mode === 'light' ? 'github-light' : 'tokyo-night');
+            };
+          })(dlBtns[j]));
+        }
       }
     }
   });
