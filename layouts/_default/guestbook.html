@@ -1,88 +1,71 @@
 {{ define "main" }}
 <style>
-  .gb-intro { color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+  .gb-intro { color: var(--muted); margin-bottom: 28px; line-height: 1.6; font-size: 0.9rem; }
 
-  .gb-form {
-    border: 1px solid var(--border);
-    padding: 16px;
-    margin-bottom: 36px;
-  }
-  .gb-field { margin-bottom: 10px; }
+  .gb-form { margin-bottom: 36px; }
+  .gb-field { margin-bottom: 8px; }
   .gb-field:last-of-type { margin-bottom: 0; }
-  .gb-label { display: block; color: var(--muted); font-size: 0.78rem; margin-bottom: 4px; }
   .gb-input {
     width: 100%; background: var(--code-bg); border: 1px solid var(--border);
     color: var(--fg); font: inherit; font-size: 0.88rem;
-    padding: 8px 10px; outline: none; box-sizing: border-box;
-    transition: border-color 0.15s;
+    padding: 10px 12px; outline: none; box-sizing: border-box;
+    border-radius: 4px; transition: border-color 0.15s;
   }
   .gb-input:focus { border-color: var(--accent); }
-  textarea.gb-input { resize: vertical; min-height: 70px; }
-  .gb-anon-hint { color: var(--muted); font-size: 0.75rem; margin-top: 3px; }
-  .gb-form-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+  .gb-input::placeholder { color: var(--muted); opacity: 0.6; }
+  textarea.gb-input { resize: vertical; min-height: 80px; }
+  .gb-input-row { display: flex; gap: 8px; }
+  .gb-input-row .gb-input { flex: 1; }
+  .gb-name-prefilled { color: var(--muted); }
+  .gb-name-prefilled:focus { color: var(--fg); }
+  .gb-form-footer { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
   #gb-submit {
     background: transparent; border: 1px solid var(--accent);
-    color: var(--accent); font: inherit; font-size: 0.88rem;
-    padding: 8px 20px; cursor: pointer;
+    color: var(--accent); font: inherit; font-size: 0.85rem;
+    padding: 8px 22px; cursor: pointer; border-radius: 4px;
     transition: background 0.15s, color 0.15s;
   }
   #gb-submit:hover { background: var(--accent); color: var(--bg); }
   #gb-submit:disabled { opacity: 0.4; cursor: default; }
-  #gb-status { font-size: 0.82rem; min-height: 1.2em; }
-  #gb-identity-fields { display: none; }
-  #gb-identity-fields.open { display: block; }
+  #gb-status { font-size: 0.8rem; min-height: 1.2em; }
 
   .gb-entry {
-    padding: 20px 0;
-    border-bottom: 1px solid var(--border);
+    padding: 14px 16px; margin-bottom: 6px;
+    background: var(--code-bg); border-radius: 4px;
   }
-  .gb-entry:first-child { border-top: 1px solid var(--border); }
-  .gb-entry-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .gb-entry-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
   .gb-entry-who { display: flex; align-items: baseline; gap: 8px; }
-  .gb-entry-name { font-weight: 700; font-size: 0.95rem; }
-  .gb-entry-context { color: var(--muted); font-size: 0.78rem; }
-  .gb-entry-date { color: var(--muted); font-size: 0.75rem; flex-shrink: 0; }
+  .gb-entry-name { font-weight: 700; font-size: 0.88rem; }
+  .gb-entry-context { color: var(--muted); font-size: 0.75rem; }
+  .gb-entry-date { color: var(--muted); font-size: 0.72rem; flex-shrink: 0; }
   .gb-entry-msg {
-    font-size: 0.92rem; line-height: 1.7;
+    font-size: 0.88rem; line-height: 1.6;
     white-space: pre-wrap; word-break: break-word;
   }
-  .gb-entry-actions { display: flex; align-items: center; gap: 8px; }
-  .gb-count { color: var(--muted); font-size: 0.82rem; }
+  .gb-count { color: var(--muted); font-size: 0.8rem; margin-bottom: 12px; }
 </style>
 
 <div class="project-title">guestbook</div>
-<p class="gb-intro">Leave a message! Say something nice or mean. You can optionally say who you are for people to know, or put in a funny name.</p>
+<p class="gb-intro">Leave a message. Say something nice, or don't.</p>
 
 <div class="gb-form">
   <div class="gb-field">
     <textarea id="gb-msg" class="gb-input" placeholder="write something..." maxlength="500" rows="3" spellcheck="false"></textarea>
   </div>
-
-  <div id="gb-identity-fields">
-    <div class="gb-field">
-      <label class="gb-label">name</label>
-      <input id="gb-name" class="gb-input" type="text" placeholder="anonymous" maxlength="50" autocomplete="off" spellcheck="false">
-    </div>
-    <div class="gb-field">
-      <label class="gb-label">who are you? <span style="opacity:0.6">(optional, e.g. "teacher", "friend from school", "fellow dev")</span></label>
-      <input id="gb-context" class="gb-input" type="text" placeholder="" maxlength="100" autocomplete="off" spellcheck="false">
+  <div class="gb-field">
+    <div class="gb-input-row">
+      <input id="gb-name" class="gb-input" type="text" placeholder="name (optional)" maxlength="50" autocomplete="off" spellcheck="false">
+      <input id="gb-context" class="gb-input" type="text" placeholder="who are you? (optional)" maxlength="100" autocomplete="off" spellcheck="false">
     </div>
   </div>
-
   <input id="gb-hp" type="text" tabindex="-1" autocomplete="off" style="display:none">
-
   <div class="gb-form-footer">
-    <div>
-      <button id="gb-submit">sign the guestbook</button>
-      <div id="gb-status"></div>
-    </div>
+    <button id="gb-submit">sign</button>
+    <span id="gb-status"></span>
   </div>
 </div>
 
-<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
-  <span class="gb-count" id="gb-count"></span>
-</div>
-
+<div class="gb-count" id="gb-count"></div>
 <div id="gb-entries">
   <p style="color:var(--muted)">loading...</p>
 </div>
@@ -91,6 +74,23 @@
 (function() {
   var API = '/api/guestbook';
   var _entries = null;
+  var STORAGE_KEY = 'bc-username';
+  var CONTEXT_KEY = 'bc-usercontext';
+
+  function getSaved(key) { return localStorage.getItem(key) || ''; }
+  function save(key, v) { if (v) localStorage.setItem(key, v); }
+
+  function prefill(input, key, cls) {
+    var saved = getSaved(key);
+    if (saved) { input.value = saved; input.classList.add(cls); }
+    input.addEventListener('focus', function () { input.classList.remove(cls); });
+    input.addEventListener('blur', function () {
+      if (input.value === getSaved(key)) input.classList.add(cls);
+    });
+  }
+
+  prefill(document.getElementById('gb-name'), STORAGE_KEY, 'gb-name-prefilled');
+  prefill(document.getElementById('gb-context'), CONTEXT_KEY, 'gb-name-prefilled');
 
   function fmt(d) {
     if (!d) return '';
@@ -106,11 +106,10 @@
   function render(entries) {
     var el = document.getElementById('gb-entries');
     var countEl = document.getElementById('gb-count');
-
     countEl.textContent = entries.length ? entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies') : '';
 
     if (!entries.length) {
-      el.innerHTML = '<p style="color:var(--muted)">no entries yet. be the first to sign.</p>';
+      el.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">no entries yet. be the first to sign.</p>';
       return;
     }
     el.innerHTML = entries.map(function(e) {
@@ -121,9 +120,7 @@
         + '<span class="gb-entry-name">' + nameStr + '</span>'
         + (e.context ? '<span class="gb-entry-context">' + esc(e.context) + '</span>' : '')
         + '</div>'
-        + '<div class="gb-entry-actions">'
         + '<span class="gb-entry-date">' + fmt(e.date) + '</span>'
-        + '</div>'
         + '</div>'
         + '<div class="gb-entry-msg">' + esc(e.message || '') + '</div>'
         + '</div>';
@@ -136,36 +133,23 @@
     el.style.color = color || 'var(--muted)';
   }
 
-  function loadEntries() {
-    fetch(API, { cache: 'no-store' }).then(function(r) { return r.json(); }).then(function(data) {
-      _entries = data;
-      render(data);
-    }).catch(function() {
-      document.getElementById('gb-entries').innerHTML = '<p style="color:var(--muted)">couldn\'t load entries.</p>';
-    });
-  }
-
-  loadEntries();
-
-  // submit: first click opens name fields, second click sends
-  var idFields = document.getElementById('gb-identity-fields');
-  var idRevealed = false;
+  fetch(API, { cache: 'no-store' }).then(function(r) { return r.json(); }).then(function(data) {
+    _entries = data;
+    render(data);
+  }).catch(function() {
+    document.getElementById('gb-entries').innerHTML = '<p style="color:var(--muted)">couldn\'t load entries.</p>';
+  });
 
   document.getElementById('gb-submit').addEventListener('click', function() {
     var message = document.getElementById('gb-msg').value.trim();
     if (!message) { setStatus('write something!'); return; }
 
-    if (!idRevealed) {
-      idRevealed = true;
-      idFields.classList.add('open');
-      document.getElementById('gb-name').focus();
-      setStatus('add your name or just hit sign again to post anonymously.', 'var(--muted)');
-      return;
-    }
-
     var name    = document.getElementById('gb-name').value.trim();
     var context = document.getElementById('gb-context').value.trim();
     var hp      = document.getElementById('gb-hp').value;
+
+    save(STORAGE_KEY, name);
+    save(CONTEXT_KEY, context);
 
     var btn = this;
     btn.disabled = true;
@@ -181,14 +165,12 @@
     .then(function(data) {
       if (data.error) { setStatus(data.error); return; }
       document.getElementById('gb-msg').value = '';
-      document.getElementById('gb-name').value = '';
-      document.getElementById('gb-context').value = '';
       setStatus('signed!', 'var(--accent)');
       _entries = [data].concat(_entries || []);
       render(_entries);
     })
     .catch(function() { setStatus('network error. try again.'); })
-    .finally(function() { btn.disabled = false; btn.textContent = 'sign the guestbook'; });
+    .finally(function() { btn.disabled = false; btn.textContent = 'sign'; });
   });
 })();
 </script>
