@@ -141,13 +141,13 @@
     width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0;
   }
   .adm-param-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 6px;
   }
   .adm-param {
-    display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+    display: flex; align-items: center; gap: 6px; padding: 6px 8px;
     background: var(--code-bg); border-radius: 3px; font-size: 0.8rem;
   }
-  .adm-param label { color: var(--muted); min-width: 70px; white-space: nowrap; flex-shrink: 0; }
+  .adm-param label { color: var(--muted); min-width: 62px; white-space: nowrap; flex-shrink: 0; font-size: 0.75rem; }
   .adm-param input[type="range"] {
     flex: 1; accent-color: var(--accent); height: 4px; cursor: pointer;
     -webkit-appearance: none; appearance: none; background: var(--border); border-radius: 2px; outline: none;
@@ -157,10 +157,10 @@
     background: var(--accent); cursor: pointer;
   }
   .adm-param .adm-param-val {
-    color: var(--fg); font-size: 0.78rem; width: 48px; text-align: right;
+    color: var(--fg); font-size: 0.72rem; width: 42px; text-align: right;
     font-variant-numeric: tabular-nums;
     background: var(--bg); border: 1px solid var(--border); border-radius: 2px;
-    padding: 2px 4px; font-family: inherit; outline: none;
+    padding: 2px 3px; font-family: inherit; outline: none; flex-shrink: 0;
     -moz-appearance: textfield;
   }
   .adm-param .adm-param-val::-webkit-inner-spin-button,
@@ -173,11 +173,15 @@
   .adm-param input[type="text"] { width: 120px; }
   .adm-param select { width: 140px; }
   .adm-param input:focus, .adm-param select:focus { border-color: var(--accent); }
-  .adm-param-none { opacity: 0.4; }
+  .adm-param-none { opacity: 0.35; }
   .adm-param-none input[type="range"] { pointer-events: none; }
   .adm-param-none .adm-param-val { color: var(--muted); }
-  .adm-none-toggle { transition: background 0.15s, color 0.15s, border-color 0.15s; }
-  .adm-none-toggle.active { background: var(--border); color: var(--fg); border-color: var(--muted); }
+  .adm-none-toggle {
+    font-size: 0.6rem !important; padding: 1px 5px !important;
+    border-radius: 3px; flex-shrink: 0; line-height: 1.3;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .adm-none-toggle.active { background: var(--muted); color: var(--bg); border-color: var(--muted); }
   .adm-preset-actions { display: flex; gap: 6px; margin-top: 12px; }
 
   /* Guestbook entry */
@@ -547,7 +551,6 @@
     var noneBtn = document.createElement('button');
     noneBtn.className = 'adm-btn adm-btn-sm adm-none-toggle' + (isNone ? ' active' : '');
     noneBtn.textContent = 'none';
-    noneBtn.style.cssText = 'font-size:0.65rem;padding:2px 6px;margin-right:2px;flex-shrink:0;';
     var inp = document.createElement('input');
     inp.type = 'range'; inp.min = s.min; inp.max = s.max; inp.step = s.step;
     inp.value = isNone ? 15 : p[s.key]; inp.disabled = isNone;
@@ -597,7 +600,6 @@
     var noneBtn = document.createElement('button');
     noneBtn.className = 'adm-btn adm-btn-sm adm-none-toggle' + (isNone ? ' active' : '');
     noneBtn.textContent = 'none';
-    noneBtn.style.cssText = 'font-size:0.65rem;padding:2px 6px;margin-right:2px;flex-shrink:0;';
 
     var inp = document.createElement('input');
     inp.type = 'range';
