@@ -172,6 +172,15 @@
         var replyNameInput = form.querySelector('.cmt-name-input');
         prefillName(replyNameInput);
         form.querySelector('textarea').focus();
+        // close reply form on click outside
+        setTimeout(function () {
+          document.addEventListener('click', function handler(e) {
+            if (!form.contains(e.target) && e.target !== btn) {
+              form.remove();
+              document.removeEventListener('click', handler);
+            }
+          });
+        }, 0);
         form.querySelector('.cmt-btn').addEventListener('click', function () {
           var msg = form.querySelector('textarea').value.trim();
           var name = replyNameInput.value.trim();
