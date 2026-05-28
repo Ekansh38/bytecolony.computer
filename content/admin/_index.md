@@ -1,4 +1,4 @@
 ---
-title: "ByteColony - admin"
+title: "admin"
 layout: "theme-editor"
 ---
