@@ -5,7 +5,7 @@
 [data-theme="tokyo-night"] {
   --bg: #1a1b26;
   --fg: #a9b1d6;
-  --muted: #565f89;
+  --muted: #737aa2;
   --accent: #7aa2f7;
   --border: #292e42;
   --shadow: rgba(0,0,0,0.55);
@@ -17,7 +17,7 @@
   --code-str: #9ece6a;
   --code-num: #ff9e64;
   --code-op: #89ddff;
-  --code-cmt: #565f89;
+  --code-cmt: #737aa2;
   --code-err: #f7768e;
   --code-attr: #73daca;
 }
@@ -26,7 +26,7 @@
 [data-theme="rose-pine"] {
   --bg: #faf4ed;
   --fg: #575279;
-  --muted: #9893a5;
+  --muted: #7e7895;
   --accent: #b4637a;
   --border: #f2e9e1;
   --shadow: transparent;
@@ -38,7 +38,7 @@
   --code-str: #907aa9;
   --code-num: #ea9d34;
   --code-op: #286983;
-  --code-cmt: #9893a5;
+  --code-cmt: #7e7895;
   --code-err: #b4637a;
   --code-attr: #56949f;
 }
@@ -47,7 +47,7 @@
 [data-theme="gruvbox"] {
   --bg: #282828;
   --fg: #ebdbb2;
-  --muted: #928374;
+  --muted: #a89984;
   --accent: #d79921;
   --border: #3c3836;
   --shadow: rgba(0,0,0,0.55);
@@ -59,7 +59,7 @@
   --code-str: #b8bb26;
   --code-num: #d3869b;
   --code-op: #83a598;
-  --code-cmt: #928374;
+  --code-cmt: #a89984;
   --code-err: #fb4934;
   --code-attr: #8ec07c;
 }
@@ -68,7 +68,7 @@
 [data-theme="dracula"] {
   --bg: #282a36;
   --fg: #f8f8f2;
-  --muted: #6272a4;
+  --muted: #7e8db8;
   --accent: #bd93f9;
   --border: #44475a;
   --shadow: rgba(0,0,0,0.55);
@@ -80,7 +80,7 @@
   --code-str: #f1fa8c;
   --code-num: #bd93f9;
   --code-op: #ff79c6;
-  --code-cmt: #6272a4;
+  --code-cmt: #7e8db8;
   --code-err: #ff5555;
   --code-attr: #8be9fd;
 }
@@ -110,7 +110,7 @@
 [data-theme="papercolor-light"] {
   --bg: #eeeeee;
   --fg: #444444;
-  --muted: #878787;
+  --muted: #6b6b6b;
   --accent: #005f87;
   --border: #d0d0d0;
   --shadow: transparent;
@@ -122,7 +122,7 @@
   --code-str: #5f8700;
   --code-num: #af005f;
   --code-op: #0087af;
-  --code-cmt: #878787;
+  --code-cmt: #6b6b6b;
   --code-err: #d70000;
   --code-attr: #008700;
 }
@@ -131,7 +131,7 @@
 [data-theme="hacker"] {
   --bg: #0a0a0a;
   --fg: #00ff41;
-  --muted: #00802080;
+  --muted: #00a82a;
   --accent: #00ff41;
   --border: #003300;
   --shadow: rgba(0,255,65,0.1);
