@@ -1132,18 +1132,10 @@
     return d;
   }
 
-  function _getActivePresetParams() {
-    if (!activePreset || !PRESETS[activePreset]) return null;
-    return PRESETS[activePreset].params;
-  }
-
   function _dsSliderRow(s, params) {
     var val = params[s.key] != null ? params[s.key] : 0;
-    var presetParams = _getActivePresetParams();
-    var isNone = presetParams && !(s.key in presetParams);
-
     var row = document.createElement('div');
-    row.className = 'ds-slider-row' + (isNone ? ' ds-slider-none' : '');
+    row.className = 'ds-slider-row';
 
     var label = document.createElement('span');
     label.className = 'ds-slider-label';
@@ -1157,7 +1149,7 @@
 
     var valSpan = document.createElement('span');
     valSpan.className = 'ds-slider-val';
-    valSpan.textContent = isNone ? 'none' : Math.round(val);
+    valSpan.textContent = Math.round(val);
 
     var numInput = document.createElement('input');
     numInput.type = 'text';
@@ -1178,7 +1170,6 @@
     }
 
     valSpan.addEventListener('click', function () {
-      if (isNone) return;
       numInput.value = valSpan.textContent;
       valSpan.style.display = 'none';
       numInput.style.display = '';
@@ -1210,37 +1201,28 @@
 
   function _dsRainbowControl(params) {
     var cur = params['life.rainbow'] || 0;
-    var presetParams = _getActivePresetParams();
-    var isNone = presetParams && !('life.rainbow' in presetParams);
     var row = document.createElement('div');
-    row.className = 'ds-control-row' + (isNone ? ' ds-slider-none' : '');
+    row.className = 'ds-control-row';
     var label = document.createElement('span');
     label.className = 'ds-slider-label';
     label.textContent = 'rainbow';
     row.appendChild(label);
 
-    if (isNone) {
-      var noneLabel = document.createElement('span');
-      noneLabel.className = 'ds-slider-val';
-      noneLabel.textContent = 'none';
-      row.appendChild(noneLabel);
-    } else {
-      var seg = document.createElement('div');
-      seg.className = 'ds-mini-seg';
-      RAINBOW_LABELS.forEach(function (lbl, i) {
-        var btn = document.createElement('button');
-        btn.textContent = lbl;
-        btn.className = i === cur ? 'active' : '';
-        btn.addEventListener('click', function () {
-          if (window.setParam) window.setParam('life.rainbow', i);
-          seg.querySelectorAll('button').forEach(function (b, j) {
-            b.classList.toggle('active', j === i);
-          });
+    var seg = document.createElement('div');
+    seg.className = 'ds-mini-seg';
+    RAINBOW_LABELS.forEach(function (lbl, i) {
+      var btn = document.createElement('button');
+      btn.textContent = lbl;
+      btn.className = i === cur ? 'active' : '';
+      btn.addEventListener('click', function () {
+        if (window.setParam) window.setParam('life.rainbow', i);
+        seg.querySelectorAll('button').forEach(function (b, j) {
+          b.classList.toggle('active', j === i);
         });
-        seg.appendChild(btn);
       });
-      row.appendChild(seg);
-    }
+      seg.appendChild(btn);
+    });
+    row.appendChild(seg);
     return row;
   }
 
@@ -1252,47 +1234,37 @@
 
   function _dsTrailSection(params) {
     var wrap = document.createElement('div');
-    var presetParams = _getActivePresetParams();
-    var trailNone = presetParams && !('trail.on' in presetParams);
     var on = params['trail.on'] ? true : false;
 
     // toggle row
     var row = document.createElement('div');
-    row.className = 'ds-control-row' + (trailNone ? ' ds-slider-none' : '');
+    row.className = 'ds-control-row';
     var label = document.createElement('span');
     label.className = 'ds-slider-label';
     label.textContent = 'trail';
     row.appendChild(label);
 
-    if (trailNone) {
-      var noneLabel = document.createElement('span');
-      noneLabel.className = 'ds-slider-val';
-      noneLabel.textContent = 'none';
-      row.appendChild(noneLabel);
-      wrap.appendChild(row);
-    } else {
-      var toggle = document.createElement('button');
-      toggle.className = 'ds-toggle' + (on ? ' active' : '');
-      toggle.innerHTML = '<span class="ds-toggle-knob"></span>';
-      wrap.appendChild(row);
+    var toggle = document.createElement('button');
+    toggle.className = 'ds-toggle' + (on ? ' active' : '');
+    toggle.innerHTML = '<span class="ds-toggle-knob"></span>';
+    wrap.appendChild(row);
 
-      // sub-sliders container
-      var sub = document.createElement('div');
-      sub.className = 'ds-trail-sub';
+    // sub-sliders container
+    var sub = document.createElement('div');
+    sub.className = 'ds-trail-sub';
+    sub.style.display = on ? '' : 'none';
+    TRAIL_SLIDERS.forEach(function (s) {
+      sub.appendChild(_dsSliderRow(s, params));
+    });
+    wrap.appendChild(sub);
+
+    toggle.addEventListener('click', function () {
+      on = !on;
+      toggle.classList.toggle('active', on);
       sub.style.display = on ? '' : 'none';
-      TRAIL_SLIDERS.forEach(function (s) {
-        sub.appendChild(_dsSliderRow(s, params));
-      });
-      wrap.appendChild(sub);
-
-      toggle.addEventListener('click', function () {
-        on = !on;
-        toggle.classList.toggle('active', on);
-        sub.style.display = on ? '' : 'none';
-        if (window.setParam) window.setParam('trail.on', on ? 1 : 0);
-      });
-      row.appendChild(toggle);
-    }
+      if (window.setParam) window.setParam('trail.on', on ? 1 : 0);
+    });
+    row.appendChild(toggle);
 
     return wrap;
   }
