@@ -7,7 +7,7 @@ function applyTheme(name) {
   if (window._invalidateAccentCache) window._invalidateAccentCache();
   var isLight = LIGHT_THEMES.indexOf(name) >= 0;
   var t = document.getElementById('t');
-  if (t) t.textContent = '[theme]';
+  if (t) t.textContent = isLight ? '[light]' : '[dark]';
   var items = document.querySelectorAll('.tp-item');
   for (var i = 0; i < items.length; i++)
     items[i].classList.toggle('active', items[i].getAttribute('data-t') === name);

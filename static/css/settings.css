@@ -197,6 +197,23 @@
     border-color: var(--accent);
     color: var(--bg);
   }
+  .ds-preset-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+  .ds-preset-dot-none {
+    background: none;
+    border: 1px dashed var(--muted);
+    opacity: 0.5;
+  }
+  .ds-preset.active .ds-preset-dot-none {
+    border-color: var(--bg);
+    opacity: 0.7;
+  }
   .ds-preset-rand {
     border-style: dashed;
     font-size: 0.85rem;

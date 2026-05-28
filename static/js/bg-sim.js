@@ -1070,7 +1070,15 @@
         var btn = document.createElement('button');
         btn.className = 'ds-preset' + (activePreset === name ? ' active' : '');
         btn.setAttribute('data-preset', name);
-        btn.textContent = name;
+        var dot = document.createElement('span');
+        dot.className = 'ds-preset-dot';
+        if (p.theme && THEME_ACCENTS[p.theme]) {
+          dot.style.background = THEME_ACCENTS[p.theme];
+        } else {
+          dot.classList.add('ds-preset-dot-none');
+        }
+        btn.appendChild(dot);
+        btn.appendChild(document.createTextNode(name));
         btn.title = p.desc || '';
         btn.addEventListener('click', function () {
           window.applyPreset(name);
@@ -1279,6 +1287,7 @@
   cycleMode = function () { _origCycleMode(); rebuildPresetPicker(); };
 
   var activePreset = null;
+  var DEFAULT_PARAMS = PRESETS['default'].params;
   window.applyPreset = function (name) {
     var p = PRESETS[name];
     if (!p) return false;
@@ -1286,6 +1295,9 @@
     if (p.sim) window.setBgMode(p.sim);
     if (p.lspeed != null) window.setLifeSpeed(p.lspeed);
     if (p.bspeed != null) window.setBoidsSpeed(p.bspeed);
+    // reset all params to defaults first, then apply preset overrides
+    var dk = Object.keys(DEFAULT_PARAMS);
+    for (var i = 0; i < dk.length; i++) window.setParam(dk[i], DEFAULT_PARAMS[dk[i]]);
     var keys = Object.keys(p.params);
     for (var i = 0; i < keys.length; i++) window.setParam(keys[i], p.params[keys[i]]);
     activePreset = name;
