@@ -63,7 +63,7 @@
 
 <style>
   header, footer { display: none !important; }
-  body { max-width: 1000px !important; }
+  body { max-width: 1100px !important; }
   #admin-app { padding: 20px 0; }
 
   /* Auth */
@@ -141,15 +141,15 @@
     width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0;
   }
   .adm-param-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 6px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 4px;
   }
   .adm-param {
-    display: flex; align-items: center; gap: 6px; padding: 6px 8px;
+    display: flex; align-items: center; gap: 6px; padding: 5px 8px;
     background: var(--code-bg); border-radius: 3px; font-size: 0.8rem;
   }
-  .adm-param label { color: var(--muted); min-width: 62px; white-space: nowrap; flex-shrink: 0; font-size: 0.75rem; }
+  .adm-param label { color: var(--muted); min-width: 80px; white-space: nowrap; flex-shrink: 0; font-size: 0.75rem; }
   .adm-param input[type="range"] {
-    flex: 1; accent-color: var(--accent); height: 4px; cursor: pointer;
+    flex: 1; min-width: 80px; accent-color: var(--accent); height: 4px; cursor: pointer;
     -webkit-appearance: none; appearance: none; background: var(--border); border-radius: 2px; outline: none;
   }
   .adm-param input[type="range"]::-webkit-slider-thumb {
@@ -157,7 +157,7 @@
     background: var(--accent); cursor: pointer;
   }
   .adm-param .adm-param-val {
-    color: var(--fg); font-size: 0.72rem; width: 42px; text-align: right;
+    color: var(--fg); font-size: 0.72rem; width: 38px; text-align: right;
     font-variant-numeric: tabular-nums;
     background: var(--bg); border: 1px solid var(--border); border-radius: 2px;
     padding: 2px 3px; font-family: inherit; outline: none; flex-shrink: 0;

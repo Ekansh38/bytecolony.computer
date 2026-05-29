@@ -98,7 +98,7 @@
 
   function updateBoids() {
     var S2 = SEP_DIST*SEP_DIST, SP2 = SPREAD_R*SPREAD_R;
-    var sp = (1 + boidsCurrentSpeed / 100 * 19) / 5;
+    var sp = (1 + boidsCurrentSpeed / 100 * 19) / 5 * _dt;
     var i, j, b, o, dx, dy, d2, d, spd, tmp;
 
     for (i = 0; i < N; i++) {
@@ -533,15 +533,25 @@
     return { skip: 1, multi: Math.round(1 + (sp - 10) * 1.2) };
   }
 
-  function loop() {
-    if (document.hidden) { requestAnimationFrame(loop); return; }
-    lifeCurrentSpeed  += (lifeSpeedLevel  - lifeCurrentSpeed)  * 0.07;
-    boidsCurrentSpeed += (boidsSpeedLevel - boidsCurrentSpeed) * 0.07;
-    if (_burstStrength > 0.001) _burstStrength *= 0.92; else _burstStrength = 0;
+  // delta-time: normalize everything to 60 fps so speed is consistent across devices
+  var _prevTime = 0;
+  var _dt = 1;           // 1 = one 60fps frame worth of time
+  var _lifeAccum = 0;    // fractional frame accumulator for life stepping
 
-    // decay trail heat every frame for smooth fade regardless of sim speed
+  function loop(now) {
+    if (document.hidden) { requestAnimationFrame(loop); return; }
+    if (!_prevTime) _prevTime = now;
+    var rawDt = (now - _prevTime) / (1000 / 60); // in units of 60fps frames
+    _prevTime = now;
+    _dt = Math.min(rawDt, 3); // clamp to prevent huge jumps after tab-switch
+
+    lifeCurrentSpeed  += (lifeSpeedLevel  - lifeCurrentSpeed)  * (1 - Math.pow(1 - 0.07, _dt));
+    boidsCurrentSpeed += (boidsSpeedLevel - boidsCurrentSpeed) * (1 - Math.pow(1 - 0.07, _dt));
+    if (_burstStrength > 0.001) _burstStrength *= Math.pow(0.92, _dt); else _burstStrength = 0;
+
+    // decay trail heat with dt for smooth fade regardless of frame rate
     if (TRAIL_ON && trailHeat) {
-      var dr = 0.998 - (TRAIL_DECAY / 100) * 0.198;
+      var dr = Math.pow(0.998 - (TRAIL_DECAY / 100) * 0.198, _dt);
       for (var i = 0; i < trailHeat.length; i++) {
         if (trailHeat[i] > 0.001) trailHeat[i] *= dr;
         else if (trailHeat[i] > 0) trailHeat[i] = 0;
@@ -551,10 +561,10 @@
     var mode = MODES[modeIdx];
     if (mode === 'life') {
       if (lifeSpeedLevel > 0) {
-        lifeFrame++;
         var lr = lifeStepRate(lifeCurrentSpeed);
-        if (lr.multi > 1) { for (var i = 0; i < lr.multi; i++) stepLife(); }
-        else if (lifeFrame % lr.skip === 0) stepLife();
+        _lifeAccum += _dt;
+        var steps = lr.multi > 1 ? Math.round(lr.multi * _lifeAccum) : Math.floor(_lifeAccum / lr.skip);
+        if (steps > 0) { _lifeAccum = 0; for (var i = 0; i < Math.min(steps, 8); i++) stepLife(); }
       }
       drawLife(false);
     } else if (mode === 'boids') {
@@ -562,10 +572,10 @@
       drawBoids(false);
     } else if (mode === 'combo') {
       if (lifeSpeedLevel > 0) {
-        lifeFrame++;
         var lr = lifeStepRate(lifeCurrentSpeed);
-        if (lr.multi > 1) { for (var i = 0; i < lr.multi; i++) stepLife(); }
-        else if (lifeFrame % lr.skip === 0) stepLife();
+        _lifeAccum += _dt;
+        var steps = lr.multi > 1 ? Math.round(lr.multi * _lifeAccum) : Math.floor(_lifeAccum / lr.skip);
+        if (steps > 0) { _lifeAccum = 0; for (var i = 0; i < Math.min(steps, 8); i++) stepLife(); }
       }
       if (boidsSpeedLevel > 0) updateBoids();
       ctx.clearRect(0, 0, W, H);
@@ -1301,4 +1311,12 @@
     return true;
   };
   window.getActivePreset = function () { return activePreset; };
+
+  // apply default preset params on startup so hardcoded init vars don't drift from the preset
+  var _defP = PRESETS['default'];
+  if (_defP && _defP.params) {
+    var _dk = Object.keys(_defP.params);
+    for (var _di = 0; _di < _dk.length; _di++) window.setParam(_dk[_di], _defP.params[_dk[_di]]);
+  }
+  activePreset = 'default';
 })();
