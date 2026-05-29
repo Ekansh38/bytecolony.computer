@@ -17,7 +17,6 @@
   <div id="admin-panel" style="display:none;">
     <div class="adm-top">
       <h2>admin</h2>
-      <button id="adm-logout" class="adm-btn adm-btn-sm">logout</button>
     </div>
 
     <div class="adm-tabs">
@@ -141,11 +140,12 @@
     width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0;
   }
   .adm-param-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 4px;
+    display: grid; grid-template-columns: 1fr; gap: 4px;
   }
   .adm-param {
     display: flex; align-items: center; gap: 6px; padding: 5px 8px;
     background: var(--code-bg); border-radius: 3px; font-size: 0.8rem;
+    overflow: hidden;
   }
   .adm-param label { color: var(--muted); min-width: 80px; white-space: nowrap; flex-shrink: 0; font-size: 0.75rem; }
   .adm-param input[type="range"] {
@@ -196,7 +196,7 @@
 <script>
 (function () {
   var API = '/api/themes';
-  var masterCode = localStorage.getItem('bc-admin-code') || '';
+  var masterCode = '';
   var presets = {};
 
   // ── Auth ──
@@ -216,7 +216,6 @@
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (!d.ok) { authErr.textContent = 'wrong code'; return; }
-        localStorage.setItem('bc-admin-code', masterCode);
         showPanel();
       })
       .catch(function () { authErr.textContent = 'network error'; });
@@ -225,29 +224,11 @@
   loginBtn.addEventListener('click', doLogin);
   codeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
 
-  // auto-login if saved
-  if (masterCode) {
-    fetch(API + '?action=verify', { headers: { 'X-Master-Code': masterCode } })
-      .then(function (r) { return r.json(); })
-      .then(function (d) { if (d.ok) showPanel(); })
-      .catch(function () {});
-  }
-
   function showPanel() {
     document.getElementById('admin-auth').style.display = 'none';
     document.getElementById('admin-panel').style.display = 'block';
     loadPresets();
   }
-
-  // Logout
-  document.getElementById('adm-logout').addEventListener('click', function () {
-    localStorage.removeItem('bc-admin-code');
-    masterCode = '';
-    document.getElementById('admin-panel').style.display = 'none';
-    document.getElementById('admin-auth').style.display = 'flex';
-    codeInput.value = '';
-    authErr.textContent = '';
-  });
 
   // ── Tabs ──
   document.querySelectorAll('.adm-tab').forEach(function (tab) {
