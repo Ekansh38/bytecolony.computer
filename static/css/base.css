@@ -248,7 +248,7 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 .project-meta  { color: var(--muted); margin-bottom: 20px; }
 
 body.page .hero-img {
-  width: 88%; border-radius: 6px; margin-bottom: 28px;
+  width: 60%; border-radius: 6px; margin-bottom: 28px;
   border: 1px solid var(--border);
   box-shadow: 0 2px 12px rgba(0,0,0,0.15);
   opacity: 0.78;
