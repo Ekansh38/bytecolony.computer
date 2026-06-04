@@ -246,6 +246,16 @@ body.page h2 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 3
 body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px 0 8px; }
 .project-meta  { color: var(--muted); margin-bottom: 20px; }
 
+body.page .hero-img {
+  width: 92%; border-radius: 6px; margin-bottom: 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  transition: filter 0.3s;
+}
+[data-theme]:not([data-theme="github-light"]):not([data-theme="papercolor-light"]):not([data-theme="rose-pine"]) .hero-img {
+  filter: brightness(0.82);
+}
+
 body.page mark {
   background: color-mix(in srgb, var(--accent) 15%, transparent);
   color: inherit; padding: 1px 4px; border-radius: 2px;
