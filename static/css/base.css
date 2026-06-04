@@ -246,6 +246,8 @@ body.page h1 { font-size: 1.4rem; color: var(--fg); margin: 0 0 8px; }
 body.page h2 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 36px 0 10px; }
 body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px 0 8px; }
 .project-meta  { color: var(--muted); margin-bottom: 20px; }
+.jump-comments { color: var(--muted); font-size: 0.82rem; }
+.jump-comments:hover { color: var(--accent); text-decoration: none; }
 
 body.page .hero-img {
   width: 60%; border-radius: 6px; margin-bottom: 28px;
