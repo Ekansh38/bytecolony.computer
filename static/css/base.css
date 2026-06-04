@@ -41,7 +41,7 @@ body {
   padding: 48px 20px 64px;
 }
 
-body.page.writing  { max-width: 860px; }
+body.page.writing  { max-width: 960px; }
 body.page.projects { max-width: min(960px, 90vw); }
 
 a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
@@ -247,16 +247,16 @@ body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px
 .project-meta  { color: var(--muted); margin-bottom: 20px; }
 
 body.page .hero-img {
-  width: 72%; border-radius: 6px; margin-bottom: 24px;
-  border: 1px solid var(--border);
+  display: block; margin: 0 auto 24px; width: 72%;
+  border-radius: 6px; border: 1px solid var(--border);
   box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  filter: brightness(0.82);
-  transition: filter 0.3s;
+  opacity: 0.78;
+  transition: opacity 0.3s;
 }
 [data-theme="github-light"] .hero-img,
 [data-theme="papercolor-light"] .hero-img,
 [data-theme="rose-pine"] .hero-img {
-  filter: none;
+  opacity: 1; filter: brightness(1.06) saturate(1.1);
 }
 
 body.page mark {
