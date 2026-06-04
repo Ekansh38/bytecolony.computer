@@ -3,7 +3,7 @@ title: "AI and the 13-Year-Old Engineer"
 date: 2026-06-04
 ---
 
-<img src="/images/ai-essay-hero.jpg" alt="AI and the 13-Year-Old Engineer" style="width:100%;border-radius:6px;margin-bottom:24px;">
+<img src="/images/ai-essay-hero.jpg" alt="AI and the 13-Year-Old Engineer" style="width:85%;border-radius:6px;margin-bottom:24px;">
 
 AI changed how I code. I use it every day. My website is mostly vibe coded. Most of my projects are AI-assisted.
 
