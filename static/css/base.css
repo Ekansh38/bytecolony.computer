@@ -41,7 +41,7 @@ body {
   padding: 48px 20px 64px;
 }
 
-body.page.writing  { max-width: 780px; }
+body.page.writing  { max-width: 860px; }
 body.page.projects { max-width: min(960px, 90vw); }
 
 a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
