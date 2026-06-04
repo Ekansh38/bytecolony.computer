@@ -41,7 +41,7 @@ body {
   padding: 48px 20px 64px;
 }
 
-body.page.writing  { max-width: 960px; }
+body.page.writing  { max-width: 860px; }
 body.page.projects { max-width: min(960px, 90vw); }
 
 a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
@@ -241,22 +241,23 @@ body.projects li, body.home li, body.games li, body.writing li { padding: 14px 0
 
 /* ── ARTICLE PROSE ─────────────────────────────────────────── */
 body.page p  { line-height: 1.85; margin-bottom: 1em; }
+body.page.writing p { margin-bottom: 1.4em; }
 body.page h1 { font-size: 1.4rem; color: var(--fg); margin: 0 0 8px; }
 body.page h2 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 36px 0 10px; }
 body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px 0 8px; }
 .project-meta  { color: var(--muted); margin-bottom: 20px; }
 
 body.page .hero-img {
-  display: block; margin: 0 auto 24px; width: 72%;
-  border-radius: 6px; border: 1px solid var(--border);
+  width: 88%; border-radius: 6px; margin-bottom: 28px;
+  border: 1px solid var(--border);
   box-shadow: 0 2px 12px rgba(0,0,0,0.15);
   opacity: 0.78;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, filter 0.3s;
 }
 [data-theme="github-light"] .hero-img,
 [data-theme="papercolor-light"] .hero-img,
 [data-theme="rose-pine"] .hero-img {
-  opacity: 1; filter: brightness(1.06) saturate(1.1);
+  opacity: 1; filter: brightness(1.06);
 }
 
 body.page mark {
