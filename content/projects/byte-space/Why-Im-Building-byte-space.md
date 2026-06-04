@@ -45,7 +45,7 @@ Now onto why I want to build it (not vibe-code, build). Building byte-space teac
 
 ## Could AI build byte-space?
 
-Maybe. (edit: Not really... the original plan AI suggested to me towards the start of the project crashed and burned, safe to say it would need a lot of help). But I'll learn more building it myself, build stronger foundations for larger projects that AI can't do and its kinda fun. Check out [My Thoughts on AI in CS](/writing/ai-in-cs) for my full take on AI in computer science.
+Maybe. (edit: Not really... the original plan AI suggested to me towards the start of the project crashed and burned, safe to say it would need a lot of help). But I'll learn more building it myself, build stronger foundations for larger projects that AI can't do and its kinda fun. Check out [My Thoughts on AI in CS](/writing/ai-and-the-13-year-old-engineer) for my full take on AI in computer science.
 
 ---
 
