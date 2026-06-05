@@ -16,6 +16,7 @@
   <div id="cmt-list">
     <p style="color:var(--muted)">loading...</p>
   </div>
+  <a class="go-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" href="javascript:void(0)">↑ top</a>
 </div>
 
 <style>
@@ -69,6 +70,13 @@
   .cmt-reply-form .cmt-form-row { margin-top: 6px; }
   .cmt-reply-form .cmt-btn { font-size: 0.8rem; padding: 6px 14px; }
   .cmt-reply-form .cmt-name-input { font-size: 0.85rem; }
+
+  .go-top {
+    display: block; text-align: center; margin-top: 32px;
+    color: var(--muted); font-size: 0.82rem; text-decoration: none;
+    transition: color 0.15s;
+  }
+  .go-top:hover { color: var(--accent); text-decoration: none; }
 </style>
 
 <script>
