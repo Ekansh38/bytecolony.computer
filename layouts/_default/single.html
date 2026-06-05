@@ -7,7 +7,7 @@
 {{ end }}
 
 <div class="project-title">{{ .Title }}</div>
-<div class="project-meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.status }} · {{ . }}{{ end }} · <a href="#comments" class="jump-comments">comments ↓</a></div>
+<div class="project-meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.status }} · {{ . }}{{ end }} · <a class="jump-comments" onclick="document.getElementById('comments').scrollIntoView({behavior:'smooth'});return false;" href="javascript:void(0)">comments ↓</a></div>
 
 {{ .Content }}
 

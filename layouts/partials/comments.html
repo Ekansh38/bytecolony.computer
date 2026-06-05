@@ -151,8 +151,8 @@
       return '<div class="cmt-entry" data-id="' + esc(c.id) + '">'
         + '<div class="cmt-head"><span class="cmt-name">' + esc(c.name) + '</span><span class="cmt-date">' + timeAgo(c.date) + '</span></div>'
         + '<div class="cmt-msg">' + esc(c.message) + '</div>'
-        + '<button class="cmt-reply-btn" data-id="' + esc(c.id) + '">reply</button>'
         + repHtml
+        + '<button class="cmt-reply-btn" data-id="' + esc(c.id) + '">reply</button>'
         + '</div>';
     }).join('');
 
