@@ -262,6 +262,13 @@ body.page .hero-img {
   opacity: 1; filter: brightness(1.06);
 }
 
+/* ── SVG / diagram auto-invert for light themes ────────────── */
+[data-theme="github-light"] body.page img:not(.hero-img):not(.no-invert),
+[data-theme="papercolor-light"] body.page img:not(.hero-img):not(.no-invert) {
+  filter: invert(0.88) hue-rotate(180deg);
+  transition: filter 0.2s ease;
+}
+
 body.page mark {
   background: color-mix(in srgb, var(--accent) 15%, transparent);
   color: inherit; padding: 1px 4px; border-radius: 2px;
