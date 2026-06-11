@@ -5,7 +5,7 @@
 [data-theme="tokyo-night"] {
   --bg: #1a1b26;
   --fg: #a9b1d6;
-  --muted: #737aa2;
+  --muted: #8289b5;
   --accent: #7aa2f7;
   --border: #292e42;
   --shadow: rgba(0,0,0,0.55);
@@ -17,7 +17,7 @@
   --code-str: #9ece6a;
   --code-num: #ff9e64;
   --code-op: #89ddff;
-  --code-cmt: #737aa2;
+  --code-cmt: #8289b5;
   --code-err: #f7768e;
   --code-attr: #73daca;
 }
@@ -26,9 +26,9 @@
 [data-theme="rose-pine"] {
   --bg: #faf4ed;
   --fg: #575279;
-  --muted: #7e7895;
-  --accent: #b4637a;
-  --border: #f2e9e1;
+  --muted: #6b6586;
+  --accent: #a85570;
+  --border: #e3d7c8;
   --shadow: transparent;
   --code-bg: #fffcf8;
   --code-fg: #575279;
@@ -38,7 +38,7 @@
   --code-str: #907aa9;
   --code-num: #ea9d34;
   --code-op: #286983;
-  --code-cmt: #7e7895;
+  --code-cmt: #6b6586;
   --code-err: #b4637a;
   --code-attr: #56949f;
 }
@@ -68,7 +68,7 @@
 [data-theme="dracula"] {
   --bg: #282a36;
   --fg: #f8f8f2;
-  --muted: #7e8db8;
+  --muted: #8a98c2;
   --accent: #bd93f9;
   --border: #44475a;
   --shadow: rgba(0,0,0,0.55);
@@ -80,7 +80,7 @@
   --code-str: #f1fa8c;
   --code-num: #bd93f9;
   --code-op: #ff79c6;
-  --code-cmt: #7e8db8;
+  --code-cmt: #8a98c2;
   --code-err: #ff5555;
   --code-attr: #8be9fd;
 }
@@ -143,7 +143,7 @@
   --code-str: #7fff00;
   --code-num: #00ffcc;
   --code-op: #39ff14;
-  --code-cmt: #003300;
+  --code-cmt: #008f2e;
   --code-err: #ff0040;
   --code-attr: #00e5ff;
 }
