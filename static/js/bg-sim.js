@@ -18,7 +18,9 @@
       localStorage.setItem('bgMode', _savedMode);
     }
   }
-  if (!_savedMode) _savedMode = _isMobile ? 'boids' : 'combo';
+  // respect reduced-motion unless the user explicitly picked a mode
+  var _reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!_savedMode) _savedMode = _reducedMotion ? 'off' : (_isMobile ? 'boids' : 'combo');
   var modeIdx = Math.max(0, MODES.indexOf(_savedMode));
   var lifeSpeedLevel  = Math.max(0, Math.min(100, parseInt(localStorage.getItem('bgLifeSpeed')  || '15')));
   var boidsSpeedLevel = Math.max(0, Math.min(100, parseInt(localStorage.getItem('bgBoidsSpeed') || '15')));

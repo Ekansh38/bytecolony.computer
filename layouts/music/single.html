@@ -1,12 +1,12 @@
 {{ define "main" }}
 
-<a href="/" class="back">← home</a>
+<a href="{{ .Parent.Permalink }}" class="back">← {{ strings.ToLower .Parent.Title }}</a>
 
-<div class="project-title">{{ .Title }}</div>
+<h1 class="project-title">{{ .Title }}</h1>
 
 <div class="project-meta">{{ .Params.tools }} · {{ .Params.year }} · {{ .Params.status }}</div>
 {{ with .Params.cover }}
-<img src="{{ . }}" alt="{{ $.Title }} cover" class="album-cover">
+<img src="{{ . }}" alt="{{ $.Title }} cover" class="album-cover" loading="lazy" width="280" height="280">
 {{ end }}
 
 {{ .Content }}

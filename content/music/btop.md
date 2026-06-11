@@ -4,7 +4,7 @@ status: released
 tools: Logic Pro
 year: "2026"
 summary: "Bitcrushed and degraded samples. Layered percussion and synths."
-cover: /images/btop-cover.png
+cover: /images/btop-cover.jpg
 ---
 
 
