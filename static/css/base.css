@@ -187,6 +187,13 @@ header { margin-bottom: 48px; }
 }
 .nav a:hover { color: var(--fg); }
 .nav a:hover::after { width: 100%; }
+.nav a.nav-active { color: var(--fg); }
+.nav a.nav-active::before {
+  content: '*';
+  color: var(--accent);
+  margin-right: 2px;
+  font-weight: 700;
+}
 .nav-primary { font-weight: 700; }
 .nav a:not(.nav-primary) { color: var(--muted); }
 .nav a:not(.nav-primary):hover { color: var(--fg); }

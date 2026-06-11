@@ -8,14 +8,15 @@
     </div>
   </div>
   <div class="tagline">{{ .Site.Params.tagline }}</div>
+  {{ $sec := .Section }}
   <nav class="nav">
-    <a href="/projects" class="nav-primary">projects</a>
-    <a href="/writing" class="nav-primary">writing</a>
-    <a href="/music" class="nav-primary">music</a>
-    <a href="/games" class="nav-primary">games</a>
-    <a href="/tools" class="nav-primary">tools</a>
-    <a href="/picks">picks</a>
-    <a href="/guestbook">guestbook</a>
+    <a href="/projects" class="nav-primary{{ if eq $sec "projects" }} nav-active{{ end }}">projects</a>
+    <a href="/writing" class="nav-primary{{ if eq $sec "writing" }} nav-active{{ end }}">writing</a>
+    <a href="/music" class="nav-primary{{ if eq $sec "music" }} nav-active{{ end }}">music</a>
+    <a href="/games" class="nav-primary{{ if eq $sec "games" }} nav-active{{ end }}">games</a>
+    <a href="/tools" class="nav-primary{{ if eq $sec "tools" }} nav-active{{ end }}">tools</a>
+    <a href="/picks" class="{{ if eq $sec "picks" }}nav-active{{ end }}">picks</a>
+    <a href="/guestbook" class="{{ if eq $sec "guestbook" }}nav-active{{ end }}">guestbook</a>
   </nav>
   <div class="social">
     <a href="{{ .Site.Params.github }}" target="_blank" rel="noopener noreferrer">github ↗</a>
