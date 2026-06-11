@@ -2,6 +2,7 @@
 title: "Code: The Hidden Language of Computer Hardware and Software"
 author: "Charles Petzold"
 type_label: "book"
+link: "https://www.codehiddenlanguage.com/"
 date: 2026-05-20
 ---
 

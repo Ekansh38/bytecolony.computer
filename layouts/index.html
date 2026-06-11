@@ -7,14 +7,16 @@
 {{ $projects := .Site.GetPage "/projects" }}
 <hr>
 <h2><a href="/projects" class="now-link">projects</a></h2>
+{{ with $projects.Sections }}
 <ul>
-  {{ range $projects.Sections }}{{ if not .Params.shipped }}
+  {{ range . }}{{ if not .Params.shipped }}
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
   </li>
   {{ end }}{{ end }}
 </ul>
+{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 <hr>
 <h2><a href="/writing" class="now-link">writing</a></h2>
@@ -39,7 +41,7 @@
   {{ end }}
 </ul>
 {{ else }}
-<p style="color: var(--muted)">nothing yet</p>
+<p class="empty-note">nothing yet</p>
 {{ end }}
 
 <hr>
@@ -63,38 +65,44 @@
 {{ $music := .Site.GetPage "/music" }}
 <hr>
 <h2><a href="/music" class="now-link">music</a></h2>
+{{ with $music.RegularPages }}
 <ul>
-  {{ range $music.RegularPages }}
+  {{ range . }}
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
   </li>
   {{ end }}
 </ul>
+{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 {{ $games := .Site.GetPage "/games" }}
 <hr>
 <h2><a href="/games" class="now-link">games</a></h2>
+{{ with $games.RegularPages }}
 <ul>
-  {{ range $games.RegularPages }}
+  {{ range . }}
   <li>
-    <span class="li-name"><a href="{{ .Params.itchio }}" target="_blank" rel="noopener noreferrer">{{ .Title }}</a></span>:
+    <span class="li-name"><a href="{{ .Params.itchio }}" target="_blank" rel="noopener noreferrer">{{ .Title }} ↗</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
   </li>
   {{ end }}
 </ul>
+{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 {{ $tools := .Site.GetPage "/tools" }}
 <hr>
 <h2><a href="/tools" class="now-link">tools</a></h2>
+{{ with $tools.RegularPages }}
 <ul>
-  {{ range $tools.RegularPages }}
+  {{ range . }}
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
   </li>
   {{ end }}
 </ul>
+{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 <hr>
 <h2>get in touch</h2>

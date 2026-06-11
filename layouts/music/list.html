@@ -4,8 +4,9 @@
 
 <h1 class="project-title">{{ .Title }}</h1>
 
+{{ with .RegularPages }}
 <ul>
-  {{ range .RegularPages }}
+  {{ range . }}
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
@@ -13,5 +14,6 @@
   </li>
   {{ end }}
 </ul>
+{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 {{ end }}
