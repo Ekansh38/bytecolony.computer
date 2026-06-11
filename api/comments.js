@@ -1,4 +1,27 @@
 // ── Comments API: per-post comments with one-level replies ─────────────────────
+const crypto = require('crypto');
+
+function safeEqual(a, b) {
+  const ab = Buffer.from(String(a)), bb = Buffer.from(String(b));
+  return ab.length === bb.length && crypto.timingSafeEqual(ab, bb);
+}
+
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  if (origin === 'https://bytecolony.computer'
+    || origin === 'https://www.bytecolony.computer'
+    || /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+}
+
+async function rateLimit(req, scope, max) {
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+  const key = `rl:${scope}:${ip}`;
+  const r = await kv([['incr', key], ['expire', key, '60', 'NX']]);
+  return (r[0]?.result || 0) <= max;
+}
+
 async function kv(commands) {
   const url   = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
@@ -29,13 +52,14 @@ async function getBody(req) {
 function kvKey(slug) { return 'comments:' + slug; }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  setCors(req, res);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Master-Code');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const url = new URL(req.url, `http://${req.headers.host}`);
   const slug = url.searchParams.get('slug');
+  if (slug && !/^[a-zA-Z0-9-]{1,120}$/.test(slug)) return res.status(400).json({ error: 'invalid slug' });
 
   try {
     // GET: return comments for a post
@@ -44,7 +68,7 @@ module.exports = async (req, res) => {
       if (url.searchParams.get('action') === 'all') {
         const master = process.env.ARCADE_MASTER_CODE;
         const code = req.headers['x-master-code'];
-        if (!master || code !== master) return res.status(403).json({ error: 'unauthorized' });
+        if (!master || !code || !safeEqual(code, master)) return res.status(403).json({ error: 'unauthorized' });
 
         // scan for all comment keys
         const scanResult = await kv([['keys', 'comments:*']]);
@@ -80,7 +104,7 @@ module.exports = async (req, res) => {
       if (body.action === 'delete') {
         const master = process.env.ARCADE_MASTER_CODE;
         const code = req.headers['x-master-code'];
-        if (!master || code !== master) return res.status(403).json({ error: 'unauthorized' });
+        if (!master || !code || !safeEqual(code, master)) return res.status(403).json({ error: 'unauthorized' });
         const { id, slug: delSlug } = body;
         if (!id || !delSlug) return res.status(400).json({ error: 'id and slug required' });
         const key = kvKey(delSlug);
@@ -102,6 +126,10 @@ module.exports = async (req, res) => {
       // honeypot
       if (hp) return res.status(200).json({ ok: true });
 
+      if (!(await rateLimit(req, 'comments', 5))) {
+        return res.status(429).json({ error: 'whoa, slow down a bit — try again in a minute' });
+      }
+
       const n = (name || '').trim().slice(0, MAX_NAME) || 'anonymous';
       const m = (message || '').trim().slice(0, MAX_MSG);
       if (!m) return res.status(400).json({ error: 'message is required' });
@@ -117,7 +145,7 @@ module.exports = async (req, res) => {
       const key = kvKey(slug);
       await kv([
         ['rpush', key, JSON.stringify(comment)],
-        ['ltrim', key, '0', String(MAX_KEEP - 1)]
+        ['ltrim', key, String(-MAX_KEEP), '-1']
       ]);
 
       return res.status(201).json(comment);
@@ -125,7 +153,7 @@ module.exports = async (req, res) => {
 
     res.status(405).json({ error: 'method not allowed' });
   } catch (err) {
-    console.error('[comments]', err.message);
-    res.status(500).json({ error: err.message });
+    console.error('[comments]', err);
+    res.status(500).json({ error: 'server error' });
   }
 };

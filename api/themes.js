@@ -12,10 +12,26 @@ async function kv(commands) {
   return res.json();
 }
 
+const crypto = require('crypto');
+
+function safeEqual(a, b) {
+  const ab = Buffer.from(String(a)), bb = Buffer.from(String(b));
+  return ab.length === bb.length && crypto.timingSafeEqual(ab, bb);
+}
+
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  if (origin === 'https://bytecolony.computer'
+    || origin === 'https://www.bytecolony.computer'
+    || /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+}
+
 function auth(req) {
   const master = process.env.ARCADE_MASTER_CODE;
   const code = req.headers['x-master-code'];
-  return master && code === master;
+  return !!(master && code && safeEqual(code, master));
 }
 
 async function getBody(req) {
@@ -29,7 +45,7 @@ async function getBody(req) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  setCors(req, res);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Master-Code');
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -126,7 +142,7 @@ module.exports = async (req, res) => {
 
     res.status(405).json({ error: 'method not allowed' });
   } catch (err) {
-    console.error('[admin]', err.message);
-    res.status(500).json({ error: err.message });
+    console.error('[admin]', err);
+    res.status(500).json({ error: 'server error' });
   }
 };

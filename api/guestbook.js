@@ -1,3 +1,26 @@
+const crypto = require('crypto');
+
+function safeEqual(a, b) {
+  const ab = Buffer.from(String(a)), bb = Buffer.from(String(b));
+  return ab.length === bb.length && crypto.timingSafeEqual(ab, bb);
+}
+
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  if (origin === 'https://bytecolony.computer'
+    || origin === 'https://www.bytecolony.computer'
+    || /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+}
+
+async function rateLimit(req, scope, max) {
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+  const key = `rl:${scope}:${ip}`;
+  const r = await kv([['incr', key], ['expire', key, '60', 'NX']]);
+  return (r[0]?.result || 0) <= max;
+}
+
 // ── Vercel KV via Upstash REST API ────────────────────────────────────────────
 async function kv(commands) {
   const url   = process.env.KV_REST_API_URL;
@@ -48,7 +71,7 @@ async function rebuildList(entries) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  setCors(req, res);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -76,6 +99,10 @@ module.exports = async (req, res) => {
 
       // honeypot: bots fill this hidden field
       if (hp) return res.status(200).json({ ok: true });
+
+      if (!(await rateLimit(req, 'guestbook', 4))) {
+        return res.status(429).json({ error: 'whoa, slow down a bit — try again in a minute' });
+      }
 
       const n = (name || '').trim().slice(0, MAX_NAME) || 'anonymous';
       const c = (context || '').trim().slice(0, 100);
@@ -105,7 +132,7 @@ module.exports = async (req, res) => {
       if (!id || !code) return res.status(400).json({ error: 'id and code required' });
 
       const master = process.env.ARCADE_MASTER_CODE;
-      if (!master || code !== master) return res.status(403).json({ error: 'unauthorized' });
+      if (!master || !code || !safeEqual(code, master)) return res.status(403).json({ error: 'unauthorized' });
 
       const entries = await fetchAll();
       const filtered = entries.filter(e => e.id !== id);
@@ -117,7 +144,7 @@ module.exports = async (req, res) => {
 
     res.status(405).json({ error: 'method not allowed' });
   } catch (err) {
-    console.error('[guestbook]', err.message);
-    res.status(500).json({ error: err.message });
+    console.error('[guestbook]', err);
+    res.status(500).json({ error: 'server error' });
   }
 };

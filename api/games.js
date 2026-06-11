@@ -25,6 +25,27 @@ async function kv(commands) {
   return res.json();
 }
 
+function safeEqual(a, b) {
+  const ab = Buffer.from(String(a)), bb = Buffer.from(String(b));
+  return ab.length === bb.length && crypto.timingSafeEqual(ab, bb);
+}
+
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  if (origin === 'https://bytecolony.computer'
+    || origin === 'https://www.bytecolony.computer'
+    || /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+}
+
+async function rateLimit(req, scope, max) {
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+  const key = `rl:${scope}:${ip}`;
+  const r = await kv([['incr', key], ['expire', key, '60', 'NX']]);
+  return (r[0]?.result || 0) <= max;
+}
+
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 28) || 'game';
 }
@@ -33,8 +54,8 @@ function hashCode(s) {
 }
 function checkAuth(submitted, game) {
   const master = process.env.ARCADE_MASTER_CODE;
-  if (master && submitted === master) return true;
-  return game.codeHash && hashCode(submitted) === game.codeHash;
+  if (master && submitted && safeEqual(submitted, master)) return true;
+  return game.codeHash && safeEqual(hashCode(submitted), game.codeHash);
 }
 
 const MAX_TITLE = 50, MAX_AUTHOR = 50, MAX_DESC = 200, MAX_CODE = 25000;
@@ -53,7 +74,7 @@ async function rebuildList(all) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  setCors(req, res);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -87,6 +108,10 @@ module.exports = async (req, res) => {
     if (req.method === 'POST') {
       const { title, author, desc, code, editCode, lbMode, locked, closedSource, hp } = req.body || {};
       if (hp) return res.status(200).json({ ok: true });
+
+      if (!(await rateLimit(req, 'games', 5))) {
+        return res.status(429).json({ error: 'whoa, slow down a bit — try again in a minute' });
+      }
 
       const t  = (title    || '').trim().slice(0, MAX_TITLE);
       const a  = (author   || '').trim().slice(0, MAX_AUTHOR);
@@ -167,7 +192,7 @@ module.exports = async (req, res) => {
 
     res.status(405).json({ error: 'method not allowed' });
   } catch (err) {
-    console.error('[arcade]', err.message);
-    res.status(500).json({ error: err.message });
+    console.error('[arcade]', err);
+    res.status(500).json({ error: 'server error' });
   }
 };

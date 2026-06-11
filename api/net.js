@@ -15,9 +15,30 @@ async function kv(commands) {
 
 function hashCode(s) { return crypto.createHash('sha256').update(s).digest('hex'); }
 
+function safeEqual(a, b) {
+  const ab = Buffer.from(String(a)), bb = Buffer.from(String(b));
+  return ab.length === bb.length && crypto.timingSafeEqual(ab, bb);
+}
+
+function setCors(req, res) {
+  const origin = req.headers.origin || '';
+  if (origin === 'https://bytecolony.computer'
+    || origin === 'https://www.bytecolony.computer'
+    || /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+}
+
+async function rateLimit(req, scope, max) {
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+  const key = `rl:${scope}:${ip}`;
+  const r = await kv([['incr', key], ['expire', key, '60', 'NX']]);
+  return (r[0]?.result || 0) <= max;
+}
+
 async function checkAuth(code, gameId) {
   const master = process.env.ARCADE_MASTER_CODE;
-  if (master && code === master) return true;
+  if (master && code && safeEqual(code, master)) return true;
   const result = await kv([['lrange', 'arcade', '0', '49']]);
   const games = (result[0]?.result || []).map(s => { try { return JSON.parse(s); } catch { return null; } }).filter(Boolean);
   const game = games.find(g => g.id === gameId);
@@ -28,7 +49,7 @@ async function checkAuth(code, gameId) {
 const MAX_KEY = 50, MAX_VAL = 500, MAX_NAME = 50, MAX_N = 100;
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  setCors(req, res);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -84,6 +105,9 @@ module.exports = async (req, res) => {
         const key = String(body.key || '').trim().slice(0, MAX_KEY);
         const val = String(body.value ?? '').slice(0, MAX_VAL);
         if (!key) return res.status(400).json({ error: 'key required' });
+        if (!(await rateLimit(req, 'net', 30))) {
+          return res.status(429).json({ error: 'whoa, slow down a bit — try again in a minute' });
+        }
         // 30-day TTL — games are responsible for refreshing persistent data
         await kv([['set', `net:${game}:kv:${key}`, val, 'EX', String(60 * 60 * 24 * 30)]]);
         return res.status(200).json({ ok: true });
@@ -94,6 +118,9 @@ module.exports = async (req, res) => {
         const score = Number(body.score);
         if (!name)            return res.status(400).json({ error: 'name required' });
         if (!isFinite(score)) return res.status(400).json({ error: 'score must be a number' });
+        if (!(await rateLimit(req, 'net', 30))) {
+          return res.status(429).json({ error: 'whoa, slow down a bit — try again in a minute' });
+        }
         const lower = name.toLowerCase();
         // preserve original casing: only store if no prior entry
         const nameKey = `net:${game}:name:${lower}`;
@@ -135,7 +162,7 @@ module.exports = async (req, res) => {
 
     res.status(405).json({ error: 'method not allowed' });
   } catch (err) {
-    console.error('[net]', err.message);
-    res.status(500).json({ error: err.message });
+    console.error('[net]', err);
+    res.status(500).json({ error: 'server error' });
   }
 };
