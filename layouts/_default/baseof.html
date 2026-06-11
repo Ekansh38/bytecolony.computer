@@ -5,15 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   {{ $title := cond .IsHome "ByteColony" (printf "ByteColony - %s" .Title) }}
-  {{ $desc  := cond (ne .Summary "") .Summary "a journey underground" }}
+  {{ $desc := "" }}
+  {{ with .Summary }}{{ $desc = . | plainify | truncate 160 }}{{ end }}
+  {{ if not $desc }}{{ with .Params.summary }}{{ $desc = . | plainify | truncate 160 }}{{ end }}{{ end }}
+  {{ if not $desc }}{{ $desc = "a journey underground" }}{{ end }}
 
   <title>{{ $title }}</title>
   <meta name="description" content="{{ $desc }}">
+  <link rel="canonical" href="{{ .Permalink }}">
 
-  <meta property="og:type"        content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+  <meta property="og:type"        content="{{ if .IsPage }}article{{ else }}website{{ end }}">
   <meta property="og:url"         content="{{ .Permalink }}">
   <meta property="og:title"       content="{{ $title }}">
   <meta property="og:description" content="{{ $desc }}">
+  {{ if and .IsPage (not .Date.IsZero) }}<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ end }}
   <meta property="og:site_name"   content="{{ .Site.Title }}">
   <meta property="og:image"       content="{{ "images/og.png" | absURL }}">
   <meta property="og:image:width"  content="1200">
@@ -61,13 +66,13 @@
   <div id="spawn-overlay"><div id="spawn-hint"></div></div>
 
   <div id="term-overlay">
-    <div id="term-box">
+    <div id="term-box" role="dialog" aria-modal="true" aria-label="terminal">
       <div id="term-resize"></div>
       <div id="term-resize-l"></div>
       <div id="term-resize-r"></div>
       <div id="term-bar">
         <span id="term-path">colony@site:~</span>
-        <button id="term-close">✕</button>
+        <button id="term-close" aria-label="close terminal">✕</button>
       </div>
       <div id="term-output"></div>
       <div id="term-input-row">
@@ -133,10 +138,10 @@
   </script>
 
   <div id="ds-overlay"></div>
-  <div id="ds-panel">
+  <div id="ds-panel" role="dialog" aria-modal="true" aria-label="settings">
     <div class="ds-header">
       <span class="ds-header-title">settings</span>
-      <button id="ds-close">✕</button>
+      <button id="ds-close" aria-label="close settings">✕</button>
     </div>
     <div class="ds-body">
       <div class="ds-section">

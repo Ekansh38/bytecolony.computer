@@ -16,68 +16,8 @@
   <div id="cmt-list">
     <p style="color:var(--muted)">loading...</p>
   </div>
-  <a class="go-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" href="javascript:void(0)">↑ top</a>
+  <button class="go-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ top</button>
 </div>
-
-<style>
-  .comments-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; }
-
-  .cmt-form { margin-bottom: 28px; }
-  .cmt-input {
-    width: 100%; background: var(--code-bg); border: 1px solid var(--border);
-    color: var(--fg); font: inherit; font-size: 0.88rem;
-    padding: 10px 12px; outline: none; box-sizing: border-box;
-    border-radius: 4px; transition: border-color 0.15s;
-  }
-  .cmt-input:focus { border-color: var(--accent); }
-  .cmt-input::placeholder { color: var(--muted); opacity: 0.6; }
-  textarea.cmt-input { resize: vertical; min-height: 80px; }
-  .cmt-form-row { display: flex; gap: 8px; margin-top: 8px; }
-  .cmt-name-input { flex: 1; }
-  .cmt-name-input.cmt-prefilled { color: var(--muted); }
-  .cmt-name-input.cmt-prefilled:focus { color: var(--fg); }
-  .cmt-btn {
-    background: transparent; border: 1px solid var(--accent);
-    color: var(--accent); font: inherit; font-size: 0.85rem;
-    padding: 8px 22px; cursor: pointer; white-space: nowrap;
-    border-radius: 4px; transition: background 0.15s, color 0.15s;
-  }
-  .cmt-btn:hover { background: var(--accent); color: var(--bg); }
-  .cmt-btn:disabled { opacity: 0.4; cursor: default; }
-  .cmt-status { font-size: 0.8rem; color: var(--muted); min-height: 1.2em; margin-top: 6px; }
-  .cmt-count { color: var(--muted); font-size: 0.8rem; margin-bottom: 12px; }
-
-  .cmt-entry {
-    padding: 14px 16px; margin-bottom: 6px;
-    background: var(--code-bg); border-radius: 4px;
-  }
-  .cmt-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-  .cmt-name { font-weight: 700; font-size: 0.88rem; }
-  .cmt-date { color: var(--muted); font-size: 0.72rem; }
-  .cmt-msg { font-size: 0.88rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
-  .cmt-reply-btn {
-    background: none; border: none; color: var(--muted); font: inherit;
-    font-size: 0.72rem; cursor: pointer; padding: 4px 0; margin-top: 6px;
-    transition: color 0.15s;
-  }
-  .cmt-reply-btn:hover { color: var(--accent); }
-
-  .cmt-replies { margin: 8px 0 0 12px; padding-left: 14px; border-left: 2px solid var(--border); }
-  .cmt-replies .cmt-entry { padding: 10px 14px; margin-bottom: 4px; }
-
-  .cmt-reply-form { margin: 8px 0 0 12px; padding-left: 14px; border-left: 2px solid var(--accent); }
-  .cmt-reply-form textarea { min-height: 50px; font-size: 0.85rem; }
-  .cmt-reply-form .cmt-form-row { margin-top: 6px; }
-  .cmt-reply-form .cmt-btn { font-size: 0.8rem; padding: 6px 14px; }
-  .cmt-reply-form .cmt-name-input { font-size: 0.85rem; }
-
-  .go-top {
-    display: block; text-align: center; margin-top: 32px;
-    color: var(--muted); font-size: 0.82rem; text-decoration: none;
-    transition: color 0.15s;
-  }
-  .go-top:hover { color: var(--accent); text-decoration: none; }
-</style>
 
 <script>
 (function () {

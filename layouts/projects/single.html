@@ -6,8 +6,8 @@
 <div style="margin-bottom:16px;"><a href="/projects/{{ . }}/" class="writing-project" style="font-size:0.85rem;">↳ {{ . }}</a></div>
 {{ end }}
 
-<div class="project-title">{{ .Title }}</div>
-<div class="project-meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.status }} · {{ . }}{{ end }}</div>
+<h1 class="project-title">{{ .Title }}</h1>
+<div class="project-meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.status }} · {{ . }}{{ end }} · <button class="jump-comments" onclick="document.getElementById('comments').scrollIntoView({behavior:'smooth'})">comments ↓</button></div>
 
 {{ .Content }}
 

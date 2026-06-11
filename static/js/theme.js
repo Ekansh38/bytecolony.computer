@@ -56,6 +56,7 @@ function toggleTheme() {
       dsOverlay.classList.remove('open');
       dsPanel.classList.remove('open');
       document.body.style.overflow = '';
+      if (dsBtn) dsBtn.focus();
     }
 
     if (dsBtn) dsBtn.addEventListener('click', openSettings);

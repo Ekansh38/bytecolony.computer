@@ -1,6 +1,7 @@
 baseURL = "https://bytecolony.computer/"
 languageCode = "en-us"
 title = "Byte Colony"
+enableRobotsTXT = true
 
 [markup.goldmark.renderer]
   unsafe = true

@@ -2,7 +2,7 @@
 
 {{ with .Parent }}<a href="{{ .Permalink }}" class="back">← {{ if .IsHome }}home{{ else }}{{ strings.ToLower .Title }}{{ end }}</a>{{ end }}
 
-<div class="project-title">{{ .Title }}</div>
+<h1 class="project-title">{{ .Title }}</h1>
 
 <ul>
   {{ range .RegularPages }}

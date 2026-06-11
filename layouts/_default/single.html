@@ -6,10 +6,17 @@
 <div style="margin-bottom:16px;"><a href="/projects/{{ . }}/" class="writing-project" style="font-size:0.85rem;">{{ . }}</a> <span style="color:var(--muted);font-size:0.85rem;">/ project</span></div>
 {{ end }}
 
-<div class="project-title">{{ .Title }}</div>
-<div class="project-meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.status }} · {{ . }}{{ end }} · <a class="jump-comments" onclick="document.getElementById('comments').scrollIntoView({behavior:'smooth'});return false;" href="javascript:void(0)">comments ↓</a></div>
+<h1 class="project-title">{{ .Title }}</h1>
+<div class="project-meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.status }} · {{ . }}{{ end }} · <button class="jump-comments" onclick="document.getElementById('comments').scrollIntoView({behavior:'smooth'})">comments ↓</button></div>
 
 {{ .Content }}
+
+{{ if or .NextInSection .PrevInSection }}
+<div class="article-nav">
+  {{ with .NextInSection }}<a href="{{ .Permalink }}" class="article-nav-prev">← {{ .Title }}</a>{{ end }}
+  {{ with .PrevInSection }}<a href="{{ .Permalink }}" class="article-nav-next">{{ .Title }} →</a>{{ end }}
+</div>
+{{ end }}
 
 {{ partial "comments.html" . }}
 

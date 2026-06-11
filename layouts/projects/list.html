@@ -2,7 +2,7 @@
 
 <a href="{{ .Parent.Permalink }}" class="back">← {{ strings.ToLower .Parent.Title }}</a>
 
-<div class="project-title">{{ .Title }}</div>
+<h1 class="project-title">{{ .Title }}</h1>
 <div class="project-meta">{{ .Params.stack }} · {{ .Params.status }}</div>
 
 <div class="project-content">{{ .Content }}</div>

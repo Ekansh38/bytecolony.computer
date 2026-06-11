@@ -2,7 +2,7 @@
 
 <a href="{{ .Parent.Permalink }}" class="back">← experience</a>
 
-<div class="project-title">{{ .Title }}</div>
+<h1 class="project-title">{{ .Title }}</h1>
 <div class="project-meta">{{ .Params.role }} · {{ .Params.year }}</div>
 {{ with .Params.skills }}<div class="li-meta">{{ delimit . " · " }}</div>{{ end }}
 
