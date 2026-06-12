@@ -83,7 +83,8 @@
 <ul>
   {{ range . }}
   <li>
-    <span class="li-name"><a href="{{ .Params.itchio }}" target="_blank" rel="noopener noreferrer">{{ .Title }} ↗</a></span>:
+    {{ $url := or .Params.itchio .Params.github }}
+    <span class="li-name"><a href="{{ $url }}" target="_blank" rel="noopener noreferrer">{{ .Title }} ↗</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
   </li>
   {{ end }}
