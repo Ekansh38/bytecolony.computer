@@ -8,9 +8,10 @@
 <ul>
   {{ range . }}
   <li>
-    <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
+    {{ $url := or .Params.github .Permalink }}
+    <span class="li-name"><a href="{{ $url }}"{{ if .Params.github }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .Title }}{{ if .Params.github }} ↗{{ end }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
-    <div class="li-meta">{{ .Params.stack }} · {{ .Params.status }}{{ with .Params.github }} · <a href="{{ . }}" target="_blank">source</a>{{ end }}</div>
+    <div class="li-meta">{{ .Params.stack }} · {{ .Params.status }}</div>
   </li>
   {{ end }}
 </ul>
