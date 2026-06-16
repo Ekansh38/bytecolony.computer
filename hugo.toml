@@ -7,6 +7,14 @@ enableRobotsTXT = true
   unsafe = true
   hardWraps = true
 
+# Pass LaTeX math delimiters through untouched so KaTeX can render them.
+# Without this, goldmark eats _underscores_ inside \sum_{i=1}^n, etc.
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block  = [['\[', '\]'], ['$$', '$$']]
+    inline = [['\(', '\)'], ['$', '$']]
+
 [markup.highlight]
   codeFences = true
   noClasses = false
