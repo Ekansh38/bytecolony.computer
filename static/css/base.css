@@ -302,15 +302,6 @@ body.page .hero-img {
   transition: filter 0.2s ease;
 }
 
-/* ── KaTeX MATH ────────────────────────────────────────────── */
-.katex { color: var(--fg); font-size: 1.05em; }
-.katex-block, .katex-display {
-  display: block; margin: 1.2em 0;
-  overflow-x: auto; overflow-y: hidden;
-  padding: 2px 0;
-}
-.katex-block .katex { font-size: 1.15em; }
-
 body.page mark {
   background: color-mix(in srgb, var(--accent) 15%, transparent);
   color: inherit; padding: 1px 4px; border-radius: 2px;
