@@ -48,14 +48,6 @@
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  function avatar(name) {
-    var s = String(name || 'anonymous');
-    var h = 0;
-    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-    var letter = (s.trim().charAt(0) || '?').toUpperCase();
-    return '<span class="cmt-avatar" style="background:hsl(' + (h % 360) + ',45%,48%)">' + esc(letter) + '</span>';
-  }
-
   function timeAgo(iso) {
     if (!iso) return '';
     var d = new Date(iso);
@@ -98,13 +90,13 @@
       if (reps.length) {
         repHtml = '<div class="cmt-replies">' + reps.map(function (r) {
           return '<div class="cmt-entry">'
-            + '<div class="cmt-head"><span class="cmt-who">' + avatar(r.name) + '<span class="cmt-name">' + esc(r.name) + '</span></span><span class="cmt-date">' + timeAgo(r.date) + '</span></div>'
+            + '<div class="cmt-head"><span class="cmt-name">' + esc(r.name) + '</span><span class="cmt-date">' + timeAgo(r.date) + '</span></div>'
             + '<div class="cmt-msg">' + esc(r.message) + '</div>'
             + '</div>';
         }).join('') + '</div>';
       }
       return '<div class="cmt-entry" data-id="' + esc(c.id) + '">'
-        + '<div class="cmt-head"><span class="cmt-who">' + avatar(c.name) + '<span class="cmt-name">' + esc(c.name) + '</span></span><span class="cmt-date">' + timeAgo(c.date) + '</span></div>'
+        + '<div class="cmt-head"><span class="cmt-name">' + esc(c.name) + '</span><span class="cmt-date">' + timeAgo(c.date) + '</span></div>'
         + '<div class="cmt-msg">' + esc(c.message) + '</div>'
         + repHtml
         + '<button class="cmt-reply-btn" data-id="' + esc(c.id) + '">reply</button>'
