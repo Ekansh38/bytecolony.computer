@@ -20,7 +20,7 @@
 
 <script>
 (function () {
-  var SLUG = {{ .RelPermalink | jsonify }}.replace(/^\/|\/$/g, '').replace(/\//g, '-');
+  var SLUG = {{ .RelPermalink | jsonify | safeJS }}.replace(/^\/|\/$/g, '').replace(/\//g, '-');
   var API = '/api/comments?slug=' + encodeURIComponent(SLUG);
   var _comments = [];
   var STORAGE_KEY = 'bc-username';
