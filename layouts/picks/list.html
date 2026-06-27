@@ -8,6 +8,7 @@
 
 {{ $software := where .RegularPages "Params.type_label" "software" }}
 {{ $articles := where .RegularPages "Params.type_label" "article" }}
+{{ $papers   := where .RegularPages "Params.type_label" "paper" }}
 {{ $books    := where .RegularPages "Params.type_label" "book" }}
 {{ $talks    := where .RegularPages "Params.type_label" "talk" }}
 {{ $other    := where .RegularPages "Params.type_label" "==" "" }}
@@ -31,6 +32,21 @@
 <h3>articles</h3>
 <div class="picks-list">
   {{ range $articles }}
+  <div class="pick-card">
+    <div class="pick-head">
+      {{ if .Params.link }}<a href="{{ .Params.link }}" target="_blank" rel="noopener noreferrer" class="pick-title">{{ .Title }} <span class="pick-arrow">&nearr;</span></a>{{ else }}<span class="pick-title">{{ .Title }}</span>{{ end }}
+      {{ with .Params.author }}<span class="pick-author">{{ . }}</span>{{ end }}
+    </div>
+    <div class="pick-body">{{ .Content }}</div>
+  </div>
+  {{ end }}
+</div>
+{{ end }}
+
+{{ if $papers }}
+<h3>papers</h3>
+<div class="picks-list">
+  {{ range $papers }}
   <div class="pick-card">
     <div class="pick-head">
       {{ if .Params.link }}<a href="{{ .Params.link }}" target="_blank" rel="noopener noreferrer" class="pick-title">{{ .Title }} <span class="pick-arrow">&nearr;</span></a>{{ else }}<span class="pick-title">{{ .Title }}</span>{{ end }}
