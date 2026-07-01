@@ -1,7 +1,7 @@
 ---
 title: "cx"
 weight: 4
-summary: "Terminal AI chat. Any model, you own your data."
+summary: "Terminal AI chat, not polished or good, just for me!"
 stack: "Go"
 status: "in progress"
 github: "https://github.com/Ekansh38/cx"

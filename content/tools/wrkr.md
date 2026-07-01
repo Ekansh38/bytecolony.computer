@@ -1,7 +1,7 @@
 ---
 title: "wrkr"
 weight: 1
-summary: "Terminal calculator that knows units, remembers variables, and copies results to clipboard."
+summary: "a terminal calculator for my CS related needs."
 stack: "Go"
 status: "active"
 github: "https://github.com/Ekansh38/wrkr"
