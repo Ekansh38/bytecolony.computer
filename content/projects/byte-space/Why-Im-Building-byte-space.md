@@ -18,10 +18,8 @@ I also really like this idea from a technical perspective. I get to write, from 
 
 - Writing my own filesystem from scratch called **BS-EXTFS**
 - Learning binary serialization
-- How actual kernel internals work — file descriptors, TTY's
-- **TCP/IP and networking** at a very deep level — from ARP all the way up to routing protocols like RIP, with real packet structures and TTLs and routing decisions between nodes
-
-Actual networking, not faked.
+- How actual kernel internals work, file descriptors, TTY's
+- **TCP/IP and networking** at a very deep level, from ARP all the way up to routing protocols like RIP, with real packet structures and TTLs and routing decisions between nodes
 
 ## Features
 
