@@ -17,8 +17,6 @@ It also writes back. Send an email, add a Trello comment, log a performance note
 
 This is a real project being used daily by a team of 40 employees. I built the whole thing.
 
-The site is password protected but demos are coming.
-
 ---
 
 **Trello**
