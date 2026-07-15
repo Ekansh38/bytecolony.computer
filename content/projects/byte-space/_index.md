@@ -11,9 +11,9 @@ devlog: "https://www.youtube.com/playlist?list=PL0VzTA7jLj1SHQWzZwZ8IUoeMu9LrmBK
 
 "byte-space" is a terminal-based internet simulator set in the early internet era.
 
-Right now my main focus is BSEXTFS, my own hand-rolled filesystem for byte-space. The project is still heavily a work-in-progress. After BSEXTFS the next phases are networking, and then my own scripting language.
+Right now my main focus is BS-EXTFS, my own inode-based hand-rolled filesystem for byte-space. The project is still heavily a work-in-progress. After BS-EXTFS the next phases are networking, and then my own scripting language.
 
-Features include:
+Features will include (hopefully if I get to it):
 
 - browsing text-based websites
 - seeing packets travel between machines in real-time
