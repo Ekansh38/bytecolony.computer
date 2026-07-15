@@ -271,6 +271,7 @@ body.writing li:not(:where(.project-content *)), body.music li:not(:where(.proje
 .crumb-sep { margin: 0 6px; opacity: 0.5; }
 .crumb-current { color: var(--fg); }
 .more-link { margin: 14px 0 0; font-size: 0.95rem; font-weight: 600; }
+.more-dots { color: var(--muted); letter-spacing: 0.15em; margin-right: 6px; font-weight: 400; }
 .more-link a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); padding-bottom: 1px; }
 .more-link a:hover { color: var(--fg); border-bottom-color: var(--fg); }
 

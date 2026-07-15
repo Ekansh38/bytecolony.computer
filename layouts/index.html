@@ -18,7 +18,7 @@
   </li>
   {{ end }}
 </ul>
-{{ if gt (len $personal) 4 }}<p class="more-link"><a href="/projects">… more →</a></p>{{ end }}
+{{ if gt (len $personal) 4 }}<p class="more-link"><span class="more-dots">. . .</span> <a href="/projects">more →</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 <hr>
@@ -44,7 +44,7 @@
   </li>
   {{ end }}
 </ul>
-{{ if gt (len $sortedPosts) 4 }}<p class="more-link"><a href="/writing">… more →</a></p>{{ end }}
+{{ if gt (len $sortedPosts) 4 }}<p class="more-link"><span class="more-dots">. . .</span> <a href="/writing">more →</a></p>{{ end }}
 {{ else }}
 <p class="empty-note">nothing yet</p>
 {{ end }}
@@ -79,7 +79,7 @@
   </li>
   {{ end }}
 </ul>
-{{ if gt (len .) 4 }}<p class="more-link"><a href="/music">… more →</a></p>{{ end }}
+{{ if gt (len .) 4 }}<p class="more-link"><span class="more-dots">. . .</span> <a href="/music">more →</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 {{ $games := .Site.GetPage "/games" }}
@@ -95,7 +95,7 @@
   </li>
   {{ end }}
 </ul>
-{{ if gt (len .) 4 }}<p class="more-link"><a href="/projects#games">… more →</a></p>{{ end }}
+{{ if gt (len .) 4 }}<p class="more-link"><span class="more-dots">. . .</span> <a href="/projects#games">more →</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 {{ $tools := .Site.GetPage "/tools" }}
@@ -111,7 +111,7 @@
   </li>
   {{ end }}
 </ul>
-{{ if gt (len .) 4 }}<p class="more-link"><a href="/projects#tools">… more →</a></p>{{ end }}
+{{ if gt (len .) 4 }}<p class="more-link"><span class="more-dots">. . .</span> <a href="/projects#tools">more →</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 <hr>
