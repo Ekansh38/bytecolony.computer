@@ -16,10 +16,12 @@ byte-space (all lowercase) is an internet simulator that boasts some pretty cool
 
 I also really like this idea from a technical perspective. I get to write, from scratch the parts of an OS I find interesting and get to simulate OS functionality to a pretty deep level, none of the hardware type stuff but a lot of cool things like:
 
-- Writing my own filesystem from scratch called **BS-EXTFS**
+- Writing my own filesystem from scratch called **BS-EXTFS** (Bull-shit extended file system)
 - Learning binary serialization
 - How actual kernel internals work, file descriptors, TTY's
 - **TCP/IP and networking** at a very deep level, from ARP all the way up to routing protocols like RIP, with real packet structures and TTLs and routing decisions between nodes
+
+lot of juicy stuff that super ambitious.
 
 ## Features
 

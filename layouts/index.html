@@ -52,6 +52,8 @@
 <hr>
 <h2><a href="/projects#client-work" class="now-link">client work</a></h2>
 {{ partial "client-work.html" . }}
+{{ $clientCount := 4 }}
+{{ if gt $clientCount 3 }}<p class="more-link"><span class="more-dots">. . .</span> <a href="/projects#client-work">more →</a></p>{{ end }}
 
 {{/* EXPERIENCE SECTION — commented out, re-enable when ready
 <hr>
