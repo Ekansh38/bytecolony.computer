@@ -45,8 +45,11 @@ body {
   padding: 48px 20px 64px;
 }
 
-body.page.writing  { max-width: 860px; }
-body.page.projects { max-width: min(960px, 90vw); }
+body.page.writing     { max-width: 700px; }
+body.page.projects    { max-width: 700px; }
+body.section.projects { max-width: 720px; }
+body.section.writing  { max-width: 720px; }
+.project-content      { max-width: 680px; }
 
 a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
 a:hover { text-decoration: underline; }
