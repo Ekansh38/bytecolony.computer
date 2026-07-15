@@ -58,7 +58,7 @@ li { padding: 6px 0; }
 /* restore list styling inside article content */
 body.page ul, .project-content ul { list-style: disc; padding-left: 1.4em; }
 body.page ol, .project-content ol { list-style: decimal; padding-left: 1.4em; }
-body.page li, .project-content li { padding: 4px 0; }
+body.page li, .project-content li { padding: 6px 0; line-height: 1.75; }
 
 /* ── CODE BLOCKS ─────────────────────────────────────────── */
 
