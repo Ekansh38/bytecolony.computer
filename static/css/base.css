@@ -236,8 +236,9 @@ body.writing li:not(:where(.project-content *)), body.music li:not(:where(.proje
 .toggle:active { transform: scale(0.92); }
 .header-controls { display: flex; gap: 10px; align-items: center; }
 
-.writing-li { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.writing-li { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
 .writing-li a { color: var(--fg); }
+.writing-li .yr { white-space: nowrap; flex-shrink: 0; }
 .writing-project { display: inline-block; color: var(--muted) !important; font-size: 0.75rem; letter-spacing: 0.03em; margin-top: 2px; }
 .writing-project:hover { color: var(--accent) !important; }
 
