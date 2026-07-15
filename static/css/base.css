@@ -204,15 +204,15 @@ header { margin-bottom: 48px; }
 .li-desc { color: color-mix(in srgb, var(--fg) 55%, var(--muted)); }
 .li-meta { color: var(--muted); margin-top: 3px; }
 .empty-note { color: var(--muted); }
-body.projects li, body.home li, body.games li,
-body.writing li, body.music li, body.tools li {
+body.projects li:not(:where(.project-content *)), body.home li:not(:where(.project-content *)), body.games li:not(:where(.project-content *)),
+body.writing li:not(:where(.project-content *)), body.music li:not(:where(.project-content *)), body.tools li:not(:where(.project-content *)) {
   padding: 14px 0;
   border-radius: 0 4px 4px 0;
   transition: background 0.15s ease, padding-left 0.2s ease, box-shadow 0.15s ease;
 }
 @media (hover: hover) {
-  body.projects li:hover, body.home li:hover, body.games li:hover,
-  body.writing li:hover, body.music li:hover, body.tools li:hover {
+  body.projects li:not(:where(.project-content *)):hover, body.home li:not(:where(.project-content *)):hover, body.games li:not(:where(.project-content *)):hover,
+  body.writing li:not(:where(.project-content *)):hover, body.music li:not(:where(.project-content *)):hover, body.tools li:not(:where(.project-content *)):hover {
     background: color-mix(in srgb, var(--accent) 6%, transparent);
     box-shadow: inset 2px 0 0 var(--accent);
     padding-left: 12px;

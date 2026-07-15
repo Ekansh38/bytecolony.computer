@@ -2,14 +2,18 @@
 title: "byte-space"
 weight: 1
 layout: "list"
-summary: "Recreates the early 1980s internet in the terminal"
+summary: "Recreates the early 1980s internet in the terminal (WIP)"
 stack: "Go"
 status: "active"
 github: "https://github.com/Ekansh38/byte-space"
 devlog: "https://www.youtube.com/playlist?list=PL0VzTA7jLj1SHQWzZwZ8IUoeMu9LrmBKd"
 ---
 
-"byte-space" is a terminal-based internet simulator set in the early internet era. Features include:
+"byte-space" is a terminal-based internet simulator set in the early internet era.
+
+Right now my main focus is BSEXTFS, my own hand-rolled filesystem for byte-space. The project is still heavily a work-in-progress. After BSEXTFS the next phases are networking, and then my own scripting language.
+
+Features include:
 
 - browsing text-based websites
 - seeing packets travel between machines in real-time
