@@ -18,7 +18,7 @@
   </li>
   {{ end }}
 </ul>
-{{ if gt (len $personal) 3 }}<p class="more-link"><a href="/projects">+ {{ sub (len $personal) 3 }} more<span class="more-arrow"> →</span></a></p>{{ end }}
+{{ if gt (len $personal) 3 }}<p class="more-link"><a href="/projects">. . . more →</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 <hr>
@@ -44,7 +44,7 @@
   </li>
   {{ end }}
 </ul>
-{{ if gt (len $sortedPosts) 3 }}<p class="more-link"><a href="/writing">+ {{ sub (len $sortedPosts) 3 }} more<span class="more-arrow"> →</span></a></p>{{ end }}
+{{ if gt (len $sortedPosts) 3 }}<p class="more-link"><a href="/writing">. . . more →</a></p>{{ end }}
 {{ else }}
 <p class="empty-note">nothing yet</p>
 {{ end }}
@@ -53,7 +53,7 @@
 <h2><a href="/projects#client-work" class="now-link">client work</a></h2>
 {{ partial "client-work.html" . }}
 {{ $clientCount := 4 }}
-{{ if gt $clientCount 3 }}<p class="more-link"><a href="/projects#client-work">+ {{ sub $clientCount 3 }} more<span class="more-arrow"> →</span></a></p>{{ end }}
+{{ if gt $clientCount 3 }}<p class="more-link"><a href="/projects#client-work">. . . more →</a></p>{{ end }}
 
 {{/* EXPERIENCE SECTION — commented out, re-enable when ready
 <hr>
@@ -81,7 +81,7 @@
   </li>
   {{ end }}
 </ul>
-{{ if gt (len .) 3 }}<p class="more-link"><a href="/music">+ {{ sub (len .) 3 }} more<span class="more-arrow"> →</span></a></p>{{ end }}
+{{ if gt (len .) 3 }}<p class="more-link"><a href="/music">. . . more →</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 {{ $games := .Site.GetPage "/games" }}
@@ -97,7 +97,7 @@
   </li>
   {{ end }}
 </ul>
-{{ if gt (len .) 3 }}<p class="more-link"><a href="/projects#games">+ {{ sub (len .) 3 }} more<span class="more-arrow"> →</span></a></p>{{ end }}
+{{ if gt (len .) 3 }}<p class="more-link"><a href="/projects#games">. . . more →</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 {{ $tools := .Site.GetPage "/tools" }}
@@ -113,7 +113,7 @@
   </li>
   {{ end }}
 </ul>
-{{ if gt (len .) 3 }}<p class="more-link"><a href="/projects#tools">+ {{ sub (len .) 3 }} more<span class="more-arrow"> →</span></a></p>{{ end }}
+{{ if gt (len .) 3 }}<p class="more-link"><a href="/projects#tools">. . . more →</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 <hr>
