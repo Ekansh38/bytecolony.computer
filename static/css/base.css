@@ -270,9 +270,9 @@ body.writing li:not(:where(.project-content *)), body.music li:not(:where(.proje
 .breadcrumbs a:hover { color: var(--accent); text-decoration: underline; }
 .crumb-sep { margin: 0 6px; opacity: 0.5; }
 .crumb-current { color: var(--fg); }
-.more-link { margin: 8px 0 0; font-size: 0.9rem; }
-.more-link a { color: var(--muted); }
-.more-link a:hover { color: var(--accent); }
+.more-link { margin: 14px 0 0; font-size: 0.95rem; font-weight: 600; }
+.more-link a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); padding-bottom: 1px; }
+.more-link a:hover { color: var(--fg); border-bottom-color: var(--fg); }
 
 .project-title { font-size: 1.4rem; margin-bottom: 6px; }
 
