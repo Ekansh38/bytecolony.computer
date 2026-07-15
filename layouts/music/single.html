@@ -1,6 +1,6 @@
 {{ define "main" }}
 
-<a href="{{ .Parent.Permalink }}" class="back">← {{ strings.ToLower .Parent.Title }}</a>
+{{ partial "breadcrumbs.html" . }}
 
 <h1 class="project-title">{{ .Title }}</h1>
 

@@ -1,6 +1,6 @@
 {{ define "main" }}
 
-{{ with .Parent }}<a href="{{ .Permalink }}" class="back">&larr; {{ if .IsHome }}home{{ else }}{{ strings.ToLower .Title }}{{ end }}</a>{{ end }}
+{{ partial "breadcrumbs.html" . }}
 
 <h1 class="project-title">{{ .Title }}</h1>
 

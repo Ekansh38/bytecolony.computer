@@ -7,15 +7,18 @@
 {{ $projects := .Site.GetPage "/projects" }}
 <hr>
 <h2><a href="/projects" class="now-link">personal projects</a></h2>
-{{ with $projects.Sections }}
+{{ $personal := slice }}
+{{ range $projects.Sections }}{{ if not .Params.shipped }}{{ $personal = $personal | append . }}{{ end }}{{ end }}
+{{ if $personal }}
 <ul>
-  {{ range . }}{{ if not .Params.shipped }}
+  {{ range first 4 $personal }}
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
   </li>
-  {{ end }}{{ end }}
+  {{ end }}
 </ul>
+{{ if gt (len $personal) 4 }}<p class="more-link"><a href="/projects">… more →</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 <hr>
@@ -28,18 +31,20 @@
   {{ end }}
 {{ end }}
 {{ $allPosts := union ($writing.RegularPages) $projectArticles }}
-{{ if $allPosts }}
+{{ $sortedPosts := $allPosts.ByDate.Reverse }}
+{{ if $sortedPosts }}
 <ul>
-  {{ range $allPosts.ByDate.Reverse }}
+  {{ range first 4 $sortedPosts }}
   <li class="writing-li">
     <div>
       <a href="{{ .Permalink }}">{{ .Title }}</a>
       {{ with .Params.project }}<br><a href="/projects/{{ . }}/" class="writing-project">↳ {{ . }}</a>{{ end }}
     </div>
-    <span class="yr">{{ .Date.Format "2006" }}</span>
+    <span class="yr">{{ .Date.Format "Jan 2006" }}</span>
   </li>
   {{ end }}
 </ul>
+{{ if gt (len $sortedPosts) 4 }}<p class="more-link"><a href="/writing">… more →</a></p>{{ end }}
 {{ else }}
 <p class="empty-note">nothing yet</p>
 {{ end }}
@@ -67,13 +72,46 @@
 <h2><a href="/music" class="now-link">music</a></h2>
 {{ with $music.RegularPages }}
 <ul>
-  {{ range . }}
+  {{ range first 4 . }}
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
   </li>
   {{ end }}
 </ul>
+{{ if gt (len .) 4 }}<p class="more-link"><a href="/music">… more →</a></p>{{ end }}
+{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
+
+{{ $games := .Site.GetPage "/games" }}
+<hr>
+<h2><a href="/projects#games" class="now-link">games</a></h2>
+{{ with $games.RegularPages }}
+<ul>
+  {{ range first 4 . }}
+  <li>
+    {{ $url := or .Params.itchio .Params.github }}
+    <span class="li-name"><a href="{{ $url }}" target="_blank" rel="noopener noreferrer">{{ .Title }} ↗</a></span>:
+    <span class="li-desc">{{ .Params.summary }}</span>
+  </li>
+  {{ end }}
+</ul>
+{{ if gt (len .) 4 }}<p class="more-link"><a href="/projects#games">… more →</a></p>{{ end }}
+{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
+
+{{ $tools := .Site.GetPage "/tools" }}
+<hr>
+<h2><a href="/projects#tools" class="now-link">tools</a></h2>
+{{ with $tools.RegularPages }}
+<ul>
+  {{ range first 4 . }}
+  <li>
+    {{ $url := or .Params.github .Permalink }}
+    <span class="li-name"><a href="{{ $url }}"{{ if .Params.github }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .Title }}{{ if .Params.github }} ↗{{ end }}</a></span>:
+    <span class="li-desc">{{ .Params.summary }}</span>
+  </li>
+  {{ end }}
+</ul>
+{{ if gt (len .) 4 }}<p class="more-link"><a href="/projects#tools">… more →</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 <hr>

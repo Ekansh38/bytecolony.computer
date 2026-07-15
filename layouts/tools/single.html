@@ -1,6 +1,6 @@
 {{ define "main" }}
 
-<a href="{{ .Parent.Permalink }}" class="back">← tools</a>
+{{ partial "breadcrumbs.html" . }}
 
 <h1 class="project-title">{{ .Title }}</h1>
 <div class="project-meta">{{ .Params.stack }} · {{ .Params.status }}</div>
