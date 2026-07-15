@@ -23,7 +23,7 @@
         <a href="{{ .Permalink }}">{{ .Title }}</a>
         {{ with .Params.project }}<br><a href="/projects/{{ . }}/" class="writing-project">↳ {{ . }}</a>{{ end }}
       </div>
-      <span class="yr">{{ .Date.Format "2006" }}</span>
+      <span class="yr">{{ .Date.Format "Jan 2, 2006" }}</span>
     </li>
     {{ end }}
   </ul>
@@ -34,7 +34,7 @@
     {{ range . }}
     <li class="writing-li">
       <a href="{{ .Permalink }}">{{ .Title }}</a>
-      <span class="yr">{{ .Date.Format "2006" }}</span>
+      <span class="yr">{{ .Date.Format "Jan 2, 2006" }}</span>
     </li>
     {{ end }}
   </ul>
