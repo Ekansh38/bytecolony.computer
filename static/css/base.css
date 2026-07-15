@@ -56,8 +56,8 @@ ul { list-style: none; }
 li { padding: 6px 0; }
 
 /* restore list styling inside article content */
-body.page ul, .project-content ul { list-style: disc; padding-left: 1.4em; }
-body.page ol, .project-content ol { list-style: decimal; padding-left: 1.4em; }
+body.page ul, .project-content ul { list-style: disc; padding-left: 1.4em; margin-bottom: 1.8em; }
+body.page ol, .project-content ol { list-style: decimal; padding-left: 1.4em; margin-bottom: 1.8em; }
 body.page li, .project-content li { padding: 6px 0; line-height: 1.75; }
 
 /* ── CODE BLOCKS ─────────────────────────────────────────── */
@@ -279,7 +279,7 @@ body.home .client-list > li:nth-child(n+4) { display: none; }
 .project-title { font-size: 1.4rem; margin-bottom: 6px; }
 
 /* ── ARTICLE PROSE ─────────────────────────────────────────── */
-body.page p  { line-height: 1.85; margin-bottom: 1.6em; }
+body.page p  { line-height: 1.9; margin-bottom: 2em; }
 body.page.writing p { margin-bottom: 1.4em; }
 body.page h1 { font-size: 1.4rem; color: var(--fg); margin: 0 0 8px; }
 body.page h2 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 36px 0 10px; }
