@@ -10,11 +10,7 @@ github: "https://github.com/Ekansh38/byte-space"
 
 "byte-space" is a terminal-based internet simulator set in the early internet era.
 
-<br>
-
 Right now my main focus is BS-EXTFS, my own inode-based hand-rolled filesystem for byte-space. The project is still heavily a work-in-progress. After BS-EXTFS the next phases are networking, and then my own scripting language.
-
-<br>
 
 Features will include (hopefully if I get to it):
 
@@ -24,8 +20,4 @@ Features will include (hopefully if I get to it):
 - a custom scripting language for writing programs inside the simulation
 - a virtual kernel that implements real Unix-like syscalls (open, read, socket) and a full TCP/IP stack; programs interact with it exactly like they would a real OS
 
-<br>
-
 It is a pretty cool project and you should definitely star it on Github.
-
-

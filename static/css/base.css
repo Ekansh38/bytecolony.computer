@@ -279,7 +279,7 @@ body.home .client-list > li:nth-child(n+4) { display: none; }
 .project-title { font-size: 1.4rem; margin-bottom: 6px; }
 
 /* ── ARTICLE PROSE ─────────────────────────────────────────── */
-body.page p  { line-height: 1.85; margin-bottom: 1em; }
+body.page p  { line-height: 1.85; margin-bottom: 1.6em; }
 body.page.writing p { margin-bottom: 1.4em; }
 body.page h1 { font-size: 1.4rem; color: var(--fg); margin: 0 0 8px; }
 body.page h2 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 36px 0 10px; }
