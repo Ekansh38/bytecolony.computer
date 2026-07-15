@@ -4,6 +4,7 @@
 
 <h1 class="project-title">{{ .Title }}</h1>
 
+<h2 id="personal">personal projects</h2>
 <ul>
   {{ range .Sections }}{{ if not .Params.shipped }}
   <li>
@@ -13,6 +14,36 @@
   </li>
   {{ end }}{{ end }}
 </ul>
+
+<hr>
+<h2 id="games">games</h2>
+{{ $games := .Site.GetPage "/games" }}
+{{ with $games.RegularPages }}
+<ul>
+  {{ range . }}
+  <li>
+    {{ $url := or .Params.itchio .Params.github }}
+    <span class="li-name"><a href="{{ $url }}" target="_blank" rel="noopener noreferrer">{{ .Title }} ↗</a></span>:
+    <span class="li-desc">{{ .Params.summary }}</span>
+  </li>
+  {{ end }}
+</ul>
+{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
+
+<hr>
+<h2 id="tools">tools</h2>
+{{ $tools := .Site.GetPage "/tools" }}
+{{ with $tools.RegularPages }}
+<ul>
+  {{ range . }}
+  <li>
+    {{ $url := or .Params.github .Permalink }}
+    <span class="li-name"><a href="{{ $url }}"{{ if .Params.github }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .Title }}{{ if .Params.github }} ↗{{ end }}</a></span>:
+    <span class="li-desc">{{ .Params.summary }}</span>
+  </li>
+  {{ end }}
+</ul>
+{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 <hr>
 <h2 id="client-work">client work</h2>

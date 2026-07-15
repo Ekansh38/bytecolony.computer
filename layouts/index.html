@@ -6,7 +6,7 @@
 
 {{ $projects := .Site.GetPage "/projects" }}
 <hr>
-<h2><a href="/projects" class="now-link">projects</a></h2>
+<h2><a href="/projects" class="now-link">personal projects</a></h2>
 {{ with $projects.Sections }}
 <ul>
   {{ range . }}{{ if not .Params.shipped }}
@@ -70,36 +70,6 @@
   {{ range . }}
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
-    <span class="li-desc">{{ .Params.summary }}</span>
-  </li>
-  {{ end }}
-</ul>
-{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
-
-{{ $games := .Site.GetPage "/games" }}
-<hr>
-<h2><a href="/games" class="now-link">games</a></h2>
-{{ with $games.RegularPages }}
-<ul>
-  {{ range . }}
-  <li>
-    {{ $url := or .Params.itchio .Params.github }}
-    <span class="li-name"><a href="{{ $url }}" target="_blank" rel="noopener noreferrer">{{ .Title }} ↗</a></span>:
-    <span class="li-desc">{{ .Params.summary }}</span>
-  </li>
-  {{ end }}
-</ul>
-{{ else }}<p class="empty-note">nothing yet</p>{{ end }}
-
-{{ $tools := .Site.GetPage "/tools" }}
-<hr>
-<h2><a href="/tools" class="now-link">tools</a></h2>
-{{ with $tools.RegularPages }}
-<ul>
-  {{ range . }}
-  <li>
-    {{ $url := or .Params.github .Permalink }}
-    <span class="li-name"><a href="{{ $url }}"{{ if .Params.github }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .Title }}{{ if .Params.github }} ↗{{ end }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
   </li>
   {{ end }}
