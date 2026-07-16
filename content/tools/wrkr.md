@@ -1,6 +1,6 @@
 ---
 title: "wrkr"
-weight: 1
+weight: 2
 summary: "a terminal calculator for my CS related needs."
 stack: "Go"
 status: "active"

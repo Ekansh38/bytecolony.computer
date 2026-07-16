@@ -1,6 +1,6 @@
 ---
 title: "cx"
-weight: 4
+weight: 1
 summary: "Terminal AI chat, not polished or good, just for me!"
 stack: "Go"
 status: "in progress"

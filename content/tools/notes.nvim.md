@@ -1,6 +1,6 @@
 ---
 title: "notes.nvim"
-weight: 2
+weight: 3
 summary: "A vibe-coded replacement for obsidian.nvim suited to my needs."
 stack: "Lua"
 status: "done until I need a new feature"

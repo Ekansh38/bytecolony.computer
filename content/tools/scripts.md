@@ -1,6 +1,6 @@
 ---
 title: "scripts"
-weight: 3
+weight: 4
 summary: "My config scripts that do cool stuff like theme switching and Tmux-ing"
 stack: "Shell"
 status: "active"
