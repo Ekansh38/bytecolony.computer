@@ -3,7 +3,7 @@
 {{ partial "breadcrumbs.html" . }}
 
 <h1 class="project-title">{{ .Title }}</h1>
-<div class="project-meta">{{ .Params.stack }} · {{ .Params.status }}{{ with .Params.parent }} · part of <a href="/projects/{{ . }}/">{{ . }}</a>{{ end }}</div>
+<div class="project-meta">{{ with .Params.stack }}{{ . }} · {{ end }}{{ .Params.status }}{{ with .Params.parent }} · part of <a href="/projects/{{ . }}/">{{ . }}</a>{{ end }}</div>
 
 <div class="project-content">{{ .Content }}</div>
 
