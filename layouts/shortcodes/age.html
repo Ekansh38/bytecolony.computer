@@ -1,0 +1,7 @@
+{{- $dob := time.AsTime .Site.Params.dob -}}
+{{- $now := now -}}
+{{- $age := sub $now.Year $dob.Year -}}
+{{- if or (lt (int $now.Month) (int $dob.Month)) (and (eq (int $now.Month) (int $dob.Month)) (lt $now.Day $dob.Day)) -}}
+{{- $age = sub $age 1 -}}
+{{- end -}}
+{{- $age -}}
