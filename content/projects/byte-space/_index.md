@@ -16,7 +16,7 @@ Features will include (hopefully if I get to it):
 
 - browsing text-based websites
 - seeing packets travel between machines in real-time
-- a custom hand-rolled filesystem with inodes, permissions, and directories
+- a custom hand-rolled filesystem with inodes, permissions, and directories ([BS-EXTFS](/projects/bs-extfs/))
 - a custom scripting language for writing programs inside the simulation
 - a virtual kernel that implements real Unix-like syscalls (open, read, socket) and a full TCP/IP stack; programs interact with it exactly like they would a real OS
 
