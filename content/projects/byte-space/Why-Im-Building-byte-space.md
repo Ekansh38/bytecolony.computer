@@ -21,7 +21,7 @@ I also really like this idea from a technical perspective. I get to write, from 
 - How actual kernel internals work, file descriptors, TTY's
 - **TCP/IP and networking** at a very deep level, from ARP all the way up to routing protocols like RIP, with real packet structures and TTLs and routing decisions between nodes
 
-lot of juicy stuff that super ambitious.
+lot of juicy stuff that's super ambitious.
 
 ## Features
 
