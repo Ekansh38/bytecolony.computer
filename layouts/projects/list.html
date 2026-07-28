@@ -21,7 +21,7 @@
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
-    <div class="li-meta">{{ .Params.stack }} · {{ .Params.status }}</div>
+    <div class="li-meta">{{ with .Params.stack }}{{ . }} · {{ end }}{{ .Params.status }}</div>
   </li>
   {{ end }}
 </ul>
