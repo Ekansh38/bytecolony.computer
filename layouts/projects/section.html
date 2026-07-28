@@ -10,7 +10,7 @@
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
-    <div class="li-meta">{{ .Params.stack }} · {{ .Params.status }}{{ with .Params.github }} · <a href="{{ . }}" target="_blank">source</a>{{ end }}</div>
+    <div class="li-meta">{{ .Params.stack }} · {{ .Params.status }}{{ with .Params.github }} · <a href="{{ . }}" target="_blank">source</a>{{ end }}{{ with .Params.parent }} · <a href="/projects/{{ . }}/" class="writing-project">↳ {{ . }}</a>{{ end }}</div>
   </li>
   {{ end }}{{ end }}
 </ul>

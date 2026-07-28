@@ -3,7 +3,7 @@
 {{ partial "breadcrumbs.html" . }}
 
 <h1 class="project-title">{{ .Title }}</h1>
-<div class="project-meta">{{ .Params.stack }} · {{ .Params.status }}</div>
+<div class="project-meta">{{ .Params.stack }} · {{ .Params.status }}{{ with .Params.parent }} · part of <a href="/projects/{{ . }}/">{{ . }}</a>{{ end }}</div>
 
 <div class="project-content">{{ .Content }}</div>
 
@@ -12,6 +12,20 @@
   {{ with .Params.github }}<a href="{{ . }}" target="_blank">github ↗</a>{{ end }}
   {{ with .Params.devlog }}<a href="{{ . }}" target="_blank">dev log series ↗</a>{{ end }}
 </div>
+
+{{ $subprojects := where (.Site.GetPage "/projects").Sections "Params.parent" .Title }}
+{{ with $subprojects }}
+<h3>Subprojects</h3>
+<ul>
+  {{ range . }}
+  <li>
+    <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
+    <span class="li-desc">{{ .Params.summary }}</span>
+    <div class="li-meta">{{ .Params.stack }} · {{ .Params.status }}</div>
+  </li>
+  {{ end }}
+</ul>
+{{ end }}
 
 {{ with .RegularPages }}
 <h3>Articles</h3>
