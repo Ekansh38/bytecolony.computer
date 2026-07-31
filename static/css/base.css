@@ -40,13 +40,13 @@ body {
   font-family: 'JetBrains Mono', monospace;
   font-size: 17px;
   line-height: 1.7;
-  max-width: 780px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 48px 20px 64px;
 }
 
-body.page.writing  { max-width: 860px; }
-body.page.projects { max-width: min(960px, 90vw); }
+body.page.writing  { max-width: 1020px; }
+body.page.projects { max-width: 1020px; }
 
 a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
 a:hover { text-decoration: underline; }
