@@ -51,7 +51,7 @@ and then a CPU.
 ### The House
 
 Let's start with a high-level overview of how the CPU functions, so we have a goal to work towards.
-This section is not about the real electronics yet. It is a map of the jobs a CPU has to do.
+This section is not about the real electronics yet. It is a overview of the jobs a CPU has to do.
 
 Imagine your computer is a house.
 
@@ -74,7 +74,7 @@ leaves his house.
 Inside this house we have our downstairs desk where Otto does all the serious work. On the desk are
 a few things:
 
-- three small drawers that can each hold one number, labeled `A`, `B`, and `PC`
+- three small drawers that can each hold one number each, labeled `A`, `B`, and `PC`
 - An abacus for basic arithmetic.
 - A decoder chart that does some stuff. We will come back to this later.
 
@@ -105,7 +105,7 @@ to the outside world. When Otto puts a number there, it doesn't get written on p
 a display. Put 0 there and it glows "0". Put 7 there and it glows "7". Otto can read, write and
 interact with it just as if it were any cabinet slot.
 
-Slot 99 works the opposite way. It's connected to a dial or switches outside the house. Otto
+Slot 99 works the opposite way. It's connected to a dial outside the house. Otto
 reads from it like any other slot, but the value comes from whoever is turning the dial. He could
 technically write to slot 99 too, but that would be a bit disruptive. 
 
@@ -222,18 +222,18 @@ the first instruction in [the program](#otto-program-broken-down).
 The program is already loaded into the upstairs cabinet. Drawers `A` and `B` may contain old garbage
 values from whatever ran before.
 
-Because Otto has bad memory, he carries two scraps of paper. The address slip holds the slot he wants
-to look at. The value slip holds the value he reads from that slot.
+Because Otto has bad memory, he carries two scraps of paper. The address slip holds the slot he
+wants to look at. The value slip holds the value he reads from that slot.
 
-The input dial is set to `2`, because we want to count in twos: 0, 2, 4, 6, 8...
+The input dial is set to `2`, because we want to count in twos for this example: 0, 2, 4, 6, 8...
 
 Loop diagram (will be an actual diagram later):
 
 1. Look at `PC`.
 2. Fetch the number from that cabinet slot.
-3. Use the decoder chart to find the recipe for that instruction.
-4. Follow the recipe step by step.
-5. When the recipe finishes, go back to step 1.
+3. Use the decoder chart to find the procedure for that instruction.
+4. Follow the procedure step by step.
+5. When the procedure finishes, go back to step 1.
 6. If the recipe is `HALT`, stop.
 
 Diagram 1.3. Otto's basic loop.
@@ -246,7 +246,7 @@ Otto opens the drawer labeled `PC` and sees `10`. He copies `10` onto the addres
 upstairs to slot `10`, reads the number there, and copies it onto his value slip. The paper has `1`
 written on it.
 
-Back at his desk, Otto checks the decoder chart. `1` means `LOAD A, n`.
+Back at his desk, Otto checks the [decoder chart](#diagram-1-1). `1` means `LOAD A, n`.
 
 For `LOAD A, n`, the procedure is:
 
@@ -268,7 +268,7 @@ He just completed:
 11: 0
 ```
 
-Now you can see the shape of the loop. (See [loop diagram](link))
+Now you can start to see how the loop works. (See [loop diagram](link))
 
 Let's do the next instruction faster.
 
