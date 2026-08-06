@@ -10,9 +10,9 @@ You can hear the phrase
 
 "computers think in 1s and 0s"
 
-a hundred times and still not understand how a computer actually works. It sounds like an explanation,
-but by itself it explains basically nothing. Sure, a wire can be high or low, a light can be on or
-off, and a switch can be open or closed. But how does that become addition?
+a hundred times and still not understand how a computer actually works. It sounds like an
+explanation, but by itself it explains basically nothing. Sure, a wire can be high or low, a light
+can be on or off, and a switch can be open or closed. But how does that become addition?
 
 How does that become memory?
 
@@ -29,8 +29,8 @@ and full of interesting detail but not super approachable.
 This article is going to follow one simple CPU and fill it in piece by piece, starting from the
 simplest building blocks and showing why each part has to exist.
 
-The key point is that nothing here is smart in isolation. A CPU is not one hard idea. It is a
-very tall pile of simple ones.
+The key point is that nothing here is smart in isolation. A CPU is not one hard idea. It is a very
+tall pile of simple ones.
 
 
 (Full simple CPU drawing: a few labeled boxes, data bus, address bus, and some control wires)
