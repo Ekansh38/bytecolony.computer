@@ -1,7 +1,7 @@
 ---
 title: "The CPU: A very tall pile of simple"
 date: 2026-07-31
-_build:
+build:
   list: never
   render: always
 ---

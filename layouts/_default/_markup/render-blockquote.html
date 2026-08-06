@@ -1,5 +1,5 @@
 {{ if eq .Type "alert" }}
-{{ $body := .Text | strings.ReplaceAll "<br>\n" " " }}
+{{ $body := .Text | replace "<br>\n" " " }}
 <div class="callout callout-{{ .AlertType }}">
   <div class="callout-label">{{ strings.ToUpper .AlertType }}</div>
   <div class="callout-body">{{ $body | safeHTML }}</div>
