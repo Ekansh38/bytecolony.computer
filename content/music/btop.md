@@ -8,16 +8,11 @@ cover: /images/btop-cover.jpg
 ---
 
 
-Bitcrushed and degraded samples. Layered percussion and synths.
-"btop" spans 5 tracks:
+Bitcrushed and degraded samples. Layered percussion and synths. "btop" spans 5 tracks:
 
 <br>
 
-01  buFfer overflow someday      01:04
-02  chewing on copper wire       03:32
-03  soft reboot in the rain      05:35
-04  flUorescent rice water       08:55
-05  wet Concrete handshaKe       10:43
+01  buFfer overflow someday      01:04 02  chewing on copper wire       03:32 03  soft reboot in the rain      05:35 04  flUorescent rice water       08:55 05  wet Concrete handshaKe       10:43
 
 total: 14:27
 

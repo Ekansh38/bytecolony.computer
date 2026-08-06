@@ -9,7 +9,7 @@ AI changed how I code. I use it every day. My website is mostly vibe coded. Most
 
 But for the work I am interested in: kernels, low-level stuff, robotics, the systems the world runs on: I hand code. Slowly. By myself. AI helps, but I write every important line.
 
-I'm 13. I have years before I'm in the market. This essay is about why I'm spending those years writing code by hand instead of prompting my way through them and my general thoughts on AI and the future of the industry. 
+I'm 13. I have years before I'm in the market. This essay is about why I'm spending those years writing code by hand instead of prompting my way through them and my general thoughts on AI and the future of the industry.
 
 ---
 
@@ -35,7 +35,7 @@ If AGI shows up, the world is going to be very different and there's no sensible
 
 Linus Torvalds said it best: "I think actually on the programming side, we're in a fairly good spot. I really think that AI will be a tool." Not a replacement. A tool. (*Building the PERFECT Linux PC with Linus Torvalds*, Linus Tech Tips.)
 
-I'm not trying to be a web developer. I'm not pumping out CRUD apps. I don't care about that work. 
+I'm not trying to be a web developer. I'm not pumping out CRUD apps. I don't care about that work.
 
 Also. If you're going into CS just for money, or because you think it's easy, you're going to suck. This field has always rewarded people who are in it for the love of the game. AI reinforced that.
 
@@ -83,11 +83,11 @@ Where I think the calculator analogy works is for syntax. Semicolons, function n
 
 ## AI is an abstraction
 
-Lets assume that AI is just an abstraction layer. Python was an abstraction over C. Lots of developers write Python without knowing what their code compiles to (yes, Python is partially compiled), what the CPython interpreter does, or how the GIL affects threading. That's fine for most application work. 
+Lets assume that AI is just an abstraction layer. Python was an abstraction over C. Lots of developers write Python without knowing what their code compiles to (yes, Python is partially compiled), what the CPython interpreter does, or how the GIL affects threading. That's fine for most application work.
 
 But assembly didn't disappear (even if you think it did, it didn't). The people who write assembly today (kernel developers, compiler engineers, embedded specialists) can do things Python developers fundamentally can't. The best Python developers know C. They've written plenty of it.
 
-This is not a coincidence. The best developers know one layer up and importantly one layer down. The best JavaScript developers know what V8 actually does, why monomorphic call sites matter, when the engine bails out of optimization. The best C developers can read the assembly their compiler produces and know when to drop into inline asm. The best kernel developers know hardware behavior. The best hardware engineers know their fair share of theoretical physics. 
+This is not a coincidence. The best developers know one layer up and importantly one layer down. The best JavaScript developers know what V8 actually does, why monomorphic call sites matter, when the engine bails out of optimization. The best C developers can read the assembly their compiler produces and know when to drop into inline asm. The best kernel developers know hardware behavior. The best hardware engineers know their fair share of theoretical physics.
 
 I would argue that the deeper you understand the stack, the better you are.
 
@@ -121,7 +121,7 @@ Pure vibe coding and AI-tutored learning are like only watching tutorials. There
 
 So when someone says "vibe coding is a skill," I think they mean, "software engineering is a skill, and good engineers can apply that skill through vibe coding too". Which I agree with, but the skill is engineering, not prompting or which "skill pack" to download.
 
-Theo put it this way: "the same lever that accelerates an expert's understanding accelerates a novice's ignorance." 
+Theo put it this way: "the same lever that accelerates an expert's understanding accelerates a novice's ignorance."
 
 <mark>The model has the "skill" not you, and you are limited by what the model can do.</mark>
 
@@ -177,7 +177,7 @@ The point of hand coding a hash table isn't that you'll write hash tables for yo
 
 Years of hand coding gives you those models. Build a parser and you see state machines everywhere. Build an allocator and you think about ownership in every system. Build a network protocol and you understand timing, ordering, partial failure in totally unrelated work.
 
-I'm not saying you should build 10 schedulers. I'm saying don't skip past something just because you think you understand it. Just because you do something once doesn't mean you should start delegating away to AI. 
+I'm not saying you should build 10 schedulers. I'm saying don't skip past something just because you think you understand it. Just because you do something once doesn't mean you should start delegating away to AI.
 
 ---
 
@@ -189,8 +189,7 @@ When you vibe code, the understanding is optional. The path of least resistance 
 
 The Cherno said: "You wind up getting into that state of yes, the code works and it's functional, but it's nowhere near production grade. It's nowhere near ready for publication. And there's also probably so many edge cases or it runs really slowly." He could be seeing this on systems his team ships.
 
-This matters because production code breaks. Hand-coded systems break too, but the person who wrote them already understands them. Debugging is fast because the mental model exists. Vibe-coded systems break and someone has to rebuild that understanding from scratch.
-The standard counter is: just have AI fix it. Ship fast, patch fast, move on. Plenty of companies operate this way. It works for shallow-er bugs. But deeper bugs need understanding of the system, and if/when AI fails, somebody has to step in. 
+This matters because production code breaks. Hand-coded systems break too, but the person who wrote them already understands them. Debugging is fast because the mental model exists. Vibe-coded systems break and someone has to rebuild that understanding from scratch. The standard counter is: just have AI fix it. Ship fast, patch fast, move on. Plenty of companies operate this way. It works for shallow-er bugs. But deeper bugs need understanding of the system, and if/when AI fails, somebody has to step in.
 
 Also just an overall solid understand of the whole system is good, it helps you figure out solid ways to add a feature, when and what to refactor, what parts are fragile. That is how strong systems are built, through mental models of them.
 
@@ -237,8 +236,7 @@ Here is another example of vibe debt in production.
 
 Last week Mitchell Hashimoto ([tweet](https://x.com/mitchellh/status/2060088112257372610), creator of Ghostty and HashiCorp, very smart goat person) ran a controlled experiment on this exact question. He took the render core of Ghostty, ported it to Go with a deliberately naive but correct implementation: 88ms per frame, 150,000 allocations per frame. Slow but correct. Then he set an AI agent loop on it with the only goal of minimizing frame times. He let it run for about 4 hours and spent around $350 on inference.
 
-The result: 88ms -> 1.5ms. 150,000 allocs -> ~500 allocs. Looks incredible.
-Until you compare it to his own hand-written port of the same renderer: 20 microseconds per frame. Zero allocations.
+The result: 88ms -> 1.5ms. 150,000 allocs -> ~500 allocs. Looks incredible. Until you compare it to his own hand-written port of the same renderer: 20 microseconds per frame. Zero allocations.
 
 The AI solution was 75x slower than what Hashimoto wrote himself. And the agent had no idea. It thought it had done great work. Hashimoto called this "agent psychosis." Not because the AI was confused, but because anyone watching the numbers without understanding the system would think the AI succeeded. The tests pass. The frame time dropped. The graph looks great.
 
@@ -251,7 +249,7 @@ That's exactly the bet of this essay. The human + AI combination works only if t
 
 ## The Zig and Bun story
 
-Zig is a systems programming language designed by Andrew Kelley. He's been working on it for over a decade. Zig has a strict no-LLM policy. 
+Zig is a systems programming language designed by Andrew Kelley. He's been working on it for over a decade. Zig has a strict no-LLM policy.
 
 People assume engineers like Kelley or Carmack hand code because they have to, because AI can't keep up. That's a big part of it, but not the only thing. Even when AI could produce the exact same characters they would have typed, they often choose to write it themselves. Hand coding at the top isn't about productivity. It's about thinking. Writing the code forces you to sit with the design. You choose every name, every boundary, every data structure, and each choice surfaces tradeoffs you wouldn't have considered if you'd just approved AI's output. The understanding from writing a function yourself isn't the same as the understanding from reading a function someone else wrote, even if they're character-for-character identical.
 

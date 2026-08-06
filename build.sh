@@ -10,6 +10,9 @@ curl -L "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hug
 npm install --no-save esbuild@${ESBUILD_VERSION}
 ESBUILD=./node_modules/.bin/esbuild
 
+# Pre-process markdown: reflow paragraphs, convert SVG tags, fix callouts
+python3 scripts/process.py
+
 # Build Hugo site
 ./hugo --gc --minify --baseURL "https://${VERCEL_PROJECT_PRODUCTION_URL}"
 

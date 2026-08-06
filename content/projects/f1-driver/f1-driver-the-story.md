@@ -28,11 +28,9 @@ weight: 1
 
 <pre>"1:32.851,monza" + "f1-driver-secret-key"
         |
-        v
-SHA256("1:32.851,monza f1-driver-secret-key")
+        v SHA256("1:32.851,monza f1-driver-secret-key")
         |
-        v
-"a3f9c2...8b4e1d"</pre>
+        v "a3f9c2...8b4e1d"</pre>
 
 <p>This is the certificate the user gets. Their proof to say: hey, this is my laptime!</p>
 
@@ -43,15 +41,9 @@ SHA256("1:32.851,monza f1-driver-secret-key")
 
 <pre>Input: "1:32.851,monza a3f9c2...8b4e1d"
         |
-        v
-Data = "1:32.851,monza"
-Hash = "a3f9c2...8b4e1d"
+        v Data = "1:32.851,monza" Hash = "a3f9c2...8b4e1d"
         |
-        v
-if SHA256(Data + secret_key) == Hash:
-    print("he want lying!")
-else:
-    print("Something is off...")</pre>
+        v if SHA256(Data + secret_key) == Hash:     print("he want lying!") else:     print("Something is off...")</pre>
 
 <h2>Wait, This Has a Name?</h2>
 
