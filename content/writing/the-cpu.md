@@ -55,7 +55,7 @@ This section is not about the real electronics yet. It is a map of the jobs a CP
 
 Imagine your computer is a house.
 
-<a id="diagram-1-0"></a> {{< svg "\1" >}}
+<a id="diagram-1-0"></a> {{< svg "house" >}}
 
 *Diagram 1.0. The outside of the house.*
 
@@ -78,7 +78,7 @@ a few things:
 - An abacus for basic arithmetic.
 - A decoder chart that does some stuff. We will come back to this later.
 
-<a id="diagram-1-1"></a> {{< svg "\1" >}}
+<a id="diagram-1-1"></a> {{< svg "desk" >}}
 
 *Diagram 1.1. The desk setup.*
 
@@ -94,7 +94,7 @@ One quick distinction before we start: when I say "drawer," I mean the desk draw
 Otto where he works. When I say "slot," I mean the numbered compartments in the upstairs filing
 cabinet.
 
-<a id="diagram-1-2"></a> {{< svg "\1" >}}
+<a id="diagram-1-2"></a> {{< svg "cabinet" >}}
 
 *Diagram 1.2. The filing cabinet.*
 
