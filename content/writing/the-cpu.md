@@ -87,7 +87,6 @@ abacus and decoder chart">
 Keep in mind the decoder table for this analogy is quite small since Otto only needs a few
 instructions for this program.
 
-
 Upstairs is the filing cabinet room. The cabinet has slots labeled 0, 1, 2, 3, all the way up to 99.
 Each slot holds one piece of paper with a number written on it.
 
@@ -226,7 +225,15 @@ to look at. The value slip holds the value he reads from that slot.
 
 The input dial is set to `2`, because we want to count in twos: 0, 2, 4, 6, 8...
 
-(loop diagram: `PC` drawer → address slip → cabinet slot → value slip → decoder chart recipe → update drawers/cabinet/`PC` → repeat)
+Loop diagram (will be an actual diagram later):
+
+1. Look at `PC`.
+2. Fetch the number from that cabinet slot.
+3. Use the decoder chart to find the recipe for that instruction.
+4. Follow the recipe step by step.
+5. When the recipe finishes, go back to step 1.
+6. If the recipe is `HALT`, stop.
+
 Diagram 1.3. Otto's basic loop.
 
 <br>
@@ -382,13 +389,3 @@ Something like this is happening inside your computer right now.
 Except there is no Otto.
 
 Nobody is home.
-
-
-
-
-1. Look at `PC`.
-2. Fetch the number from that cabinet slot.
-3. Use the decoder chart to find the recipe for that instruction.
-4. Follow the recipe step by step.
-5. When the recipe finishes, go back to step 1.
-6. If the recipe is `HALT`, stop.
