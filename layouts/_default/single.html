@@ -11,6 +11,12 @@
 
 {{ .Content }}
 
+<script>
+document.querySelectorAll('.callout-body br').forEach(function(br){
+  br.replaceWith(document.createTextNode(' '));
+});
+</script>
+
 {{ if or .NextInSection .PrevInSection }}
 <div class="article-nav">
   {{ with .NextInSection }}<a href="{{ .Permalink }}" class="article-nav-prev">← {{ .Title }}</a>{{ end }}

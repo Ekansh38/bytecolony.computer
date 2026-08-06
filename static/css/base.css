@@ -370,8 +370,8 @@ body.page.writing table th {
 body.page.writing table tr:nth-child(even) td {
   background: color-mix(in srgb, var(--fg) 3%, transparent);
 }
-body.page.writing table td[align="right"],
-body.page.writing table th[align="right"] { text-align: right; }
+body.page.writing table td,
+body.page.writing table th { text-align: left !important; }
 
 
 /* ── CALLOUTS ([!NOTE], [!TIP], [!WARNING]) ─────────────────── */
