@@ -1,0 +1,3 @@
+{{ $name := .Get 0 }}
+{{ $path := printf "static/images/%s.svg" $name }}
+<div class="svg-diagram">{{ readFile $path | safeHTML }}</div>
