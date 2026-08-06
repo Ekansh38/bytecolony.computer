@@ -328,6 +328,29 @@ body.page img:not(.hero-img) {
   transition: filter 0.2s ease;
 }
 
+/* ── CALLOUTS ([!NOTE], [!TIP], [!WARNING]) ─────────────────── */
+.callout {
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  padding: 10px 14px;
+  margin: 1.5em 0;
+  border-radius: 0 4px 4px 0;
+}
+.callout-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+.callout-body p { margin: 0; line-height: 1.65; color: color-mix(in srgb, var(--fg) 80%, transparent); }
+.callout-tip  { border-color: #4caf50; background: color-mix(in srgb, #4caf50 7%, transparent); }
+.callout-tip .callout-label { color: #4caf50; }
+.callout-warning { border-color: #e0a040; background: color-mix(in srgb, #e0a040 7%, transparent); }
+.callout-warning .callout-label { color: #e0a040; }
+.callout-caution { border-color: #e05050; background: color-mix(in srgb, #e05050 7%, transparent); }
+.callout-caution .callout-label { color: #e05050; }
+
 body.page mark {
   background: color-mix(in srgb, var(--accent) 15%, transparent);
   color: inherit; padding: 1px 4px; border-radius: 2px;

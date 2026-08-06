@@ -7,6 +7,9 @@ enableRobotsTXT = true
   unsafe = true
   hardWraps = true
 
+[markup.goldmark.extensions.extras.alert]
+  enable = true
+
 [markup.highlight]
   codeFences = true
   noClasses = false
