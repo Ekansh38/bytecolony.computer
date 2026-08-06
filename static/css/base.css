@@ -45,8 +45,8 @@ body {
   padding: 48px 20px 64px;
 }
 
-body.page.writing  { max-width: 1020px; }
-body.page.projects { max-width: 1020px; }
+body.page.writing  { max-width: calc(100ch + 40px); }
+body.page.projects { max-width: calc(100ch + 40px); }
 
 a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
 a:hover { text-decoration: underline; }
@@ -207,16 +207,6 @@ header { margin-bottom: 48px; }
 body.projects li:not(:where(.project-content *)), body.home li:not(:where(.project-content *)), body.games li:not(:where(.project-content *)),
 body.writing li:not(:where(.project-content *)), body.music li:not(:where(.project-content *)), body.tools li:not(:where(.project-content *)) {
   padding: 14px 0;
-  border-radius: 0 4px 4px 0;
-  transition: background 0.15s ease, padding-left 0.2s ease, box-shadow 0.15s ease;
-}
-@media (hover: hover) {
-  body.projects li:not(:where(.project-content *)):hover, body.home li:not(:where(.project-content *)):hover, body.games li:not(:where(.project-content *)):hover,
-  body.writing li:not(:where(.project-content *)):hover, body.music li:not(:where(.project-content *)):hover, body.tools li:not(:where(.project-content *)):hover {
-    background: color-mix(in srgb, var(--accent) 6%, transparent);
-    box-shadow: inset 2px 0 0 var(--accent);
-    padding-left: 12px;
-  }
 }
 .hero-pitch {
   font-size: 1.15rem;
@@ -279,11 +269,24 @@ body.home .client-list > li:nth-child(n+4) { display: none; }
 .project-title { font-size: 1.4rem; margin-bottom: 6px; }
 
 /* ── ARTICLE PROSE ─────────────────────────────────────────── */
-body.page p  { line-height: 1.9; margin-bottom: 2em; }
-body.page.writing p { margin-bottom: 1.4em; }
-body.page h1 { font-size: 1.4rem; color: var(--fg); margin: 0 0 8px; }
-body.page h2 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 36px 0 10px; }
-body.page h3 { font-size: 1rem; color: var(--fg); font-weight: 700; margin: 28px 0 8px; }
+body.page p  { line-height: 1.9; margin-top: 0; margin-bottom: 2em; }
+body.page.writing p { margin-bottom: 1.35em; }
+body.page h1 { font-size: 1.4rem; color: var(--fg); margin: 0 0 20px; }
+body.page h2 { font-size: 1.4rem; color: var(--fg); font-weight: 700; margin: 2.4em 0 0.85em; }
+body.page h3 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 2.4em 0 0.85em; }
+
+/* Writing article spacing */
+body.page.writing pre,
+body.page.writing blockquote,
+body.page.writing table { margin-top: 1.5em; margin-bottom: 1.5em; }
+body.page.writing ul,
+body.page.writing ol { margin-top: 0.7em; margin-bottom: 1.3em; }
+body.page.writing li { margin-bottom: 0.35em; }
+
+@media (max-width: 700px) {
+  body.page.writing { font-size: 15px; line-height: 1.75; }
+  body.page.writing p { margin-bottom: 1.25em; }
+}
 .project-meta  { color: var(--muted); margin-bottom: 20px; }
 .jump-comments {
   background: none; border: none; padding: 0; font: inherit; cursor: pointer;
@@ -302,6 +305,19 @@ body.page .hero-img {
 [data-theme="papercolor-light"] .hero-img,
 [data-theme="rose-pine"] .hero-img {
   opacity: 1; filter: brightness(1.06);
+}
+
+/* ── ARTICLE DIAGRAMS ───────────────────────────────────────── */
+body.page img:not(.hero-img) {
+  display: block;
+  width: 680px;
+  max-width: 100%;
+  margin: 1.5em auto;
+  background: #0a0a0a;
+  padding: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+  opacity: 0.88;
 }
 
 /* ── SVG / diagram auto-invert for light themes ────────────── */

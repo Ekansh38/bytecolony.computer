@@ -1,7 +1,12 @@
 var THEMES = ['tokyo-night', 'gruvbox', 'dracula', 'rose-pine', 'github-light', 'papercolor-light', 'hacker'];
 var LIGHT_THEMES = ['rose-pine', 'github-light', 'papercolor-light'];
 
+var _settingsScrollY = 0;
+
 function applyTheme(name) {
+  // When settings panel is open, body overflow:hidden makes window.scrollY=0 in Safari.
+  // Use the scroll position saved before the panel opened instead.
+  var scrollY = document.body.style.overflow === 'hidden' ? _settingsScrollY : window.scrollY;
   document.documentElement.setAttribute('data-theme', name);
   localStorage.setItem('theme', name);
   if (window._invalidateAccentCache) window._invalidateAccentCache();
@@ -11,6 +16,7 @@ function applyTheme(name) {
   var items = document.querySelectorAll('.tp-item');
   for (var i = 0; i < items.length; i++)
     items[i].classList.toggle('active', items[i].getAttribute('data-t') === name);
+  window.requestAnimationFrame(function() { window.scrollTo(0, scrollY); });
 }
 
 function toggleTheme() {
@@ -46,6 +52,7 @@ function toggleTheme() {
 
     function openSettings() {
       if (!dsOverlay || !dsPanel) return;
+      _settingsScrollY = window.scrollY;
       dsOverlay.classList.add('open');
       dsPanel.classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -56,7 +63,8 @@ function toggleTheme() {
       dsOverlay.classList.remove('open');
       dsPanel.classList.remove('open');
       document.body.style.overflow = '';
-      if (dsBtn) dsBtn.focus();
+      if (dsBtn) dsBtn.focus({ preventScroll: true });
+      window.requestAnimationFrame(function() { window.scrollTo(0, _settingsScrollY); });
     }
 
     if (dsBtn) dsBtn.addEventListener('click', openSettings);
