@@ -320,13 +320,6 @@ body.page img:not(.hero-img) {
   opacity: 0.88;
 }
 
-/* ── SVG / diagram auto-invert for light themes ────────────── */
-[data-theme="github-light"] body.page img:not(.hero-img):not(.no-invert),
-[data-theme="papercolor-light"] body.page img:not(.hero-img):not(.no-invert),
-[data-theme="rose-pine"] body.page img:not(.hero-img):not(.no-invert) {
-  filter: invert(1) hue-rotate(180deg);
-  transition: filter 0.2s ease;
-}
 
 /* ── CALLOUTS ([!NOTE], [!TIP], [!WARNING]) ─────────────────── */
 .callout {

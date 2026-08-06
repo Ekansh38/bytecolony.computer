@@ -70,8 +70,8 @@ leaves his house.
 
 <br>
 
-Inside this house we have our downstairs desk where Otto does all the serious work. On the desk are a few
-things:
+Inside this house we have our downstairs desk where Otto does all the serious work. On the desk are
+a few things:
 
 - three small drawers that can each hold one number, labeled `A`, `B`, and `PC`
 - An abacus for basic arithmetic.
