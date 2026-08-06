@@ -390,6 +390,7 @@ body.page.writing table th[align="right"] { text-align: right; }
   margin-bottom: 5px;
 }
 .callout-body p { margin: 0; line-height: 1.65; color: color-mix(in srgb, var(--fg) 80%, transparent); }
+.callout-body br { display: none; }
 .callout-tip  { border-color: #4caf50; background: color-mix(in srgb, #4caf50 7%, transparent); }
 .callout-tip .callout-label { color: #4caf50; }
 .callout-warning { border-color: #e0a040; background: color-mix(in srgb, #e0a040 7%, transparent); }

@@ -55,7 +55,7 @@ This section is not about the real electronics yet. It is a map of the jobs a CP
 
 Imagine your computer is a house.
 
-<a id="diagram-1-0"></a> {{< svg "house" >}}
+<a id="diagram-1-0"></a> {{< svg "\1" >}}
 
 *Diagram 1.0. The outside of the house.*
 
@@ -64,7 +64,8 @@ Imagine your computer is a house.
 Inside this house is one stupid but surprisingly pedantic worker. His name is Otto. Also he never
 leaves his house.
 
-> [!NOTE] For this article, assume one worker doing one thing at a time. Real CPUs use pipelining,
+> [!NOTE]
+> For this article, assume one worker doing one thing at a time. Real CPUs use pipelining,
 > branch prediction, and other tricks to keep multiple pieces of work going at once. These are
 > optimization techniques and do not affect the invariants of how a CPU functions (at least not much).
 
@@ -77,7 +78,7 @@ a few things:
 - An abacus for basic arithmetic.
 - A decoder chart that does some stuff. We will come back to this later.
 
-<a id="diagram-1-1"></a> {{< svg "desk" >}}
+<a id="diagram-1-1"></a> {{< svg "\1" >}}
 
 *Diagram 1.1. The desk setup.*
 
@@ -93,7 +94,7 @@ One quick distinction before we start: when I say "drawer," I mean the desk draw
 Otto where he works. When I say "slot," I mean the numbered compartments in the upstairs filing
 cabinet.
 
-<a id="diagram-1-2"></a> {{< svg "cabinet" >}}
+<a id="diagram-1-2"></a> {{< svg "\1" >}}
 
 *Diagram 1.2. The filing cabinet.*
 
@@ -134,10 +135,11 @@ Here, A and B refer to the desk drawers.
 Take a minute to guess what this program does before I reveal it.
 
 Set the input dial to 1 and the display counts 0, 1, 2, 3, 4... Set it to 5 and it counts in fives.
-Set it to 0 and the display resets to 0. Otto reads the input, either adds it to his running total or
-clears the total, shows you the result, and loops.
+Set it to 0 and the display resets to 0. Otto reads the input, either adds it to his running total
+or clears the total, shows you the result, and loops.
 
-> [!NOTE] In a real computer, this loop would run millions of times per second, so the display would
+> [!NOTE]
+> In a real computer, this loop would run millions of times per second, so the display would
 > be nothing but a blur. A real program would need some kind of "wait" or "sleep" instruction, maybe
 > using a timer. Otto is slow enough that we can watch him count. Also, since this toy machine only
 > stores two-digit unsigned numbers (unsigned meaning not negative), counting past 99 wraps around
@@ -152,7 +154,8 @@ In this CPU, the program itself is stored in the upstairs cabinet too, right nex
 But why do the addresses jump around? Why do some parts of the program go from 10 to 12 and some
 from 18 to 19?
 
-> [!NOTE] This style of CPU where the instructions and data live in the same memory is known
+> [!NOTE]
+> This style of CPU where the instructions and data live in the same memory is known
 > as a Von Neumann architecture.
 
 To understand these jumps, lets first look at the program in a more broken down form.
