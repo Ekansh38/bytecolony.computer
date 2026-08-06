@@ -271,9 +271,16 @@ body.home .client-list > li:nth-child(n+4) { display: none; }
 /* ── ARTICLE PROSE ─────────────────────────────────────────── */
 body.page p  { line-height: 1.9; margin-top: 0; margin-bottom: 2em; }
 body.page.writing p { margin-bottom: 1.35em; }
-body.page h1 { font-size: 1.4rem; color: var(--fg); margin: 0 0 20px; }
+body.page h1 { font-size: 1.55rem; font-weight: 700; color: var(--fg); margin: 0 0 8px; }
 body.page h2 { font-size: 1.4rem; color: var(--fg); font-weight: 700; margin: 2.4em 0 0.85em; }
 body.page h3 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 2.4em 0 0.85em; }
+
+/* Writing article header: title+date as a unit, then a clear break */
+body.page.writing .project-meta {
+  padding-bottom: 24px;
+  margin-bottom: 48px;
+  border-bottom: 1px solid var(--border);
+}
 
 /* Writing article spacing */
 body.page.writing pre,
