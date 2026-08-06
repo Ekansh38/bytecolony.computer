@@ -51,11 +51,11 @@ and then a CPU.
 ### The House
 
 Let's start with a high-level overview of how the CPU functions, so we have a goal to work towards.
-This section is not about the real electronics yet. It is a overview of the jobs a CPU has to do.
 
 Imagine your computer is a house.
 
-<a id="diagram-1-0"></a> {{< svg "house" >}}
+<a id="diagram-1-0"></a>
+{{< svg "house" >}}
 
 *Diagram 1.0. The outside of the house.*
 
@@ -74,11 +74,12 @@ leaves his house.
 Inside this house we have our downstairs desk where Otto does all the serious work. On the desk are
 a few things:
 
-- three small drawers that can each hold one number each, labeled `A`, `B`, and `PC`
-- An abacus for basic arithmetic.
+- three small drawers that can each hold one number, labeled `A`, `B`, and `PC`
+- an abacus for basic arithmetic.
 - A decoder chart that does some stuff. We will come back to this later.
 
-<a id="diagram-1-1"></a> {{< svg "desk" >}}
+<a id="diagram-1-1"></a>
+{{< svg "desk" >}}
 
 *Diagram 1.1. The desk setup.*
 
@@ -94,7 +95,8 @@ One quick distinction before we start: when I say "drawer," I mean the desk draw
 Otto where he works. When I say "slot," I mean the numbered compartments in the upstairs filing
 cabinet.
 
-<a id="diagram-1-2"></a> {{< svg "cabinet" >}}
+<a id="diagram-1-2"></a>
+{{< svg "cabinet" >}}
 
 *Diagram 1.2. The filing cabinet.*
 
@@ -102,18 +104,18 @@ cabinet.
 
 Most of these slots are boring and filled with paper. But slot 98 is special. It's a little window
 to the outside world. When Otto puts a number there, it doesn't get written on paper. It shows up on
-a display. Put 0 there and it glows "0". Put 7 there and it glows "7". Otto can read, write and
+a display. Put 0 there and it glows "0". Put 7 there and it glows "7". Otto can read, write, and
 interact with it just as if it were any cabinet slot.
 
-Slot 99 works the opposite way. It's connected to a dial outside the house. Otto
-reads from it like any other slot, but the value comes from whoever is turning the dial. He could
-technically write to slot 99 too, but that would be a bit disruptive. 
+Slot 99 works the opposite way. It's connected to a dial outside the house. Otto reads from it like
+any other slot, but the value comes from whoever is turning the dial. He could technically write to
+slot 99 too, but that would be a bit disruptive.
 
 (See [Diagram 1.0](#diagram-1-0) for a recap of how these elements look from the outside of the house.)
 
 <br>
 
-Okay now that we have the setup, let's make Otto do something. Here is the program in plain English:
+Okay, now that we have the setup, let's make Otto do something. Here is the program in plain English:
 
 Here, A and B refer to the desk drawers.
 
@@ -139,8 +141,8 @@ Set it to 0 and the display resets to 0. Otto reads the input, either adds it to
 or clears the total, shows you the result, and loops.
 
 > [!NOTE]
-> In a real computer, this loop would run millions of times per second, so the display would
-> be nothing but a blur. A real program would need some kind of "wait" or "sleep" instruction, maybe
+> In a real computer, this loop would run millions of times per second, so the display would be
+> nothing but a blur. A real program would need some kind of "wait" or "sleep" instruction, maybe
 > using a timer. Otto is slow enough that we can watch him count. Also, since this toy machine only
 > stores two-digit unsigned numbers (unsigned meaning not negative), counting past 99 wraps around
 > to 00. This will make more sense after we get into the mechanics of binary counting later on.
@@ -155,10 +157,10 @@ But why do the addresses jump around? Why do some parts of the program go from 1
 from 18 to 19?
 
 > [!NOTE]
-> This style of CPU where the instructions and data live in the same memory is known
-> as a Von Neumann architecture.
+> This style of CPU where the instructions and data live in the same memory is known as a Von
+> Neumann architecture.
 
-To understand these jumps, lets first look at the program in a more broken down form.
+To understand these jumps, let's first look at the program in a more broken-down form.
 
 <a id="otto-program-broken-down"></a>
 
@@ -189,6 +191,8 @@ To understand these jumps, lets first look at the program in a more broken down 
 25: JUMP
 26: 14
 ```
+
+Diagram 1.3. Program layout in memory.
 
 <br>
 
@@ -234,13 +238,13 @@ Loop diagram (will be an actual diagram later):
 3. Use the decoder chart to find the procedure for that instruction.
 4. Follow the procedure step by step.
 5. When the procedure finishes, go back to step 1.
-6. If the recipe is `HALT`, stop.
+6. If the procedure is `HALT`, stop.
 
-Diagram 1.3. Otto's basic loop.
+Diagram 1.4. Otto's basic loop.
+
+This is all Otto does. He just follows these six instructions, so let's trace it through.
 
 <br>
-
-Now let's start.
 
 Otto opens the drawer labeled `PC` and sees `10`. He copies `10` onto the address slip, goes
 upstairs to slot `10`, reads the number there, and copies it onto his value slip. The paper has `1`
@@ -268,7 +272,7 @@ He just completed:
 11: 0
 ```
 
-Now you can start to see how the loop works. (See [loop diagram](link))
+Now you can start to see how the loop works. (See Diagram 1.4.)
 
 Let's do the next instruction faster.
 
@@ -281,8 +285,8 @@ Otto fetches slot `12`, which contains `5`. The decoder chart says `5` maps to `
 
 Here is the procedure but less verbose:
 
-increment `PC` to read the next slot as the destination address, 
-copy drawer `A` there, then increment `PC` again
+increment `PC` to read the next slot as the destination address, copy drawer `A` there, then
+increment `PC` again
 
 So Otto moves `PC` from `12` to `13`, reads slot `13`, and gets `98`.
 
@@ -329,7 +333,7 @@ The next instruction is at address `18`.
 18: ADD A, B
 ```
 
-This instruction fits all in 1 slot! There is no extra value to fetch.
+This instruction fits in one slot! There is no extra value to fetch.
 
 This is the procedure:
 
@@ -370,7 +374,6 @@ add `B` into `A` or reset.
 
 
 | Dial value | `A` before add | What happens | Display soon shows |
-|---:|---:|---|---:|
 | 2 | 0 | add 2 | 2 |
 | 2 | 2 | add 2 | 4 |
 | 2 | 4 | add 2 | 6 |
@@ -380,8 +383,8 @@ add `B` into `A` or reset.
 So if the input dial stays at `2`, the display counts `0, 2, 4, 6, 8...`
 
 If the user changes the dial, the jump size changes too. And if the user sets the dial to `0`, Otto
-runs the reset part of the program: put `0` in `A`, copy `A` to the display, then jump back to address
-`14` to keep checking the dial.
+runs the reset part of the program: put `0` in `A`, copy `A` to the display, then jump back to
+address `14` to keep checking the dial.
 
 That is the whole trick. Otto reads numbers, remembers numbers, adds numbers, chooses where to go
 next, and repeats the process forever.
