@@ -83,7 +83,7 @@ One quick distinction before we start: when I say "drawer," I mean the desk draw
 
 <br>
 
-Most of these slots are boring and filled with paper. But slot 98 is special. It's a little window to the outside world. When Otto puts a number there, it doesn't get written on paper. It shows up on a display. Put `00` there and it glows `0`. Put `07` there and it glows `7`. Otto can read, write, and interact with it just as if it were any cabinet slot.
+Most of these slots are boring and filled with paper. But slot 98 is special. It's a little window to the outside world. When Otto puts a number there, it doesn't get written on paper. It shows up on a display. Put `00` there and it glows `00`. Put `07` there and it glows `07`. Otto can read, write, and interact with it just as if it were any cabinet slot.
 
 Slot 99 works the opposite way. It's connected to a dial outside the house. Otto reads from it like any other slot, but the value comes from whoever is turning the dial. He could technically write to slot 99 too, but that would be a bit disruptive.
 
@@ -98,14 +98,14 @@ Okay, now that we have the setup, let's make Otto do something. Here is the prog
 Here, A and B refer to the desk drawers.
 
 ```
-10: Put 00 in drawer A
+10: Put 0 in drawer A
 12: Copy A to slot 98 (the display)
 14: Copy the value from slot 99 (the dial) into drawer B
 16: If B is 0, jump to line 21
 18: Add B to A
 19: Jump back to line 12
 
-21: Put 00 in drawer A
+21: Put 0 in drawer A
 23: Copy A to slot 98 (the display)
 25: Jump back to line 14
 ```
@@ -165,26 +165,26 @@ To understand these jumps, let's first look at the program in a more broken-down
 26: 14
 ```
 
-This is how the program would actually look sitting in memory. If you get lost during the trace, come back to this picture:
+This is how the program would actually look sitting in those cabinet slots upstairs. If you get lost during the trace, come back to this picture:
 
 <a id="diagram-1-3"></a>
 {{< svg "program-in-cabinet" >}}
 
-Diagram 1.3. The same program as raw cabinet contents. The top number in red is the cabinet slot's address; the bottom number in yellow is the value stored there. Values below 10 are written with a leading zero, so `01` means the number 1. Each slot still only holds a number. Otto uses [the decoder chart on his desk](#diagram-1-1) to interpret numbers like `01`, `05`, and `13` as instructions.
+Diagram 1.3. The same program but as raw cabinet contents. The top number in red is the cabinet slot's address; the bottom number in yellow is the value stored there. Values below 10 are written with a leading zero, so `01` means the number 1. Each slot still only holds a number. Otto uses [the decoder chart on his desk](#diagram-1-1) to interpret numbers like `01`, `05`, and `13` as instructions.
 
 <br>
 
 Quick notation note:
 - `A` and `B` are Otto's desk drawers.
 - Brackets mean "go to that cabinet slot." So `[98]` means slot 98, not the number 98.
-- Plain numbers are just numbers. In `LOAD A, 00`, the `00` is the number zero, so zero gets put into drawer A. In `JUMP 21`, the `21` tells Otto which cabinet slot to run next.
-- `JUMP-IF-ZERO B, 21` means "if drawer B is zero, jump to line 21."
+- Plain numbers are just numbers. In `LOAD A, 00`, the `00` is the raw two-digit value in the next cabinet slot, so the value `0` gets put into drawer A. In `JUMP 21`, the `21` tells Otto which cabinet slot to run next.
+- I'll use two digits for raw cabinet contents and the physical two-digit display, but normal numbers for values in arithmetic, tables, and prose.
 
-If this feels like a lot, that's fine. This is only the high level overview. The rest of the article dives into these properly.
+If this feels like a lot, that's fine. This is only the high level overview. The rest of the article dives into all of this properly.
 
 Now back to the reason for the jumps. Each cabinet slot can only hold one two-digit number from `00` to `99`. That means some instructions fit in one slot, while others spill into the next slot.
 
-Small fixed choices, like `A` and `B`, can be encoded into the instruction itself because there are only a few drawers. But bigger flexible values, like `0`, `[98]`, or the jump target `21`, need their own slot.
+Small fixed choices, like `A` and `B`, can be encoded into the instruction itself because there are only a few drawers. But bigger flexible values, like `0`, `[98]`, or the jump target `21`, need their own slot. (See [Otto's decoder chart](#diagram-1-1) to make sense of this better)
 
 So `ADD A, B` fits in one slot. But `LOAD A, 0` takes two: one slot for the `LOAD A` instruction, and one slot for the actual value `0`.
 
@@ -194,7 +194,7 @@ For now, the important point is simple: instructions are stored in numbered slot
 
 Setup: drawer `PC`, which stands for program counter, starts at `10`, because `10` is the address of the first instruction in [the program](#otto-program-broken-down).
 
-The program is already loaded into the upstairs cabinet. Drawers `A` and `B` may contain old garbage values from whatever ran before. You can use [Diagram 1.3](#diagram-1-3) as the map while Otto walks through it.
+The program is [already loaded](#diagram-1-3) into the upstairs cabinet. Drawers `A` and `B` may contain old garbage values from whatever ran before.
 
 Because Otto has bad memory, he carries two scraps of paper. The address slip holds the slot he wants to look at. The value slip holds the value he reads from that slot.
 
@@ -209,9 +209,9 @@ This is the basic loop Otto follows, so let's trace it through.
 
 <br>
 
-Otto opens the drawer labeled `PC` and sees `10`. He copies `10` onto the address slip, goes upstairs to slot `10`, reads the number there, and copies it onto his value slip. The paper has `1` written on it.
+Otto opens the drawer labeled `PC` and sees `10`. He copies `10` onto the address slip, goes upstairs to slot `10`, reads the number there, and copies it onto his value slip. The paper has `01` written on it.
 
-Back at his desk, Otto checks the [decoder chart](#diagram-1-1). `1` means `LOAD A, n`.
+Back at his desk, Otto checks the [decoder chart](#diagram-1-1). `01` means `LOAD A, n`.
 
 For `LOAD A, n`, the procedure is:
 
@@ -222,18 +222,11 @@ For `LOAD A, n`, the procedure is:
 
 This is why `LOAD A, n` uses two slots. The first slot says what procedure to follow. The next slot is the number that gets loaded into `A`.
 
-So Otto moves `PC` from `10` to `11`, reads slot `11`, finds `0`, puts `0` into drawer `A`, then moves `PC` from `11` to `12`.
+So Otto moves `PC` from `10` to `11`, reads slot `11`, finds `00`, puts `0` into drawer `A`, then moves `PC` from `11` to `12`.
 
 | `PC` | `A` | `B` | Display | Dial |
 | --- | --- | --- | --- | --- |
 | 12 | 0 | old garbage | unchanged | 2 |
-
-He just completed:
-
-```
-10: LOAD A
-11: 0
-```
 
 Now you can start to see how the loop works. (See [Diagram 1.4](#diagram-1-4).)
 
@@ -244,7 +237,7 @@ Let's do the next instruction faster.
 13: [98]
 ```
 
-Otto fetches slot `12`, which contains `5`. The decoder chart says `5` maps to `STORE A, [addr]`.
+Otto fetches slot `12`, which contains `05`. The decoder chart says `05` maps to `STORE A, [addr]`.
 
 Here is the procedure but less verbose:
 
@@ -256,7 +249,7 @@ The `98` is not the data being stored. It is the destination address. So once Ot
 
 So Otto copies the value in drawer `A` into slot `98`, the display.
 
-The display now shows `0`. Then he moves `PC` from `13` to `14`.
+The display now shows `00`. Then he moves `PC` from `13` to `14`.
 
 | `PC` | `A` | `B` | Display | Dial |
 | --- | --- | --- | --- | --- |
@@ -284,12 +277,9 @@ Now the next instruction is a little different:
 17: 21
 ```
 
-The procedure is:
+If drawer `B` is `0`, Otto uses the next slot as the place to jump to. If drawer `B` is not `0`, he skips over that next slot and keeps on going!
 
-- If drawer `B` is `0`, read the next slot and set `PC` to that value.
-- If drawer `B` is not `0`, skip over the next slot by moving `PC` forward by 2.
-
-This is the key trick: changing `PC` changes what instruction runs next. That is how if-statements and loops work at the lowest level.
+This is the key idea: changing `PC` changes what instruction runs next. That is how if-statements and loops work at the lowest level.
 
 In this case `B` is `2`, so Otto does not jump to address `21`. He skips the target slot and moves `PC` from `16` to `18`.
 
@@ -301,13 +291,9 @@ The next instruction is at address `18`.
 
 This instruction fits in one slot! There is no extra value to fetch.
 
-This is the procedure:
+Otto uses the abacus to add drawer `B` into drawer `A`: `0 + 2 = 2`.
 
-- Use the abacus to add the values in drawers `A` and `B`
-- Store the result back in drawer `A`
-- Move `PC` forward by 1
-
-So Otto gets to work: `0 + 2 = 2`.
+By "into drawer `A`" I simply mean the result of `A` + `B` is stored in drawer `A` overriding the previous value.
 
 The value in drawer `A` becomes `2`. Drawer `B` stays `2`. Then Otto moves `PC` from `18` to `19`.
 
@@ -318,22 +304,18 @@ Next:
 20: 12
 ```
 
-This is the procedure:
-
-- Move `PC` forward by `1`
-- Read the value at the cabinet slot with that address
-- Set `PC` to that value
+For `JUMP`, the next slot is the value to set `PC` to.
 
 So Otto moves `PC` from `19` to `20`, reads slot `20`, sees `12`, and sets `PC` to `12`.
 
-That sends him back to the display instruction:
+Because `PC` is now `12`, that sends him back to the display instruction:
 
 ```
 12: STORE A
 13: [98]
 ```
 
-Now drawer `A` contains `2`, so Otto copies `2` into slot `98`. The display changes from `0` to `2`.
+Now drawer `A` contains `2`, so Otto copies that value into slot `98`. The display changes from `00` to `02`.
 
 | `PC` | `A` | `B` | Display | Dial |
 | --- | --- | --- | --- | --- |
