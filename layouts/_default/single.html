@@ -26,15 +26,7 @@ document.querySelectorAll('.callout-body br').forEach(function(br){
 
 {{ partial "comments.html" . }}
 
-<!-- BEGIN option-2-diagram-overlay -->
-<div id="diagram-overlay" role="dialog" aria-modal="true" aria-label="Diagram preview">
-  <div id="diagram-overlay-box">
-    <button id="diagram-overlay-close" aria-label="Close">×</button>
-    <div id="diagram-overlay-content"></div>
-    <div id="diagram-overlay-caption"></div>
-  </div>
-</div>
-<script src="/js/diagram-overlay.js"></script>
-<!-- END option-2-diagram-overlay -->
+<!-- option-1-anchor-return -->
+<script src="/js/anchor-return.js"></script>
 
 {{ end }}
