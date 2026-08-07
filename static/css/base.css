@@ -439,6 +439,7 @@ body.page.writing table th { text-align: left !important; }
 }
 #diagram-overlay-close:hover { color: var(--fg); }
 #diagram-overlay-content .svg-diagram { margin: 0; opacity: 1; }
+#diagram-overlay-content pre { margin: 0; border-left: none; border-radius: 4px; }
 #diagram-overlay-caption {
   text-align: center;
   color: var(--muted);

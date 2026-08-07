@@ -6,9 +6,9 @@
   var caption = document.getElementById('diagram-overlay-caption');
   var closeBtn = document.getElementById('diagram-overlay-close');
 
-  function openOverlay(svgEl, captionText) {
+  function openOverlay(el, captionText) {
     content.innerHTML = '';
-    content.appendChild(svgEl.cloneNode(true));
+    content.appendChild(el.cloneNode(true));
     caption.textContent = captionText || '';
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -17,6 +17,29 @@
   function closeOverlay() {
     overlay.classList.remove('open');
     document.body.style.overflow = '';
+  }
+
+  function isContentBlock(el) {
+    if (!el) return false;
+    return (
+      el.classList.contains('svg-diagram') ||
+      el.tagName === 'PRE' ||
+      el.tagName === 'TABLE' ||
+      el.tagName === 'FIGURE'
+    );
+  }
+
+  function findContent(anchor) {
+    // Try direct next element sibling
+    var el = anchor.nextElementSibling;
+    if (isContentBlock(el)) return el;
+    // Anchor is usually inside a <p> — check parent's next sibling
+    var par = anchor.parentElement;
+    if (par) {
+      el = par.nextElementSibling;
+      if (isContentBlock(el)) return el;
+    }
+    return null;
   }
 
   closeBtn.addEventListener('click', closeOverlay);
@@ -28,28 +51,28 @@
   });
 
   document.addEventListener('click', function (e) {
-    var link = e.target.closest('a[href^="#diagram-"]');
+    // Cmd (Mac) or Ctrl = bypass, navigate normally
+    if (e.metaKey || e.ctrlKey) return;
+
+    var link = e.target.closest('a[href^="#"]');
     if (!link) return;
 
     var id = link.getAttribute('href').slice(1);
+    if (!id) return;
+
     var anchor = document.getElementById(id);
     if (!anchor) return;
 
-    // Hugo wraps the anchor in a <p>, so .svg-diagram is the next sibling of that <p>
-    var svgEl = anchor.nextElementSibling;
-    if (!svgEl || !svgEl.classList.contains('svg-diagram')) {
-      var par = anchor.parentElement;
-      svgEl = par ? par.nextElementSibling : null;
-    }
-    if (!svgEl || !svgEl.classList.contains('svg-diagram')) return;
+    var el = findContent(anchor);
+    if (!el) return; // no content block found — let it navigate
 
     e.preventDefault();
 
-    // Caption is the next <p> after the .svg-diagram
-    var captionEl = svgEl.nextElementSibling;
+    // Caption: next <p> after the content block (for diagrams)
+    var captionEl = el.nextElementSibling;
     var captionText = (captionEl && captionEl.tagName === 'P') ? captionEl.textContent : '';
 
-    openOverlay(svgEl, captionText);
+    openOverlay(el, captionText);
   });
 })();
 // ── END DIAGRAM OVERLAY (option-2-diagram-overlay) ──────────────
