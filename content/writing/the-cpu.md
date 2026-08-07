@@ -93,6 +93,8 @@ Slot 99 works the opposite way. It's connected to a dial outside the house. Otto
 
 Okay, now that we have the setup, let's make Otto do something. Here is the program in plain English:
 
+<a id="otto-program-english"></a>
+
 Here, A and B refer to the desk drawers.
 
 ```
@@ -163,7 +165,7 @@ To understand these jumps, let's first look at the program in a more broken-down
 26: 14
 ```
 
-This is how the program would actually look sitting in memory:
+This is how the program would actually look sitting in memory. If you get lost during the trace, come back to this picture:
 
 <a id="diagram-1-3"></a>
 {{< svg "program-in-cabinet" >}}
@@ -192,24 +194,18 @@ For now, the important point is simple: instructions are stored in numbered slot
 
 Setup: drawer `PC`, which stands for program counter, starts at `10`, because `10` is the address of the first instruction in [the program](#otto-program-broken-down).
 
-The program is already loaded into the upstairs cabinet. Drawers `A` and `B` may contain old garbage values from whatever ran before.
+The program is already loaded into the upstairs cabinet. Drawers `A` and `B` may contain old garbage values from whatever ran before. You can use [Diagram 1.3](#diagram-1-3) as the map while Otto walks through it.
 
 Because Otto has bad memory, he carries two scraps of paper. The address slip holds the slot he wants to look at. The value slip holds the value he reads from that slot.
 
 The input dial is set to `2`, because we want to count in twos for this example: 0, 2, 4, 6, 8...
 
-Loop diagram (will be an actual diagram later):
+<a id="diagram-1-4"></a>
+{{< svg "loop" >}}
 
-1. Look at `PC`.
-2. Fetch the number from that cabinet slot.
-3. Use the decoder chart to find the procedure for that instruction.
-4. Follow the procedure step by step.
-5. When the procedure finishes, go back to step 1.
-6. If the procedure is `HALT`, stop.
+Diagram 1.4. Otto's basic loop. He copies `PC` onto the address slip, fetches the value from that cabinet slot, uses the decoder chart to choose a procedure, follows it, and then repeats from the new `PC`.
 
-Diagram 1.4. Otto's basic loop.
-
-This is all Otto does. He just follows these six instructions, so let's trace it through.
+This is the basic loop Otto follows, so let's trace it through.
 
 <br>
 
@@ -239,7 +235,7 @@ He just completed:
 11: 0
 ```
 
-Now you can start to see how the loop works. (See Diagram 1.4.)
+Now you can start to see how the loop works. (See [Diagram 1.4](#diagram-1-4).)
 
 Let's do the next instruction faster.
 
@@ -343,7 +339,7 @@ Now drawer `A` contains `2`, so Otto copies `2` into slot `98`. The display chan
 | --- | --- | --- | --- | --- |
 | 14 | 2 | 2 | 2 | 2 |
 
-From there, the loop keeps doing the same three things: show `A`, read the dial into `B`, and either add `B` into `A` or reset.
+From there, the loop keeps doing the same three things from [the plain-English program](#otto-program-english): show `A`, read the dial into `B`, and either add `B` into `A` or reset.
 
 
 | Dial value | `A` before add | What happens | Display soon shows |
