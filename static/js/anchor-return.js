@@ -9,18 +9,25 @@
 
   document.addEventListener('click', function (e) {
     var link = e.target.closest('a[href^="#"]');
-    if (link) savedY = window.scrollY;
-  });
+    if (!link) return;
+    var href = link.getAttribute('href');
+    if (!href || href === '#') return;
 
-  window.addEventListener('hashchange', function () {
-    if (savedY !== null) btn.classList.add('visible');
+    savedY = window.scrollY;
+
+    // Two rAF frames: let the browser process the click + scroll before showing
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        btn.classList.add('visible');
+      });
+    });
   });
 
   btn.addEventListener('click', function () {
     if (savedY !== null) {
       window.scrollTo({ top: savedY, behavior: 'smooth' });
-      savedY = null;
     }
+    savedY = null;
     btn.classList.remove('visible');
   });
 })();
