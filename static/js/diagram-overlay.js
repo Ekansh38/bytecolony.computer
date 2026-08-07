@@ -35,13 +35,17 @@
     var anchor = document.getElementById(id);
     if (!anchor) return;
 
-    // Find the .svg-diagram immediately after the anchor
+    // Hugo wraps the anchor in a <p>, so .svg-diagram is the next sibling of that <p>
     var svgEl = anchor.nextElementSibling;
+    if (!svgEl || !svgEl.classList.contains('svg-diagram')) {
+      var par = anchor.parentElement;
+      svgEl = par ? par.nextElementSibling : null;
+    }
     if (!svgEl || !svgEl.classList.contains('svg-diagram')) return;
 
     e.preventDefault();
 
-    // Grab caption from the <p><em> that follows the diagram
+    // Caption is the next <p> after the .svg-diagram
     var captionEl = svgEl.nextElementSibling;
     var captionText = (captionEl && captionEl.tagName === 'P') ? captionEl.textContent : '';
 
