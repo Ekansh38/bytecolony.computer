@@ -41,10 +41,10 @@ Let's start with a high-level overview of how the CPU functions, so we have a go
 
 Imagine your computer is a house.
 
-<a id="diagram-1-0"></a>
+<a id="diagram-1-1"></a>
 {{< svg "house" >}}
 
-*Diagram 1.0. The outside of the house.*
+*Diagram 1.1. The outside of the house.*
 
 <br>
 
@@ -63,10 +63,10 @@ Inside this house we have our downstairs desk where Otto does all the serious wo
 - an abacus for basic arithmetic.
 - A decoder chart that does some stuff. We will come back to this later.
 
-<a id="diagram-1-1"></a>
+<a id="diagram-1-2"></a>
 {{< svg "desk" >}}
 
-*Diagram 1.1. The desk setup.*
+*Diagram 1.2. The desk setup.*
 
 <br>
 
@@ -76,10 +76,10 @@ Upstairs is the filing cabinet room. The cabinet has slots labeled 0, 1, 2, 3, a
 
 One quick distinction before we start: when I say "drawer," I mean the desk drawers right next to Otto where he works. When I say "slot," I mean the numbered compartments in the upstairs filing cabinet.
 
-<a id="diagram-1-2"></a>
+<a id="diagram-1-3"></a>
 {{< svg "cabinet" >}}
 
-*Diagram 1.2. The filing cabinet.*
+*Diagram 1.3. The filing cabinet.*
 
 <br>
 
@@ -87,7 +87,7 @@ Most of these slots are boring and filled with paper. But slot 98 is special. It
 
 Slot 99 works the opposite way. It's connected to a dial outside the house. Otto reads from it like any other slot, but the value comes from whoever is turning the dial. He could technically write to slot 99 too, but that would be a bit disruptive.
 
-(See [Diagram 1.0](#diagram-1-0) for a recap of how these elements look from the outside of the house.)
+(See [Diagram 1.1](#diagram-1-1) for a recap of how these elements look from the outside of the house.)
 
 <br>
 
@@ -167,10 +167,10 @@ To understand these jumps, let's first look at the program in a more broken-down
 
 This is how the program would actually look sitting in those cabinet slots upstairs. If you get lost during the trace, come back to this picture:
 
-<a id="diagram-1-3"></a>
+<a id="diagram-1-4"></a>
 {{< svg "program-in-cabinet" >}}
 
-Diagram 1.3. The same program but as raw cabinet contents. The top number in red is the cabinet slot's address; the bottom number in yellow is the value stored there. Values below 10 are written with a leading zero, so `01` means the number 1. Each slot still only holds a number. Otto uses [the decoder chart on his desk](#diagram-1-1) to interpret numbers like `01`, `05`, and `13` as instructions.
+Diagram 1.4. The same program but as raw cabinet contents. The top number in red is the cabinet slot's address; the bottom number in yellow is the value stored there. Values below 10 are written with a leading zero, so `01` means the number 1. Each slot still only holds a number. Otto uses [the decoder chart on his desk](#diagram-1-2) to interpret numbers like `01`, `05`, and `13` as instructions.
 
 <br>
 
@@ -184,7 +184,7 @@ If this feels like a lot, that's fine. This is only the high level overview. The
 
 Now back to the reason for the jumps. Each cabinet slot can only hold one two-digit number from `00` to `99`. That means some instructions fit in one slot, while others spill into the next slot.
 
-Small fixed choices, like `A` and `B`, can be encoded into the instruction itself because there are only a few drawers. But bigger flexible values, like `0`, `[98]`, or the jump target `21`, need their own slot. (See [Otto's decoder chart](#diagram-1-1) to make sense of this better)
+Small fixed choices, like `A` and `B`, can be encoded into the instruction itself because there are only a few drawers. But bigger flexible values, like `0`, `[98]`, or the jump target `21`, need their own slot. (See [Otto's decoder chart](#diagram-1-2) to make sense of this better)
 
 So `ADD A, B` fits in one slot. But `LOAD A, 0` takes two: one slot for the `LOAD A` instruction, and one slot for the actual value `0`.
 
@@ -194,16 +194,16 @@ For now, the important point is simple: instructions are stored in numbered slot
 
 Setup: drawer `PC`, which stands for program counter, starts at `10`, because `10` is the address of the first instruction in [the program](#otto-program-broken-down).
 
-The program is [already loaded](#diagram-1-3) into the upstairs cabinet. Drawers `A` and `B` may contain old garbage values from whatever ran before.
+The program is [already loaded](#diagram-1-4) into the upstairs cabinet. Drawers `A` and `B` may contain old garbage values from whatever ran before.
 
 Because Otto has bad memory, he carries two scraps of paper. The address slip holds the slot he wants to look at. The value slip holds the value he reads from that slot.
 
 The input dial is set to `2`, because we want to count in twos for this example: 0, 2, 4, 6, 8...
 
-<a id="diagram-1-4"></a>
+<a id="diagram-1-5"></a>
 {{< svg "loop" >}}
 
-Diagram 1.4. Otto's basic loop. He copies `PC` onto the address slip, fetches the value from that cabinet slot, uses the decoder chart to choose a procedure, follows it, and then repeats from the new `PC`.
+Diagram 1.5. Otto's basic loop. He copies `PC` onto the address slip, fetches the value from that cabinet slot, uses the decoder chart to choose a procedure, follows it, and then repeats from the new `PC`.
 
 This is the basic loop Otto follows, so let's trace it through.
 
@@ -228,7 +228,7 @@ So Otto moves `PC` from `10` to `11`, reads slot `11`, finds `00`, puts `0` into
 | --- | --- | --- | --- | --- |
 | 12 | 0 | old garbage | unchanged | 2 |
 
-Now you can start to see how the loop works. (See [Diagram 1.4](#diagram-1-4).)
+Now you can start to see how the loop works. (See [Diagram 1.5](#diagram-1-5).)
 
 Let's do the next instruction faster.
 
@@ -343,3 +343,24 @@ Something like this is happening inside your computer right now.
 Except there is no Otto.
 
 Nobody is home.
+
+### Circuits & Electricity
+
+Let's explore the basics of how electricity and circuits work for the purposes of this article.
+
+Here is a simple circuit:
+
+<a id="diagram-2-1"></a>
+<img src="/images/basic-circuit.gif" width="500" alt="A basic circuit with a switch and light bulb and drawings not symbols">
+
+*Diagram 2.1. The circuit.*
+
+We can think of the battery as being able to push charge around the loop. Current can only flow when this loop is completed. If the loop is broken, nothing flows. A switch is simply a controlled break in the loop, allowing us to break and complete the loop whenever we want. And a light bulb is just a simple light bulb. It glows when current flows through the filament.
+
+Here is our circuit with some symbols in place of our previous drawings:
+
+<diagram here>
+
+Each symbol represents the same thing but is just easier for engineers to draw.
+
+That is enough to start building logic. First some familiar stuff: AND, OR, NOT. Then some weird ones NAND, XOR, NOR.
