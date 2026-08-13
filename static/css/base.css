@@ -326,7 +326,8 @@ body.page .hero-img {
   opacity: 0.88;
   text-align: center;
 }
-.svg-diagram svg {
+.svg-diagram svg,
+.svg-diagram img {
   display: block;
   width: 100%;
   max-width: 100%;

@@ -3,8 +3,9 @@
 Hugo content pre-processor.
 Runs before Hugo build. Applies mechanical transforms to all markdown files:
   1. <img src="/images/*.svg"> → {{< svg "name" >}} shortcode
-  2. > [!NOTE] inline text → two-line Hugo GFM alert format
-  3. Hard-wrapped paragraph lines → single reflowed lines (mobile-safe)
+  2. <img src="/images/*.{gif,png,jpg}"> → wrapped in <div class="svg-diagram">
+  3. > [!NOTE] inline text → two-line Hugo GFM alert format
+  4. Hard-wrapped paragraph lines → single reflowed lines (mobile-safe)
 
 Planning sections are stripped manually before content reaches git.
 This script is idempotent — safe to run on already-processed files.
@@ -111,10 +112,27 @@ def convert_svg_imgs(content):
         content
     )
 
+def wrap_raster_imgs(content):
+    """Wrap raw <img> tags for raster images (gif/png/jpg) in .svg-diagram box.
+    Skips images already wrapped and skips .hero-img."""
+    def wrap(m):
+        tag = m.group(0)
+        # Already wrapped or hero image: leave alone
+        if 'class=' in tag and ('svg-diagram' in tag or 'hero-img' in tag):
+            return tag
+        # Strip width/height attrs — the wrapper CSS handles sizing responsively
+        cleaned = re.sub(r'\s+(width|height)="[^"]*"', '', tag)
+        return f'<div class="svg-diagram">{cleaned}</div>'
+
+    # Match <img src="/images/*.{gif,png,jpg,jpeg,webp}"> not already inside svg-diagram
+    pattern = r'(?<!<div class="svg-diagram">)<img\s+[^>]*src="/images/[^"]+\.(?:gif|png|jpg|jpeg|webp)"[^>]*/?>(?!</div>)'
+    return re.sub(pattern, wrap, content, flags=re.IGNORECASE)
+
 def fix_obsidian_callouts(content):
-    """Convert > [!NOTE] inline text to the two-line Hugo GFM alert format."""
+    """Convert `> [!NOTE] inline text` to the two-line Hugo GFM alert format.
+    Uses [ \\t]+ (not \\s+) so it never crosses newlines — keeps this idempotent."""
     return re.sub(
-        r'^(>\s*)\[!([A-Z]+)\]\s+(.+)$',
+        r'^(>[ \t]*)\[!([A-Z]+)\][ \t]+(.+)$',
         lambda m: f'> [!{m.group(2)}]\n> {m.group(3).strip()}',
         content,
         flags=re.MULTILINE
@@ -126,6 +144,7 @@ def process_file(path):
 
     content = original
     content = convert_svg_imgs(content)
+    content = wrap_raster_imgs(content)
     content = fix_obsidian_callouts(content)
     content = reflow_paragraphs(content)
 

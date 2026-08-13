@@ -51,7 +51,7 @@ Imagine your computer is a house.
 Inside this house is one stupid but surprisingly pedantic worker. His name is Otto. Also he never leaves his house.
 
 > [!NOTE]
-> > For this article, assume one worker doing one thing at a time. Real CPUs use pipelining,
+> For this article, assume one worker doing one thing at a time. Real CPUs use pipelining,
 > branch prediction, and other tricks to keep multiple pieces of work going at once. These are
 > optimization techniques and do not affect the invariants of how a CPU functions (at least not much).
 
@@ -117,7 +117,7 @@ Take a minute to guess what this program does before I reveal it.
 Set the input dial to 1 and the display counts 0, 1, 2, 3, 4... Set it to 5 and it counts in fives. Set it to 0 and the display resets to 0. Otto reads the input, either adds it to his running total or clears the total, shows you the result, and loops.
 
 > [!NOTE]
-> > In a real computer, this loop would run millions of times per second, so the display would be
+> In a real computer, this loop would run millions of times per second, so the display would be
 > nothing but a blur. A real program would need some kind of "wait" or "sleep" instruction, maybe
 > using a timer. Otto is slow enough that we can watch him count. Also, since this toy machine only
 > stores two-digit unsigned numbers (unsigned meaning not negative), counting past 99 wraps around
@@ -130,7 +130,7 @@ You might have noticed the odd-looking numbers before each instruction. These ar
 In this CPU, the program itself is stored in the upstairs cabinet too, right next to ordinary data. But why do the addresses jump around? Why do some parts of the program go from 10 to 12 and some from 18 to 19?
 
 > [!NOTE]
-> > This style of CPU where the instructions and data live in the same memory is known as a Von
+> This style of CPU where the instructions and data live in the same memory is known as a Von
 > Neumann architecture.
 
 To understand these jumps, let's first look at the program in a more broken-down form.
@@ -351,7 +351,7 @@ Let's explore the basics of how electricity and circuits work for the purposes o
 Here is a simple circuit:
 
 <a id="diagram-2-1"></a>
-<img src="/images/basic-circuit.gif" width="500" alt="A basic circuit with a switch and light bulb and drawings not symbols">
+<div class="svg-diagram"><img src="/images/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
 
 *Diagram 2.1. The circuit.*
 
