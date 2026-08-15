@@ -35,7 +35,7 @@ Right now this diagram of a CPU might look like a bunch of random lines and labe
 
 
 
-### The House
+## The House
 
 Let's start with a high-level overview of how the CPU functions, so we have a goal to work towards.
 
@@ -339,7 +339,7 @@ Except there is no Otto.
 
 Nobody is home.
 
-### Circuits & Electricity
+## Circuits & Electricity
 
 Let's explore the basics of how electricity and circuits work for the purposes of this article.
 
@@ -361,7 +361,7 @@ Each symbol represents the same thing but is just easier for engineers to draw. 
 
 Now we have a circuit that can do one yes/no thing. Current flows or it doesn't. Now let's see if we can combine switches and relays so the circuit can "answer" slightly more interesting questions.
 
-### Switches, Relays, & Logic Gates
+## Switches, Relays, & Logic Gates
 
 Okay, now let's assume we want to build a simple dog washer circuit.
 
@@ -463,11 +463,3 @@ One important thing to notice: a wire is just a wire. We gave these wires meanin
 To make a CPU, we need to give wires a different kind of meaning: numbers. Before we can build a circuit that adds, we need a way to represent numbers using only on and off.
 
 That is what the next section is about.
-
-### Ending
-
-Now I hope you understand why computers aren't JUST 1s and 0s. Feel free to checkout some more material I personally love and that expands on this article.
-
-- Code: The Hidden Language
-- But how do it know?
-- OSTEP (wanna just 1 level up towards os?)
