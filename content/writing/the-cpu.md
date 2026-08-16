@@ -89,7 +89,7 @@ Most instructions just move Otto forward to the next instruction. If `PC` says `
 
 But some instructions are jumps. A jump changes `PC` to a different slot instead of moving forward. That is how a program can loop, skip work, or do one thing if a value is `0` and another thing if it isn't.
 
-That is the whole shape of the machine: instructions live in memory, `PC` points at the next one, the decoder chart says what each instruction means, and Otto repeats the same fetch-decode-execute loop again and again.
+That is kinda just how your computer works: instructions live in memory, `PC` points at the next one, the decoder chart says what each instruction means, and Otto repeats the same fetch-decode-execute loop again and again.
 
 Something like this is happening inside your computer right now.
 
