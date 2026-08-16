@@ -7,7 +7,7 @@
 {{ end }}
 
 <h1 class="project-title">{{ .Title }}</h1>
-<div class="project-meta">{{ .Date.Format "January 2, 2006" }} · <button class="jump-comments" onclick="document.getElementById('comments').scrollIntoView({behavior:'smooth'})">comments ↓</button></div>
+<div class="project-meta">{{ .Date.Format "January 2, 2006" }}<span id="toc-btn-wrap" style="display:none;"> · <button class="jump-toc" id="toc-btn">contents</button></span> · <button class="jump-comments" onclick="document.getElementById('comments').scrollIntoView({behavior:'smooth'})">comments ↓</button></div>
 
 {{ .Content }}
 

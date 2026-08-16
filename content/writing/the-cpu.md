@@ -16,24 +16,19 @@ How does that become memory?
 
 How does that become a program sitting in RAM, one instruction after another, telling a machine what to do?
 
-If you are familiar with programming, you know what `x += 1` does, but it might still be confusing what actually happens under the hood. Some circuit fires, some values move, some data gets saved. But that connection is foggy for a lot of people and it certainly was for me.
+This article is going to walk you through how a CPU is built, starting with the simplest possible components.
 
-A lot of explanations either stay so high-level that the CPU remains a black box, or are book length and full of interesting detail but not super approachable.
+We start with a simple circuit turning on and off a light bulb and work our way through fundamental digital logic and electrical engineering concepts.
 
-This article is going to follow one simple CPU and fill it in piece by piece, starting from the simplest building blocks and showing why each part has to exist.
+Some resources stay extremely high-level, so you never really understand how a CPU actually works.
+
+The deeper resources are amazing, but they are long, dense, and intimidating. And frankly, for someone who doesn't want that level of detail, a lot of it can often feel like too much. This article will hopefully help you understand what is going on under the hood, without exploding your brain or eating weeks of time.
 
 The key point is that nothing here is smart in isolation. A CPU is not one hard idea. It is a very tall pile of simple ones.
 
-
 (Full simple CPU drawing: a few labeled boxes, data bus, address bus, and some control wires)
 
-<br>
-
-We are going to try to understand this simple CPU. Not a modern CPU. We are NOT going into caches, pipelining, branch prediction, out of order operations, operating systems, GPUs, or all the other machinery that makes your laptop fast or "good". At least not in this article.
-
-Right now this diagram of a CPU might look like a bunch of random lines and labels with words of no meaning, but by the end of this article you should be able to point to where instructions come from, where computation happens, where data gets saved, and then how simple wires can become logic gates and then a CPU.
-
-
+We are going to try to understand this simple CPU. It is not a modern CPU, but it has the same core.
 
 ## The House
 
@@ -42,8 +37,6 @@ Let's start with a high-level overview of how the CPU functions, so we have a go
 Imagine your computer is a house.
 
 Inside this house is one stupid but surprisingly pedantic worker. His name is Otto. Also he never leaves his house.
-
-<br>
 
 Inside this house we have our downstairs desk where Otto does all the serious work. On the desk are a few things:
 
@@ -55,8 +48,6 @@ Inside this house we have our downstairs desk where Otto does all the serious wo
 
 *Diagram 1.1. The desk setup.*
 
-<br>
-
 Upstairs is the filing cabinet room. The cabinet has slots labeled 0, 1, 2, 3, all the way up to 99. Each slot holds one piece of paper with a two-digit number written on it, from `00` to `99`.
 
 One quick distinction before we start: when I say "drawer," I mean the desk drawers right next to Otto where he works. When I say "slot," I mean the numbered compartments in the upstairs filing cabinet.
@@ -64,8 +55,6 @@ One quick distinction before we start: when I say "drawer," I mean the desk draw
 <a id="diagram-1-2"></a> {{< svg "cabinet" >}}
 
 *Diagram 1.2. The filing cabinet.*
-
-<br>
 
 Most of these slots are boring and filled with paper. But slot 98 is special. It's a little window to the outside world. When Otto puts a number there, it doesn't get written on paper. It shows up on a display. Put `00` there and it glows `00`. Put `07` there and it glows `07`. Otto can read, write, and interact with it just as if it were any cabinet slot.
 
@@ -75,11 +64,7 @@ Slot 99 works the opposite way. It's connected to a dial outside the house. Otto
 
 *Diagram 1.3. The outside of the house, with the display and input dial.*
 
-<br>
-
 The important point for now is simple: the program itself also lives in the upstairs cabinet. Instructions are just numbers stored in slots. Otto uses `PC` to know which slot to read next, then uses the decoder chart to decide what that number means.
-
-<br>
 
 <a id="diagram-1-4"></a> {{< svg "loop" >}}
 
@@ -107,7 +92,11 @@ Here is a simple circuit:
 
 *Diagram 2.1. The circuit.*
 
-We can think of the battery as being able to push charge around the loop. Current can only flow when this loop is completed. If the loop is broken, nothing flows. A switch is simply a controlled break in the loop, allowing us to break and complete the loop whenever we want. And a light bulb is just a simple light bulb. It glows when current flows through the filament.
+We can think of the battery as being able to push charge around the loop. Current can only flow when this loop is completed.
+
+If the loop is broken, nothing flows. A switch is simply a controlled break in the loop, allowing us to break and complete the loop whenever we want.
+
+And a light bulb is just a simple light bulb. It glows when current flows through the filament.
 
 Here is our circuit with some fancy symbols in place of our previous drawings:
 
@@ -117,17 +106,19 @@ Here is our circuit with some fancy symbols in place of our previous drawings:
 
 Each symbol represents the same thing but is just easier for engineers to draw. These are the symbols I will continue to use throughout the article.
 
-Now we have a circuit that can do one yes/no thing. Current flows or it doesn't. Now let's see if we can combine switches and relays so the circuit can "answer" slightly more interesting questions.
+Now we have a circuit that can do one yes/no thing. Current flows or it doesn't.
+
+Now let's see if we can combine switches and relays so the circuit can "answer" slightly more interesting questions.
 
 ## Switches, Relays, & Logic Gates
 
-Let's assume we want to build a simple dog washer circuit.
+Let's assume we want to build a simple dog washer circuit: a circuit that, based on some inputs, can tell us whether to wash our dog or not.
 
-A circuit that, based on some inputs, can tell us whether to wash our dog or not.
+Our simple circuit is going to use a light bulb being on to mean yes, wash the dog. Light bulb off means no, don't wash the dog.
 
-Our simple circuit is going to use a light bulb on to indicate, yes, wash the dog, and a light bulb off to indicate, no, don't wash the dog.
+So let's start with an extremely simple version with two switches.
 
-So let's start with an extremely simple version: two switches. In this first version, the switches are directly inside the bulb circuit. The person using the circuit can open or close each switch to answer a yes/no question.
+In this first version, the switches are directly inside the bulb circuit. The person using the circuit can open or close each switch to answer a yes/no question.
 
 Let's say switch 1 represents `STINKY`: whether the dog is stinky or not. Switch 2 represents `OLD_WASH`: has it been more than 5 days since the last wash.
 
@@ -145,7 +136,9 @@ Let's see the circuit:
 
 This circuit shows the logic of AND. A person is flipping the switches manually. The output turns on only when both inputs are true.
 
-Now let's introduce a new input: `MUDDY`, if the dog is muddy. Now the rules of the circuit change:
+Now let's introduce a new input: `MUDDY`, if the dog is muddy.
+
+Now the rules of the circuit change:
 
 if (`MUDDY` OR `STINKY`) AND `OLD_WASH`
 
@@ -159,7 +152,9 @@ This is OR: either `MUDDY` or `STINKY` needs to be on for the bulb to turn on.
 
 Now lets combine the two.
 
-But now we have a problem. The `MUDDY` or `STINKY` circuit outputs its result with an electrical signal: on or off.
+But now we have a problem.
+
+The `MUDDY` or `STINKY` circuit outputs its result with an electrical signal: on or off.
 
 Okay, now let's introduce one last input, or "sensor": `RAIN_SOON`, whether it is predicted to rain soon. The rules of the circuit change once again:
 

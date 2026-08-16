@@ -295,11 +295,11 @@ body.page.writing li { margin-bottom: 0.35em; }
   body.page.writing p { margin-bottom: 1.25em; }
 }
 .project-meta  { color: var(--muted); margin-bottom: 20px; }
-.jump-comments {
+.jump-toc, .jump-comments {
   background: none; border: none; padding: 0; font: inherit; cursor: pointer;
   color: var(--muted); font-size: 0.82rem; transition: color 0.15s;
 }
-.jump-comments:hover { color: var(--accent); }
+.jump-toc:hover, .jump-comments:hover { color: var(--accent); }
 
 body.page .hero-img {
   width: 60%; border-radius: 6px; margin-bottom: 28px;
@@ -420,6 +420,7 @@ a.pick-title:hover .pick-arrow { opacity: 1; }
 .pick-body p { margin: 0; }
 
 /* ── COMMENTS ──────────────────────────────────────────────── */
+.comments-section { margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
 .comments-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; }
 
 .cmt-form { margin-bottom: 28px; }
