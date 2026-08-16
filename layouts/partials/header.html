@@ -2,6 +2,7 @@
   <div class="header-top">
     {{ if .IsHome }}<h1 class="site-title">{{ else }}<div class="site-title">{{ end }}<a href="/">{{ partial "ant.html" (dict "w" "36" "h" "26") }} ByteColony</a>{{ if .IsHome }}</h1>{{ else }}</div>{{ end }}
     <div class="header-controls">
+      <button class="toggle" id="toc-btn" aria-label="table of contents" style="display:none;">[toc]</button>
       <button class="toggle" id="d-settings-btn" aria-label="settings">[=]</button>
       <button class="toggle" id="term-btn" aria-label="terminal">[:]</button>
       <button class="toggle" id="t" onclick="toggleTheme()" aria-label="switch theme">[dark]</button>

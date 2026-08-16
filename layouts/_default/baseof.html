@@ -51,6 +51,7 @@
   <link rel="stylesheet" href="/css/mobile.css">
   <link rel="stylesheet" href="/css/terminal.css">
   <link rel="stylesheet" href="/css/settings.css">
+  <link rel="stylesheet" href="/css/toc.css">
 </head>
 <body class="{{ .Kind }} {{ .Section }}">
 
@@ -168,6 +169,16 @@
     </div>
   </div>
 
+  <!-- Table of Contents panel — populated by toc.js when on an article page -->
+  <div id="toc-overlay"></div>
+  <div id="toc-panel" role="dialog" aria-modal="true" aria-label="table of contents">
+    <div class="toc-header">
+      <span class="toc-header-title">contents</span>
+      <button id="toc-close" aria-label="close contents">✕</button>
+    </div>
+    <nav class="toc-body" id="toc-list"></nav>
+  </div>
+
   <div id="copy-toast">copied to clipboard</div>
 
   <script src="/js/email-copy.js"></script>
@@ -175,5 +186,6 @@
   <script src="/js/bg-sim.js"></script>
   <script src="/js/terminal.js"></script>
   <script src="/js/reading-progress.js"></script>
+  <script src="/js/toc.js"></script>
 </body>
 </html>
