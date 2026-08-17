@@ -1,21 +1,18 @@
 // ================================================================
 // ARTICLE NAVIGATION (inline TOC + sticky pill + overlay)
-//
-// On pages with 2+ h2s:
-//   1. Injects an inline "contents" block right after the article
-//      meta line — readers see the full outline before diving in.
-//   2. Once the reader scrolls past that inline block, a small
-//      sticky pill fades in at bottom-right showing the current
-//      section name. Click it → fullscreen overlay with all
-//      sections + comments jump.
-//   3. Every jump plays nice with anchor-return.js (back button).
 // ================================================================
 (function () {
-  var headings = Array.prototype.slice.call(document.querySelectorAll('main h2, article h2, .project-content h2'));
-  if (headings.length === 0) {
-    headings = Array.prototype.slice.call(document.querySelectorAll('body h2'))
-      .filter(function (h) { return !h.closest('header, nav, footer, aside, .comments-section, .article-nav'); });
+  // Collect h2s inside the article, EXCLUDING the comments-section
+  // heading (which is itself a nav target we add manually as "comments").
+  function collectHeadings() {
+    var scope = document.querySelector('main, article, .project-content') || document.body;
+    var all = Array.prototype.slice.call(scope.querySelectorAll('h2'));
+    return all.filter(function (h) {
+      return !h.closest('header, nav, footer, aside, .comments-section, .article-nav');
+    });
   }
+
+  var headings = collectHeadings();
   if (headings.length < 2) return;
 
   var meta = document.querySelector('.project-meta');
@@ -28,7 +25,7 @@
     return text.toLowerCase().replace(/[^\w]+/g, '-').replace(/^-|-$/g, '');
   }
 
-  // Detect "Intro" — prose exists between title and first h2
+  // "Intro" if prose exists between title and first h2
   var hasIntro = false;
   var prev = headings[0].previousElementSibling;
   while (prev) {
@@ -36,12 +33,10 @@
     prev = prev.previousElementSibling;
   }
 
-  // Ensure ids on all h2s
   headings.forEach(function (h, i) {
     if (!h.id) h.id = slugify(h.textContent) || ('section-' + i);
   });
 
-  // Model of TOC entries: [{label, target(fn returning number top), key}]
   var entries = [];
   if (hasIntro) {
     entries.push({
@@ -78,22 +73,28 @@
     }
   }
 
-  // ── 1. Inline TOC block right after .project-meta ─────────────
+  // ── 1. Inline TOC block ─────────────────────────────────────
   var inline = document.createElement('nav');
   inline.className = 'inline-toc';
   inline.setAttribute('aria-label', 'Table of contents');
+
   var inlineTitle = document.createElement('div');
   inlineTitle.className = 'inline-toc-title';
-  inlineTitle.textContent = 'CONTENTS';
+  inlineTitle.textContent = '── table of contents ──';
   inline.appendChild(inlineTitle);
-  var inlineList = document.createElement('ul');
+
+  var inlineList = document.createElement('ol');
   inlineList.className = 'inline-toc-list';
-  entries.forEach(function (entry) {
+  // Long TOCs get folded into two columns for compactness
+  if (entries.length > 8) inlineList.classList.add('is-long');
+
+  entries.forEach(function (entry, idx) {
     var li = document.createElement('li');
+    li.className = 'inline-toc-item' + (entry.isComments ? ' is-comments' : '');
     var a = document.createElement('a');
     a.href = entry.isComments ? '#comments' : '#' + entry.key;
+    a.className = 'inline-toc-link';
     a.textContent = entry.isComments ? 'comments ↓' : entry.label;
-    if (entry.isComments) a.className = 'inline-toc-comments';
     a.addEventListener('click', function (e) {
       e.preventDefault();
       jumpTo(entry);
@@ -105,7 +106,7 @@
   inline.appendChild(inlineList);
   meta.insertAdjacentElement('afterend', inline);
 
-  // ── 2. Sticky mini-pill (appears after scrolling past inline TOC)
+  // ── 2. Sticky mini-pill ────────────────────────────────────
   var pill = document.createElement('button');
   pill.className = 'toc-pill';
   pill.type = 'button';
@@ -120,7 +121,7 @@
   pill.appendChild(pillLabel);
   document.body.appendChild(pill);
 
-  // ── 3. Overlay with full section list ────────────────────────
+  // ── 3. Fullscreen overlay ──────────────────────────────────
   var overlay = document.createElement('div');
   overlay.className = 'toc-overlay';
   overlay.setAttribute('aria-hidden', 'true');
@@ -131,19 +132,20 @@
   overlayPanel.setAttribute('aria-label', 'Table of contents');
   var overlayTitle = document.createElement('div');
   overlayTitle.className = 'toc-overlay-title';
-  overlayTitle.textContent = 'CONTENTS';
+  overlayTitle.textContent = '── table of contents ──';
   overlayPanel.appendChild(overlayTitle);
-  var overlayList = document.createElement('ul');
+  var overlayList = document.createElement('ol');
   overlayList.className = 'toc-overlay-list';
+  if (entries.length > 8) overlayList.classList.add('is-long');
   entries.forEach(function (entry) {
     var li = document.createElement('li');
+    li.className = 'toc-overlay-item' + (entry.isComments ? ' is-comments' : '');
     var b = document.createElement('button');
     b.type = 'button';
-    b.className = 'toc-overlay-item' + (entry.isComments ? ' is-comments' : '');
+    b.className = 'toc-overlay-link';
     b.textContent = entry.isComments ? 'comments ↓' : entry.label;
     b.addEventListener('click', function () {
       closeOverlay();
-      // Delay jump slightly so the overlay close animation feels smooth
       requestAnimationFrame(function () {
         requestAnimationFrame(function () { jumpTo(entry); });
       });
@@ -172,8 +174,7 @@
     if (e.key === 'Escape' && overlay.classList.contains('open')) closeOverlay();
   });
 
-  // ── Scroll tracking: show pill after inline TOC is out of view;
-  //    update current section for pill + overlay + inline list ──
+  // ── Scroll tracking ────────────────────────────────────────
   var inlineBottom = 0;
   function recomputeInlineBottom() {
     inlineBottom = inline.getBoundingClientRect().bottom + window.scrollY;
@@ -181,7 +182,6 @@
   recomputeInlineBottom();
 
   function currentEntryIdx() {
-    // Active = last non-comments entry whose position <= scrollY + 40% viewport
     var y = window.scrollY + window.innerHeight * 0.4;
     var active = 0;
     for (var i = 0; i < entries.length; i++) {
@@ -205,7 +205,6 @@
   }
 
   function updatePillVisibility() {
-    // Show pill only when we've scrolled past the inline TOC block
     var shouldShow = window.scrollY > inlineBottom - 40;
     pill.classList.toggle('visible', shouldShow);
   }

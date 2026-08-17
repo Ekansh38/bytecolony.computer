@@ -1,68 +1,86 @@
 /* ══════════════════════════════════════════════════════════════
    ARTICLE NAVIGATION
-   1. Inline TOC (injected under .project-meta)
-   2. Sticky mini-pill (fixed bottom-right, appears mid-scroll)
-   3. Fullscreen overlay (opened via the pill)
+   1. Inline TOC — tight terminal-style numbered list
+   2. Sticky mini-pill — bottom-right (paired with back button in layout)
+   3. Fullscreen overlay
    ══════════════════════════════════════════════════════════════ */
 
-/* ── 1. Inline TOC ─────────────────────────────────────────── */
+/* ── 1. Inline TOC (terminal listing) ──────────────────────── */
 .inline-toc {
-  margin: 8px 0 44px;
-  padding: 18px 20px 18px 22px;
-  border-left: 2px solid var(--border);
-  background: color-mix(in srgb, var(--fg) 3%, transparent);
-  border-radius: 0 4px 4px 0;
+  margin: 12px 0 40px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--muted);
+  border-left: 2px solid var(--accent);
+  padding-left: 16px;
 }
 .inline-toc-title {
-  font-size: 0.68rem;
   color: var(--accent);
-  letter-spacing: 0.14em;
-  margin-bottom: 12px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
   user-select: none;
+  opacity: 0.9;
 }
 .inline-toc-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  counter-reset: toc;
 }
-.inline-toc-list li { margin: 0; padding: 0; }
-.inline-toc-list a {
+.inline-toc-list.is-long {
+  columns: 2;
+  column-gap: 32px;
+}
+.inline-toc-item {
+  margin: 0;
+  padding: 0;
+  counter-increment: toc;
+  break-inside: avoid;
+}
+.inline-toc-item::before {
+  content: counter(toc, decimal-leading-zero) ".";
+  color: var(--muted);
+  opacity: 0.5;
   display: inline-block;
+  width: 2.2em;
+  margin-right: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.inline-toc-item.is-comments::before {
+  content: "→";
+  opacity: 0.6;
+}
+.inline-toc-link {
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.88rem;
-  padding: 3px 0;
-  border-bottom: 1px solid transparent;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.12s ease;
+  padding: 1px 0;
 }
-.inline-toc-list a:hover {
-  color: var(--fg);
-  border-bottom-color: var(--accent);
+.inline-toc-link:hover {
+  color: var(--accent);
   text-decoration: none;
 }
-.inline-toc-list a.active {
+.inline-toc-link.active {
   color: var(--accent);
 }
-.inline-toc-comments {
-  margin-top: 2px;
-  color: var(--accent) !important;
+.inline-toc-item.is-comments .inline-toc-link {
+  color: var(--accent);
   opacity: 0.85;
 }
-.inline-toc-comments:hover { opacity: 1; }
+.inline-toc-item.is-comments .inline-toc-link:hover { opacity: 1; }
 
-/* ── 2. Sticky mini-pill ──────────────────────────────────── */
+/* ── 2. Sticky pill (bottom-right, mid-scroll only) ───────── */
 .toc-pill {
   position: fixed;
-  bottom: 28px;
+  bottom: 24px;
   right: 24px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  max-width: min(280px, 60vw);
-  padding: 10px 16px;
+  max-width: min(260px, 55vw);
+  padding: 9px 16px;
   background: color-mix(in srgb, var(--bg) 78%, transparent);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
@@ -70,9 +88,9 @@
   border-radius: 999px;
   color: var(--fg);
   font: inherit;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.28);
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.22s ease, transform 0.22s ease, border-color 0.15s ease, background 0.15s ease;
@@ -107,86 +125,107 @@
 .toc-overlay {
   position: fixed;
   inset: 0;
-  background: color-mix(in srgb, var(--bg) 60%, transparent);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   display: none;
   align-items: flex-start;
   justify-content: center;
-  padding: 100px 24px 40px;
+  padding: 80px 24px 40px;
   z-index: 9990;
   opacity: 0;
   transition: opacity 0.2s ease;
 }
-.toc-overlay.open {
-  display: flex;
-  opacity: 1;
-}
+.toc-overlay.open { display: flex; opacity: 1; }
 .toc-overlay-panel {
   width: 100%;
-  max-width: 520px;
+  max-width: 560px;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 24px 28px 20px;
+  padding: 20px 24px 18px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   transform: translateY(-8px);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'JetBrains Mono', monospace;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 .toc-overlay.open .toc-overlay-panel { transform: translateY(0); }
 .toc-overlay-title {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: var(--accent);
-  letter-spacing: 0.14em;
-  margin-bottom: 16px;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
   user-select: none;
+  opacity: 0.9;
 }
 .toc-overlay-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
+  counter-reset: toc-ovl;
 }
-.toc-overlay-list li { margin: 0; }
+.toc-overlay-list.is-long {
+  columns: 2;
+  column-gap: 28px;
+}
 .toc-overlay-item {
-  display: block;
-  width: 100%;
+  margin: 0;
+  padding: 0;
+  counter-increment: toc-ovl;
+  break-inside: avoid;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.toc-overlay-item::before {
+  content: counter(toc-ovl, decimal-leading-zero) ".";
+  color: var(--muted);
+  opacity: 0.5;
+  display: inline-block;
+  width: 2.2em;
+  margin-right: 2px;
+  padding-left: 8px;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.toc-overlay-item.is-comments::before {
+  content: "→";
+  opacity: 0.6;
+}
+.toc-overlay-link {
+  flex: 1;
   text-align: left;
   background: none;
   border: none;
-  padding: 12px 12px;
-  margin: 0;
-  border-left: 2px solid transparent;
+  padding: 6px 8px;
   color: var(--fg);
   font: inherit;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease, padding-left 0.18s ease;
-  border-radius: 0 4px 4px 0;
+  border-radius: 3px;
+  transition: color 0.15s ease, background 0.15s ease;
 }
-.toc-overlay-item:hover {
+.toc-overlay-link:hover {
   color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 6%, transparent);
-  padding-left: 18px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
-.toc-overlay-item.active {
+.toc-overlay-link.active {
   color: var(--accent);
-  border-left-color: var(--accent);
-  font-weight: 700;
 }
-.toc-overlay-item.is-comments {
+.toc-overlay-item.is-comments .toc-overlay-link {
   color: var(--accent);
   opacity: 0.85;
-  margin-top: 6px;
 }
-.toc-overlay-item.is-comments:hover { opacity: 1; }
+.toc-overlay-item.is-comments .toc-overlay-link:hover { opacity: 1; }
 
-/* Mobile refinements */
 @media (max-width: 700px) {
-  .inline-toc { padding: 14px 16px 14px 18px; margin: 6px 0 32px; }
-  .inline-toc-list a { font-size: 0.85rem; }
-  .toc-pill { bottom: 20px; right: 16px; padding: 9px 14px; font-size: 0.75rem; }
-  .toc-overlay { padding: 60px 16px 20px; }
-  .toc-overlay-panel { padding: 20px 20px 16px; }
+  .inline-toc { font-size: 0.82rem; }
+  .inline-toc-list.is-long, .toc-overlay-list.is-long { columns: 1; }
+  .toc-pill { bottom: 16px; right: 16px; padding: 8px 14px; font-size: 0.72rem; }
+  .toc-overlay { padding: 40px 16px 20px; }
+  .toc-overlay-panel { padding: 18px 18px 14px; }
 }

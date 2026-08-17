@@ -481,26 +481,39 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
 
 #anchor-return-btn {
   position: fixed;
-  bottom: 28px;
-  right: 24px;
-  background: var(--fg);
-  color: var(--bg);
-  border: none;
-  padding: 8px 18px;
-  border-radius: 20px;
+  bottom: 24px;
+  left: 24px;                 /* bottom-LEFT so it never collides with the TOC pill */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
   font: inherit;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.28);
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 0.2s, transform 0.2s;
+  transition: opacity 0.22s ease, transform 0.22s ease, border-color 0.15s ease, color 0.15s ease;
   pointer-events: none;
-  z-index: 999;
+  z-index: 200;
+}
+#anchor-return-btn:hover {
+  color: var(--fg);
+  border-color: var(--accent);
 }
 #anchor-return-btn.visible {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+@media (max-width: 700px) {
+  #anchor-return-btn { bottom: 16px; left: 16px; padding: 8px 14px; font-size: 0.72rem; }
 }
 
 #copy-toast {
