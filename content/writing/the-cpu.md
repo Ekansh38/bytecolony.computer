@@ -28,7 +28,7 @@ The key point is that nothing here is smart in isolation. A CPU is not one hard 
 
 (Full simple CPU drawing: a few labeled boxes, data bus, address bus, and some control wires)
 
-We are going to try to understand this simple CPU. It is not a modern CPU, but it has the same core.
+We are going to try to understand this simple CPU. It is not a modern CPU with decades of optimization, but it has the same core functionality.
 
 ## The House
 
@@ -64,7 +64,7 @@ Slot 99 works the opposite way. It's connected to a dial outside the house. Otto
 
 *Diagram 1.3. The outside of the house, with the display and input dial.*
 
-The important point for now is simple: the program itself also lives in the upstairs cabinet. Instructions are just numbers stored in slots. Otto uses `PC` to know which slot to read next, then uses the decoder chart to decide what that number means.
+The important point for now is simple: the program itself also lives in the upstairs cabinet. Instructions are just numbers stored in slots. Otto uses `PC` to know which slot to read next, then uses the decoder chart to decide what that number means, and what procedure to follow based on each instruction.
 
 <a id="diagram-1-4"></a> {{< svg "loop" >}}
 
@@ -134,7 +134,7 @@ Let's see the circuit:
 
 *Diagram 3.1. The hand-switch version of AND.*
 
-This circuit shows the logic of AND. A person is flipping the switches manually. The output turns on only when both inputs are true.
+This circuit shows a logical AND operation. A person is flipping the switches manually. The output turns on only when both inputs are true.
 
 Now let's introduce a new input: `MUDDY`, if the dog is muddy.
 
@@ -148,41 +148,23 @@ Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
 <diagram>
 
-This is OR: either `MUDDY` or `STINKY` needs to be on for the bulb to turn on.
+This is a logical OR: either `MUDDY` or `STINKY` needs to be on for the bulb to turn on.
 
-Now lets combine the two.
+Now lets combine the two to form the complete circuit.
 
 But now we have a problem.
 
-The `MUDDY` or `STINKY` circuit outputs its result with an electrical signal: on or off.
+The `MUDDY OR STINKY` circuit outputs its result with an electrical signal: on or off. Our previous AND circuit relies on a human flipping a switch in order to compute a result.
 
-Okay, now let's introduce one last input, or "sensor": `RAIN_SOON`, whether it is predicted to rain soon. The rules of the circuit change once again:
+Or in other words the OR circuit we build outputs a result as electricity, but the AND circuit we want to combine it with expects a input as a switch physically being flipped. A signal in a wire can't reach over and close that switch.
 
-((`MUDDY` OR `STINKY`) AND `OLD_WASH`) AND NOT `RAIN_SOON`
+Those sound similar, but physically they are different things. The OR circuit gives us electricity, while the AND circuit expects a metal switch to move. A signal in a wire can't reach over and close that switch by itself.
 
-The parentheses indicate order of operations. This should be pretty familiar. So in plain English:
+<diagram showing the issue>
 
-If the dog is muddy or stinky and it's been at least 5 days since the dog's last wash and it's not going to rain soon, then wash the dog.
+So if we want to chain circuits together, we need a way for an electrical signal to control a switch automatically.
 
-Let's focus on this `NOT` for a second. If a switch is open, we want current to flow. If the switch is closed, we want current to stop flowing. We can't just chain switches in clever ways to achieve this. This is something fundamentally different.
-
-<diagram showing the problem with a question mark??> like open switch flow and closed no switch how?
-
-Now you might think, "Why not just rename `RAIN_SOON` to `NOT_RAIN_SOON`, problem solved."
-
-If a person is flipping a switch by hand, sure. You can label the switch however you want.
-
-But circuits usually receive signals from other circuits, and those signals already mean something. For example, a small circuit inside a CPU might check a number and output one signal: `IS_ZERO`. If the number is zero, the wire is on. If the number is not zero, the wire is off.
-
-But what if another part of the CPU needs the opposite condition? What if it needs to continue only when the number is *not* zero?
-
-Renaming `IS_ZERO` to `NOT_ZERO` would not change the electricity. The wire would still be on when the number is zero. To get the opposite signal, you need a circuit that physically flips on into off, and off into on.
-
-That is what a NOT gate does.
-
-So back to the problem at hand. How?
-
-Electromagnetic relays, that's how.
+Electromagnetic relays, that's how. (or at least that is one of the early solutions to this problem, we will talk about transistors a little more later on)
 
 This probably sounds quite complicated, but it is just a magnet powered by electricity.
 
@@ -192,9 +174,46 @@ Here is how it works:
 
 This relay is made from a coil of wire and a movable metal arm. When current flows through the coil, the coil becomes a magnet and pulls the arm down. When current stops, a spring pulls the arm back up.
 
-A relay lets one circuit control a switch in another circuit. These are separate circuits, but mechanically linked by the relay arm.
+A relay lets one circuit open or close a switch in another circuit. The two circuits stay separate, but the relay arm physically connects them.
 
-Now we can finally use the normal logic gate symbols.
+
+Now lets see how we can build an actual electrical AND gate that takes in as input 2 wires, and outputs and electrical signal.
+
+<diagram>
+
+I think you can imagine how there are ways to chain and work with these relays to create every combination in basic digital logic, such as the OR gate.
+
+<diagram>
+
+That is an or gate using relays. Now here is the full dog washer circuit up to this point:
+
+<diagram>
+
+Okay, now let's introduce one last input, or "sensor": `RAIN_SOON`, whether it is predicted to rain soon. The rules of the circuit change once again:
+
+((`MUDDY` OR `STINKY`) AND `OLD_WASH`) AND NOT `RAIN_SOON`
+
+The parentheses indicate order of operations. This should be pretty familiar. So in plain English:
+
+If the dog is muddy or stinky and it's been at least 5 days since the dog's last wash and it's not going to rain soon, then wash the dog.
+
+Let's focus on this `NOT` for a second. A `NOT` just inverts a signal, if it receives signal it outputs no signal, if it receives no signal it outputs signal.
+
+Now you might think, "Why not just rename `RAIN_SOON` to `NOT_RAIN_SOON`, problem solved."
+
+If a person is flipping a switch by hand, sure. You can label the switch however you want.
+
+But circuits usually receive signals from other circuits, and those signals already mean something.
+
+Renaming `IS_ZERO` to `NOT_ZERO` would not change the electricity. The wire would still be on when the number is zero. To get the opposite signal, you need a circuit that physically flips on into off, and off into on.
+
+So in practice flipping a signal is a vital part of digital logic.
+
+That is what a NOT gate does.
+
+<not gate diagram>
+
+Now before we look at the completed circuit, lets learn some basic logic gate symbols.
 
 An `AND` gate is drawn like this:
 
@@ -203,6 +222,8 @@ An `AND` gate is drawn like this:
 An `OR` gate is drawn like this:
 
 <diagram of OR gate symbol>
+
+Whenever I use these symbols moving forward, they can directly translate to the circuits with the relays I showed you previously, the inputs and outputs are the same, but the internal components stay hidden for cleanliness sake.
 
 And the symbol for a `NOT` gate is basically a buffer with a little circle after it.
 
@@ -218,11 +239,11 @@ With our knowledge about logic gates, let's create the "should-I-wash-my-dog 500
 
 <diagram>
 
-Now keep in mind these electromagnetic relays are quite big and slow.
+Keep in mind these electromagnetic relays are quite big and slow.
 
-These relays aren't the only way to solve this problem of inverting a signal but, they are one of the early and intuitive methods to understand, but many real computers like [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) used these relays.
+These relays aren't the only way to let an electrical signal flip a switch. They are one of the early and intuitive methods to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) used these relays.
 
-In modern computers a similar behavior is achieved by using tiny transistors. If you want to learn more about transistors: [visit this site](https://www.electronics-tutorials.ws/logic/logic-gates-using-transistors.html)
+In modern computers a similar behavior is achieved by using transistors. If you want to learn more about transistors: [visit this site](https://www.electronics-tutorials.ws/logic/logic-gates-using-transistors.html)
 
 I don't know about you, but addition seems like a pretty logical next step to these logic gates. But not so fast.
 
