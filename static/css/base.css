@@ -134,20 +134,126 @@ body.page :not(pre) > code {
 .chroma .gu  { color: var(--code-fn); font-weight: bold; } /* diff heading */
 .chroma .ln, .chroma .lnt { color: var(--code-cmt); padding-right: 1em; user-select: none; } /* line numbers */
 
-/* ── READING PROGRESS COLUMN ──────────────────────────────── */
+/* ── READING PROGRESS COLUMN + SECTION NAV ─────────────────
+   Cells fill top→bottom with scroll. Section markers protrude
+   to the LEFT of the column with hover-revealed labels. A
+   comments marker sits at the very bottom. Hovering anywhere
+   on the column area reveals all labels; the currently-visible
+   section stays highlighted. */
 #read-progress {
   position: fixed;
   right: 18px;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 10;
+  /* Invisible hover-zone extending left so the tiny column is
+     easy to activate without needing pixel-precise pointing. */
+  padding: 8px 0 8px 200px;
+  margin-left: -200px;
+  pointer-events: none;
+}
+#read-progress .rp-cells {
   display: flex;
   flex-direction: column;
   gap: 3px;
   opacity: 0.7;
-  pointer-events: none;
-  z-index: 10;
 }
 #read-progress canvas { display: block; }
+
+/* Marker overlay: absolutely positioned within the cells' bounding box */
+#read-progress .rp-markers {
+  position: absolute;
+  top: 8px;              /* match #read-progress padding-top */
+  right: 0;
+  bottom: 8px;           /* match padding-bottom */
+  width: 0;              /* buttons anchor to right edge */
+  pointer-events: none;
+}
+.rp-mark {
+  position: absolute;
+  right: -2px;           /* nudge tick to sit flush with column edge */
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  padding: 6px 8px 6px 12px;
+  margin: 0;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+  pointer-events: auto;
+  white-space: nowrap;
+  flex-direction: row-reverse; /* tick on right, label on left */
+}
+.rp-mark-tick {
+  display: block;
+  width: 10px;
+  height: 1px;
+  background: var(--muted);
+  transition: background 0.15s ease, height 0.15s ease, width 0.15s ease;
+  flex-shrink: 0;
+}
+.rp-mark-label {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  letter-spacing: 0.01em;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity 0.18s ease, transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.15s ease, color 0.15s ease;
+  pointer-events: none;
+}
+
+/* Reveal all labels when the column area is hovered */
+#read-progress:hover .rp-mark-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+/* Hover an individual mark: emphasize its tick + accent-border its label */
+.rp-mark:hover .rp-mark-tick,
+.rp-mark.active .rp-mark-tick {
+  background: var(--accent);
+  height: 2px;
+  width: 14px;
+}
+.rp-mark:hover .rp-mark-label {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Active section label is always visible (even without hover) */
+.rp-mark.active .rp-mark-label {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Comments marker: distinctive accent styling, always faintly visible */
+.rp-mark-comments .rp-mark-tick {
+  width: 14px;
+  height: 2px;
+  background: var(--accent);
+}
+.rp-mark-comments .rp-mark-label {
+  color: var(--accent);
+  border-color: var(--accent);
+  opacity: 0.55;
+  transform: translateX(0);
+}
+#read-progress:hover .rp-mark-comments .rp-mark-label,
+.rp-mark-comments:hover .rp-mark-label {
+  opacity: 1;
+}
+
 @media (max-width: 1000px) { #read-progress { display: none; } }
 
 h1 { font-size: 1.6rem; font-weight: 700; }
@@ -271,16 +377,14 @@ body.home .client-list > li:nth-child(n+4) { display: none; }
 /* ── ARTICLE PROSE ─────────────────────────────────────────── */
 body.page p  { line-height: 1.9; margin-top: 0; margin-bottom: 2em; }
 body.page.writing p { margin-bottom: 1.35em; }
-body.page h1 { font-size: 1.55rem; font-weight: 700; color: var(--fg); margin: 12px 0 12px; }
+body.page h1 { font-size: 1.55rem; font-weight: 700; color: var(--fg); margin: 0 0 6px; }
 body.page h2 { font-size: 1.4rem; color: var(--fg); font-weight: 700; margin: 2.4em 0 0.85em; }
 body.page h3 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 2.4em 0 0.85em; }
 
-/* Writing article header: title+date as a unit, then a big clear break */
-body.page.writing .breadcrumbs { margin-bottom: 40px; }
+/* Writing article header: breadcrumbs → title → date, natural flow into prose */
+body.page.writing .breadcrumbs { margin-bottom: 32px; }
 body.page.writing .project-meta {
-  padding-bottom: 28px;
-  margin-bottom: 64px;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
 }
 
 /* Writing article spacing */
@@ -301,35 +405,6 @@ body.page.writing li { margin-bottom: 0.35em; }
   color: var(--muted); font-size: 0.82rem; transition: color 0.15s;
 }
 .jump-comments:hover { color: var(--accent); }
-
-/* ── FLOATING CONTENTS BUTTON (opens TOC panel on articles) ── */
-.toc-fab {
-  position: fixed;
-  top: 96px;
-  right: 44px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: color-mix(in srgb, var(--bg) 92%, var(--fg));
-  border: 1px solid var(--border);
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.78rem;
-  padding: 8px 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
-  z-index: 20;
-}
-.toc-fab:hover {
-  color: var(--fg);
-  border-color: var(--accent);
-  transform: translateY(-1px);
-}
-.toc-fab-icon { font-size: 0.95rem; line-height: 1; color: var(--accent); }
-.toc-fab-label { letter-spacing: 0.02em; }
-@media (max-width: 1000px) { .toc-fab { display: none !important; } }
 
 body.page .hero-img {
   width: 60%; border-radius: 6px; margin-bottom: 28px;

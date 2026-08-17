@@ -9,12 +9,6 @@
 <h1 class="project-title">{{ .Title }}</h1>
 <div class="project-meta">{{ .Date.Format "January 2, 2006" }}</div>
 
-<!-- Floating contents button — shown by toc.js only on articles with 2+ sections -->
-<button class="toc-fab" id="toc-btn" aria-label="Open table of contents" style="display:none;">
-  <span class="toc-fab-icon">≡</span>
-  <span class="toc-fab-label">contents</span>
-</button>
-
 {{ .Content }}
 
 <script>
