@@ -1,5 +1,5 @@
 // ================================================================
-// ARTICLE NAVIGATION (inline TOC + sticky pill + overlay)
+// ARTICLE NAVIGATION (sticky pill + overlay)
 // ================================================================
 (function () {
   // Collect h2s inside the article, EXCLUDING the comments-section
@@ -16,8 +16,6 @@
   if (headings.length < 2) return;
 
   var meta = document.querySelector('.project-meta');
-  if (!meta) return;
-
   var commentsEl = document.getElementById('comments');
   var titleEl = document.querySelector('.project-title, h1');
 
@@ -73,40 +71,7 @@
     }
   }
 
-  // ── 1. Inline TOC block ─────────────────────────────────────
-  var inline = document.createElement('nav');
-  inline.className = 'inline-toc';
-  inline.setAttribute('aria-label', 'Table of contents');
-
-  var inlineTitle = document.createElement('div');
-  inlineTitle.className = 'inline-toc-title';
-  inlineTitle.textContent = '── table of contents ──';
-  inline.appendChild(inlineTitle);
-
-  var inlineList = document.createElement('ol');
-  inlineList.className = 'inline-toc-list';
-  // Long TOCs get folded into two columns for compactness
-  if (entries.length > 8) inlineList.classList.add('is-long');
-
-  entries.forEach(function (entry, idx) {
-    var li = document.createElement('li');
-    li.className = 'inline-toc-item' + (entry.isComments ? ' is-comments' : '');
-    var a = document.createElement('a');
-    a.href = entry.isComments ? '#comments' : '#' + entry.key;
-    a.className = 'inline-toc-link';
-    a.textContent = entry.isComments ? 'comments ↓' : entry.label;
-    a.addEventListener('click', function (e) {
-      e.preventDefault();
-      jumpTo(entry);
-    });
-    li.appendChild(a);
-    inlineList.appendChild(li);
-    entry.inlineLink = a;
-  });
-  inline.appendChild(inlineList);
-  meta.insertAdjacentElement('afterend', inline);
-
-  // ── 2. Sticky mini-pill ────────────────────────────────────
+  // ── 1. Sticky mini-pill ────────────────────────────────────
   var pill = document.createElement('button');
   pill.className = 'toc-pill';
   pill.type = 'button';
@@ -136,7 +101,6 @@
   overlayPanel.appendChild(overlayTitle);
   var overlayList = document.createElement('ol');
   overlayList.className = 'toc-overlay-list';
-  if (entries.length > 8) overlayList.classList.add('is-long');
   entries.forEach(function (entry) {
     var li = document.createElement('li');
     li.className = 'toc-overlay-item' + (entry.isComments ? ' is-comments' : '');
@@ -175,14 +139,20 @@
   });
 
   // ── Scroll tracking ────────────────────────────────────────
-  var inlineBottom = 0;
-  function recomputeInlineBottom() {
-    inlineBottom = inline.getBoundingClientRect().bottom + window.scrollY;
+  // Pill becomes visible after the reader scrolls past the article title
+  var pillThreshold = 0;
+  function recomputeThreshold() {
+    var el = meta || titleEl;
+    if (el) pillThreshold = el.getBoundingClientRect().bottom + window.scrollY;
+    else pillThreshold = 100;
   }
-  recomputeInlineBottom();
+  recomputeThreshold();
 
   function currentEntryIdx() {
-    var y = window.scrollY + window.innerHeight * 0.4;
+    // Switch section as soon as the heading crosses into the middle of the
+    // viewport (0.6 = top 60% of screen). Feels responsive — the pill
+    // switches BEFORE you start reading the section.
+    var y = window.scrollY + window.innerHeight * 0.6;
     var active = 0;
     for (var i = 0; i < entries.length; i++) {
       var e = entries[i];
@@ -198,14 +168,13 @@
     var idx = currentEntryIdx();
     entries.forEach(function (e, i) {
       var isActive = i === idx;
-      if (e.inlineLink) e.inlineLink.classList.toggle('active', isActive);
       if (e.overlayItem) e.overlayItem.classList.toggle('active', isActive);
     });
     pillLabel.textContent = entries[idx].label;
   }
 
   function updatePillVisibility() {
-    var shouldShow = window.scrollY > inlineBottom - 40;
+    var shouldShow = window.scrollY > pillThreshold - 40;
     pill.classList.toggle('visible', shouldShow);
   }
 
@@ -217,11 +186,11 @@
     updatePillVisibility();
   }, { passive: true });
   window.addEventListener('resize', function () {
-    recomputeInlineBottom();
+    recomputeThreshold();
     updatePillVisibility();
   }, { passive: true });
   window.addEventListener('load', function () {
-    recomputeInlineBottom();
+    recomputeThreshold();
     updatePillVisibility();
     updateActive();
   });
