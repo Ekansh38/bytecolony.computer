@@ -13,14 +13,13 @@
   if (headings.length < 2) return;
 
   var btn      = document.getElementById('toc-btn');
-  var btnWrap  = document.getElementById('toc-btn-wrap');
   var overlay  = document.getElementById('toc-overlay');
   var panel    = document.getElementById('toc-panel');
   var closeBtn = document.getElementById('toc-close');
   var listEl   = document.getElementById('toc-list');
   if (!btn || !overlay || !panel || !listEl) return;
 
-  if (btnWrap) btnWrap.style.display = 'inline';
+  btn.style.display = '';
 
   function slugify(text) {
     return text.toLowerCase().replace(/[^\w]+/g, '-').replace(/^-|-$/g, '');

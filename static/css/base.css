@@ -271,14 +271,15 @@ body.home .client-list > li:nth-child(n+4) { display: none; }
 /* ── ARTICLE PROSE ─────────────────────────────────────────── */
 body.page p  { line-height: 1.9; margin-top: 0; margin-bottom: 2em; }
 body.page.writing p { margin-bottom: 1.35em; }
-body.page h1 { font-size: 1.55rem; font-weight: 700; color: var(--fg); margin: 0 0 8px; }
+body.page h1 { font-size: 1.55rem; font-weight: 700; color: var(--fg); margin: 12px 0 12px; }
 body.page h2 { font-size: 1.4rem; color: var(--fg); font-weight: 700; margin: 2.4em 0 0.85em; }
 body.page h3 { font-size: 1.15rem; color: var(--fg); font-weight: 700; margin: 2.4em 0 0.85em; }
 
-/* Writing article header: title+date as a unit, then a clear break */
+/* Writing article header: title+date as a unit, then a big clear break */
+body.page.writing .breadcrumbs { margin-bottom: 40px; }
 body.page.writing .project-meta {
-  padding-bottom: 24px;
-  margin-bottom: 48px;
+  padding-bottom: 28px;
+  margin-bottom: 64px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -295,11 +296,40 @@ body.page.writing li { margin-bottom: 0.35em; }
   body.page.writing p { margin-bottom: 1.25em; }
 }
 .project-meta  { color: var(--muted); margin-bottom: 20px; }
-.jump-toc, .jump-comments {
+.jump-comments {
   background: none; border: none; padding: 0; font: inherit; cursor: pointer;
   color: var(--muted); font-size: 0.82rem; transition: color 0.15s;
 }
-.jump-toc:hover, .jump-comments:hover { color: var(--accent); }
+.jump-comments:hover { color: var(--accent); }
+
+/* ── FLOATING CONTENTS BUTTON (opens TOC panel on articles) ── */
+.toc-fab {
+  position: fixed;
+  top: 96px;
+  right: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: color-mix(in srgb, var(--bg) 92%, var(--fg));
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+  z-index: 20;
+}
+.toc-fab:hover {
+  color: var(--fg);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.toc-fab-icon { font-size: 0.95rem; line-height: 1; color: var(--accent); }
+.toc-fab-label { letter-spacing: 0.02em; }
+@media (max-width: 1000px) { .toc-fab { display: none !important; } }
 
 body.page .hero-img {
   width: 60%; border-radius: 6px; margin-bottom: 28px;
