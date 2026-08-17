@@ -482,7 +482,7 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
 #anchor-return-btn {
   position: fixed;
   bottom: 24px;
-  right: 24px;                /* bottom-RIGHT (pill lives on the left) */
+  left: 24px;                 /* bottom-LEFT (pill lives on the right) */
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -516,7 +516,7 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
   pointer-events: auto;
 }
 @media (max-width: 700px) {
-  #anchor-return-btn { bottom: 16px; right: 16px; padding: 9px 14px; font-size: 0.72rem; }
+  #anchor-return-btn { bottom: 16px; left: 16px; padding: 9px 14px; font-size: 0.72rem; }
 }
 
 #copy-toast {
