@@ -164,17 +164,32 @@
     return active;
   }
 
+  var _lastPillLabel = entries[0].label;
+  var _labelFadeTimer = null;
+  function setPillLabel(newText) {
+    if (_lastPillLabel === newText) return;
+    _lastPillLabel = newText;
+    // Fade out → swap text → fade in
+    pillLabel.classList.add('fade');
+    clearTimeout(_labelFadeTimer);
+    _labelFadeTimer = setTimeout(function () {
+      pillLabel.textContent = newText;
+      pillLabel.classList.remove('fade');
+    }, 140);
+  }
+
   function updateActive() {
     var idx = currentEntryIdx();
     entries.forEach(function (e, i) {
       var isActive = i === idx;
       if (e.overlayItem) e.overlayItem.classList.toggle('active', isActive);
     });
-    pillLabel.textContent = entries[idx].label;
+    setPillLabel(entries[idx].label);
   }
 
   function updatePillVisibility() {
-    var shouldShow = window.scrollY > pillThreshold - 40;
+    // Show pill as soon as the reader has scrolled a small amount past the top.
+    var shouldShow = window.scrollY > 80;
     pill.classList.toggle('visible', shouldShow);
   }
 
