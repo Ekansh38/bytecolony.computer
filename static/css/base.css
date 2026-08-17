@@ -134,124 +134,20 @@ body.page :not(pre) > code {
 .chroma .gu  { color: var(--code-fn); font-weight: bold; } /* diff heading */
 .chroma .ln, .chroma .lnt { color: var(--code-cmt); padding-right: 1em; user-select: none; } /* line numbers */
 
-/* ── READING PROGRESS COLUMN + SECTION NAV ─────────────────
-   - 28 fill cells = reading progress
-   - Section ticks + comments tick protrude left of column
-   - Hover the column area: label CLOSEST to cursor Y appears
-     (prevents overlap when many sections crowd together)
-   - Currently-visible section label persists when NOT hovering
-   - Comments tick uses accent color so it's discoverable         */
+/* ── READING PROGRESS COLUMN (pure decorative indicator) ── */
 #read-progress {
   position: fixed;
   right: 18px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10;
-  /* Wide invisible hover-zone so the tiny column is easy to hit. */
-  padding: 8px 0 8px 220px;
-  margin-left: -220px;
-  pointer-events: none;
-}
-#read-progress .rp-cells {
   display: flex;
   flex-direction: column;
   gap: 3px;
   opacity: 0.7;
+  pointer-events: none;
+  z-index: 10;
 }
 #read-progress canvas { display: block; }
-
-/* Marker overlay pinned to the visible column column bounds */
-#read-progress .rp-markers {
-  position: absolute;
-  top: 8px;
-  right: 0;
-  bottom: 8px;
-  width: 0;
-  pointer-events: auto;   /* whole rail catches hover for reveal logic */
-}
-.rp-mark {
-  position: absolute;
-  right: -2px;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: none;
-  border: none;
-  padding: 6px 8px 6px 12px;
-  margin: 0;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.72rem;
-  cursor: pointer;
-  pointer-events: auto;
-  white-space: nowrap;
-  flex-direction: row-reverse;
-}
-.rp-mark-tick {
-  display: block;
-  width: 10px;
-  height: 1px;
-  background: var(--muted);
-  transition: background 0.15s ease, height 0.15s ease, width 0.15s ease;
-  flex-shrink: 0;
-}
-.rp-mark-label {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--bg) 72%, transparent);
-  border: 1px solid var(--border);
-  color: var(--fg);
-  letter-spacing: 0.01em;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  opacity: 0;
-  transform: translateX(6px);
-  transition: opacity 0.18s ease, transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.15s ease, color 0.15s ease;
-  pointer-events: none;
-}
-
-/* NOT hovering the column → only the active section's label is shown, subtle */
-#read-progress:not(:hover) .rp-mark.active .rp-mark-label {
-  opacity: 1;
-  transform: translateX(0);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-/* Hovering the column → only the label under the cursor Y appears (no stack) */
-#read-progress:hover .rp-mark.cursor-target .rp-mark-label {
-  opacity: 1;
-  transform: translateX(0);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-/* Individual mark hover always reveals its own label */
-.rp-mark:hover .rp-mark-label {
-  opacity: 1;
-  transform: translateX(0);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-/* Emphasize ticks for active / cursor-target / hover */
-.rp-mark:hover .rp-mark-tick,
-.rp-mark.active .rp-mark-tick,
-.rp-mark.cursor-target .rp-mark-tick {
-  background: var(--accent);
-  height: 2px;
-  width: 14px;
-}
-
-/* Comments marker: accent tick baseline (always distinct), label hidden by default */
-.rp-mark-comments .rp-mark-tick {
-  background: var(--accent);
-  height: 2px;
-  width: 14px;
-}
-
 @media (max-width: 1000px) { #read-progress { display: none; } }
 
 h1 { font-size: 1.6rem; font-weight: 700; }
