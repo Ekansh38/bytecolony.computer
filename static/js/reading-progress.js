@@ -117,7 +117,12 @@
       } else {
         top = target.getBoundingClientRect().top + window.scrollY - 24;
       }
+      var fromY = window.scrollY;
       window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      // Show the "← back" pill so the reader can return to where they were
+      if (Math.abs(fromY - top) > 200) {
+        document.dispatchEvent(new CustomEvent('anchor-return-show', { detail: { fromY: fromY } }));
+      }
     });
 
     markersWrap.appendChild(btn);
@@ -151,7 +156,9 @@
 
   function updateActive() {
     if (!showMarkers) return;
-    var y = window.scrollY + 120;
+    // Trigger "active" when the heading has crossed 40% into the viewport —
+    // makes the label pop up as the section enters view, not after we pass it.
+    var y = window.scrollY + window.innerHeight * 0.4;
     var active = -1;
     for (var i = 0; i < markers.length; i++) {
       var m = markers[i];
@@ -164,6 +171,27 @@
       m.el.classList.toggle('active', i === active);
     });
   }
+
+  // Cursor-Y proximity: on hover of the column, show ONLY the label
+  // nearest to the cursor's vertical position. Prevents label pile-up
+  // when many sections crowd into a short scroll area.
+  function updateCursorTarget(clientY) {
+    if (!showMarkers) return;
+    var minDist = Infinity;
+    var closest = null;
+    for (var i = 0; i < markers.length; i++) {
+      var r = markers[i].el.getBoundingClientRect();
+      var mid = r.top + r.height / 2;
+      var d = Math.abs(clientY - mid);
+      if (d < minDist) { minDist = d; closest = markers[i]; }
+    }
+    markers.forEach(function (m) { m.el.classList.toggle('cursor-target', m === closest); });
+  }
+  function clearCursorTarget() {
+    markers.forEach(function (m) { m.el.classList.remove('cursor-target'); });
+  }
+  container.addEventListener('mousemove', function (e) { updateCursorTarget(e.clientY); });
+  container.addEventListener('mouseleave', clearCursorTarget);
 
   positionMarkers();
   draw(getProgress());
