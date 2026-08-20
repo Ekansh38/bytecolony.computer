@@ -124,13 +124,13 @@ Let's say switch 1 represents `STINKY`: whether the dog is stinky or not. Switch
 
 So the rules for our first circuit are:
 
-if `STINKY` AND `OLD_WASH`, the bulb is on.
+if `STINKY AND OLD_WASH`, the bulb is on.
 
 Or in other words, if the dog is stinky and its last wash was over 5 days ago, then wash the dog.
 
 Let's see the circuit:
 
-<a id="diagram-3-1"></a> <div class="svg-diagram"><img src="/images/switches-1.gif" alt="A two-switch circuit for the dog washer machine"></div>
+<a id="diagram-3-1"></a> <div class="svg-diagram"><img src="/images/switches-1.gif" alt="A logical AND circuit"></div>
 
 *Diagram 3.1. The hand-switch version of AND.*
 
@@ -140,13 +140,15 @@ Now let's introduce a new input: `MUDDY`, if the dog is muddy.
 
 Now the rules of the circuit change:
 
-if (`MUDDY` OR `STINKY`) AND `OLD_WASH`
+if `(MUDDY OR STINKY) AND OLD_WASH`
 
 All this says is, if the dog is muddy or stinky and it's been at least 5 days since the dog's last wash, you should wash the dog.
 
 Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
-<diagram>
+<a id="diagram-3-2"></a> <div class="svg-diagram"><img src="/images/or-gate-logical.gif" alt="A logical OR circuit"></div>
+
+*Diagram 3.2. The hand-switch version of OR.*
 
 This is a logical OR: either `MUDDY` or `STINKY` needs to be on for the bulb to turn on.
 
@@ -156,15 +158,13 @@ But now we have a problem.
 
 The `MUDDY OR STINKY` circuit outputs its result with an electrical signal: on or off. Our previous AND circuit relies on a human flipping a switch in order to compute a result.
 
-Or in other words the OR circuit we build outputs a result as electricity, but the AND circuit we want to combine it with expects a input as a switch physically being flipped. A signal in a wire can't reach over and close that switch.
-
-Those sound similar, but physically they are different things. The OR circuit gives us electricity, while the AND circuit expects a metal switch to move. A signal in a wire can't reach over and close that switch by itself.
+Or in other words the OR circuit we build outputs a result as electricity, but the AND circuit we want to combine it with expects a input as a metal switch physically being moved. A signal in a wire can't reach over and somehow close that switch.
 
 <diagram showing the issue>
 
-So if we want to chain circuits together, we need a way for an electrical signal to control a switch automatically.
+So if we want to chain circuits together, we need a way for an electrical signal to control a switch automatically. How can we do this?
 
-Electromagnetic relays, that's how. (or at least that is one of the early solutions to this problem, we will talk about transistors a little more later on)
+Electromagnetic relays, that's how. (or at least that is one of the early solutions to this problem, we will talk about other solutions a little more later on)
 
 This probably sounds quite complicated, but it is just a magnet powered by electricity.
 
@@ -181,7 +181,7 @@ Now lets see how we can build an actual electrical AND gate that takes in as inp
 
 <diagram>
 
-I think you can imagine how there are ways to chain and work with these relays to create every combination in basic digital logic, such as the OR gate.
+Using these relays chained in clever ways, you can create every fundamental logic gate, such as the OR gate:
 
 <diagram>
 
@@ -191,23 +191,13 @@ That is an or gate using relays. Now here is the full dog washer circuit up to t
 
 Okay, now let's introduce one last input, or "sensor": `RAIN_SOON`, whether it is predicted to rain soon. The rules of the circuit change once again:
 
-((`MUDDY` OR `STINKY`) AND `OLD_WASH`) AND NOT `RAIN_SOON`
+`((MUDDY OR STINKY) AND OLD_WASH) AND NOT RAIN_SOON`
 
 The parentheses indicate order of operations. This should be pretty familiar. So in plain English:
 
 If the dog is muddy or stinky and it's been at least 5 days since the dog's last wash and it's not going to rain soon, then wash the dog.
 
-Let's focus on this `NOT` for a second. A `NOT` just inverts a signal, if it receives signal it outputs no signal, if it receives no signal it outputs signal.
-
-Now you might think, "Why not just rename `RAIN_SOON` to `NOT_RAIN_SOON`, problem solved."
-
-If a person is flipping a switch by hand, sure. You can label the switch however you want.
-
-But circuits usually receive signals from other circuits, and those signals already mean something.
-
-Renaming `IS_ZERO` to `NOT_ZERO` would not change the electricity. The wire would still be on when the number is zero. To get the opposite signal, you need a circuit that physically flips on into off, and off into on.
-
-So in practice flipping a signal is a vital part of digital logic.
+Let's focus on this NOT for a second. NOT just inverts a signal: if it receives signal, it outputs no signal; if it receives no signal, it outputs signal.
 
 That is what a NOT gate does.
 
@@ -215,23 +205,23 @@ That is what a NOT gate does.
 
 Now before we look at the completed circuit, lets learn some basic logic gate symbols.
 
-An `AND` gate is drawn like this:
+An AND gate is drawn like this:
 
 <diagram of AND gate symbol>
 
-An `OR` gate is drawn like this:
+An OR gate is drawn like this:
 
 <diagram of OR gate symbol>
 
 Whenever I use these symbols moving forward, they can directly translate to the circuits with the relays I showed you previously, the inputs and outputs are the same, but the internal components stay hidden for cleanliness sake.
 
-And the symbol for a `NOT` gate is basically a buffer with a little circle after it.
+And the symbol for a NOT gate is basically a buffer with a little circle after it.
 
 A plain triangle is called a buffer. For this article, you can think of it as a wire: the same signal comes out that went in.
 
-The little circle is the important part. In logic diagrams, a little circle means "invert this." So a buffer with a circle on the output becomes a `NOT` gate: on becomes off, and off becomes on.
+The little circle is the important part. In logic diagrams, a little circle means "invert this." So a buffer with a circle on the output becomes a NOT gate: on becomes off, and off becomes on.
 
-You can put the same circle on other gates too. An `AND` gate with a circle on the output means "do the AND, then flip the answer." That is called a `NAND` gate. An `OR` gate with a circle on the output means "do the OR, then flip the answer." That is called a `NOR` gate.
+You can put the same circle on other gates too. An AND gate with a circle on the output means "do the AND, then flip the answer." That is called a NAND gate. An OR gate with a circle on the output means "do the OR, then flip the answer." That is called a NOR gate.
 
 <diagram of NOT gate, NAND, NOR, and plain buffer>
 
