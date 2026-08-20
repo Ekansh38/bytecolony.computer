@@ -98,14 +98,6 @@ If the loop is broken, nothing flows. A switch is simply a controlled break in t
 
 And a light bulb is just a simple light bulb. It glows when current flows through the filament.
 
-Here is our circuit with some fancy symbols in place of our previous drawings:
-
-<a id="diagram-2-2"></a> <div class="svg-diagram"><img src="/images/symbol-circuit.gif" alt="A basic circuit with a switch and light bulb and symbols"></div>
-
-*Diagram 2.2. The circuit with symbols.*
-
-Each symbol represents the same thing but is just easier for engineers to draw. These are the symbols I will continue to use throughout the article.
-
 Now we have a circuit that can do one yes/no thing. Current flows or it doesn't.
 
 Now let's see if we can combine switches and relays so the circuit can "answer" slightly more interesting questions.
@@ -158,9 +150,11 @@ But now we have a problem.
 
 The `MUDDY OR STINKY` circuit outputs its result with an electrical signal: on or off. Our previous AND circuit relies on a human flipping a switch in order to compute a result.
 
-Or in other words the OR circuit we build outputs a result as electricity, but the AND circuit we want to combine it with expects a input as a metal switch physically being moved. A signal in a wire can't reach over and somehow close that switch.
+Or in other words the OR circuit we built outputs a result as electricity, but the AND circuit we want to combine it with expects a input as a metal switch physically being moved. A signal in a wire can't reach over and somehow close that switch.
 
-<diagram showing the issue>
+<a id="diagram-3-3"></a> {{< svg "combination-problem" >}}
+
+*Diagram 3.3. The problem we currently face.*
 
 So if we want to chain circuits together, we need a way for an electrical signal to control a switch automatically. How can we do this?
 
@@ -170,12 +164,15 @@ This probably sounds quite complicated, but it is just a magnet powered by elect
 
 Here is how it works:
 
-<diagram>
+<a id="diagram-3-4"></a> <div class="svg-diagram"><img src="/images/basic-relay.gif" alt="An electromagnetic relay"></div>
+
+*Diagram 3.4. An electromagnetic relay.*
 
 This relay is made from a coil of wire and a movable metal arm. When current flows through the coil, the coil becomes a magnet and pulls the arm down. When current stops, a spring pulls the arm back up.
 
 A relay lets one circuit open or close a switch in another circuit. The two circuits stay separate, but the relay arm physically connects them.
 
+As you can also tell by the diagram, there is a slight delay between the coil turning on and the metal arm moving. Relays are mechanical, so they do not switch instantly, we will talk about alternatives that solve this problem a little more later on.
 
 Now lets see how we can build an actual electrical AND gate that takes in as input 2 wires, and outputs and electrical signal.
 
