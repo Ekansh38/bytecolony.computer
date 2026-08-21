@@ -172,11 +172,17 @@ This relay is made from a coil of wire and a movable metal arm. When current flo
 
 A relay lets one circuit open or close a switch in another circuit. The two circuits stay separate, but the relay arm physically connects them.
 
-As you can also tell by the diagram, there is a slight delay between the coil turning on and the metal arm moving. Relays are mechanical, so they do not switch instantly, we will talk about alternatives that solve this problem a little more later on.
+Also in this example we end up using a switch anyway, but any kind of electrical signal could be used, like the output of another circuit, the switch is just to demonstrate how the relay works.
+
+As you can also tell by the diagram, there is a slight delay between the coil turning on and the metal arm moving. Relays are mechanical, so they do not switch instantly.
 
 Now lets see how we can build an actual electrical AND gate that takes in as input 2 wires, and outputs and electrical signal.
 
-<diagram>
+<a id="diagram-3-5"></a> <div class="svg-diagram"><img src="/images/electronic-and-gate.gif" alt="An AND gate"></div>
+
+*Diagram 3.5. An AND gate.*
+
+If both inputs have signal, then the output circuit forms a complete loop. The output circuit has 2 breaks which are both controlled by each input.
 
 Using these relays chained in clever ways, you can create every fundamental logic gate, such as the OR gate:
 
