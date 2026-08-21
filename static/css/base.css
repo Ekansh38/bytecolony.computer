@@ -335,6 +335,21 @@ body.page .hero-img {
   margin: 0 auto;
 }
 
+/* Caption immediately after a diagram — styled as figcaption, visually
+   attached to the image (tight top gap, centered, muted, italic).
+   Higher-specificity selector to override body.page.writing p defaults. */
+body.page .svg-diagram + p {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: -0.5em auto 2.2em;
+  padding: 0 12px;
+  letter-spacing: 0.02em;
+  line-height: 1.55;
+  max-width: 640px;
+}
+body.page .svg-diagram + p em { font-style: italic; }
+
 /* Diagrams keep their dark canvas on every theme — the drawings are designed
    for a dark background, and this preserves colors accurately without any
    invert trickery that made GIF strokes look washed out on light mode. */
