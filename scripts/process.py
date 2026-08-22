@@ -190,6 +190,16 @@ def isolate_block_diagrams(content):
     result = re.sub(r'\n{3,}', '\n\n', result)
     return result
 
+def fix_diagram_links(content):
+    """Rewrite [text](diagram-x-y) → [text](#diagram-x-y).
+    Author often forgets the # when referring to another diagram on the
+    same page; without it the link becomes a relative URL and 404s."""
+    return re.sub(
+        r'\]\((diagram-[a-z0-9-]+)\)',
+        r'](#\1)',
+        content
+    )
+
 def fix_obsidian_callouts(content):
     """Convert `> [!NOTE] inline text` to the two-line Hugo GFM alert format.
     Uses [ \\t]+ (not \\s+) so it never crosses newlines — keeps this idempotent."""
@@ -208,6 +218,7 @@ def process_file(path):
     content = convert_svg_imgs(content)
     content = wrap_raster_imgs(content)
     content = isolate_block_diagrams(content)
+    content = fix_diagram_links(content)
     content = fix_obsidian_callouts(content)
     content = reflow_paragraphs(content)
 
