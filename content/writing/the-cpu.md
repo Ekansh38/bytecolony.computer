@@ -232,7 +232,7 @@ Now here is the OR gate:
 
 *Diagram 3.7. An electronic OR gate.*
 
-That is an or gate using relays. Now here is the full dog washer circuit up to this point:
+That is an OR gate using relays. Now here is the full dog washer circuit up to this point:
 
 <a id="diagram-3-8"></a> 
 
@@ -254,39 +254,57 @@ Let's focus on this NOT for a second. NOT just inverts a signal: if it receives 
 
 That is what a NOT gate does.
 
-<not gate diagram>
+<a id="diagram-3-9"></a> 
+
+<div class="svg-diagram"><img src="/images/not-gate.gif" alt="A NOT gate"></div>
+
+*Diagram 3.9. A NOT gate.*
 
 Now before we look at the completed circuit, lets learn some basic logic gate symbols.
 
 An AND gate is drawn like this:
 
-<diagram of AND gate symbol>
+<a id="diagram-3-10"></a> 
+
+{{< svg "and-gate" >}}
+
+*Diagram 3.10. An AND gate.*
+
+This symbol represents the [AND circuit](diagram-3-5) we made previously.
 
 An OR gate is drawn like this:
 
-<diagram of OR gate symbol>
+<a id="diagram-3-11"></a> 
+
+{{< svg "or-gate" >}}
+
+*Diagram 3.11. A OR gate.*
+
+This symbol represents the [OR circuit](diagram-3-7) we made previously.
 
 Whenever I use these symbols moving forward, they can directly translate to the circuits with the relays I showed you previously, the inputs and outputs are the same, but the internal components stay hidden for cleanliness sake.
 
-And the symbol for a NOT gate is basically a buffer with a little circle after it.
+Here are three more useful gate symbols:
 
-A plain triangle is called a buffer. For this article, you can think of it as a wire: the same signal comes out that went in.
+<a id="diagram-3-12"></a> 
 
-The little circle is the important part. In logic diagrams, a little circle means "invert this." So a buffer with a circle on the output becomes a NOT gate: on becomes off, and off becomes on.
+{{< svg "not-nand-nor-gates" >}}
 
-You can put the same circle on other gates too. An AND gate with a circle on the output means "do the AND, then flip the answer." That is called a NAND gate. An OR gate with a circle on the output means "do the OR, then flip the answer." That is called a NOR gate.
+*Diagram 3.12. NOT, NAND, NOR gates.*
 
-<diagram of NOT gate, NAND, NOR, and plain buffer>
+NAND is just AND but then flip the result, so AND + NOT or NAND. Same with NOR. OR + NOT = NOR.
+
+I hope the pattern makes sense now, any regular gate with a circle at the end flips its output.
 
 With our knowledge about logic gates, let's create the "should-I-wash-my-dog 5000" machine!
 
 <diagram>
 
-Keep in mind these electromagnetic relays are quite big and slow.
+Keep in mind these [electromagnetic relays](diagram-3-4) we used in the examples are quite big and slow.
 
-These relays aren't the only way to let an electrical signal flip a switch. They are one of the early and intuitive methods to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) used these relays.
+Relays aren't the only solution. They are simply one of the early and intuitive methods to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) actually used these types of relays.
 
-In modern computers a similar behavior is achieved by using transistors. If you want to learn more about transistors: [visit this site](https://www.electronics-tutorials.ws/logic/logic-gates-using-transistors.html)
+In modern computers a similar behavior is achieved by using transistors. If you want to learn more about transistor based logic gates: [visit this site](https://www.electronics-tutorials.ws/logic/logic-gates-using-transistors.html)
 
 I don't know about you, but addition seems like a pretty logical next step to these logic gates. But not so fast.
 
