@@ -106,11 +106,21 @@ def reflow_paragraphs(content):
 
 def convert_svg_imgs(content):
     """Replace <img src="/images/name.svg" ...> with {{< svg "name" >}}.
+    If the img has a class attribute (e.g. class="small"), pass it through
+    as the second shortcode arg → {{< svg "name" "small" >}}.
     Surrounds with blank lines so goldmark treats the shortcode as its own
     block instead of wrapping in <p> (which would break caption-styling)."""
+    def replace(m):
+        tag = m.group(0)
+        name = m.group(1)
+        cls_match = re.search(r'class="([^"]+)"', tag)
+        if cls_match:
+            return f'\n\n{{{{< svg "{name}" "{cls_match.group(1)}" >}}}}\n\n'
+        return f'\n\n{{{{< svg "{name}" >}}}}\n\n'
+
     result = re.sub(
-        r'<img\s+src="/images/([^"]+)\.svg"[^>]*/?>',
-        lambda m: f'\n\n{{{{< svg "{m.group(1)}" >}}}}\n\n',
+        r'<img\s+[^>]*src="/images/([^"]+)\.svg"[^>]*/?>',
+        replace,
         content
     )
     result = re.sub(r'\n{3,}', '\n\n', result)
@@ -131,9 +141,14 @@ def wrap_raster_imgs(content):
         # Already wrapped or hero image: leave alone
         if 'class=' in tag and ('svg-diagram' in tag or 'hero-img' in tag):
             return tag
-        # Strip width/height attrs — the wrapper CSS handles sizing responsively
-        cleaned = re.sub(r'\s+(width|height)="[^"]*"', '', tag)
-        return f'\n\n<div class="svg-diagram">{cleaned}</div>\n\n'
+        # Pick up class="small" (or similar) from the img and pass it to the wrapper
+        wrapper_class = 'svg-diagram'
+        cls_match = re.search(r'class="([^"]+)"', tag)
+        if cls_match:
+            wrapper_class = f'svg-diagram {cls_match.group(1)}'
+        # Strip width/height/class attrs — the wrapper handles sizing + class
+        cleaned = re.sub(r'\s+(width|height|class)="[^"]*"', '', tag)
+        return f'\n\n<div class="{wrapper_class}">{cleaned}</div>\n\n'
 
     # Match <img src="/images/*.{gif,png,jpg,jpeg,webp}"> not already inside svg-diagram
     pattern = r'(?<!<div class="svg-diagram">)<img\s+[^>]*src="/images/[^"]+\.(?:gif|png|jpg|jpeg|webp)"[^>]*/?>(?!</div>)'

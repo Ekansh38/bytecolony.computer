@@ -335,6 +335,17 @@ body.page .hero-img {
   object-fit: contain;       /* preserve aspect even if height would exceed cap */
   margin: 0 auto;
 }
+/* Small variant — for icon-style symbols. Author adds class="small" on the
+   <img> tag; process.py transfers it to the wrapper (or the svg shortcode). */
+.svg-diagram.small {
+  max-width: 340px;
+  padding: 22px 20px;
+  margin: 2.4em auto;
+}
+.svg-diagram.small svg,
+.svg-diagram.small img {
+  max-height: 260px;
+}
 
 /* Caption immediately after a diagram — styled as figcaption, visually
    attached to the image (tight top gap, centered, muted, italic).
