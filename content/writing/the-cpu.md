@@ -220,7 +220,7 @@ This is how the ground symbol looks:
 
 <a id="diagram-3-6"></a> 
 
-{{< svg "ground-symbol" "small" >}}
+{{< svg "ground-symbol" >}}
 
 *Diagram 3.6. The ground symbol.*
 
@@ -270,7 +270,7 @@ An AND gate is drawn like this:
 
 *Diagram 3.10. An AND gate.*
 
-This symbol represents the [AND circuit](#diagram-3-5) we made previously.
+This symbol represents the [AND circuit](diagram-3-5) we made previously.
 
 An OR gate is drawn like this:
 
@@ -280,7 +280,7 @@ An OR gate is drawn like this:
 
 *Diagram 3.11. A OR gate.*
 
-This symbol represents the [OR circuit](#diagram-3-7) we made previously.
+This symbol represents the [OR circuit](diagram-3-7) we made previously.
 
 Whenever I use these symbols moving forward, they can directly translate to the circuits with the relays I showed you previously, the inputs and outputs are the same, but the internal components stay hidden for cleanliness sake.
 
@@ -300,7 +300,7 @@ With our knowledge about logic gates, let's create the "should-I-wash-my-dog 500
 
 <diagram>
 
-Keep in mind these [electromagnetic relays](#diagram-3-4) we used in the examples are quite big and slow.
+Keep in mind these [electromagnetic relays](diagram-3-4) we used in the examples are quite big and slow.
 
 Relays aren't the only solution. They are simply one of the early and intuitive methods to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) actually used these types of relays.
 
