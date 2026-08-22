@@ -32,12 +32,24 @@
   }
 
   // In-article anchor links (e.g. [Diagram 1.4](#diagram-1-4))
+  // Smooth-scroll to target + show the ← back pill.
   document.addEventListener('click', function (e) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     var link = e.target.closest('a[href^="#"]');
     if (!link) return;
     var href = link.getAttribute('href');
     if (!href || href === '#') return;
-    show(window.scrollY);
+
+    var target = document.getElementById(href.slice(1));
+    if (!target) return;                       // let browser handle bad hrefs
+
+    e.preventDefault();
+    var fromY = window.scrollY;
+    var top = target.getBoundingClientRect().top + window.scrollY - 24;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    // Update the URL hash without triggering another jump
+    if (history && history.pushState) history.pushState(null, '', href);
+    show(fromY);
   });
 
   // Section-marker jumps from the scroll column (see reading-progress.js)
