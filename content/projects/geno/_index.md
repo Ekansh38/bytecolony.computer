@@ -11,4 +11,3 @@ github: "https://github.com/ekansh38/geno"
 
 GENO is a terminal-based genetic evolutionary neural-network written in C. It has a TUI dashboard and complex evolutionary behaviors.
 
-

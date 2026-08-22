@@ -44,7 +44,9 @@ Inside this house we have our downstairs desk where Otto does all the serious wo
 - an abacus for basic arithmetic.
 - A decoder chart that does some stuff. We will come back to this later.
 
-<a id="diagram-1-1"></a> {{< svg "desk" >}}
+<a id="diagram-1-1"></a>
+
+{{< svg "desk" >}}
 
 *Diagram 1.1. The desk setup.*
 
@@ -52,7 +54,9 @@ Upstairs is the filing cabinet room. The cabinet has slots labeled 0, 1, 2, 3, a
 
 One quick distinction before we start: when I say "drawer," I mean the desk drawers right next to Otto where he works. When I say "slot," I mean the numbered compartments in the upstairs filing cabinet.
 
-<a id="diagram-1-2"></a> {{< svg "cabinet" >}}
+<a id="diagram-1-2"></a>
+
+{{< svg "cabinet" >}}
 
 *Diagram 1.2. The filing cabinet.*
 
@@ -60,13 +64,17 @@ Most of these slots are boring and filled with paper. But slot 98 is special. It
 
 Slot 99 works the opposite way. It's connected to a dial outside the house. Otto reads from it like any other slot, but the value comes from whoever is turning the dial. He could technically write to slot 99 too, but that would be a bit disruptive.
 
-<a id="diagram-1-3"></a> {{< svg "house" >}}
+<a id="diagram-1-3"></a>
+
+{{< svg "house" >}}
 
 *Diagram 1.3. The outside of the house, with the display and input dial.*
 
 The important point for now is simple: the program itself also lives in the upstairs cabinet. Instructions are just numbers stored in slots. Otto uses `PC` to know which slot to read next, then uses the decoder chart to decide what that number means, and what procedure to follow based on each instruction.
 
-<a id="diagram-1-4"></a> {{< svg "loop" >}}
+<a id="diagram-1-4"></a>
+
+{{< svg "loop" >}}
 
 Diagram 1.4. Otto's basic loop. He reads the address in `PC`, fetches the number from that cabinet slot, uses the decoder chart to choose what to do, does it, updates `PC`, and repeats.
 
@@ -88,7 +96,9 @@ Let's explore the basics of how electricity and circuits work for the purposes o
 
 Here is a simple circuit:
 
-<a id="diagram-2-1"></a> <div class="svg-diagram"><img src="/images/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
+<a id="diagram-2-1"></a>
+
+<div class="svg-diagram"><img src="/images/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
 
 *Diagram 2.1. The circuit.*
 
@@ -122,7 +132,9 @@ Or in other words, if the dog is stinky and its last wash was over 5 days ago, t
 
 Let's see the circuit:
 
-<a id="diagram-3-1"></a> <div class="svg-diagram"><img src="/images/switches-1.gif" alt="A logical AND circuit"></div>
+<a id="diagram-3-1"></a>
+
+<div class="svg-diagram"><img src="/images/switches-1.gif" alt="A logical AND circuit"></div>
 
 *Diagram 3.1. The hand-switch version of AND.*
 
@@ -138,7 +150,9 @@ All this says is, if the dog is muddy or stinky and it's been at least 5 days si
 
 Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
-<a id="diagram-3-2"></a> <div class="svg-diagram"><img src="/images/or-gate-logical.gif" alt="A logical OR circuit"></div>
+<a id="diagram-3-2"></a>
+
+<div class="svg-diagram"><img src="/images/or-gate-logical.gif" alt="A logical OR circuit"></div>
 
 *Diagram 3.2. The hand-switch version of OR.*
 
@@ -152,7 +166,9 @@ The `MUDDY OR STINKY` circuit outputs its result with an electrical signal: on o
 
 Or in other words the OR circuit we built outputs a result as electricity, but the AND circuit we want to combine it with expects a input as a metal switch physically being moved. A signal in a wire can't reach over and somehow close that switch.
 
-<a id="diagram-3-3"></a> {{< svg "combination-problem" >}}
+<a id="diagram-3-3"></a>
+
+{{< svg "combination-problem" >}}
 
 *Diagram 3.3. The problem we currently face.*
 
@@ -164,7 +180,9 @@ This probably sounds quite complicated, but it is just a magnet powered by elect
 
 Here is how it works:
 
-<a id="diagram-3-4"></a> <div class="svg-diagram"><img src="/images/basic-relay.gif" alt="An electromagnetic relay"></div>
+<a id="diagram-3-4"></a>
+
+<div class="svg-diagram"><img src="/images/basic-relay.gif" alt="An electromagnetic relay"></div>
 
 *Diagram 3.4. An electromagnetic relay.*
 
@@ -178,7 +196,9 @@ As you can also tell by the diagram, there is a slight delay between the coil tu
 
 Now lets see how we can build an actual electrical AND gate that takes in as input 2 wires, and outputs and electrical signal.
 
-<a id="diagram-3-5"></a> <div class="svg-diagram"><img src="/images/electronic-and-gate.gif" alt="An AND gate"></div>
+<a id="diagram-3-5"></a>
+
+<div class="svg-diagram"><img src="/images/electronic-and-gate.gif" alt="An AND gate"></div>
 
 *Diagram 3.5. An AND gate.*
 

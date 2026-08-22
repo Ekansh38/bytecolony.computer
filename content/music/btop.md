@@ -7,7 +7,6 @@ summary: "Bitcrushed and degraded samples. Layered percussion and synths."
 cover: /images/btop-cover.jpg
 ---
 
-
 Bitcrushed and degraded samples. Layered percussion and synths. "btop" spans 5 tracks:
 
 <br>
@@ -21,5 +20,4 @@ Listen on <a href="https://bytecolony.bandcamp.com/album/btop" target="_blank">b
 <br>
 
 <em>Released on 23-03-2026.</em>
-
 

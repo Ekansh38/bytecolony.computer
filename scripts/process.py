@@ -105,16 +105,27 @@ def reflow_paragraphs(content):
     return '\n'.join(result)
 
 def convert_svg_imgs(content):
-    """Replace <img src="/images/name.svg" ...> with {{< svg "name" >}}."""
-    return re.sub(
+    """Replace <img src="/images/name.svg" ...> with {{< svg "name" >}}.
+    Surrounds with blank lines so goldmark treats the shortcode as its own
+    block instead of wrapping in <p> (which would break caption-styling)."""
+    result = re.sub(
         r'<img\s+src="/images/([^"]+)\.svg"[^>]*/?>',
-        lambda m: f'{{{{< svg "{m.group(1)}" >}}}}',
+        lambda m: f'\n\n{{{{< svg "{m.group(1)}" >}}}}\n\n',
         content
     )
+    result = re.sub(r'\n{3,}', '\n\n', result)
+    return result
 
 def wrap_raster_imgs(content):
     """Wrap raw <img> tags for raster images (gif/png/jpg) in .svg-diagram box.
-    Skips images already wrapped and skips .hero-img."""
+    Skips images already wrapped and skips .hero-img.
+
+    ALSO puts a blank line before the wrapper div and moves the div to its own
+    line. This forces goldmark to treat it as block-level HTML (not wrapped in
+    a <p>), which preserves the .svg-diagram + p CSS caption selector.
+    Without this, an anchor like <a id="diagram-3-5"></a> at the line start
+    makes goldmark treat the whole line as a paragraph, producing invalid
+    <p><div>...</div></p> that browsers auto-fix by splitting siblings. """
     def wrap(m):
         tag = m.group(0)
         # Already wrapped or hero image: leave alone
@@ -122,11 +133,47 @@ def wrap_raster_imgs(content):
             return tag
         # Strip width/height attrs — the wrapper CSS handles sizing responsively
         cleaned = re.sub(r'\s+(width|height)="[^"]*"', '', tag)
-        return f'<div class="svg-diagram">{cleaned}</div>'
+        return f'\n\n<div class="svg-diagram">{cleaned}</div>\n\n'
 
     # Match <img src="/images/*.{gif,png,jpg,jpeg,webp}"> not already inside svg-diagram
     pattern = r'(?<!<div class="svg-diagram">)<img\s+[^>]*src="/images/[^"]+\.(?:gif|png|jpg|jpeg|webp)"[^>]*/?>(?!</div>)'
-    return re.sub(pattern, wrap, content, flags=re.IGNORECASE)
+    result = re.sub(pattern, wrap, content, flags=re.IGNORECASE)
+    # Collapse runs of 3+ newlines that our insertion may have created
+    result = re.sub(r'\n{3,}', '\n\n', result)
+    return result
+
+def isolate_block_diagrams(content):
+    """Make sure diagram wrappers are true block-level HTML that goldmark
+    won't wrap inside a <p>. Two steps:
+      1. Split mixed lines like `<a id="..."></a> <div class="svg-diagram">...`
+         so the anchor is on its own line and the diagram starts a new line.
+      2. Ensure blank lines surround any line that begins with a block-level
+         diagram (either the .svg-diagram wrapper or a {{< svg >}} shortcode).
+    Idempotent: safe to run multiple times."""
+    # 1. Split mixed anchor + diagram
+    content = re.sub(
+        r'(<a id="[^"]+"></a>)[ \t]+(<div class="svg-diagram"[^<]*<img[^>]+></div>|\{\{<\s*svg\b[^}]*>\}\})',
+        r'\1\n\n\2',
+        content
+    )
+    # 2. Ensure blank lines before/after any block-diagram line
+    lines = content.split('\n')
+    out = []
+    for i, line in enumerate(lines):
+        s = line.strip()
+        is_block = s.startswith('<div class="svg-diagram"') or s.startswith('{{< svg')
+        if is_block:
+            if out and out[-1].strip() != '':
+                out.append('')
+            out.append(line)
+            if i + 1 < len(lines) and lines[i + 1].strip() != '':
+                out.append('')
+        else:
+            out.append(line)
+    # Collapse any runs of 3+ blank lines back to 2
+    result = '\n'.join(out)
+    result = re.sub(r'\n{3,}', '\n\n', result)
+    return result
 
 def fix_obsidian_callouts(content):
     """Convert `> [!NOTE] inline text` to the two-line Hugo GFM alert format.
@@ -145,6 +192,7 @@ def process_file(path):
     content = original
     content = convert_svg_imgs(content)
     content = wrap_raster_imgs(content)
+    content = isolate_block_diagrams(content)
     content = fix_obsidian_callouts(content)
     content = reflow_paragraphs(content)
 

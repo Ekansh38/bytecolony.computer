@@ -129,7 +129,6 @@ If something doesn't work and the model can't fix it, end of story. It's a direc
 
 Vibe-coding "skills", prompting, tool fluency, workflow knowledge, don't compound. Real skills last. Remember when in 2022 everyone was selling their course on prompting? Saying you would get left behind if you didn't learn prompting ASAP. Then everything switched to a more agentic workflow with tools like Claude Code and all the "skills" and workflows changed? Vibe coding fluency doesn't compound. Cursor tricks from 2024 are useless in 2026. You're learning to operate this quarter's tool, which gets replaced by next quarter's tool, which then get replaced by next quarter's tool.
 
-
 All this is so new. It's extremely scary to bet on.
 
 ---
@@ -155,7 +154,6 @@ The point isn't that typing is magic. It's that when you write code yourself you
 <mark>That's how to become skilled at vibe-coding, by not vibe-coding!!!!</mark>
 
 The slowness of writing code yourself is part of the learning, not an issue to try and optimize.
-
 
 ---
 
@@ -243,7 +241,6 @@ The AI solution was 75x slower than what Hashimoto wrote himself. And the agent 
 His quote: "If you don't understand the system, you're going to accept that this is an incredible result. If you understand the system, you'll see better solutions immediately and can do roughly 75x better on throughput."
 
 That's exactly the bet of this essay. The human + AI combination works only if the human can spot the 75x gap. Without that depth, the combination just produces mediocre results dressed up as wins. And Hashimoto is openly pro-AI. He uses it constantly. The point isn't to be against AI. The point is that without depth, you can't tell when AI is doing its best work and when it's stopping at 75x worse than the actual ceiling.
-
 
 ---
 
