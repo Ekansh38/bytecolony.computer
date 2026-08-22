@@ -44,7 +44,7 @@ Inside this house we have our downstairs desk where Otto does all the serious wo
 - an abacus for basic arithmetic.
 - A decoder chart that does some stuff. We will come back to this later.
 
-<a id="diagram-1-1"></a>
+<a id="diagram-1-1"></a> 
 
 {{< svg "desk" >}}
 
@@ -54,7 +54,7 @@ Upstairs is the filing cabinet room. The cabinet has slots labeled 0, 1, 2, 3, a
 
 One quick distinction before we start: when I say "drawer," I mean the desk drawers right next to Otto where he works. When I say "slot," I mean the numbered compartments in the upstairs filing cabinet.
 
-<a id="diagram-1-2"></a>
+<a id="diagram-1-2"></a> 
 
 {{< svg "cabinet" >}}
 
@@ -64,7 +64,7 @@ Most of these slots are boring and filled with paper. But slot 98 is special. It
 
 Slot 99 works the opposite way. It's connected to a dial outside the house. Otto reads from it like any other slot, but the value comes from whoever is turning the dial. He could technically write to slot 99 too, but that would be a bit disruptive.
 
-<a id="diagram-1-3"></a>
+<a id="diagram-1-3"></a> 
 
 {{< svg "house" >}}
 
@@ -72,7 +72,7 @@ Slot 99 works the opposite way. It's connected to a dial outside the house. Otto
 
 The important point for now is simple: the program itself also lives in the upstairs cabinet. Instructions are just numbers stored in slots. Otto uses `PC` to know which slot to read next, then uses the decoder chart to decide what that number means, and what procedure to follow based on each instruction.
 
-<a id="diagram-1-4"></a>
+<a id="diagram-1-4"></a> 
 
 {{< svg "loop" >}}
 
@@ -96,7 +96,7 @@ Let's explore the basics of how electricity and circuits work for the purposes o
 
 Here is a simple circuit:
 
-<a id="diagram-2-1"></a>
+<a id="diagram-2-1"></a> 
 
 <div class="svg-diagram"><img src="/images/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
 
@@ -132,7 +132,7 @@ Or in other words, if the dog is stinky and its last wash was over 5 days ago, t
 
 Let's see the circuit:
 
-<a id="diagram-3-1"></a>
+<a id="diagram-3-1"></a> 
 
 <div class="svg-diagram"><img src="/images/switches-1.gif" alt="A logical AND circuit"></div>
 
@@ -150,7 +150,7 @@ All this says is, if the dog is muddy or stinky and it's been at least 5 days si
 
 Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
-<a id="diagram-3-2"></a>
+<a id="diagram-3-2"></a> 
 
 <div class="svg-diagram"><img src="/images/or-gate-logical.gif" alt="A logical OR circuit"></div>
 
@@ -166,7 +166,7 @@ The `MUDDY OR STINKY` circuit outputs its result with an electrical signal: on o
 
 Or in other words the OR circuit we built outputs a result as electricity, but the AND circuit we want to combine it with expects a input as a metal switch physically being moved. A signal in a wire can't reach over and somehow close that switch.
 
-<a id="diagram-3-3"></a>
+<a id="diagram-3-3"></a> 
 
 {{< svg "combination-problem" >}}
 
@@ -180,7 +180,9 @@ This probably sounds quite complicated, but it is just a magnet powered by elect
 
 Here is how it works:
 
-<a id="diagram-3-4"></a>
+One thing to quickly mention: if you see several little batteries in a circuit, don't read that as several totally separate power sources. I am using the battery drawing as a shortcut for "this point is connected to power," so the diagram doesn't turn into spaghetti.
+
+<a id="diagram-3-4"></a> 
 
 <div class="svg-diagram"><img src="/images/basic-relay.gif" alt="An electromagnetic relay"></div>
 
@@ -196,7 +198,7 @@ As you can also tell by the diagram, there is a slight delay between the coil tu
 
 Now lets see how we can build an actual electrical AND gate that takes in as input 2 wires, and outputs and electrical signal.
 
-<a id="diagram-3-5"></a>
+<a id="diagram-3-5"></a> 
 
 <div class="svg-diagram"><img src="/images/electronic-and-gate.gif" alt="An AND gate"></div>
 
@@ -206,11 +208,39 @@ If both inputs have signal, then the output circuit forms a complete loop. The o
 
 Using these relays chained in clever ways, you can create every fundamental logic gate, such as the OR gate:
 
-<diagram>
+But before the next diagram, I am going to use one more new symbol: ground.
+
+For the purposes of this article the ground symbol will simply refer to the common return point of the circuit usually connected to the negative side of the battery.
+
+Every point marked with the ground symbol is connected together, as if there were hidden wires joining them underneath the drawing. It is not a new component. It is just a cleaner way to draw the return path.
+
+The circuits are still loops. I am just not explicitly drawing the return wire anymore.
+
+This is how the ground symbol looks:
+
+<a id="diagram-3-6"></a> 
+
+{{< svg "ground-symbol" >}}
+
+*Diagram 3.6. The ground symbol.*
+
+Now here is the OR gate:
+
+<a id="diagram-3-7"></a> 
+
+<div class="svg-diagram"><img src="/images/electronic-or-gate.gif" alt="An electronic OR gate"></div>
+
+*Diagram 3.7. An electronic OR gate.*
 
 That is an or gate using relays. Now here is the full dog washer circuit up to this point:
 
-<diagram>
+<a id="diagram-3-8"></a> 
+
+<div class="svg-diagram"><img src="/images/dog-washer-v1.gif" alt="The full dog washer circuit built with relays"></div>
+
+*Diagram 3.8. The full dog washer circuit built with relays.*
+
+The animation does not show every possible combination of switches, only a handful. But in a nutshell, if any of the first 2 inputs are on, and the third the bulb will be on. I hope it makes sense how it works.
 
 Okay, now let's introduce one last input, or "sensor": `RAIN_SOON`, whether it is predicted to rain soon. The rules of the circuit change once again:
 
