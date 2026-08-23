@@ -180,7 +180,7 @@ This probably sounds quite complicated, but it is just a magnet powered by elect
 
 Here is how it works:
 
-One thing to quickly mention: if you see several little batteries in a circuit, don't read that as several totally separate power sources. I am using the battery drawing as a shortcut for "this point is connected to power," so the diagram doesn't turn into spaghetti.
+One thing to mention: if you see several little batteries in a circuit, don't interpret that as several totally separate power sources. I am using the battery drawing as a symbol for "this point is connected to power," so the diagram doesn't turn into spaghetti.
 
 <a id="diagram-3-4"></a> 
 
@@ -192,11 +192,11 @@ This relay is made from a coil of wire and a movable metal arm. When current flo
 
 A relay lets one circuit open or close a switch in another circuit. The two circuits stay separate, but the relay arm physically connects them.
 
-Also in this example we end up using a switch anyway, but any kind of electrical signal could be used, like the output of another circuit, the switch is just to demonstrate how the relay works.
+Also in this example we end up using a switch in the input circuit anyway, but any kind of electrical signal could be used, like the output of another circuit, the switch is just to demonstrate how the relay works.
 
 As you can also tell by the diagram, there is a slight delay between the coil turning on and the metal arm moving. Relays are mechanical, so they do not switch instantly.
 
-Now lets see how we can build an actual electrical AND gate that takes in as input 2 wires, and outputs and electrical signal.
+Now lets see how we can build an actual electrical AND gate that takes in as input, 2 wires, and outputs an electrical signal.
 
 <a id="diagram-3-5"></a> 
 
@@ -212,9 +212,11 @@ But before the next diagram, I am going to use one more new symbol: ground.
 
 For the purposes of this article the ground symbol will simply refer to the common return point of the circuit usually connected to the negative side of the battery.
 
-Every point marked with the ground symbol is connected together, as if there were hidden wires joining them underneath the drawing. It is not a new component. It is just a cleaner way to draw the return path.
+Every point marked with the ground symbol is connected together, as if there were hidden wires joining them underneath the drawing. It is not a new component. It is just a less messy way to draw the return path of the circuit.
 
 The circuits are still loops. I am just not explicitly drawing the return wire anymore.
+
+In a real schematic, the ground symbol itself would usually stay white. In these diagrams, I sometimes color it red when that return point is part of the active path for that frame. I think it makes the current path easier to follow visually.
 
 This is how the ground symbol looks:
 
@@ -298,7 +300,13 @@ I hope the pattern makes sense now, any regular gate with a circle at the end fl
 
 With our knowledge about logic gates, let's create the "should-I-wash-my-dog 5000" machine!
 
-<diagram>
+<a id="diagram-3-13"></a> 
+
+<div class="svg-diagram"><img src="/images/dog-washer-v2.gif" alt="The final dog washer circuit"></div>
+
+*Diagram 3.13. The final dog washer circuit.*
+
+Again this animation doesn't cover all possible states.
 
 Keep in mind these [electromagnetic relays](#diagram-3-4) we used in the examples are quite big and slow.
 
@@ -308,9 +316,9 @@ In modern computers a similar behavior is achieved by using transistors. If you 
 
 I don't know about you, but addition seems like a pretty logical next step to these logic gates. But not so fast.
 
-This is how circuits make yes/no decisions. Not by understanding anything or knowing what `MUDDY` means, but by wiring simple gates so the output turns on only for the input pattern we care about.
+This is how circuits make yes/no decisions. Not by understanding what `MUDDY` means, but by wiring simple gates so the output turns on only for the input pattern we care about.
 
-One important thing to notice: a wire is just a wire. We gave these wires meaning. We decided that one wire means `STINKY`, another means `MUDDY`, and another means `RAIN_SOON`.
+A wire is just a wire. We gave these wires meaning. We decided that one wire means `STINKY`, another wire means `MUDDY`, and another means `RAIN_SOON`.
 
 To make a CPU, we need to give wires a different kind of meaning: numbers. Before we can build a circuit that adds, we need a way to represent numbers using only on and off.
 
