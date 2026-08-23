@@ -323,3 +323,78 @@ A wire is just a wire. We gave these wires meaning. We decided that one wire mea
 To make a CPU, we need to give wires a different kind of meaning: numbers. Before we can build a circuit that adds, we need a way to represent numbers using only on and off.
 
 That is what the next section is about.
+
+## Counting With Wires
+
+Okay before we continue with this section, lets define some terms.
+
+A wire with no signal running through it, is `0` and a wire with signal running through it is `1`.
+
+These are just labels that represent the state of a wire.
+
+<a id="diagram-4-1"></a> 
+
+{{< svg "0-s-and-1-s" >}}
+
+*Diagram 4.1. 0's and 1's.*
+
+If we want to represent numbers using wires, we are going to need more than one wire, that's because 1 wire at most can only represent up to 2 numbers, since it only has 2 possible states, `0` or `1`.
+
+But 2 wires has 2^2, or 4 states! and 3 wires has 2^3, or 8 states. That would allow us to represent more numbers.
+
+Here are all the possible states we have with 3 wires:
+
+<a id="diagram-4-2"></a> 
+
+<div class="svg-diagram"><img src="/images/3-states.gif" alt="States with 3 wires"></div>
+
+*Diagram 4.2. States with 3 wires.*
+
+We can represent 8 numbers just like this. The more wires we add, the more numbers we can represent.
+
+But, why does `010` mean 2? Why does `101` mean 5? Is it just randomly assigned?
+
+Not exactly, to understand this lets take a quick detour to decimal a.k.a base ten.
+
+<a id="diagram-4-3"></a> 
+
+{{< svg "decimal" >}}
+
+*Diagram 4.3. The decimal system.*
+
+In our decimal counting system each place value is a multiple of 10, that is because we have 10 digits, 0-9.
+
+This exact same place value logic can apply to the binary system too. We have 2 digits, 0, and 1 so each place is a multiple of 2.
+
+<a id="diagram-4-4"></a> 
+
+{{< svg "binary" >}}
+
+*Diagram 4.4. The binary system.*
+
+So all binary is at the end of the day, is just decimal but with only 2 digits instead of 10.
+
+A few examples:
+
+- `101` means 5
+- `1101` means 13
+- `101010` means 42
+- `1100011` means 99
+
+You don't need to do these problems in your head, but I hope how binary works makes sense.
+
+Lets walk through `1101` together.
+
+<a id="diagram-4-5"></a> 
+
+{{< svg "binary-example" >}}
+
+*Diagram 4.5. An example in binary.*
+
+So now that we can represent numbers with wires, how can we add numbers together? How can we compute sums. That is what the next section is all about.
+
+<a id="diagram-4-6"></a> 
+
+{{< svg "add-magic-box" >}}
+
+*Diagram 4.6. Addition?*
