@@ -334,7 +334,7 @@ These are just labels that represent the state of a wire.
 
 <a id="diagram-4-1"></a> 
 
-{{< svg "0-s-and-1-s" >}}
+{{< svg "0-s-and-1-s" "small" >}}
 
 *Diagram 4.1. 0's and 1's.*
 
@@ -346,7 +346,7 @@ Here are all the possible states we have with 3 wires:
 
 <a id="diagram-4-2"></a> 
 
-<div class="svg-diagram"><img src="/images/3-states.gif" alt="States with 3 wires"></div>
+<div class="svg-diagram small"><img src="/images/3-states.gif" alt="States with 3 wires"></div>
 
 *Diagram 4.2. States with 3 wires.*
 
