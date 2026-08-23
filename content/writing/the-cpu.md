@@ -220,7 +220,7 @@ This is how the ground symbol looks:
 
 <a id="diagram-3-6"></a> 
 
-{{< svg "ground-symbol" >}}
+{{< svg "ground-symbol" "small" >}}
 
 *Diagram 3.6. The ground symbol.*
 
