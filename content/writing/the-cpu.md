@@ -340,7 +340,7 @@ These are just labels that represent the state of a wire.
 
 If we want to represent numbers using wires, we are going to need more than one wire, that's because 1 wire at most can only represent up to 2 numbers, since it only has 2 possible states, `0` or `1`.
 
-But 2 wires has 2^2, or 4 states! and 3 wires has 2^3, or 8 states. That would allow us to represent more numbers.
+But 2 wires has 2<sup>2</sup>, or 4 states! and 3 wires has 2<sup>3</sup>, or 8 states. That would allow us to represent more numbers.
 
 Here are all the possible states we have with 3 wires:
 

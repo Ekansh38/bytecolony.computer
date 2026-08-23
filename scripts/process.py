@@ -190,6 +190,25 @@ def isolate_block_diagrams(content):
     result = re.sub(r'\n{3,}', '\n\n', result)
     return result
 
+def convert_superscripts(content):
+    """Convert `X^N` to `X<sup>N</sup>` for nicer math typography.
+    Applies outside fenced code blocks AND outside inline code (backticks).
+    Handles digits and negative exponents, e.g. `2^2`, `2^32`, `10^-3`."""
+    parts = re.split(r'(```[\s\S]*?```)', content)
+    out = []
+    for i, part in enumerate(parts):
+        if i % 2 == 1:  # inside a fenced code block
+            out.append(part)
+            continue
+        subparts = re.split(r'(`[^`]*`)', part)
+        for j, sub in enumerate(subparts):
+            if j % 2 == 1:  # inside inline code
+                out.append(sub)
+                continue
+            sub = re.sub(r'(\w)\^(-?\w+)', r'\1<sup>\2</sup>', sub)
+            out.append(sub)
+    return ''.join(out)
+
 def fix_obsidian_callouts(content):
     """Convert `> [!NOTE] inline text` to the two-line Hugo GFM alert format.
     Uses [ \\t]+ (not \\s+) so it never crosses newlines — keeps this idempotent."""
@@ -208,6 +227,7 @@ def process_file(path):
     content = convert_svg_imgs(content)
     content = wrap_raster_imgs(content)
     content = isolate_block_diagrams(content)
+    content = convert_superscripts(content)
     content = fix_obsidian_callouts(content)
     content = reflow_paragraphs(content)
 
