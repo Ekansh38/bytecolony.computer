@@ -7,7 +7,22 @@
 {{ end }}
 
 <h1 class="project-title">{{ .Title }}</h1>
-<div class="project-meta">{{ .Date.Format "January 2, 2006" }}</div>
+
+{{ with .Params.subtitle }}
+<p class="article-subtitle">{{ . }}</p>
+{{ end }}
+
+<div class="project-meta">
+  {{ .Date.Format "January 2, 2006" }}
+  {{ with .Params.status }} <span class="meta-sep">·</span> <span class="meta-status">{{ . }}</span>{{ end }}
+  {{ if eq .Section "writing" }}
+  <span class="meta-sep">·</span> {{ .ReadingTime }} min read
+  {{ end }}
+</div>
+
+{{ with .Params.description }}
+<p class="article-abstract">{{ . }}</p>
+{{ end }}
 
 {{ .Content }}
 
