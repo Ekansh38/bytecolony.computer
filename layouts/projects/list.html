@@ -8,6 +8,9 @@
 <div class="project-content">{{ .Content }}</div>
 
 <div class="links">
+  {{ with .Params.article }}<a href="{{ . }}">read article →</a>{{ end }}
+  {{ with .Params.pdf }}<a href="{{ . }}" target="_blank">pdf ↗</a>{{ end }}
+  {{ with .Params.raw }}<a href="{{ . }}" target="_blank">raw ↗</a>{{ end }}
   {{ with .Params.live }}<a href="{{ . }}" target="_blank">live site ↗</a>{{ end }}
   {{ with .Params.github }}<a href="{{ . }}" target="_blank">github ↗</a>{{ end }}
   {{ with .Params.devlog }}<a href="{{ . }}" target="_blank">dev log series ↗</a>{{ end }}

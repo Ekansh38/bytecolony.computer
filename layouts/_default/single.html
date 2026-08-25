@@ -6,23 +6,21 @@
 <div style="margin-bottom:16px;"><a href="/projects/{{ . }}/" class="writing-project" style="font-size:0.85rem;">{{ . }}</a> <span style="color:var(--muted);font-size:0.85rem;">/ project</span></div>
 {{ end }}
 
-<h1 class="project-title">{{ .Title }}</h1>
-
-{{ with .Params.subtitle }}
-<p class="article-subtitle">{{ . }}</p>
-{{ end }}
-
 {{ if eq .Section "writing" }}
-<dl class="project-meta">
-  <dt>date</dt>       <dd>{{ .Date.Format "January 2, 2006" }}</dd>
-  <dt>reading</dt>    <dd>{{ .ReadingTime }} min</dd>
-  {{ with .Params.status }}<dt>status</dt> <dd><span class="meta-status">{{ . }}</span></dd>{{ end }}
-  <dt>view</dt> <dd>
-    {{ with .OutputFormats.Get "raw" }}<a class="meta-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw ↗</a>{{ end }}
-    {{ with .Params.pdf }}<a class="meta-link" href="{{ . }}" target="_blank" rel="noopener">pdf ↗</a>{{ end }}
-  </dd>
-</dl>
+<header class="article-header">
+  <div class="article-header-main">
+    <h1 class="project-title">{{ .Title }}</h1>
+    {{ with .Params.subtitle }}<p class="article-subtitle">{{ . }}</p>{{ end }}
+    <time class="article-date">{{ .Date.Format "January 2, 2006" }}</time>
+  </div>
+  <aside class="article-formats" aria-label="other formats">
+    {{ with .OutputFormats.Get "raw" }}<a class="format-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw ↗</a>{{ end }}
+    {{ with .Params.pdf }}<a class="format-link" href="{{ . }}" target="_blank" rel="noopener">pdf ↗</a>{{ end }}
+  </aside>
+</header>
 {{ else }}
+<h1 class="project-title">{{ .Title }}</h1>
+{{ with .Params.subtitle }}<p class="article-subtitle">{{ . }}</p>{{ end }}
 <div class="project-meta">
   {{ .Date.Format "January 2, 2006" }}
   {{ with .Params.status }} · <span class="meta-status">{{ . }}</span>{{ end }}

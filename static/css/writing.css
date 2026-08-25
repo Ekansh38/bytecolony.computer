@@ -31,46 +31,54 @@ body.page.writing .article-subtitle {
   max-width: 70ch;
 }
 
-/* Article meta as a stacked definition list — technical-doc style */
-body.page.writing dl.project-meta {
+/* Article header — title/date on the left, format links tucked in the top-right */
+body.page.writing .article-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+  margin: 0 0 56px;
+}
+body.page.writing .article-header-main { flex: 1; min-width: 0; }
+body.page.writing .article-header .project-title { margin: 0 0 8px; }
+body.page.writing .article-header .article-subtitle { margin: 0 0 14px; }
+body.page.writing .article-date {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--muted);
   letter-spacing: 0.02em;
-  margin: 24px 0 72px;
-  padding: 0;
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  column-gap: 20px;
-  row-gap: 4px;
-  max-width: 380px;
 }
-body.page.writing dl.project-meta dt {
-  color: var(--muted);
-  opacity: 0.7;
-  text-transform: lowercase;
-  letter-spacing: 0.06em;
-  margin: 0;
+body.page.writing .article-formats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  flex-shrink: 0;
+  text-align: right;
 }
-body.page.writing dl.project-meta dd {
-  color: var(--fg);
-  margin: 0;
-}
-body.page.writing dl.project-meta dd .meta-link + .meta-link { margin-left: 14px; }
-body.page.writing hr.article-divider { display: none; }
-body.page.writing .meta-sep { opacity: 0.5; margin: 0 4px; }
-body.page.writing .meta-status {
-  text-transform: lowercase;
-  color: var(--accent);
-  opacity: 0.85;
-}
-body.page.writing .meta-link {
+body.page.writing .article-formats .format-link {
   color: var(--accent);
   text-decoration: none;
-  opacity: 0.85;
+  opacity: 0.75;
   transition: opacity 0.15s ease;
 }
-body.page.writing .meta-link:hover { opacity: 1; text-decoration: underline; }
+body.page.writing .article-formats .format-link:hover { opacity: 1; text-decoration: underline; }
+body.page.writing hr.article-divider { display: none; }
+@media (max-width: 700px) {
+  body.page.writing .article-header {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  body.page.writing .article-formats {
+    flex-direction: row;
+    gap: 18px;
+    padding-top: 0;
+    text-align: left;
+  }
+}
 
 /* Optional abstract block above the article content */
 body.page.writing .article-abstract {
