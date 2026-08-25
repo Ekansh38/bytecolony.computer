@@ -31,20 +31,14 @@ body.page.writing .article-subtitle {
   max-width: 70ch;
 }
 
-/* Article meta as a stacked definition list — technical-doc style */
-body.page.writing dl.project-meta {
+/* Article meta — plain stacked lines, all muted, nothing fancy */
+body.page.writing .project-meta {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--muted);
-  letter-spacing: 0.02em;
-  margin: 24px 0 72px;   /* whitespace does the visual gate — no divider lines */
-  padding: 0;
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  column-gap: 20px;
-  row-gap: 4px;
-  max-width: 380px;
+  margin: 20px 0 64px;
 }
+body.page.writing .project-meta > div { line-height: 1.7; }
 body.page.writing hr.article-divider { display: none; }
 body.page.writing dl.project-meta dt {
   color: var(--muted);

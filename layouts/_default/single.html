@@ -13,13 +13,12 @@
 {{ end }}
 
 {{ if eq .Section "writing" }}
-<dl class="project-meta">
-  <dt>date</dt>       <dd>{{ .Date.Format "January 2, 2006" }}</dd>
-  <dt>reading</dt>    <dd>{{ .ReadingTime }} min</dd>
-  {{ with .Params.status }}<dt>status</dt> <dd><span class="meta-status">{{ . }}</span></dd>{{ end }}
-  {{ with .OutputFormats.Get "raw" }}<dt>view</dt> <dd><a class="meta-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw ↗</a></dd>{{ end }}
-</dl>
-<hr class="article-divider">
+<div class="project-meta">
+  <div>{{ .Date.Format "January 2, 2006" }}</div>
+  <div>{{ .ReadingTime }} min read</div>
+  {{ with .Params.status }}<div><span class="meta-status">{{ . }}</span></div>{{ end }}
+  {{ with .OutputFormats.Get "raw" }}<div><a class="meta-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw ↗</a></div>{{ end }}
+</div>
 {{ else }}
 <div class="project-meta">
   {{ .Date.Format "January 2, 2006" }}
