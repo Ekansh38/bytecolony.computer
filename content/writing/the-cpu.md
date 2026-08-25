@@ -3,6 +3,7 @@ title: "The CPU: A very tall pile of simple"
 date: 2026-07-31
 project: "the-cpu-explainer"
 pdf: /assets/the-cpu-explainer.pdf
+github: https://github.com/Ekansh38/the-cpu-explainer/
 build:
   list: never
   render: always

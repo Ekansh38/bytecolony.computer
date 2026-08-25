@@ -66,14 +66,17 @@ body.page.writing .article-formats .format-link {
   padding: 8px 22px;
   border: 1px solid var(--border);
   border-radius: 4px;
+  background: transparent;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.9rem;
   color: var(--accent);
   text-decoration: none;
   text-align: center;
   min-width: 80px;
+  cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
+body.page.writing .article-formats button.format-link { line-height: 1.4; }
 body.page.writing .article-formats .format-link:hover {
   border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 12%, transparent);
