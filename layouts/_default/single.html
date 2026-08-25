@@ -22,7 +22,12 @@
 </header>
 
 {{ with .TableOfContents }}
-<nav class="article-toc" aria-label="table of contents">{{ . }}</nav>
+<nav class="article-toc" aria-label="table of contents">
+  <hr class="toc-rule">
+  <h2 class="toc-heading">Table of Contents</h2>
+  {{ . }}
+  <hr class="toc-rule">
+</nav>
 {{ end }}
 {{ else }}
 <h1 class="project-title">{{ .Title }}</h1>

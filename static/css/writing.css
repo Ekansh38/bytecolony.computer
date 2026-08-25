@@ -83,13 +83,28 @@ body.page.writing .article-formats .format-link:hover {
 }
 body.page.writing hr.article-divider { display: none; }
 
-/* Minimal, numbered TOC — dense, no chrome */
+/* Minimal, numbered TOC — dense, framed by hr rules */
 body.page.writing .article-toc {
-  margin: 0 0 48px;
+  margin: 0 0 56px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.9rem;
   line-height: 1.5;
 }
+body.page.writing .article-toc .toc-rule {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+body.page.writing .article-toc .toc-heading {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 20px 0 16px;
+  padding: 0;
+  letter-spacing: -0.005em;
+}
+body.page.writing .article-toc > nav { margin-bottom: 20px; }
 body.page.writing .article-toc ul {
   list-style: none;
   padding: 0;
