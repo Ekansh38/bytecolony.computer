@@ -37,7 +37,7 @@ body.page.writing dl.project-meta {
   font-size: 0.78rem;
   color: var(--muted);
   letter-spacing: 0.02em;
-  margin: 0 0 64px;                 /* generous gap before the article body */
+  margin: 0;
   padding: 14px 0 0;
   border-top: 1px solid var(--border);
   display: grid;
@@ -45,6 +45,11 @@ body.page.writing dl.project-meta {
   column-gap: 20px;
   row-gap: 4px;
   max-width: 380px;
+}
+body.page.writing hr.article-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0 56px;   /* strong visual gate between metadata and prose */
 }
 body.page.writing dl.project-meta dt {
   color: var(--muted);

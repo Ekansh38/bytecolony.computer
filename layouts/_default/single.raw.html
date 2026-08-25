@@ -3,262 +3,91 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ .Title }} — raw</title>
+<title>{{ .Title }}</title>
 <meta name="robots" content="noindex">
 <style>
-  :root {
-    --bg: #0d1017;
-    --fg: #c0caf5;
-    --muted: #7a88b8;
-    --accent: #7aa2f7;
-    --border: #22283a;
-    --code-bg: #171b26;
-  }
-  * { box-sizing: border-box; }
-  html { background: var(--bg); }
+  /* Truly raw — think markdown-preview.nvim: dark bg, mono, near-zero chrome. */
+  html, body { background: #0d1017; color: #c0caf5; margin: 0; padding: 0; }
   body {
+    font: 15px/1.7 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    max-width: 860px;
     margin: 0 auto;
-    max-width: 800px;
-    padding: 56px 24px 96px;
-    background: var(--bg);
-    color: var(--fg);
-    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 15px;
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
+    padding: 40px 24px 80px;
   }
-
-  /* Header block — stacked, plenty of air before article */
-  .raw-header {
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 56px;
-  }
-  .raw-header h1 {
-    margin: 0 0 12px;
-    font-size: 1.55rem;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-    font-weight: 700;
-  }
-  .raw-header .subtitle {
-    margin: 0 0 20px;
-    font-style: italic;
-    color: color-mix(in srgb, var(--fg) 78%, transparent);
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-  .raw-header dl.meta {
-    margin: 0 0 16px;
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    row-gap: 4px;
-    column-gap: 16px;
-    font-size: 0.8rem;
-  }
-  .raw-header dl.meta dt {
-    color: var(--muted);
-    text-transform: lowercase;
-    letter-spacing: 0.06em;
-  }
-  .raw-header dl.meta dd { margin: 0; color: var(--fg); }
-  .raw-header dl.meta dd a { color: var(--accent); text-decoration: none; }
-  .raw-header dl.meta dd a:hover { text-decoration: underline; }
-  .raw-header .status { color: var(--accent); text-transform: lowercase; }
-
-  /* Table of contents */
-  .raw-toc {
-    padding: 14px 18px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: color-mix(in srgb, var(--fg) 3%, transparent);
-    margin-top: 20px;
-  }
-  .raw-toc-title {
-    color: var(--accent);
-    font-size: 0.68rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    user-select: none;
-  }
-  .raw-toc ol {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    counter-reset: toc;
-  }
-  .raw-toc li {
-    counter-increment: toc;
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    padding: 2px 0;
-    font-size: 0.85rem;
-  }
-  .raw-toc li::before {
-    content: counter(toc, decimal-leading-zero) ".";
-    color: var(--muted);
-    opacity: 0.55;
-    font-variant-numeric: tabular-nums;
-    font-size: 0.75rem;
-    flex-shrink: 0;
-    width: 2.4em;
-  }
-  .raw-toc a {
-    color: var(--fg);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.15s ease, color 0.15s ease;
-  }
-  .raw-toc a:hover {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-
-  /* Prose body */
-  h1, h2, h3, h4 {
-    margin-top: 2.4em;
-    margin-bottom: 0.7em;
-    line-height: 1.3;
-  }
-  h2 { font-size: 1.25rem; }
-  h3 { font-size: 1.05rem; }
-  p, li { margin: 0 0 1.2em; }
+  h1 { font-size: 1.8rem; margin: 0 0 0.4em; line-height: 1.25; }
+  h2 { font-size: 1.25rem; margin: 2em 0 0.6em; }
+  h3 { font-size: 1.05rem; margin: 1.6em 0 0.5em; }
+  p, li, blockquote, table { margin: 0 0 1em; }
   ul, ol { padding-left: 1.6em; }
   li { margin-bottom: 0.3em; }
-  hr { border: none; border-top: 1px solid var(--border); margin: 2em 0; }
-
-  a { color: var(--accent); }
+  hr { border: none; border-top: 1px solid #22283a; margin: 1.5em 0; }
+  a { color: #7aa2f7; }
   a:hover { text-decoration: underline; }
+  strong { color: #d5deff; }
+  em, i { color: #c0caf5; }
 
-  strong { color: color-mix(in srgb, var(--fg) 110%, transparent); }
-  em { color: color-mix(in srgb, var(--fg) 90%, transparent); }
-
-  /* Code */
   code {
-    background: var(--code-bg);
-    color: var(--fg);
+    background: #171b26;
     padding: 1px 5px;
     border-radius: 3px;
-    font-size: 0.88em;
+    font-size: 0.9em;
   }
   pre {
-    background: var(--code-bg);
-    color: var(--fg);
-    padding: 14px 16px;
-    border-radius: 4px;
+    background: #171b26;
+    padding: 12px 14px;
+    border-radius: 3px;
     overflow-x: auto;
     font-size: 0.82rem;
     line-height: 1.6;
-    border-left: 3px solid var(--accent);
-    margin: 1.4em 0;
+    margin: 1em 0;
   }
   pre code { background: none; padding: 0; font-size: inherit; }
 
-  /* Diagrams — inherit site dark box */
-  .svg-diagram {
-    display: block;
-    margin: 2.4em auto;
-    max-width: 100%;
-    background: #0a0a0a;
-    padding: 28px 24px;
-    border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.1);
-    text-align: center;
+  img, svg { max-width: 100%; height: auto; display: block; }
+
+  /* Reset process.py's wrapper — raw means raw, no dark boxes */
+  .svg-diagram,
+  .svg-diagram.small {
+    background: none;
+    padding: 0;
+    border: none;
+    margin: 1.2em 0;
+    text-align: left;
   }
   .svg-diagram svg,
   .svg-diagram img {
-    display: block;
-    width: 100%;
-    height: auto;
     max-width: 100%;
-    max-height: 560px;
-    object-fit: contain;
-    margin: 0 auto;
+    height: auto;
+    margin: 0;
   }
-  .svg-diagram.small {
-    max-width: 320px;
-    padding: 20px 18px;
-  }
-  .svg-diagram.small svg,
-  .svg-diagram.small img { max-height: 240px; }
-  .svg-diagram + p {
-    text-align: center;
-    font-style: italic;
-    color: var(--muted);
-    font-size: 0.78rem;
-    margin: -1em auto 2.4em;
-    max-width: 60ch;
-  }
+  /* Caption immediately after a diagram — just an italic line */
+  .svg-diagram + p em { color: #7a88b8; }
 
-  /* Tables */
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 1.6em 0;
-    font-size: 0.9em;
-  }
-  th, td {
-    border: 1px solid var(--border);
-    padding: 6px 10px;
-    text-align: left;
-  }
-  th { background: color-mix(in srgb, var(--fg) 8%, transparent); }
-
-  /* Callouts (GFM alerts rendered by our render-blockquote hook) */
+  /* GFM alert callouts — minimal indicator */
   .callout {
-    border-left: 3px solid var(--accent);
-    background: color-mix(in srgb, var(--accent) 7%, transparent);
-    padding: 10px 14px;
-    margin: 1.4em 0;
-    border-radius: 0 4px 4px 0;
+    border-left: 2px solid #7aa2f7;
+    padding: 4px 12px;
+    margin: 1em 0;
   }
   .callout-label {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--accent);
-    margin-bottom: 5px;
+    font-size: 0.72rem;
+    color: #7aa2f7;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
   }
   .callout-body p { margin: 0; }
 
-  sup { font-size: 0.7em; vertical-align: super; line-height: 0; }
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #22283a; padding: 4px 10px; }
+
+  sup { font-size: 0.72em; vertical-align: super; line-height: 0; }
 </style>
 </head>
 <body>
 
-<header class="raw-header">
-  <h1>{{ .Title }}</h1>
-  {{ with .Params.subtitle }}<p class="subtitle">{{ . }}</p>{{ end }}
-
-  <dl class="meta">
-    <dt>date</dt>
-    <dd>{{ .Date.Format "January 2, 2006" }}</dd>
-    {{ with .Params.status }}
-    <dt>status</dt>
-    <dd><span class="status">{{ . }}</span></dd>
-    {{ end }}
-    <dt>reading</dt>
-    <dd>{{ .ReadingTime }} min</dd>
-    <dt>view</dt>
-    <dd><a href="{{ .RelPermalink }}">styled version ↗</a></dd>
-  </dl>
-
-  {{ $h2s := findRE `<h2[^>]*id="([^"]+)"[^>]*>(.+?)</h2>` .Content }}
-  {{ if gt (len $h2s) 1 }}
-  <nav class="raw-toc" aria-label="Table of contents">
-    <div class="raw-toc-title">table of contents</div>
-    <ol>
-      {{ range $h2s }}
-        {{ $id := replaceRE `.*id="([^"]+)".*` "$1" . }}
-        {{ $text := replaceRE `<h2[^>]*>(.+?)</h2>` "$1" . }}
-        <li><a href="#{{ $id }}">{{ $text | plainify | safeHTML }}</a></li>
-      {{ end }}
-    </ol>
-  </nav>
-  {{ end }}
-</header>
+<h1>{{ .Title }}</h1>
+<p style="color:#7a88b8;font-size:0.82rem;margin:0 0 20px;">{{ .Date.Format "2006-01-02" }}</p>
+<hr>
 
 {{ .Content }}
 
