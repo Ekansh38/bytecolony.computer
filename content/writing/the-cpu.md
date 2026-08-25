@@ -98,7 +98,7 @@ Here is a simple circuit:
 
 <a id="diagram-2-1"></a> 
 
-<div class="svg-diagram"><img src="/images/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
+<div class="svg-diagram"><img src="/assets/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
 
 *Diagram 2.1. The circuit.*
 
@@ -134,7 +134,7 @@ Let's see the circuit:
 
 <a id="diagram-3-1"></a> 
 
-<div class="svg-diagram"><img src="/images/switches-1.gif" alt="A logical AND circuit"></div>
+<div class="svg-diagram"><img src="/assets/switches-1.gif" alt="A logical AND circuit"></div>
 
 *Diagram 3.1. The hand-switch version of AND.*
 
@@ -152,7 +152,7 @@ Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
 <a id="diagram-3-2"></a> 
 
-<div class="svg-diagram"><img src="/images/or-gate-logical.gif" alt="A logical OR circuit"></div>
+<div class="svg-diagram"><img src="/assets/or-gate-logical.gif" alt="A logical OR circuit"></div>
 
 *Diagram 3.2. The hand-switch version of OR.*
 
@@ -184,7 +184,7 @@ One thing to mention: if you see several little batteries in a circuit, don't in
 
 <a id="diagram-3-4"></a> 
 
-<div class="svg-diagram"><img src="/images/basic-relay.gif" alt="An electromagnetic relay"></div>
+<div class="svg-diagram"><img src="/assets/basic-relay.gif" alt="An electromagnetic relay"></div>
 
 *Diagram 3.4. An electromagnetic relay.*
 
@@ -200,7 +200,7 @@ Now lets see how we can build an actual electrical AND gate that takes in as inp
 
 <a id="diagram-3-5"></a> 
 
-<div class="svg-diagram"><img src="/images/electronic-and-gate.gif" alt="An AND gate"></div>
+<div class="svg-diagram"><img src="/assets/electronic-and-gate.gif" alt="An AND gate"></div>
 
 *Diagram 3.5. An AND gate.*
 
@@ -230,7 +230,7 @@ Now here is the OR gate:
 
 <a id="diagram-3-7"></a> 
 
-<div class="svg-diagram"><img src="/images/electronic-or-gate.gif" alt="An electronic OR gate"></div>
+<div class="svg-diagram"><img src="/assets/electronic-or-gate.gif" alt="An electronic OR gate"></div>
 
 *Diagram 3.7. An electronic OR gate.*
 
@@ -238,7 +238,7 @@ That is an OR gate using relays. Now here is the full dog washer circuit up to t
 
 <a id="diagram-3-8"></a> 
 
-<div class="svg-diagram"><img src="/images/dog-washer-v1.gif" alt="The full dog washer circuit built with relays"></div>
+<div class="svg-diagram"><img src="/assets/dog-washer-v1.gif" alt="The full dog washer circuit built with relays"></div>
 
 *Diagram 3.8. The full dog washer circuit built with relays.*
 
@@ -258,7 +258,7 @@ That is what a NOT gate does.
 
 <a id="diagram-3-9"></a> 
 
-<div class="svg-diagram"><img src="/images/not-gate.gif" alt="A NOT gate"></div>
+<div class="svg-diagram"><img src="/assets/not-gate.gif" alt="A NOT gate"></div>
 
 *Diagram 3.9. A NOT gate.*
 
@@ -302,7 +302,7 @@ With our knowledge about logic gates, let's create the "should-I-wash-my-dog 500
 
 <a id="diagram-3-13"></a> 
 
-<div class="svg-diagram"><img src="/images/dog-washer-v2.gif" alt="The final dog washer circuit"></div>
+<div class="svg-diagram"><img src="/assets/dog-washer-v2.gif" alt="The final dog washer circuit"></div>
 
 *Diagram 3.13. The final dog washer circuit.*
 
@@ -346,7 +346,7 @@ Here are all the possible states we have with 3 wires:
 
 <a id="diagram-4-2"></a> 
 
-<div class="svg-diagram small"><img src="/images/3-states.gif" alt="States with 3 wires"></div>
+<div class="svg-diagram small"><img src="/assets/3-states.gif" alt="States with 3 wires"></div>
 
 *Diagram 4.2. States with 3 wires.*
 

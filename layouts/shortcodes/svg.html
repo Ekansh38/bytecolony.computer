@@ -2,5 +2,5 @@
 {{ $size := .Get 1 }}
 {{ $class := "svg-diagram" }}
 {{ if $size }}{{ $class = printf "%s %s" $class $size }}{{ end }}
-{{ $path := printf "static/images/%s.svg" $name }}
+{{ $path := printf "static/assets/%s.svg" $name }}
 <div class="{{ $class }}">{{ readFile $path | safeHTML }}</div>

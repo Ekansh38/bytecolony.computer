@@ -104,22 +104,30 @@ def reflow_paragraphs(content):
 
     return '\n'.join(result)
 
+def normalize_asset_paths(content):
+    """Convert relative `./assets/…` paths to absolute `/assets/…` so Hugo
+    serves them correctly from the site root regardless of the article's
+    URL depth. Purely a string-level rewrite for src attributes."""
+    return re.sub(r'src="\./(assets/[^"]+)"', r'src="/\1"', content)
+
 def convert_svg_imgs(content):
-    """Replace <img src="/images/name.svg" ...> with {{< svg "name" >}}.
-    If the img has a class attribute (e.g. class="small"), pass it through
-    as the second shortcode arg → {{< svg "name" "small" >}}.
-    Surrounds with blank lines so goldmark treats the shortcode as its own
-    block instead of wrapping in <p> (which would break caption-styling)."""
+    """Replace <img src="/assets/PATH.svg" ...> with {{< svg "PATH" >}}.
+    PATH may contain subdirectories (e.g. "svg/desk") — passed straight
+    through to the shortcode which reads static/assets/PATH.svg.
+    If the img has a class attribute (e.g. class="small"), pass it as the
+    second shortcode arg → {{< svg "PATH" "small" >}}.
+    Surrounds output with blank lines so goldmark treats the shortcode as
+    a block instead of wrapping in <p> (which breaks caption styling)."""
     def replace(m):
         tag = m.group(0)
-        name = m.group(1)
+        path_stem = m.group(1)   # everything between /assets/ and .svg
         cls_match = re.search(r'class="([^"]+)"', tag)
         if cls_match:
-            return f'\n\n{{{{< svg "{name}" "{cls_match.group(1)}" >}}}}\n\n'
-        return f'\n\n{{{{< svg "{name}" >}}}}\n\n'
+            return f'\n\n{{{{< svg "{path_stem}" "{cls_match.group(1)}" >}}}}\n\n'
+        return f'\n\n{{{{< svg "{path_stem}" >}}}}\n\n'
 
     result = re.sub(
-        r'<img\s+[^>]*src="/images/([^"]+)\.svg"[^>]*/?>',
+        r'<img\s+[^>]*src="/assets/([^"]+)\.svg"[^>]*/?>',
         replace,
         content
     )
@@ -150,8 +158,8 @@ def wrap_raster_imgs(content):
         cleaned = re.sub(r'\s+(width|height|class)="[^"]*"', '', tag)
         return f'\n\n<div class="{wrapper_class}">{cleaned}</div>\n\n'
 
-    # Match <img src="/images/*.{gif,png,jpg,jpeg,webp}"> not already inside svg-diagram
-    pattern = r'(?<!<div class="svg-diagram">)<img\s+[^>]*src="/images/[^"]+\.(?:gif|png|jpg|jpeg|webp)"[^>]*/?>(?!</div>)'
+    # Match <img src="/assets/*.{gif,png,jpg,jpeg,webp}"> not already inside svg-diagram
+    pattern = r'(?<!<div class="svg-diagram">)<img\s+[^>]*src="/assets/[^"]+\.(?:gif|png|jpg|jpeg|webp)"[^>]*/?>(?!</div>)'
     result = re.sub(pattern, wrap, content, flags=re.IGNORECASE)
     # Collapse runs of 3+ newlines that our insertion may have created
     result = re.sub(r'\n{3,}', '\n\n', result)
@@ -224,6 +232,7 @@ def process_file(path):
         original = f.read()
 
     content = original
+    content = normalize_asset_paths(content)
     content = convert_svg_imgs(content)
     content = wrap_raster_imgs(content)
     content = isolate_block_diagrams(content)
