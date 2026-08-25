@@ -37,20 +37,15 @@ body.page.writing dl.project-meta {
   font-size: 0.78rem;
   color: var(--muted);
   letter-spacing: 0.02em;
-  margin: 0;
-  padding: 14px 0 0;
-  border-top: 1px solid var(--border);
+  margin: 24px 0 72px;   /* whitespace does the visual gate — no divider lines */
+  padding: 0;
   display: grid;
   grid-template-columns: max-content 1fr;
   column-gap: 20px;
   row-gap: 4px;
   max-width: 380px;
 }
-body.page.writing hr.article-divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 40px 0 56px;   /* strong visual gate between metadata and prose */
-}
+body.page.writing hr.article-divider { display: none; }
 body.page.writing dl.project-meta dt {
   color: var(--muted);
   opacity: 0.7;
