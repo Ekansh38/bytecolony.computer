@@ -133,10 +133,6 @@
     document.body.style.overflow = '';
   }
   pill.addEventListener('click', openOverlay);
-  // Any in-page button (e.g. the "toc" chip in the article header) can open the overlay too
-  Array.prototype.forEach.call(document.querySelectorAll('.js-open-toc'), function (el) {
-    el.addEventListener('click', openOverlay);
-  });
   overlay.addEventListener('click', function (e) { if (e.target === overlay) closeOverlay(); });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && overlay.classList.contains('open')) closeOverlay();

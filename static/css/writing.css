@@ -83,6 +83,52 @@ body.page.writing .article-formats .format-link:hover {
 }
 body.page.writing hr.article-divider { display: none; }
 
+/* Static, text-based table of contents shown between article header and body */
+body.page.writing .article-toc {
+  margin: 0 0 56px;
+  padding: 20px 22px;
+  border-left: 2px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+}
+body.page.writing .article-toc-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+body.page.writing .article-toc ul,
+body.page.writing .article-toc ol {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+body.page.writing .article-toc li { margin: 4px 0; line-height: 1.55; }
+body.page.writing .article-toc li ul,
+body.page.writing .article-toc li ol {
+  padding-left: 18px;
+  margin: 2px 0 4px;
+  border-left: 1px solid var(--border);
+}
+body.page.writing .article-toc li ul li,
+body.page.writing .article-toc li ol li {
+  padding-left: 12px;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+body.page.writing .article-toc a {
+  color: var(--fg);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+body.page.writing .article-toc a:hover { color: var(--accent); }
+body.page.writing .article-toc li ul a,
+body.page.writing .article-toc li ol a { color: var(--muted); }
+body.page.writing .article-toc li ul a:hover,
+body.page.writing .article-toc li ol a:hover { color: var(--accent); }
+
 /* Optional abstract block above the article content */
 body.page.writing .article-abstract {
   font-family: 'JetBrains Mono', monospace;

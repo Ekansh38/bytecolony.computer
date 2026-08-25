@@ -15,12 +15,18 @@
   {{ with .Params.subtitle }}<p class="article-subtitle">{{ . }}</p>{{ end }}
   <time class="article-date">{{ .Date.Format "January 2, 2006" }}</time>
   <div class="article-formats" aria-label="other formats">
-    <button type="button" class="format-link js-open-toc" aria-label="Open table of contents">toc</button>
     {{ with .OutputFormats.Get "raw" }}<a class="format-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw</a>{{ end }}
     {{ with .Params.pdf }}<a class="format-link" href="{{ . }}" target="_blank" rel="noopener">pdf</a>{{ end }}
     {{ with .Params.github }}<a class="format-link" href="{{ . }}" target="_blank" rel="noopener">src</a>{{ end }}
   </div>
 </header>
+
+{{ with .TableOfContents }}
+<nav class="article-toc" aria-label="table of contents">
+  <div class="article-toc-title">contents</div>
+  {{ . }}
+</nav>
+{{ end }}
 {{ else }}
 <h1 class="project-title">{{ .Title }}</h1>
 {{ with .Params.subtitle }}<p class="article-subtitle">{{ . }}</p>{{ end }}
