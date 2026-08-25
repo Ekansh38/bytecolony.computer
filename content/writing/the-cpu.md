@@ -46,7 +46,7 @@ Inside this house we have our downstairs desk where Otto does all the serious wo
 
 <a id="diagram-1-1"></a> 
 
-{{< svg "desk" >}}
+{{< svg "final/desk" >}}
 
 *Diagram 1.1. The desk setup.*
 
@@ -56,7 +56,7 @@ One quick distinction before we start: when I say "drawer," I mean the desk draw
 
 <a id="diagram-1-2"></a> 
 
-{{< svg "cabinet" >}}
+{{< svg "final/cabinet" >}}
 
 *Diagram 1.2. The filing cabinet.*
 
@@ -66,7 +66,7 @@ Slot 99 works the opposite way. It's connected to a dial outside the house. Otto
 
 <a id="diagram-1-3"></a> 
 
-{{< svg "house" >}}
+{{< svg "final/house" >}}
 
 *Diagram 1.3. The outside of the house, with the display and input dial.*
 
@@ -74,7 +74,7 @@ The important point for now is simple: the program itself also lives in the upst
 
 <a id="diagram-1-4"></a> 
 
-{{< svg "loop" >}}
+{{< svg "final/loop" >}}
 
 Diagram 1.4. Otto's basic loop. He reads the address in `PC`, fetches the number from that cabinet slot, uses the decoder chart to choose what to do, does it, updates `PC`, and repeats.
 
@@ -98,7 +98,7 @@ Here is a simple circuit:
 
 <a id="diagram-2-1"></a> 
 
-<div class="svg-diagram"><img src="/assets/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
+<div class="svg-diagram"><img src="/assets/final/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
 
 *Diagram 2.1. The circuit.*
 
@@ -134,7 +134,7 @@ Let's see the circuit:
 
 <a id="diagram-3-1"></a> 
 
-<div class="svg-diagram"><img src="/assets/switches-1.gif" alt="A logical AND circuit"></div>
+<div class="svg-diagram"><img src="/assets/final/switches-1.gif" alt="A logical AND circuit"></div>
 
 *Diagram 3.1. The hand-switch version of AND.*
 
@@ -152,7 +152,7 @@ Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
 <a id="diagram-3-2"></a> 
 
-<div class="svg-diagram"><img src="/assets/or-gate-logical.gif" alt="A logical OR circuit"></div>
+<div class="svg-diagram"><img src="/assets/final/or-gate-logical.gif" alt="A logical OR circuit"></div>
 
 *Diagram 3.2. The hand-switch version of OR.*
 
@@ -168,7 +168,7 @@ Or in other words the OR circuit we built outputs a result as electricity, but t
 
 <a id="diagram-3-3"></a> 
 
-{{< svg "combination-problem" >}}
+{{< svg "final/combination-problem" >}}
 
 *Diagram 3.3. The problem we currently face.*
 
@@ -184,7 +184,7 @@ One thing to mention: if you see several little batteries in a circuit, don't in
 
 <a id="diagram-3-4"></a> 
 
-<div class="svg-diagram"><img src="/assets/basic-relay.gif" alt="An electromagnetic relay"></div>
+<div class="svg-diagram"><img src="/assets/final/basic-relay.gif" alt="An electromagnetic relay"></div>
 
 *Diagram 3.4. An electromagnetic relay.*
 
@@ -200,7 +200,7 @@ Now lets see how we can build an actual electrical AND gate that takes in as inp
 
 <a id="diagram-3-5"></a> 
 
-<div class="svg-diagram"><img src="/assets/electronic-and-gate.gif" alt="An AND gate"></div>
+<div class="svg-diagram"><img src="/assets/final/electronic-and-gate.gif" alt="An AND gate"></div>
 
 *Diagram 3.5. An AND gate.*
 
@@ -222,7 +222,7 @@ This is how the ground symbol looks:
 
 <a id="diagram-3-6"></a> 
 
-{{< svg "ground-symbol" "small" >}}
+{{< svg "final/ground-symbol" "small" >}}
 
 *Diagram 3.6. The ground symbol.*
 
@@ -230,7 +230,7 @@ Now here is the OR gate:
 
 <a id="diagram-3-7"></a> 
 
-<div class="svg-diagram"><img src="/assets/electronic-or-gate.gif" alt="An electronic OR gate"></div>
+<div class="svg-diagram"><img src="/assets/final/electronic-or-gate.gif" alt="An electronic OR gate"></div>
 
 *Diagram 3.7. An electronic OR gate.*
 
@@ -238,7 +238,7 @@ That is an OR gate using relays. Now here is the full dog washer circuit up to t
 
 <a id="diagram-3-8"></a> 
 
-<div class="svg-diagram"><img src="/assets/dog-washer-v1.gif" alt="The full dog washer circuit built with relays"></div>
+<div class="svg-diagram"><img src="/assets/final/dog-washer-v1.gif" alt="The full dog washer circuit built with relays"></div>
 
 *Diagram 3.8. The full dog washer circuit built with relays.*
 
@@ -258,7 +258,7 @@ That is what a NOT gate does.
 
 <a id="diagram-3-9"></a> 
 
-<div class="svg-diagram"><img src="/assets/not-gate.gif" alt="A NOT gate"></div>
+<div class="svg-diagram"><img src="/assets/final/not-gate.gif" alt="A NOT gate"></div>
 
 *Diagram 3.9. A NOT gate.*
 
@@ -268,7 +268,7 @@ An AND gate is drawn like this:
 
 <a id="diagram-3-10"></a> 
 
-{{< svg "and-gate" >}}
+{{< svg "final/and-gate" >}}
 
 *Diagram 3.10. An AND gate.*
 
@@ -278,7 +278,7 @@ An OR gate is drawn like this:
 
 <a id="diagram-3-11"></a> 
 
-{{< svg "or-gate" >}}
+{{< svg "final/or-gate" >}}
 
 *Diagram 3.11. A OR gate.*
 
@@ -290,7 +290,7 @@ Here are three more useful gate symbols:
 
 <a id="diagram-3-12"></a> 
 
-{{< svg "not-nand-nor-gates" >}}
+{{< svg "final/not-nand-nor-gates" >}}
 
 *Diagram 3.12. NOT, NAND, NOR gates.*
 
@@ -302,7 +302,7 @@ With our knowledge about logic gates, let's create the "should-I-wash-my-dog 500
 
 <a id="diagram-3-13"></a> 
 
-<div class="svg-diagram"><img src="/assets/dog-washer-v2.gif" alt="The final dog washer circuit"></div>
+<div class="svg-diagram"><img src="/assets/final/dog-washer-v2.gif" alt="The final dog washer circuit"></div>
 
 *Diagram 3.13. The final dog washer circuit.*
 
@@ -312,9 +312,7 @@ Keep in mind these [electromagnetic relays](#diagram-3-4) we used in the example
 
 Relays aren't the only solution. They are simply one of the early and intuitive methods to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) actually used these types of relays.
 
-In modern computers a similar behavior is achieved by using transistors. If you want to learn more about transistor based logic gates: [visit this site](https://www.electronics-tutorials.ws/logic/logic-gates-using-transistors.html)
-
-I don't know about you, but addition seems like a pretty logical next step to these logic gates. But not so fast.
+In modern computers a similar behavior is achieved by using transistors. If you want to learn more about transistor based logic gates: [visit this site](https://www.electronics-tutorials.ws/logic/logic-gates-using-transistors.html) I don't know about you, but addition seems like a pretty logical next step to these logic gates. But not so fast.
 
 This is how circuits make yes/no decisions. Not by understanding what `MUDDY` means, but by wiring simple gates so the output turns on only for the input pattern we care about.
 
@@ -326,27 +324,27 @@ That is what the next section is about.
 
 ## Counting With Wires
 
-Okay before we continue with this section, lets define some terms.
+Okay before we continue with this section, let's define some terms.
 
-A wire with no signal running through it, is `0` and a wire with signal running through it is `1`.
+A wire with no signal is `0`, and a wire with signal is `1`. Let's call one wire, one bit. A bit can either be `0` or `1`.
 
 These are just labels that represent the state of a wire.
 
 <a id="diagram-4-1"></a> 
 
-{{< svg "0-s-and-1-s" "small" >}}
+{{< svg "final/0-s-and-1-s" "small" >}}
 
 *Diagram 4.1. 0's and 1's.*
 
-If we want to represent numbers using wires, we are going to need more than one wire, that's because 1 wire at most can only represent up to 2 numbers, since it only has 2 possible states, `0` or `1`.
+If we want to represent numbers using wires, we are going to need more than one wire, because one wire can only represent up to two numbers, since it only has two possible states: `0` or `1`.
 
-But 2 wires has 2<sup>2</sup>, or 4 states! and 3 wires has 2<sup>3</sup>, or 8 states. That would allow us to represent more numbers.
+But two wires have `2^2`, or four states, and three wires have `2^3`, or eight states. That would allow us to represent more numbers.
 
 Here are all the possible states we have with 3 wires:
 
 <a id="diagram-4-2"></a> 
 
-<div class="svg-diagram small"><img src="/assets/3-states.gif" alt="States with 3 wires"></div>
+<div class="svg-diagram small"><img src="/assets/final/3-states.gif" alt="States with 3 wires"></div>
 
 *Diagram 4.2. States with 3 wires.*
 
@@ -354,25 +352,25 @@ We can represent 8 numbers just like this. The more wires we add, the more numbe
 
 But, why does `010` mean 2? Why does `101` mean 5? Is it just randomly assigned?
 
-Not exactly, to understand this lets take a quick detour to decimal a.k.a base ten.
+Not exactly. To understand this, let's take a quick detour to decimal, a.k.a. base ten.
 
 <a id="diagram-4-3"></a> 
 
-{{< svg "decimal" >}}
+{{< svg "final/decimal" >}}
 
 *Diagram 4.3. The decimal system.*
 
-In our decimal counting system each place value is a multiple of 10, that is because we have 10 digits, 0-9.
+In our decimal counting system, each place value is a multiple of 10. That is because we have ten digits: 0-9.
 
-This exact same place value logic can apply to the binary system too. We have 2 digits, 0, and 1 so each place is a multiple of 2.
+This exact same place value logic can apply to the binary system too. We have two digits, 0 and 1, so each place is a multiple of 2.
 
 <a id="diagram-4-4"></a> 
 
-{{< svg "binary" >}}
+{{< svg "final/binary" >}}
 
 *Diagram 4.4. The binary system.*
 
-So all binary is at the end of the day, is just decimal but with only 2 digits instead of 10.
+So all binary is, at the end of the day, is decimal but with only two digits instead of ten.
 
 A few examples:
 
@@ -381,20 +379,180 @@ A few examples:
 - `101010` means 42
 - `1100011` means 99
 
-You don't need to do these problems in your head, but I hope how binary works makes sense.
+You don't need to do these problems in your head, but I hope the idea of how binary works makes sense.
 
-Lets walk through `1101` together.
+Let's walk through `1101` together.
 
 <a id="diagram-4-5"></a> 
 
-{{< svg "binary-example" >}}
+{{< svg "final/binary-example" >}}
 
 *Diagram 4.5. An example in binary.*
+
+The binary system works the same way as decimal. The only difference is that instead of multiplying the digit by a power of 10, we multiply it by a power of 2. That's it.
 
 So now that we can represent numbers with wires, how can we add numbers together? How can we compute sums. That is what the next section is all about.
 
 <a id="diagram-4-6"></a> 
 
-{{< svg "add-magic-box" >}}
+{{< svg "final/add-magic-box" >}}
 
 *Diagram 4.6. Addition?*
+
+## Addition
+
+Let's start with a brief reminder of how we algorithmically add two decimal numbers.
+
+<a id="diagram-5-1"></a> 
+
+<div class="svg-diagram"><img src="/assets/final/decimal-addition.gif" alt="Standard decimal addition"></div>
+
+*Diagram 5.1. Standard decimal addition.*
+
+We start at the rightmost column, do 5+8, get 13, we carry the 1. So we write 3 as the sum, and 1 as the carry. We then move left and repeat over and over remembering to add any carry-in values. Binary addition works the same way.
+
+<a id="diagram-5-2"></a> 
+
+<div class="svg-diagram"><img src="/assets/final/binary-addition.gif" alt="Binary addition"></div>
+
+*Diagram 5.2. Binary addition.*
+
+This works the same in binary because if we have:
+
+`1 + 1` gives `10`, which is binary for 2.
+
+So the sum bit for that column is `0`, and the carry is `1`.
+
+`1 + 1 + 1` gives `11`, which is binary for 3. So the sum bit is `1`, and the carry is `1`.
+
+How can we build a circuit using logic gates that performs this standard addition algorithm?
+
+Well, let's start with the rightmost column. If we think about it, all the possible states are:
+
+| `A` | `B` | Sum | Carry |
+|---:|---:|---:|---:|
+| 0 | 0 | 0 | 0 |
+| 0 | 1 | 1 | 0 |
+| 1 | 0 | 1 | 0 |
+| 1 | 1 | 0 | 1 |
+
+So just `0 + 0`, `1 + 0`, `1 + 1`, or `0 + 1`. That's it! If we can make a tiny circuit that takes two inputs, and produces two outputs that match these combinations, we have added the first column.
+
+This is called a half adder. A half adder adds two bits, but it does not handle a carry-in value. That is the job of a full adder.
+
+Let's first build this half adder.
+
+Let's start by computing the sum, not the carry-out.
+
+This is what we want our circuit to do:
+
+| `A` | `B` | Sum |
+|---:|---:|---:|
+| 0 | 0 | 0 |
+| 0 | 1 | 1 |
+| 1 | 0 | 1 |
+| 1 | 1 | 0 |
+
+The sum is `1` only when exactly one input is `1`.
+
+This is called XOR short for exclusive OR.
+
+If we combine an OR gate and a NAND gate, and AND them together we get XOR:
+
+<a id="diagram-5-3"></a> 
+
+<div class="svg-diagram"><img src="/assets/final/half-adder-sum.gif" alt="Half adder sum / XOR"></div>
+
+*Diagram 5.3. Half adder sum / XOR.*
+
+OR checks that at least one input is on, and NAND makes sure that both inputs are not on.
+
+Here is how an XOR gate looks:
+
+<a id="diagram-5-4"></a> 
+
+{{< svg "final/xor-gate" >}}
+
+*Diagram 5.4. An XOR gate.*
+
+Now lets do the carry value. The carry is simple! We only want to carry if we are doing `1 + 1`, so we we just use an AND gate to check if both inputs are on.
+
+Now here is our half adder:
+
+<diagram, use the xor gate>
+
+Now lets package up our half adder into a little box:
+
+<half adder diagram in a box with inputs and outputs>
+
+Now that we have a half adder, we can add the rightmost column. That works because the rightmost column has no carry-in from a previous column. It only needs to add two bits.
+
+So if we have a number like this:
+
+    1111
++   1111
+-------- <diagram>
+
+The half adder can handle the first column: `1 + 1`. That gives us a sum bit of `0` and a carry-out of `1`.
+
+But now the next column has three things to add: `1 + 1 + 1`. The two original bits, plus the carry from the previous column.
+
+A half adder cannot do that. It only accepts two inputs. To continue adding across multiple columns, we need a circuit that can take three inputs: `A`, `B`, and `carry-in`.
+
+To add three binary numbers we use two half adders and a OR gate:
+
+<diagram>
+
+This might look confusing at first. What if both half adders output a carry at the same time?
+
+That actually never happens. If a half adder outputs a carry, the sum bit is always 0. So both are not able to output carries. Take a moment to think about this if you are confused.
+
+So we can confidently OR the two carry outputs together. If either one is `1`, the full adder's carry-out is `1`.
+
+Let's again package this up into a box:
+
+<diagram, full adder>
+
+We have made a full adder!
+
+Now we can chain full adders together to add two 8-bit numbers. One 8-bit number can represent any number form 0-255.
+
+<diagram>
+
+Each full adder handles one column. The carry-out from one column becomes the carry-in for the next column. That is it! That is all addition is!
+
+Now let's package that up into a box once again:
+
+<diagram, animated>
+
+The adder can also produce little status wires, called flags.
+
+For example, if the answer is `00000000`, a ZERO flag can turn on. If addition spills past eight bits, a CARRY flag can turn on. So `11111111 + 00000001` gives `00000000` with carry-out `1`.
+
+I don't want to go deep into flags yet. Just remember that the adder can output little yes/no facts about the sum. That matters later for instructions like "jump if zero." But let's not get ahead of ourselves.
+
+Now let's see if we can build a circuit that counts by ones.
+
+The obvious idea is to feed the output of the adder back into one of its inputs. Start with `00000000`, add `00000001`, get `00000001`. Feed that back in, add `00000001` again, get `00000010`. Then `00000011`, then `00000100`, and so on.
+
+That seems correct at first glance.
+
+But there is a big problem. An adder just looks at its current inputs and computes an output.
+
+So if we wire the output straight back into the input, there is no stable value anymore. The adder is basically being asked to make a number equal to itself plus one:
+
+```text
+input = input + 1
+```
+
+That can never settle. As soon as the output changes, the input changes too, which means the output has to change again, which means the input changes again.
+
+With relays, you might physically see this mess. With transistors, it would happen so super insanely quickly.
+
+There is no boundary between the old value and the new value.
+
+There is no clean "step 1, step 2, step 3."  No controlled flow or process.
+
+So this is not enough. We need a circuit that can hold a value still, then update it only when we tell it to.
+
+That is the next problem: memory.

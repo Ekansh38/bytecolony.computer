@@ -12,16 +12,19 @@
 <p class="article-subtitle">{{ . }}</p>
 {{ end }}
 
+{{ if eq .Section "writing" }}
+<dl class="project-meta">
+  <dt>date</dt>       <dd>{{ .Date.Format "January 2, 2006" }}</dd>
+  <dt>reading</dt>    <dd>{{ .ReadingTime }} min</dd>
+  {{ with .Params.status }}<dt>status</dt> <dd><span class="meta-status">{{ . }}</span></dd>{{ end }}
+  {{ with .OutputFormats.Get "raw" }}<dt>view</dt> <dd><a class="meta-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw ↗</a></dd>{{ end }}
+</dl>
+{{ else }}
 <div class="project-meta">
   {{ .Date.Format "January 2, 2006" }}
-  {{ with .Params.status }} <span class="meta-sep">·</span> <span class="meta-status">{{ . }}</span>{{ end }}
-  {{ if eq .Section "writing" }}
-  <span class="meta-sep">·</span> {{ .ReadingTime }} min read
-  {{ with .OutputFormats.Get "raw" }}
-  <span class="meta-sep">·</span> <a class="meta-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw ↗</a>
-  {{ end }}
-  {{ end }}
+  {{ with .Params.status }} · <span class="meta-status">{{ . }}</span>{{ end }}
 </div>
+{{ end }}
 
 {{ with .Params.description }}
 <p class="article-abstract">{{ . }}</p>
