@@ -1,6 +1,7 @@
 ---
 title: "The CPU: A very tall pile of simple"
 date: 2026-07-31
+pdf: /assets/the-cpu-explainer.pdf
 build:
   list: never
   render: always
@@ -461,7 +462,7 @@ If we combine an OR gate and a NAND gate, and AND them together we get XOR:
 
 <a id="diagram-5-3"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/half-adder-sum.gif" alt="Half adder sum / XOR"></div>
+<div class="svg-diagram small"><img src="/assets/final/half-adder-sum.gif" alt="Half adder sum / XOR"></div>
 
 *Diagram 5.3. Half adder sum / XOR.*
 
@@ -471,7 +472,7 @@ Here is how an XOR gate looks:
 
 <a id="diagram-5-4"></a> 
 
-{{< svg "final/xor-gate" >}}
+{{< svg "final/xor-gate" "small" >}}
 
 *Diagram 5.4. An XOR gate.*
 
