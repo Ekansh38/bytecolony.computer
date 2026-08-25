@@ -44,29 +44,22 @@ body.page.writing .article-project-crumb a {
 }
 body.page.writing .article-project-crumb a:hover { color: var(--accent); }
 
-/* Article header — title/date on the left, format links tucked in the top-right */
-body.page.writing .article-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 40px;
-  margin: 0 0 56px;
-}
-body.page.writing .article-header-main { flex: 1; min-width: 0; }
+/* Article header — everything stacks in the reading column */
+body.page.writing .article-header { margin: 0 0 56px; }
 body.page.writing .article-header .project-title { margin: 0 0 8px; }
 body.page.writing .article-header .article-subtitle { margin: 0 0 14px; }
 body.page.writing .article-date {
+  display: block;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.82rem;
   color: var(--muted);
   letter-spacing: 0.02em;
+  margin-bottom: 20px;
 }
 body.page.writing .article-formats {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 4px;
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 body.page.writing .article-formats .format-link {
   display: inline-block;
@@ -86,19 +79,6 @@ body.page.writing .article-formats .format-link:hover {
   background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 body.page.writing hr.article-divider { display: none; }
-@media (max-width: 700px) {
-  body.page.writing .article-header {
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 40px;
-  }
-  body.page.writing .article-formats {
-    flex-direction: row;
-    gap: 18px;
-    padding-top: 0;
-    text-align: left;
-  }
-}
 
 /* Optional abstract block above the article content */
 body.page.writing .article-abstract {

@@ -5,21 +5,21 @@
 {{ with .Params.project }}
 {{ $proj := site.GetPage (printf "/projects/%s" .) }}
 {{ if $proj }}
-<div class="article-project-crumb"><a href="{{ $proj.RelPermalink }}">← part of {{ $proj.Title }}</a></div>
+<div class="article-project-crumb"><a href="{{ $proj.RelPermalink }}">← back to project page</a></div>
 {{ end }}
 {{ end }}
 
 {{ if eq .Section "writing" }}
 <header class="article-header">
-  <div class="article-header-main">
-    <h1 class="project-title">{{ .Title }}</h1>
-    {{ with .Params.subtitle }}<p class="article-subtitle">{{ . }}</p>{{ end }}
-    <time class="article-date">{{ .Date.Format "January 2, 2006" }}</time>
-  </div>
-  <aside class="article-formats" aria-label="other formats">
+  <h1 class="project-title">{{ .Title }}</h1>
+  {{ with .Params.subtitle }}<p class="article-subtitle">{{ . }}</p>{{ end }}
+  <time class="article-date">{{ .Date.Format "January 2, 2006" }}</time>
+  {{ if or (.OutputFormats.Get "raw") .Params.pdf }}
+  <div class="article-formats" aria-label="other formats">
     {{ with .OutputFormats.Get "raw" }}<a class="format-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw</a>{{ end }}
     {{ with .Params.pdf }}<a class="format-link" href="{{ . }}" target="_blank" rel="noopener">pdf</a>{{ end }}
-  </aside>
+  </div>
+  {{ end }}
 </header>
 {{ else }}
 <h1 class="project-title">{{ .Title }}</h1>
