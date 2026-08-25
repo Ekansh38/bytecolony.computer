@@ -31,6 +31,19 @@ body.page.writing .article-subtitle {
   max-width: 70ch;
 }
 
+/* Small link back to the project page (shows when frontmatter has `project:`) */
+body.page.writing .article-project-crumb {
+  margin: 4px 0 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+}
+body.page.writing .article-project-crumb a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+body.page.writing .article-project-crumb a:hover { color: var(--accent); }
+
 /* Article header — title/date on the left, format links tucked in the top-right */
 body.page.writing .article-header {
   display: flex;

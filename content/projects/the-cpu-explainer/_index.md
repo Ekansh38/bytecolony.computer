@@ -8,6 +8,7 @@ status: "published"
 article: "/writing/the-cpu/"
 pdf: "/assets/the-cpu-explainer.pdf"
 raw: "/writing/the-cpu/raw.html"
+github: "https://github.com/Ekansh38/the-cpu-explainer/"
 ---
 
 This is a technical writeup on how the CPU functions, starting with basic circuits and finishing with a simple CPU.
