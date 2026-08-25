@@ -406,7 +406,7 @@ Let's start with a brief reminder of how we algorithmically add two decimal numb
 
 <a id="diagram-5-1"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/decimal-addition.gif" alt="Standard decimal addition"></div>
+<div class="svg-diagram small"><img src="/assets/final/decimal-addition.gif" alt="Standard decimal addition"></div>
 
 *Diagram 5.1. Standard decimal addition.*
 
@@ -414,7 +414,7 @@ We start at the rightmost column, do 5+8, get 13, we carry the 1. So we write 3 
 
 <a id="diagram-5-2"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/binary-addition.gif" alt="Binary addition"></div>
+<div class="svg-diagram small"><img src="/assets/final/binary-addition.gif" alt="Binary addition"></div>
 
 *Diagram 5.2. Binary addition.*
 
@@ -462,7 +462,7 @@ If we combine an OR gate and a NAND gate, and AND them together we get XOR:
 
 <a id="diagram-5-3"></a> 
 
-<div class="svg-diagram small"><img src="/assets/final/half-adder-sum.gif" alt="Half adder sum / XOR"></div>
+<div class="svg-diagram"><img src="/assets/final/half-adder-sum.gif" alt="Half adder sum / XOR"></div>
 
 *Diagram 5.3. Half adder sum / XOR.*
 
@@ -472,7 +472,7 @@ Here is how an XOR gate looks:
 
 <a id="diagram-5-4"></a> 
 
-{{< svg "final/xor-gate" "small" >}}
+{{< svg "final/xor-gate" >}}
 
 *Diagram 5.4. An XOR gate.*
 
