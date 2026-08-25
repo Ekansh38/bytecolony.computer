@@ -51,20 +51,27 @@ body.page.writing .article-date {
 body.page.writing .article-formats {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-top: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
+  gap: 10px;
+  padding-top: 4px;
   flex-shrink: 0;
-  text-align: right;
 }
 body.page.writing .article-formats .format-link {
+  display: inline-block;
+  padding: 8px 22px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
   color: var(--accent);
   text-decoration: none;
-  opacity: 0.75;
-  transition: opacity 0.15s ease;
+  text-align: center;
+  min-width: 80px;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
-body.page.writing .article-formats .format-link:hover { opacity: 1; text-decoration: underline; }
+body.page.writing .article-formats .format-link:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
 body.page.writing hr.article-divider { display: none; }
 @media (max-width: 700px) {
   body.page.writing .article-header {

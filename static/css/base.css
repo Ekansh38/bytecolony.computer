@@ -425,6 +425,38 @@ body.page mark {
 .links { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
 .links a { color: var(--accent); }
 
+/* Format buttons — primary CTA + secondary format links on project pages */
+.format-buttons {
+  display: flex;
+  gap: 12px;
+  margin: 32px 0 8px;
+  flex-wrap: wrap;
+}
+.format-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.92rem;
+  color: var(--accent);
+  text-decoration: none;
+  min-width: 90px;
+  transition: border-color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+}
+.format-btn:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.format-btn.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+.format-btn.primary:hover { opacity: 0.88; background: var(--accent); }
+
 /* ── PICKS ─────────────────────────────────────────────────── */
 .picks-intro { color: var(--muted); margin-bottom: 8px; }
 .picks-intro p { margin: 0; }

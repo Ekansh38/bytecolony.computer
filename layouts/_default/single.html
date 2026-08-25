@@ -14,8 +14,8 @@
     <time class="article-date">{{ .Date.Format "January 2, 2006" }}</time>
   </div>
   <aside class="article-formats" aria-label="other formats">
-    {{ with .OutputFormats.Get "raw" }}<a class="format-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw ↗</a>{{ end }}
-    {{ with .Params.pdf }}<a class="format-link" href="{{ . }}" target="_blank" rel="noopener">pdf ↗</a>{{ end }}
+    {{ with .OutputFormats.Get "raw" }}<a class="format-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw</a>{{ end }}
+    {{ with .Params.pdf }}<a class="format-link" href="{{ . }}" target="_blank" rel="noopener">pdf</a>{{ end }}
   </aside>
 </header>
 {{ else }}

@@ -7,10 +7,15 @@
 
 <div class="project-content">{{ .Content }}</div>
 
+{{ if or .Params.article .Params.pdf .Params.raw }}
+<div class="format-buttons">
+  {{ with .Params.article }}<a class="format-btn primary" href="{{ . }}">read article</a>{{ end }}
+  {{ with .Params.pdf }}<a class="format-btn" href="{{ . }}" target="_blank">pdf</a>{{ end }}
+  {{ with .Params.raw }}<a class="format-btn" href="{{ . }}" target="_blank">raw</a>{{ end }}
+</div>
+{{ end }}
+
 <div class="links">
-  {{ with .Params.article }}<a href="{{ . }}">read article →</a>{{ end }}
-  {{ with .Params.pdf }}<a href="{{ . }}" target="_blank">pdf ↗</a>{{ end }}
-  {{ with .Params.raw }}<a href="{{ . }}" target="_blank">raw ↗</a>{{ end }}
   {{ with .Params.live }}<a href="{{ . }}" target="_blank">live site ↗</a>{{ end }}
   {{ with .Params.github }}<a href="{{ . }}" target="_blank">github ↗</a>{{ end }}
   {{ with .Params.devlog }}<a href="{{ . }}" target="_blank">dev log series ↗</a>{{ end }}
