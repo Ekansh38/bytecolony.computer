@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ .Title }} — raw</title>
+<meta name="robots" content="noindex">
+</head>
+<body>
+<h1>{{ .Title }}</h1>
+{{ with .Params.subtitle }}<p><em>{{ . }}</em></p>{{ end }}
+<p>{{ .Date.Format "January 2, 2006" }}</p>
+<hr>
+{{ .Content }}
+</body>
+</html>

@@ -43,6 +43,13 @@ body.page.writing .meta-status {
   color: var(--accent);
   opacity: 0.85;
 }
+body.page.writing .meta-link {
+  color: var(--accent);
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+body.page.writing .meta-link:hover { opacity: 1; text-decoration: underline; }
 
 /* Optional abstract block above the article content */
 body.page.writing .article-abstract {

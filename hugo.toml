@@ -19,6 +19,14 @@ enableRobotsTXT = true
   home = ["HTML", "RSS"]
   section = ["HTML"]
 
+# Custom "Raw" output — bare HTML rendering of a page with no site chrome.
+# Enabled on writing pages via cascade in content/writing/_index.md.
+[outputFormats.Raw]
+  mediaType = "text/html"
+  baseName = "raw"
+  isPlainText = false
+  notAlternative = false
+
 [sitemap]
   changeFreq = "weekly"
   priority = 0.5

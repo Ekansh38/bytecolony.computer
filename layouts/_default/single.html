@@ -17,6 +17,9 @@
   {{ with .Params.status }} <span class="meta-sep">·</span> <span class="meta-status">{{ . }}</span>{{ end }}
   {{ if eq .Section "writing" }}
   <span class="meta-sep">·</span> {{ .ReadingTime }} min read
+  {{ with .OutputFormats.Get "raw" }}
+  <span class="meta-sep">·</span> <a class="meta-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw ↗</a>
+  {{ end }}
   {{ end }}
 </div>
 
