@@ -522,7 +522,7 @@ To add three binary numbers we use two half adders and a OR gate:
 
 *Diagram 5.8. A full adder.*
 
-This might look confusing at first. What if both half adders output a carry at the same time?
+This might look confusing at first. What if both half adders output a carry-out at the same time?
 
 That actually never happens. If a half adder outputs a carry, the sum bit is always 0. So both are not able to output carries. Take a moment to think about this if you are confused.
 
@@ -582,7 +582,7 @@ For example, if the answer is `00000000`, a ZERO flag can turn on. If addition s
 
 I don't want to go deep into flags yet. Just remember that the adder can output little yes/no facts about the sum. That matters later for instructions like "jump if zero." But let's not get ahead of ourselves.
 
-Now let's see if we can build a circuit that counts by ones.
+Now let's see if we can build a circuit that counts by ones like, 1, 2, 3, 4,...
 
 The obvious idea is to feed the output of the adder back into one of its inputs. Start with `00000000`, add `00000001`, get `00000001`. Feed that back in, add `00000001` again, get `00000010`. Then `00000011`, then `00000100`, and so on.
 
