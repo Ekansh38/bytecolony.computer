@@ -512,7 +512,7 @@ The half adder can handle the first column: `1 + 1`. That gives us a sum bit of 
 
 But now the next column has three things to add: `1 + 1 + 1`. The two original bits, plus the carry from the previous column.
 
-A half adder cannot do that. It only accepts two inputs. To continue adding across multiple columns, we need a circuit that can take three inputs: `A`, `B`, and `carry-in`.
+A half adder cannot do that. It only accepts two inputs. To continue adding up the other columns, we need a circuit that can take in three inputs: `A`, `B`, and `carry-in`.
 
 To add three binary numbers we use two half adders and a OR gate:
 
