@@ -1,96 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-mode="dark" data-dark-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ .Title }}</title>
 <meta name="robots" content="noindex">
+
+<!-- github-markdown-css (Sindre Sorhus): the CSS GitHub uses to render markdown.
+     Same stylesheet that markdown-preview.nvim ships with. -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-dark.min.css">
+
+<!-- Recommended container snippet from the github-markdown-css README -->
 <style>
-  /* Truly raw — think markdown-preview.nvim: dark bg, mono, near-zero chrome. */
-  html, body { background: #0d1017; color: #c0caf5; margin: 0; padding: 0; }
   body {
-    font: 15px/1.7 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    max-width: 860px;
+    box-sizing: border-box;
+    min-width: 200px;
+    max-width: 980px;
     margin: 0 auto;
-    padding: 40px 24px 80px;
+    padding: 45px;
+    background-color: #0d1117;
   }
-  h1 { font-size: 1.8rem; margin: 0 0 0.4em; line-height: 1.25; }
-  h2 { font-size: 1.25rem; margin: 2em 0 0.6em; }
-  h3 { font-size: 1.05rem; margin: 1.6em 0 0.5em; }
-  p, li, blockquote, table { margin: 0 0 1em; }
-  ul, ol { padding-left: 1.6em; }
-  li { margin-bottom: 0.3em; }
-  hr { border: none; border-top: 1px solid #22283a; margin: 1.5em 0; }
-  a { color: #7aa2f7; }
-  a:hover { text-decoration: underline; }
-  strong { color: #d5deff; }
-  em, i { color: #c0caf5; }
-
-  code {
-    background: #171b26;
-    padding: 1px 5px;
-    border-radius: 3px;
-    font-size: 0.9em;
-  }
-  pre {
-    background: #171b26;
-    padding: 12px 14px;
-    border-radius: 3px;
-    overflow-x: auto;
-    font-size: 0.82rem;
-    line-height: 1.6;
-    margin: 1em 0;
-  }
-  pre code { background: none; padding: 0; font-size: inherit; }
-
-  img, svg { max-width: 100%; height: auto; display: block; }
-
-  /* Reset process.py's wrapper — raw means raw, no dark boxes */
-  .svg-diagram,
-  .svg-diagram.small {
-    background: none;
-    padding: 0;
-    border: none;
-    margin: 1.2em 0;
-    text-align: left;
-  }
-  .svg-diagram svg,
-  .svg-diagram img {
-    max-width: 100%;
-    height: auto;
-    margin: 0;
-  }
-  /* Caption immediately after a diagram — just an italic line */
-  .svg-diagram + p em { color: #7a88b8; }
-
-  /* GFM alert callouts — minimal indicator */
-  .callout {
-    border-left: 2px solid #7aa2f7;
-    padding: 4px 12px;
-    margin: 1em 0;
-  }
-  .callout-label {
-    font-size: 0.72rem;
-    color: #7aa2f7;
-    letter-spacing: 0.08em;
-    margin-bottom: 4px;
-  }
-  .callout-body p { margin: 0; }
-
-  table { border-collapse: collapse; }
-  th, td { border: 1px solid #22283a; padding: 4px 10px; }
-
-  sup { font-size: 0.72em; vertical-align: super; line-height: 0; }
+  @media (max-width: 767px) { body { padding: 15px; } }
+  .markdown-body img,
+  .markdown-body svg { max-width: 100%; height: auto; }
 </style>
 </head>
 <body>
-
-<h1>{{ .Title }}</h1>
-<p style="color:#7a88b8;font-size:0.82rem;margin:0 0 20px;">{{ .Date.Format "2006-01-02" }}</p>
-<hr>
-
-{{ .Content }}
-
+<article class="markdown-body">
+  <h1>{{ .Title }}</h1>
+  <p><em>{{ .Date.Format "2006-01-02" }}</em></p>
+  <hr>
+  {{ .Content }}
+</article>
 <script>
 document.querySelectorAll('.callout-body br').forEach(function(br){
   br.replaceWith(document.createTextNode(' '));
