@@ -482,19 +482,31 @@ Now lets do the carry value. The carry is simple! We only want to carry if we ar
 
 Now here is our half adder:
 
-<diagram, use the xor gate>
+<a id="diagram-5-5"></a> 
+
+<div class="svg-diagram"><img src="/assets/final/half-adder.gif" alt="A half adder"></div>
+
+*Diagram 5.5. A half adder.*
+
+As you can see it works! `0+0 = 0, 1+0 = 1, 0+1 = 1, and 1+1 = 10`!
 
 Now lets package up our half adder into a little box:
 
-<half adder diagram in a box with inputs and outputs>
+<a id="diagram-5-6"></a> 
+
+{{< svg "final/half-adder-box" >}}
+
+*Diagram 5.6. A half adder chip.*
 
 Now that we have a half adder, we can add the rightmost column. That works because the rightmost column has no carry-in from a previous column. It only needs to add two bits.
 
 So if we have a number like this:
 
-    1111
-+   1111
--------- <diagram>
+<a id="diagram-5-7"></a> 
+
+{{< svg "final/carry-in-issue" >}}
+
+*Diagram 5.7. We can't add 3 numbers yet!*
 
 The half adder can handle the first column: `1 + 1`. That gives us a sum bit of `0` and a carry-out of `1`.
 
@@ -504,7 +516,11 @@ A half adder cannot do that. It only accepts two inputs. To continue adding acro
 
 To add three binary numbers we use two half adders and a OR gate:
 
-<diagram>
+<a id="diagram-5-8"></a> 
+
+<div class="svg-diagram"><img src="/assets/final/full-adder.gif" alt="A full adder"></div>
+
+*Diagram 5.8. A full adder.*
 
 This might look confusing at first. What if both half adders output a carry at the same time?
 
@@ -514,19 +530,51 @@ So we can confidently OR the two carry outputs together. If either one is `1`, t
 
 Let's again package this up into a box:
 
-<diagram, full adder>
+<a id="diagram-5-9"></a> 
+
+{{< svg "final/full-adder-box" >}}
+
+*Diagram 5.9. A full adder chip.*
 
 We have made a full adder!
 
-Now we can chain full adders together to add two 8-bit numbers. One 8-bit number can represent any number form 0-255.
+Now we can chain full adders together to add two 8-bit numbers. One 8-bit number can represent any number form 0-255. That is 256 total combinations because `2^8` is 256.
 
-<diagram>
+<a id="diagram-5-10"></a> 
+
+{{< svg "final/8-bit-adder" >}}
+
+*Diagram 5.10. An 8-bit adder.*
 
 Each full adder handles one column. The carry-out from one column becomes the carry-in for the next column. That is it! That is all addition is!
 
+Keep in mind carry-in for the first adder is set to ground, a.k.a 0.
+
+Also notice how we have 9 outputs, not 8, that is because two 8-bit values can add up to a number greater than eight bits. Its like how adding two 2-digit numbers could result in a three digit number for us. Like `50+50=100`.
+
 Now let's package that up into a box once again:
 
-<diagram, animated>
+<a id="diagram-5-11"></a> 
+
+{{< svg "final/8-bit-adder-box" >}}
+
+*Diagram 5.11. An 8-bit adder chip.*
+
+Now we have the carry-out and carry-in as separate inputs and outputs and the whole adder nicely organized into this chip.
+
+Lets have a look at some example problems:
+
+<a id="diagram-5-12"></a> 
+
+<div class="svg-diagram"><img src="/assets/final/8-bit-adder-examples.gif" alt="Some examples on the adder"></div>
+
+*Diagram 5.12. Some examples on the adder.*
+
+As you can see in the third example, adding 1 to 255 turns every sum bit to `0` and turns the carry-out on.
+
+This doesn't mean the adder got the wrong answer. In fact, `255 + 1` is `1 00000000` in binary: eight `0` sum bits, plus one extra carry-out bit on the left. If we only look at the eight sum bits, the result looks like `00000000`, or 0. If we also look at the carry-out, we can see that the real answer was 256.
+
+That is called an overflow: the result was too large to fit inside eight bits, so the extra information spilled out into the carry-out bit.
 
 The adder can also produce little status wires, called flags.
 
