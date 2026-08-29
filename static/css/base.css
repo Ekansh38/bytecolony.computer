@@ -326,6 +326,18 @@ body.page .hero-img {
   src: url('/fonts/tldraw_mono.woff2') format('woff2');
 }
 
+/* Reset article typography inheritance INTO foreignObject content. tldraw's
+   foreignObject wraps text in <p> elements which are then hit by the article's
+   `body.page.writing main p` rules (font-size 16.5px, margins, line-height),
+   shrinking the text below the width tldraw sized the foreignObject for →
+   labels drift left of center inside chip boxes. !important beats the site's
+   higher-specificity rule so tldraw's own inline font-size (24px) inherits in. */
+.svg-diagram svg foreignObject p {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  margin: 0 !important;
+}
+
 /* ── INLINE SVG DIAGRAMS (via {{< svg >}} shortcode) ────────── */
 .svg-diagram {
   display: block;
