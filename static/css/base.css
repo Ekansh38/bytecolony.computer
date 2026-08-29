@@ -313,6 +313,19 @@ body.page .hero-img {
   opacity: 1; filter: brightness(1.06);
 }
 
+/* tldraw's monospace font — extracted from tldraw's SVG exports and loaded
+   site-globally so the foreignObject text inside each diagram uses the exact
+   font (and glyph metrics) tldraw laid the diagrams out with. Without this,
+   text falls back to the system monospace and centering inside chip boxes
+   drifts because the fallback glyphs have different advance widths. */
+@font-face {
+  font-family: 'tldraw_mono';
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+  src: url('/fonts/tldraw_mono.woff2') format('woff2');
+}
+
 /* ── INLINE SVG DIAGRAMS (via {{< svg >}} shortcode) ────────── */
 .svg-diagram {
   display: block;
