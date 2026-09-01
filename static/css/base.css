@@ -345,10 +345,13 @@ body.page .hero-img {
   max-width: 640px;
   background: #0a0a0a;
   padding: 10px 12px;        /* tight — SVGs already carry their own internal padding */
-  border-radius: 4px;
+  border-radius: 10px;
   border: 1px solid rgba(255,255,255,0.08);
   opacity: 0.92;
   text-align: center;
+  box-shadow:
+    0 14px 40px -20px rgba(0, 0, 0, 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.06);
 }
 .svg-diagram svg,
 .svg-diagram img {
@@ -372,18 +375,14 @@ body.page .hero-img {
   max-height: 260px;
 }
 
-/* Light-theme diagram treatment — warm the dark so it doesn't punch out of the
-   cream page, and float the wrapper on a soft shadow so it reads as an
-   embedded panel rather than a hard cut. Dark themes untouched. */
+/* Light themes: warm the dark background so it doesn't punch out of the cream
+   page. Radius/shadow live on the base rule so all themes get the same panel
+   treatment. */
 :root[data-theme="rose-pine"] .svg-diagram,
 :root[data-theme="github-light"] .svg-diagram,
 :root[data-theme="papercolor-light"] .svg-diagram {
   background: #1e1c1a;
-  border-radius: 10px;
   border-color: rgba(0, 0, 0, 0.12);
-  box-shadow:
-    0 14px 40px -20px rgba(0, 0, 0, 0.35),
-    0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 /* Caption immediately after a diagram — styled as figcaption, visually
