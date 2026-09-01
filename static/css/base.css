@@ -349,9 +349,18 @@ body.page .hero-img {
   border: 1px solid rgba(255,255,255,0.08);
   opacity: 0.92;
   text-align: center;
+  cursor: zoom-in;
   box-shadow:
     0 14px 40px -20px rgba(0, 0, 0, 0.35),
     0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+.svg-diagram:hover {
+  transform: translateY(-2px);
+  opacity: 1;
+  box-shadow:
+    0 22px 55px -22px rgba(0, 0, 0, 0.5),
+    0 4px 10px rgba(0, 0, 0, 0.1);
 }
 .svg-diagram svg,
 .svg-diagram img {
@@ -383,6 +392,90 @@ body.page .hero-img {
 :root[data-theme="papercolor-light"] .svg-diagram {
   background: #1e1c1a;
   border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* ── DIAGRAM LIGHTBOX (JS-driven full-screen viewer) ─────────── */
+.diagram-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+  overflow: auto;
+}
+.diagram-lightbox.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.diagram-lightbox-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: min(1200px, 95vw);
+  margin: auto;
+}
+.diagram-lightbox-panel {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 20px 24px;
+  max-width: 100%;
+  max-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7);
+}
+.diagram-lightbox-panel svg,
+.diagram-lightbox-panel img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(80vh - 44px);
+}
+.diagram-lightbox-caption {
+  font-family: 'JetBrains Mono', monospace;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+  max-width: 60ch;
+  line-height: 1.55;
+}
+.diagram-lightbox-close {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.85);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.diagram-lightbox-close:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+}
+body.lightbox-open { overflow: hidden; }
+
+@media (max-width: 700px) {
+  .diagram-lightbox { padding: 60px 12px 20px; }
+  .diagram-lightbox-panel { padding: 12px; }
 }
 
 /* Caption immediately after a diagram — styled as figcaption, visually
