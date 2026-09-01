@@ -372,6 +372,20 @@ body.page .hero-img {
   max-height: 260px;
 }
 
+/* Light-theme diagram treatment — warm the dark so it doesn't punch out of the
+   cream page, and float the wrapper on a soft shadow so it reads as an
+   embedded panel rather than a hard cut. Dark themes untouched. */
+:root[data-theme="rose-pine"] .svg-diagram,
+:root[data-theme="github-light"] .svg-diagram,
+:root[data-theme="papercolor-light"] .svg-diagram {
+  background: #1e1c1a;
+  border-radius: 10px;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 14px 40px -20px rgba(0, 0, 0, 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
 /* Caption immediately after a diagram — styled as figcaption, visually
    attached to the image (tight top gap, centered, muted, italic).
    Higher-specificity selector to override body.page.writing p defaults. */
