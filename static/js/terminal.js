@@ -495,6 +495,7 @@
 
     color:   'color\n  bg  fg  accent  muted  border',
     whoami:  'whoami',
+    internal:'internal [on|off]\n  toggle analytics self-exclusion for this browser',
     cowsay:  'cowsay [text]\n  cowsay hello world',
     ps:      'ps',
     df:      'df',
@@ -1410,6 +1411,26 @@
     whoami: function (args) {
       if (args.length) { tooMany('whoami'); return; }
       line('idk who u are');
+    },
+
+    internal: function (args) {
+      if (args.length > 1) { tooMany('internal'); return; }
+      var cur = '';
+      try { cur = localStorage.getItem('bc_internal') || ''; } catch (e) {}
+      var m = args[0];
+      if (!m) {
+        line('internal: ' + (cur === '1' ? 'on  (analytics beacons suppressed)' : 'off'), 'term-line-ok');
+        return;
+      }
+      if (m === 'on' || m === 'true' || m === '1') {
+        try { localStorage.setItem('bc_internal', '1'); } catch (e) {}
+        line('internal → on. your views won\'t hit the analytics store from this browser.', 'term-line-ok');
+      } else if (m === 'off' || m === 'false' || m === '0') {
+        try { localStorage.removeItem('bc_internal'); } catch (e) {}
+        line('internal → off. this browser will be counted again.', 'term-line-ok');
+      } else {
+        line('internal: expected  on  or  off', 'term-line-err');
+      }
     },
 
     neofetch: function (args) {
