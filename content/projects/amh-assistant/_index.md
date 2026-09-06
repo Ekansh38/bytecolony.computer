@@ -3,7 +3,7 @@ title: "AMH Assistant"
 weight: 2
 layout: "list"
 summary: "AI assistant built for a 40-person company. Connects Trello, Gmail, Sheets, WhatsApp in one chat."
-stack: "Python · Anthropic API · Composio MCP · Vercel"
+stack: "Python, Anthropic API, Composio MCP, Vercel"
 status: "live"
 shipped: true
 live: "https://amh-assistant.vercel.app/"

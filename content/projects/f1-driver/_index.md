@@ -3,7 +3,7 @@ title: "f1-driver"
 weight: 5
 layout: "list"
 summary: "Top-down F1 style racing game with custom maps, cryptographically authenticated laptimes, and easy installs."
-stack: "Python · Pygame"
+stack: "Python, Pygame"
 status: "complete"
 github: "https://github.com/ekansh38/f1-driver"
 ---

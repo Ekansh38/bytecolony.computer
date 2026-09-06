@@ -3,7 +3,7 @@ title: "The CPU Article"
 weight: 1
 layout: "list"
 summary: "A writeup of how a CPU works, from basic circuits to a simple CPU."
-stack: "writing · diagrams · animation"
+stack: "writing, diagrams, animation"
 status: "published"
 article: "/writing/the-cpu/"
 pdf: "/assets/the-cpu-explainer.pdf"

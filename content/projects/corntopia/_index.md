@@ -3,7 +3,7 @@ title: "Corntopia"
 weight: 3
 layout: "list"
 summary: "Virtual school economy. crypto exchange, marketplace, got shut down."
-stack: "Django · Python · SQLite"
+stack: "Django, Python, SQLite"
 status: "shutdown"
 github: "https://github.com/ekansh38/corn-coins"
 date: 2025-02-17
