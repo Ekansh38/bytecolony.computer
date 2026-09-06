@@ -539,20 +539,22 @@ body.lightbox-open { overflow: hidden; }
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 26%;
+  width: 22%;
   background: transparent;
   border: none;
   cursor: pointer;
-  color: transparent;
+  color: rgba(255, 255, 255, 0.22);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 1.4rem;
+  font-size: 2rem;
   transition: color 0.15s ease;
+  display: flex;
+  align-items: center;
 }
-.fx-zone-prev { left: 0; }
-.fx-zone-next { right: 0; }
+.fx-zone-prev { left: 0; justify-content: flex-start; padding-left: 14px; }
+.fx-zone-next { right: 0; justify-content: flex-end; padding-right: 14px; }
 .fx-zone-prev::before { content: "\2039"; }
 .fx-zone-next::before { content: "\203A"; }
-.fx-zone:hover { color: rgba(255, 255, 255, 0.75); }
+.fx-zone:hover { color: var(--accent); }
 
 .fx-side {
   display: flex;
@@ -568,7 +570,6 @@ body.lightbox-open { overflow: hidden; }
   font-weight: 700;
   font-size: 0.95rem;
   color: #fff;
-  text-transform: lowercase;
 }
 .fx-side-counter {
   font-size: 0.78rem;
@@ -606,6 +607,22 @@ body.lightbox-open { overflow: hidden; }
   color: var(--accent);
   border-color: var(--accent);
   background: rgba(255, 255, 255, 0.04);
+}
+/* unmistakable playing state: filled pill + pulsing accent ring on the stage */
+.fx-btn.playing {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0a0a0a;
+  font-weight: 700;
+}
+.fx-btn.playing:hover { color: #0a0a0a; }
+.fx-stage.playing {
+  border-color: var(--accent);
+  animation: fx-playing-pulse 1.4s ease-in-out infinite;
+}
+@keyframes fx-playing-pulse {
+  0%, 100% { box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7), 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+  50%      { box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7), 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
 }
 
 /* filmstrip */

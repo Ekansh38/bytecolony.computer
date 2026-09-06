@@ -73,9 +73,8 @@
               '<div class="fx-side-counter"></div>' +
               '<div class="fx-side-caption"></div>' +
               '<div class="fx-side-controls">' +
-                '<button class="fx-btn fx-prev" type="button" aria-label="Previous frame">&larr;</button>' +
                 '<button class="fx-btn fx-play" type="button">play</button>' +
-                '<button class="fx-btn fx-next" type="button" aria-label="Next frame">&rarr;</button>' +
+                '<button class="fx-btn fx-speed" type="button" title="Playback speed">1x</button>' +
                 '<button class="fx-btn fx-gallery-btn" type="button">grid</button>' +
                 '<button class="fx-btn fx-gif-btn" type="button">gif</button>' +
               '</div>' +
@@ -90,11 +89,10 @@
     overlay.addEventListener('click', function (e) {
       if (e.target === overlay) closeAll();
     });
-    overlay.querySelector('.fx-prev').addEventListener('click', function () { step(-1); });
-    overlay.querySelector('.fx-next').addEventListener('click', function () { step(1); });
     overlay.querySelector('.fx-zone-prev').addEventListener('click', function () { step(-1); });
     overlay.querySelector('.fx-zone-next').addEventListener('click', function () { step(1); });
     overlay.querySelector('.fx-play').addEventListener('click', togglePlay);
+    overlay.querySelector('.fx-speed').addEventListener('click', cycleSpeed);
     overlay.querySelector('.fx-gallery-btn').addEventListener('click', toggleGallery);
     overlay.querySelector('.fx-gif-btn').addEventListener('click', function () {
       // back to the animated gif in zoom view
@@ -269,18 +267,29 @@
     showFrame((st.frame + d + m.frames.length) % m.frames.length);
   }
 
-  // ── play/pause at the gif's own cadence ──────────────────────
+  // ── play/pause at the gif's own cadence, scaled by the speed pill ──
+  var SPEEDS = [0.5, 1, 2, 4];
+  var speedIdx = 1;
+
+  function cycleSpeed() {
+    speedIdx = (speedIdx + 1) % SPEEDS.length;
+    q('.fx-speed').textContent = String(SPEEDS[speedIdx]).replace('0.5', '.5') + 'x';
+  }
+
   function togglePlay() {
     if (st.playing) { stopPlay(); return; }
     if (!st.manifest || st.mode !== 'frames') return;
     st.playing = true;
-    q('.fx-play').textContent = 'stop';
+    var btn = q('.fx-play');
+    btn.textContent = 'stop';
+    btn.classList.add('playing');
+    q('.fx-stage').classList.add('playing');
     tick();
   }
   function tick() {
     if (!st.playing) return;
     var m = st.manifest;
-    var delay = m.frames[st.frame].delay || 100;
+    var delay = (m.frames[st.frame].delay || 100) / SPEEDS[speedIdx];
     st.playTimer = setTimeout(function () {
       if (!st.playing) return;
       showFrame((st.frame + 1) % m.frames.length);
@@ -290,7 +299,12 @@
   function stopPlay() {
     st.playing = false;
     if (st.playTimer) { clearTimeout(st.playTimer); st.playTimer = null; }
-    if (overlay) q('.fx-play').textContent = 'play';
+    if (overlay) {
+      var btn = q('.fx-play');
+      btn.textContent = 'play';
+      btn.classList.remove('playing');
+      q('.fx-stage').classList.remove('playing');
+    }
   }
 
   // ── gallery mode ─────────────────────────────────────────────
