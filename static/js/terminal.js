@@ -255,7 +255,6 @@
       'system',
       '',
       '  neofetch   system info',
-      '  top        processes',
       '  ps         process list',
       '  df         disk',
       '  env        site + sim vars',
@@ -497,7 +496,6 @@
     color:   'color\n  bg  fg  accent  muted  border',
     whoami:  'whoami',
     cowsay:  'cowsay [text]\n  cowsay hello world',
-    top:     'top',
     ps:      'ps',
     df:      'df',
     env:     'env\n  SITE  COLORSCHEME  BG_MODE  BG_SPEED(%)  all params',
@@ -1411,7 +1409,7 @@
 
     whoami: function (args) {
       if (args.length) { tooMany('whoami'); return; }
-      line('byte colony. 13. building things. bjj. music.');
+      line('idk who u are');
     },
 
     neofetch: function (args) {
@@ -1658,26 +1656,6 @@
         '  102  terminal.js          0.3    0.2',
         '  256  music-brain          0.1    ?.?',
         ' 1337  colony               99.9   ∞',
-      ].join('\n'), 'term-line-pre');
-    },
-
-    top: function (args) {
-      if (args.length) { tooMany('top'); return; }
-      var p = window.getBgParams ? window.getBgParams() : {};
-      line([
-        'top - ' + new Date().toTimeString().slice(0,8) + '  up ' + (function(){
-          var s=Math.floor((Date.now()-PAGE_START)/1000),m=Math.floor(s/60)%60,h=Math.floor(s/3600);
-          return (h?h+'h ':'')+m+'m';
-        })() + ',  tasks: 6 total',
-        'cpu: usr 14.2%  sys 3.1%  idle 82.7%',
-        'mem: 512M total  341M used  171M free',
-        '',
-        '  PID  USER     %CPU  %MEM  COMMAND',
-        ' 1337  colony   99.9  ∞     colony',
-        '   88  www      ' + (p['boids.n']||120)/6|0 + '.1   1.4   boids (n=' + (p['boids.n']||120) + ')',
-        '   89  www       1.7   0.9   life (cell=' + (p['life.cell']||7) + 'px)',
-        '  102  www       0.3   0.2   terminal.js',
-        '    1  root      0.0   0.1   kernel',
       ].join('\n'), 'term-line-pre');
     },
 
