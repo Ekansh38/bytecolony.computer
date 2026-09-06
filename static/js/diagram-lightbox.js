@@ -60,7 +60,6 @@
       '<div class="diagram-lightbox-inner" role="dialog" aria-modal="true" aria-label="Diagram viewer">' +
         '<div class="diagram-lightbox-panel"></div>' +
         '<div class="diagram-lightbox-caption"></div>' +
-        '<button class="fx-open-btn" type="button">[ view frames ]</button>' +
         '<div class="fx" hidden>' +
           '<div class="fx-body">' +
             '<div class="fx-stage">' +
@@ -68,22 +67,21 @@
               '<button class="fx-zone fx-zone-prev" aria-label="Previous frame"></button>' +
               '<button class="fx-zone fx-zone-next" aria-label="Next frame"></button>' +
             '</div>' +
+            '<div class="fx-gallery" hidden></div>' +
             '<div class="fx-side">' +
               '<div class="fx-side-title"></div>' +
               '<div class="fx-side-counter"></div>' +
               '<div class="fx-side-caption"></div>' +
               '<div class="fx-side-controls">' +
-                '<button class="fx-btn fx-prev" type="button">[&larr;]</button>' +
-                '<button class="fx-btn fx-play" type="button">[play]</button>' +
-                '<button class="fx-btn fx-next" type="button">[&rarr;]</button>' +
-                '<button class="fx-btn fx-gallery-btn" type="button">[grid]</button>' +
-                '<button class="fx-btn fx-gif-btn" type="button">[gif]</button>' +
+                '<button class="fx-btn fx-prev" type="button" aria-label="Previous frame">&larr;</button>' +
+                '<button class="fx-btn fx-play" type="button">play</button>' +
+                '<button class="fx-btn fx-next" type="button" aria-label="Next frame">&rarr;</button>' +
+                '<button class="fx-btn fx-gallery-btn" type="button">grid</button>' +
+                '<button class="fx-btn fx-gif-btn" type="button">gif</button>' +
               '</div>' +
-              '<div class="fx-side-keys">arrows step &middot; space plays &middot; g grid</div>' +
             '</div>' +
           '</div>' +
           '<div class="fx-strip" role="listbox" aria-label="Frames"></div>' +
-          '<div class="fx-gallery" hidden></div>' +
         '</div>' +
       '</div>';
     document.body.appendChild(overlay);
@@ -91,9 +89,6 @@
     overlay.querySelector('.diagram-lightbox-close').addEventListener('click', closeAll);
     overlay.addEventListener('click', function (e) {
       if (e.target === overlay) closeAll();
-    });
-    overlay.querySelector('.fx-open-btn').addEventListener('click', function () {
-      enterFrames(st.name, 0);
     });
     overlay.querySelector('.fx-prev').addEventListener('click', function () { step(-1); });
     overlay.querySelector('.fx-next').addEventListener('click', function () { step(1); });
@@ -128,7 +123,6 @@
         if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
         else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
         else if (e.key === ' ') { e.preventDefault(); togglePlay(); }
-        else if (e.key === 'g' || e.key === 'G') { toggleGallery(); }
       }
     });
     return overlay;
@@ -185,14 +179,6 @@
     captionEl.textContent = captionText;
     captionEl.style.display = captionText ? '' : 'none';
 
-    var openBtn = q('.fx-open-btn');
-    openBtn.hidden = true;
-    if (st.name) {
-      getIndex().then(function (idx) {
-        if (st.mode === 'zoom' && idx[st.name]) openBtn.hidden = false;
-      });
-    }
-
     ov.classList.add('open');
     ov.setAttribute('aria-hidden', 'false');
     document.body.classList.add('lightbox-open');
@@ -208,12 +194,12 @@
       st.manifest = m;
       q('.diagram-lightbox-panel').style.display = 'none';
       q('.diagram-lightbox-caption').style.display = 'none';
-      q('.fx-open-btn').hidden = true;
       q('.fx').hidden = false;
       q('.fx-gallery').hidden = true;
-      q('.fx-body').hidden = false;
+      q('.fx-stage').hidden = false;
       q('.fx-strip').hidden = false;
-      q('.fx-side-title').textContent = m.title;
+      q('.fx-gallery-btn').textContent = 'grid';
+      q('.fx-side-title').textContent = figureCaption(findDiagram(name)) || m.title;
       buildStrip(m);
       showFrame(Math.max(0, Math.min(frameIdx || 0, m.frames.length - 1)));
       overlay.classList.add('open');
@@ -288,7 +274,7 @@
     if (st.playing) { stopPlay(); return; }
     if (!st.manifest || st.mode !== 'frames') return;
     st.playing = true;
-    q('.fx-play').textContent = '[stop]';
+    q('.fx-play').textContent = 'stop';
     tick();
   }
   function tick() {
@@ -304,41 +290,37 @@
   function stopPlay() {
     st.playing = false;
     if (st.playTimer) { clearTimeout(st.playTimer); st.playTimer = null; }
-    if (overlay) q('.fx-play').textContent = '[play]';
+    if (overlay) q('.fx-play').textContent = 'play';
   }
 
   // ── gallery mode ─────────────────────────────────────────────
+  function exitGallery(frameIdx) {
+    st.mode = 'frames';
+    q('.fx-gallery').hidden = true;
+    q('.fx-stage').hidden = false;
+    q('.fx-strip').hidden = false;
+    q('.fx-gallery-btn').textContent = 'grid';
+    showFrame(frameIdx);
+  }
+
   function toggleGallery() {
-    if (st.mode === 'gallery') {
-      st.mode = 'frames';
-      q('.fx-gallery').hidden = true;
-      q('.fx-body').hidden = false;
-      q('.fx-strip').hidden = false;
-      q('.fx-gallery-btn').textContent = '[grid]';
-      showFrame(st.frame);
-      return;
-    }
+    if (st.mode === 'gallery') { exitGallery(st.frame); return; }
     if (st.mode !== 'frames') return;
     stopPlay();
     st.mode = 'gallery';
-    buildGallery(q('.fx-gallery'), st.manifest, function (i) {
-      st.mode = 'frames';
-      q('.fx-gallery').hidden = true;
-      q('.fx-body').hidden = false;
-      q('.fx-strip').hidden = false;
-      q('.fx-gallery-btn').textContent = '[grid]';
-      showFrame(i);
-    }, st.frame);
-    q('.fx-body').hidden = true;
+    buildGallery(q('.fx-gallery'), st.manifest, exitGallery, st.frame);
+    q('.fx-stage').hidden = true;
     q('.fx-strip').hidden = true;
     q('.fx-gallery').hidden = false;
-    q('.fx-gallery-btn').textContent = '[film]';
+    q('.fx-gallery-btn').textContent = 'frame';
   }
 
   function buildGallery(container, m, onPick, currentIdx) {
     container.innerHTML = '';
-    if (m.grid > 0) container.style.setProperty('--fx-cols', m.grid);
-    else container.style.removeProperty('--fx-cols');
+    // pick a column count that fits every frame on screen at once
+    var cols = m.grid > 0 ? m.grid : Math.ceil(Math.sqrt(m.frames.length));
+    container.style.setProperty('--fx-cols', cols);
+    container.style.setProperty('--fx-rows', Math.ceil(m.frames.length / cols));
     m.frames.forEach(function (f, i) {
       var cell = document.createElement('div');
       cell.className = 'fx-cell' + (i === currentIdx ? ' current' : '');
@@ -398,7 +380,16 @@
     if (!diagram) return;
     if (e.target.closest('a')) return;
     e.preventDefault();
-    openZoom(diagram);
+    var name = gifName(diagram);
+    if (name) {
+      // GIFs with extracted frames open straight into the frame explorer
+      getIndex().then(function (idx) {
+        if (idx[name]) enterFrames(name, 0);
+        else openZoom(diagram);
+      });
+    } else {
+      openZoom(diagram);
+    }
   });
 
   // ── page-load entries: #f= deep link, ?frames=all reader mode ─
@@ -407,6 +398,8 @@
     document.querySelectorAll('.svg-diagram img').forEach(function (img) {
       img.draggable = false;
     });
+    // warm the index so the first diagram click opens without a wait
+    if (document.querySelector('.svg-diagram img')) getIndex();
     var m = /^#f=([a-z0-9-]+):(\d+)$/i.exec(location.hash);
     if (m) {
       var name = m[1], idx = parseInt(m[2], 10) - 1;
