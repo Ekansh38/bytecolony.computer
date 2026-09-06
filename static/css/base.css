@@ -373,11 +373,12 @@ body.page .hero-img {
   transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 .svg-diagram:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px) scale(1.012);
   opacity: 1;
+  border-color: color-mix(in srgb, var(--accent) 45%, rgba(255,255,255,0.08));
   box-shadow:
-    0 22px 55px -22px rgba(0, 0, 0, 0.5),
-    0 4px 10px rgba(0, 0, 0, 0.1);
+    0 30px 70px -24px rgba(0, 0, 0, 0.62),
+    0 6px 16px rgba(0, 0, 0, 0.14);
 }
 .svg-diagram svg,
 .svg-diagram img {
@@ -493,6 +494,234 @@ body.lightbox-open { overflow: hidden; }
 @media (max-width: 700px) {
   .diagram-lightbox { padding: 60px 12px 20px; }
   .diagram-lightbox-panel { padding: 12px; }
+}
+
+/* ── FRAME EXPLORER (inside the lightbox) ────────────────────── */
+.fx {
+  width: min(1200px, 95vw);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.fx[hidden] { display: none; }
+
+.fx-open-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px 10px;
+  letter-spacing: 0.02em;
+  transition: color 0.15s ease;
+}
+.fx-open-btn:hover { color: var(--accent); }
+.fx-open-btn[hidden] { display: none; }
+
+.fx-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 264px;
+  gap: 16px;
+  align-items: stretch;
+}
+.fx-body[hidden] { display: none; }
+
+.fx-stage {
+  position: relative;
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7);
+  min-height: 200px;
+}
+.fx-img {
+  display: block;
+  max-width: 100%;
+  max-height: 62vh;
+  width: auto;
+  height: auto;
+}
+.fx-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 26%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: transparent;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.4rem;
+  transition: color 0.15s ease;
+}
+.fx-zone-prev { left: 0; }
+.fx-zone-next { right: 0; }
+.fx-zone-prev::before { content: "\2039"; }
+.fx-zone-next::before { content: "\203A"; }
+.fx-zone:hover { color: rgba(255, 255, 255, 0.75); }
+
+.fx-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(10, 10, 10, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 18px;
+  color: rgba(255, 255, 255, 0.85);
+}
+.fx-side-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+  text-transform: lowercase;
+}
+.fx-side-counter {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+.fx-side-caption {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  flex: 1;
+  min-height: 3.2em;
+}
+.fx-side-caption.empty {
+  color: rgba(255, 255, 255, 0.35);
+  font-style: italic;
+}
+.fx-side-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+}
+.fx-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 4px 2px;
+  transition: color 0.12s ease;
+}
+.fx-btn:hover { color: var(--accent); }
+.fx-side-keys {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.32);
+  letter-spacing: 0.03em;
+}
+
+/* filmstrip */
+.fx-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  scrollbar-width: thin;
+}
+.fx-strip[hidden] { display: none; }
+.fx-thumb {
+  position: relative;
+  flex: 0 0 auto;
+  width: 96px;
+  background: #0a0a0a;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
+  opacity: 0.75;
+}
+.fx-thumb img { display: block; width: 100%; height: auto; border-radius: 3px; }
+.fx-thumb:hover { opacity: 1; }
+.fx-thumb.current {
+  border-color: var(--accent);
+  opacity: 1;
+}
+.fx-thumb-num {
+  position: absolute;
+  bottom: 6px;
+  right: 7px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.65);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* gallery grid (lightbox and inline) */
+.fx-gallery {
+  display: grid;
+  grid-template-columns: repeat(var(--fx-cols, 2), minmax(0, 1fr));
+  gap: 14px;
+  max-height: 78vh;
+  overflow-y: auto;
+  padding: 4px;
+}
+.fx-gallery[hidden] { display: none; }
+.fx-cell {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.fx-cell:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  transform: translateY(-2px);
+}
+.fx-cell.current { border-color: var(--accent); }
+.fx-cell img { display: block; width: 100%; height: auto; border-radius: 4px; }
+.fx-cell-meta {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-top: 8px;
+}
+.fx-cell-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.fx-cell-caption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* inline reader mode (?frames=all): gallery embedded in the article */
+.svg-diagram.has-inline-frames {
+  cursor: default;
+  max-width: 760px;
+}
+.svg-diagram.has-inline-frames:hover { transform: none; }
+.fx-inline {
+  max-height: none;
+  overflow: visible;
+  text-align: left;
+}
+
+@media (max-width: 860px) {
+  .fx-body { grid-template-columns: 1fr; }
+  .fx-side { order: 2; }
+  .fx-img { max-height: 52vh; }
+  .fx-gallery { grid-template-columns: 1fr; }
+  .fx-zone { display: none; }
 }
 
 /* Caption immediately after a diagram — styled as figcaption, visually

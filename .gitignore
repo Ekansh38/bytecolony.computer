@@ -2,3 +2,5 @@ public/
 .DS_Store
 .hugo_build.lock
 resources/
+static/assets/frames-gen/
+node_modules/

@@ -13,6 +13,10 @@ ESBUILD=./node_modules/.bin/esbuild
 # Pre-process markdown: reflow paragraphs, convert SVG tags, fix callouts
 python3 scripts/process.py
 
+# Extract GIF frames for the diagram frame explorer (needs Pillow)
+python3 -m pip install --quiet Pillow
+python3 scripts/extract_frames.py
+
 # Build Hugo site
 ./hugo --gc --minify --baseURL "https://${VERCEL_PROJECT_PRODUCTION_URL}"
 
