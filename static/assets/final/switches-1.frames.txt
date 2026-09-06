@@ -1,19 +1,19 @@
 title: switches 1
 
 [frame 1]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+`STINKY` & `OLD_WASH` are both open, thus no current can flow. That is why the bulb is off.
 
 [frame 2]
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+`STINKY` is closed but `OLD_WASH` is open, thus no current can flow. That is why the bulb is off.
 
 [frame 3]
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+`STINKY` & `OLD_WASH` are both closed, thus current can flow. That is why the bulb is on.
 
 [frame 4]
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.
+`STINKY` & `OLD_WASH` are both open, thus no current can flow. That is why the bulb is off.
 
 [frame 5]
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+`OLD_WASH` is closed but `STINKY` is open, thus no current can flow. That is why the bulb is off.
 
 [frame 6]
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur.
+`STINKY` & `OLD_WASH` are both closed, thus current can flow. That is why the bulb is on.

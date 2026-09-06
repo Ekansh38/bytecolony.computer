@@ -68,6 +68,23 @@
 
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
 
+  // Render a caption with `inline code` support. Builds DOM nodes
+  // directly (no innerHTML), so caption text can never inject markup.
+  function renderCaption(el, text) {
+    el.textContent = '';
+    var parts = String(text).split('`');
+    for (var i = 0; i < parts.length; i++) {
+      if (!parts[i]) continue;
+      if (i % 2 === 1 && i < parts.length - (parts.length % 2 === 0 ? 1 : 0)) {
+        var code = document.createElement('code');
+        code.textContent = parts[i];
+        el.appendChild(code);
+      } else {
+        el.appendChild(document.createTextNode(parts[i]));
+      }
+    }
+  }
+
   // ── overlay skeleton ─────────────────────────────────────────
   function ensureOverlay() {
     if (overlay) return overlay;
@@ -258,7 +275,8 @@
     q('.fx-counter').textContent = pad2(i + 1) + ' / ' + pad2(m.frames.length);
     var cap = q('.fx-side-caption');
     cap.classList.toggle('empty', !f.caption);
-    cap.textContent = f.caption || 'no caption for this frame yet';
+    if (f.caption) renderCaption(cap, f.caption);
+    else cap.textContent = 'no caption for this frame yet';
 
     var thumbs = q('.fx-strip').children;
     for (var t = 0; t < thumbs.length; t++)
@@ -355,7 +373,7 @@
       num.textContent = pad2(i + 1);
       var txt = document.createElement('span');
       txt.className = 'fx-cell-caption';
-      txt.textContent = f.caption || '';
+      renderCaption(txt, f.caption || '');
       meta.appendChild(num);
       meta.appendChild(txt);
       cell.appendChild(pic);
