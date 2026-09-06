@@ -127,6 +127,30 @@ body.page.writing .article-toc a {
 }
 body.page.writing .article-toc a:hover { color: var(--accent); }
 
+/* Non-chapter entries (Comments, etc.) — visually separated from the numbered chapters */
+body.page.writing .article-toc li.toc-extra {
+  counter-increment: none;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed color-mix(in srgb, var(--border) 65%, transparent);
+}
+body.page.writing .article-toc li.toc-extra::before {
+  content: "↳\a0\a0";
+  color: var(--accent);
+  opacity: 1;
+  font-weight: 700;
+}
+body.page.writing .article-toc li.toc-extra a {
+  color: var(--accent);
+  font-style: italic;
+  opacity: 0.92;
+}
+body.page.writing .article-toc li.toc-extra a:hover {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* Optional abstract block above the article content */
 body.page.writing .article-abstract {
   font-family: 'JetBrains Mono', monospace;
