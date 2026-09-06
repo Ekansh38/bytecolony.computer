@@ -683,9 +683,15 @@ This is because let's say we have the enable wire hooked up to a button. When th
 
 If we want the accumulator to work correctly we need to have the enable wire on for an instant and then back off. That is just hard to do.
 
-<diagram, showing this setup>
+<a id="diagram-6-3"></a> 
 
-How long you hold the button decides the answer. It doesn't count in ones. With real transistors, even if you try and physically just tap the button, it could count up by millions, overflowing these 8-bits thousands of times.
+<div class="svg-diagram"><img src="/assets/final/d-latch-accumulator.gif" alt="D latch accumulator"></div>
+
+*Diagram 6.3. D latch accumulator.*
+
+As you can see in this diagram, even pressing the button quickly jumps the result up by 5. With real transistors, even if you try and physically just tap the button, it could count up by millions, overflowing these 8-bits thousands of times.
+
+How long you hold the button decides the answer. It doesn't count in ones.
 
 But what if we had a type of latch that only stores `D` as `E` turns on?
 
