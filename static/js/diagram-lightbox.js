@@ -1,16 +1,18 @@
 // ================================================================
 // DIAGRAM LIGHTBOX + FRAME EXPLORER
 //
-// Zoom mode (all diagrams): click any .svg-diagram to enlarge it in a
-// blurred-backdrop overlay with its caption below.
+// Zoom mode (SVGs and GIFs without frames): click any .svg-diagram to
+// enlarge it in a blurred-backdrop overlay with its caption below.
 //
-// Frame mode (GIFs with extracted frames): GIFs listed in
-// /assets/frames-gen/index.json get a [view frames] control. Frame view
-// shows one still at a time with a caption panel, a filmstrip, arrow-key
-// stepping, Space play/pause at the GIF's own timing, and G for a gallery
-// grid of every frame. Frame position is mirrored into the URL hash
-// (#f=name:N) so a specific frame can be linked to. ?frames=all expands
-// every framed GIF into an inline gallery for read-it-like-a-comic mode.
+// Frame mode (GIFs listed in /assets/frames-gen/index.json): clicking
+// the GIF opens a stepper viewer laid out like a video player — stage
+// with edge chevrons, a control bar underneath (play, speed slider,
+// counter, grid), caption panel on the right, filmstrip below. Space
+// plays at the GIF's own timing scaled by the slider; arrows step.
+// Grid mode replaces the whole viewer with every frame + caption at
+// once; clicking a cell or Esc returns. Frame position is mirrored to
+// #f=name:N for deep links; ?frames=all inline-expands every framed
+// GIF into its gallery for read-as-comic mode.
 // ================================================================
 (function () {
   var overlay = null;
@@ -21,6 +23,7 @@
     name: '',
     manifest: null,
     frame: 0,
+    speed: 1,
     playing: false,
     playTimer: null
   };
@@ -49,6 +52,22 @@
     return m ? m[1] : '';
   }
 
+  function findDiagram(name) {
+    var imgs = document.querySelectorAll('.svg-diagram img');
+    for (var i = 0; i < imgs.length; i++) {
+      if ((imgs[i].getAttribute('src') || '').indexOf('/' + name + '.gif') >= 0)
+        return imgs[i].closest('.svg-diagram');
+    }
+    return null;
+  }
+
+  function figureCaption(diagram) {
+    var next = diagram && diagram.nextElementSibling;
+    return (next && next.tagName === 'P') ? next.textContent.trim() : '';
+  }
+
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
   // ── overlay skeleton ─────────────────────────────────────────
   function ensureOverlay() {
     if (overlay) return overlay;
@@ -61,26 +80,30 @@
         '<div class="diagram-lightbox-panel"></div>' +
         '<div class="diagram-lightbox-caption"></div>' +
         '<div class="fx" hidden>' +
-          '<div class="fx-body">' +
-            '<div class="fx-stage">' +
-              '<img class="fx-img" alt="">' +
-              '<button class="fx-zone fx-zone-prev" aria-label="Previous frame"></button>' +
-              '<button class="fx-zone fx-zone-next" aria-label="Next frame"></button>' +
+          '<div class="fx-main">' +
+            '<div class="fx-stage-wrap">' +
+              '<div class="fx-stage">' +
+                '<img class="fx-img" alt="">' +
+                '<button class="fx-zone fx-zone-prev" type="button" aria-label="Previous frame"></button>' +
+                '<button class="fx-zone fx-zone-next" type="button" aria-label="Next frame"></button>' +
+              '</div>' +
+              '<div class="fx-controlbar">' +
+                '<button class="fx-btn fx-play" type="button">play</button>' +
+                '<div class="fx-speedwrap" title="Playback speed">' +
+                  '<input class="fx-speed-slider" type="range" min="0.25" max="4" step="0.25" value="1" aria-label="Playback speed">' +
+                  '<span class="fx-speed-label">1x</span>' +
+                '</div>' +
+                '<span class="fx-counter"></span>' +
+                '<button class="fx-btn fx-grid-btn" type="button">grid</button>' +
+              '</div>' +
             '</div>' +
-            '<div class="fx-gallery" hidden></div>' +
             '<div class="fx-side">' +
               '<div class="fx-side-title"></div>' +
-              '<div class="fx-side-counter"></div>' +
               '<div class="fx-side-caption"></div>' +
-              '<div class="fx-side-controls">' +
-                '<button class="fx-btn fx-play" type="button">play</button>' +
-                '<button class="fx-btn fx-speed" type="button" title="Playback speed">1x</button>' +
-                '<button class="fx-btn fx-gallery-btn" type="button">grid</button>' +
-                '<button class="fx-btn fx-gif-btn" type="button">gif</button>' +
-              '</div>' +
             '</div>' +
           '</div>' +
           '<div class="fx-strip" role="listbox" aria-label="Frames"></div>' +
+          '<div class="fx-gallery" hidden></div>' +
         '</div>' +
       '</div>';
     document.body.appendChild(overlay);
@@ -89,16 +112,16 @@
     overlay.addEventListener('click', function (e) {
       if (e.target === overlay) closeAll();
     });
-    overlay.querySelector('.fx-zone-prev').addEventListener('click', function () { step(-1); });
-    overlay.querySelector('.fx-zone-next').addEventListener('click', function () { step(1); });
-    overlay.querySelector('.fx-play').addEventListener('click', togglePlay);
-    overlay.querySelector('.fx-speed').addEventListener('click', cycleSpeed);
-    overlay.querySelector('.fx-gallery-btn').addEventListener('click', toggleGallery);
-    overlay.querySelector('.fx-gif-btn').addEventListener('click', function () {
-      // back to the animated gif in zoom view
-      stopPlay();
-      var diagram = findDiagram(st.name);
-      if (diagram) openZoom(diagram); else closeAll();
+    wire('.fx-zone-prev', function () { step(-1); });
+    wire('.fx-zone-next', function () { step(1); });
+    wire('.fx-play', togglePlay);
+    wire('.fx-grid-btn', toggleGallery);
+
+    var slider = overlay.querySelector('.fx-speed-slider');
+    slider.addEventListener('input', function () {
+      st.speed = parseFloat(slider.value) || 1;
+      overlay.querySelector('.fx-speed-label').textContent =
+        String(st.speed).replace(/^0\./, '.') + 'x';
     });
 
     // wheel over the stage steps frames (throttled per gesture)
@@ -115,7 +138,7 @@
     document.addEventListener('keydown', function (e) {
       if (!overlay.classList.contains('open')) return;
       if (e.key === 'Escape') {
-        if (st.mode === 'gallery') { toggleGallery(); }
+        if (st.mode === 'gallery') exitGallery(st.frame);
         else closeAll();
       } else if (st.mode === 'frames' || st.mode === 'gallery') {
         if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
@@ -126,23 +149,16 @@
     return overlay;
   }
 
+  // click handler that also drops focus so the browser's focus ring
+  // doesn't appear when the user switches back to keyboard stepping
+  function wire(sel, fn) {
+    var el = overlay.querySelector(sel);
+    el.addEventListener('click', function () { fn(); el.blur(); });
+  }
+
   function q(sel) { return overlay.querySelector(sel); }
 
-  function findDiagram(name) {
-    var imgs = document.querySelectorAll('.svg-diagram img');
-    for (var i = 0; i < imgs.length; i++) {
-      if ((imgs[i].getAttribute('src') || '').indexOf('/' + name + '.gif') >= 0)
-        return imgs[i].closest('.svg-diagram');
-    }
-    return null;
-  }
-
-  function figureCaption(diagram) {
-    var next = diagram && diagram.nextElementSibling;
-    return (next && next.tagName === 'P') ? next.textContent.trim() : '';
-  }
-
-  // ── zoom mode ────────────────────────────────────────────────
+  // ── zoom mode (svg / unframed gif) ───────────────────────────
   function openZoom(diagram) {
     var ov = ensureOverlay();
     stopPlay();
@@ -194,9 +210,9 @@
       q('.diagram-lightbox-caption').style.display = 'none';
       q('.fx').hidden = false;
       q('.fx-gallery').hidden = true;
-      q('.fx-stage').hidden = false;
+      q('.fx-main').hidden = false;
       q('.fx-strip').hidden = false;
-      q('.fx-gallery-btn').textContent = 'grid';
+      q('.fx-grid-btn').textContent = 'grid';
       q('.fx-side-title').textContent = figureCaption(findDiagram(name)) || m.title;
       buildStrip(m);
       showFrame(Math.max(0, Math.min(frameIdx || 0, m.frames.length - 1)));
@@ -224,12 +240,10 @@
       num.textContent = pad2(i + 1);
       b.appendChild(img);
       b.appendChild(num);
-      b.addEventListener('click', function () { showFrame(i); });
+      b.addEventListener('click', function () { showFrame(i); b.blur(); });
       strip.appendChild(b);
     });
   }
-
-  function pad2(n) { return (n < 10 ? '0' : '') + n; }
 
   function showFrame(i) {
     var m = st.manifest;
@@ -237,11 +251,10 @@
     st.frame = i;
     var f = m.frames[i];
     q('.fx-img').src = f.src;
-    q('.fx-side-counter').textContent = pad2(i + 1) + ' / ' + pad2(m.frames.length);
+    q('.fx-counter').textContent = pad2(i + 1) + ' / ' + pad2(m.frames.length);
     var cap = q('.fx-side-caption');
-    cap.textContent = f.caption || '';
     cap.classList.toggle('empty', !f.caption);
-    if (!f.caption) cap.textContent = 'no caption for this frame yet';
+    cap.textContent = f.caption || 'no caption for this frame yet';
 
     var thumbs = q('.fx-strip').children;
     for (var t = 0; t < thumbs.length; t++)
@@ -254,7 +267,6 @@
       if (j >= 0 && j < m.frames.length) { var p = new Image(); p.src = m.frames[j].src; }
     });
     updateHash();
-    // gallery highlight, if built
     var cells = q('.fx-gallery').children;
     for (var c = 0; c < cells.length; c++)
       cells[c].classList.toggle('current', c === i);
@@ -267,15 +279,7 @@
     showFrame((st.frame + d + m.frames.length) % m.frames.length);
   }
 
-  // ── play/pause at the gif's own cadence, scaled by the speed pill ──
-  var SPEEDS = [0.5, 1, 2, 4];
-  var speedIdx = 1;
-
-  function cycleSpeed() {
-    speedIdx = (speedIdx + 1) % SPEEDS.length;
-    q('.fx-speed').textContent = String(SPEEDS[speedIdx]).replace('0.5', '.5') + 'x';
-  }
-
+  // ── play/pause at the gif's own cadence, scaled by the slider ──
   function togglePlay() {
     if (st.playing) { stopPlay(); return; }
     if (!st.manifest || st.mode !== 'frames') return;
@@ -289,7 +293,7 @@
   function tick() {
     if (!st.playing) return;
     var m = st.manifest;
-    var delay = (m.frames[st.frame].delay || 100) / SPEEDS[speedIdx];
+    var delay = (m.frames[st.frame].delay || 100) / st.speed;
     st.playTimer = setTimeout(function () {
       if (!st.playing) return;
       showFrame((st.frame + 1) % m.frames.length);
@@ -307,13 +311,12 @@
     }
   }
 
-  // ── gallery mode ─────────────────────────────────────────────
+  // ── gallery mode: the grid takes over the whole viewer ───────
   function exitGallery(frameIdx) {
     st.mode = 'frames';
     q('.fx-gallery').hidden = true;
-    q('.fx-stage').hidden = false;
+    q('.fx-main').hidden = false;
     q('.fx-strip').hidden = false;
-    q('.fx-gallery-btn').textContent = 'grid';
     showFrame(frameIdx);
   }
 
@@ -323,10 +326,9 @@
     stopPlay();
     st.mode = 'gallery';
     buildGallery(q('.fx-gallery'), st.manifest, exitGallery, st.frame);
-    q('.fx-stage').hidden = true;
+    q('.fx-main').hidden = true;
     q('.fx-strip').hidden = true;
     q('.fx-gallery').hidden = false;
-    q('.fx-gallery-btn').textContent = 'frame';
   }
 
   function buildGallery(container, m, onPick, currentIdx) {
