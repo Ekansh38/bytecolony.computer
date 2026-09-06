@@ -167,6 +167,17 @@
       var clone = content.cloneNode(true);
       clone.removeAttribute('width');
       clone.removeAttribute('height');
+      if (clone.tagName.toLowerCase() === 'svg') {
+        // A viewBox-only SVG has no intrinsic size and collapses inside the
+        // flex panel; size it explicitly to fill the available space.
+        var vb = (clone.getAttribute('viewBox') || '').trim().split(/[\s,]+/);
+        var aspect = (vb.length === 4 && +vb[2] > 0 && +vb[3] > 0) ? (+vb[2] / +vb[3]) : 4 / 3;
+        var availW = Math.min(1200, window.innerWidth * 0.95) - 48;
+        var availH = window.innerHeight * 0.8 - 44;
+        var w = Math.min(availW, availH * aspect);
+        clone.style.width = w + 'px';
+        clone.style.height = (w / aspect) + 'px';
+      }
       panel.appendChild(clone);
     }
     var captionText = figureCaption(diagram);
@@ -392,6 +403,10 @@
 
   // ── page-load entries: #f= deep link, ?frames=all reader mode ─
   function boot() {
+    // stop native image dragging from eating clicks on diagrams
+    document.querySelectorAll('.svg-diagram img').forEach(function (img) {
+      img.draggable = false;
+    });
     var m = /^#f=([a-z0-9-]+):(\d+)$/i.exec(location.hash);
     if (m) {
       var name = m[1], idx = parseInt(m[2], 10) - 1;
