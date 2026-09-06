@@ -134,20 +134,24 @@ body.page :not(pre) > code {
 .chroma .gu  { color: var(--code-fn); font-weight: bold; } /* diff heading */
 .chroma .ln, .chroma .lnt { color: var(--code-cmt); padding-right: 1em; user-select: none; } /* line numbers */
 
-/* ── READING PROGRESS COLUMN (pure decorative indicator) ── */
+/* ── READING PROGRESS COLUMN (click/drag to navigate) ── */
 #read-progress {
   position: fixed;
-  right: 18px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   gap: 3px;
   opacity: 0.7;
-  pointer-events: none;
   z-index: 10;
+  cursor: pointer;
+  padding: 8px 10px;            /* widen the hit area beyond the 7px cells */
+  touch-action: none;           /* pointer events own the drag */
+  transition: opacity 0.15s ease;
 }
-#read-progress canvas { display: block; }
+#read-progress:hover { opacity: 1; }
+#read-progress canvas { display: block; pointer-events: none; }
 @media (max-width: 1000px) { #read-progress { display: none; } }
 
 h1 { font-size: 1.6rem; font-weight: 700; }

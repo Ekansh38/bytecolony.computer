@@ -1,7 +1,9 @@
 // ================================================================
 // READING PROGRESS COLUMN
-// Pure decorative indicator: 28 canvas cells that fill top→bottom
-// as the reader scrolls. All navigation lives in article-nav.js.
+// 28 canvas cells that fill top→bottom as the reader scrolls.
+// Clickable and draggable: tap a cell to jump to that point in the
+// article, or drag along the column to scrub. Jumps announce
+// themselves to anchor-return.js so the ← back pill appears.
 // ================================================================
 (function () {
   if (!document.body.classList.contains('page')) return;
@@ -71,4 +73,57 @@
     draw(getProgress());
   });
   obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // ── click / drag navigation ─────────────────────────────────
+  var DRAG_THRESHOLD = 4;   // px of pointer movement before a press becomes a drag
+  var pressY = null;        // clientY at pointerdown
+  var fromY = null;         // scroll position when the gesture started
+  var dragging = false;
+
+  function yToScroll(clientY) {
+    var rect = container.getBoundingClientRect();
+    var p = (clientY - rect.top) / rect.height;
+    p = Math.min(1, Math.max(0, p));
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    return p * Math.max(0, max);
+  }
+
+  container.addEventListener('pointerdown', function (e) {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    pressY = e.clientY;
+    fromY = window.scrollY;
+    dragging = false;
+    container.setPointerCapture(e.pointerId);
+  });
+
+  container.addEventListener('pointermove', function (e) {
+    if (pressY === null) return;
+    if (!dragging && Math.abs(e.clientY - pressY) < DRAG_THRESHOLD) return;
+    dragging = true;
+    // instant scroll while scrubbing — smooth would lag behind the pointer
+    window.scrollTo({ top: yToScroll(e.clientY), behavior: 'auto' });
+  });
+
+  container.addEventListener('pointerup', function (e) {
+    if (pressY === null) return;
+    var destY = dragging ? window.scrollY : yToScroll(e.clientY);
+    if (!dragging) {
+      // plain click: glide to the tapped point
+      window.scrollTo({ top: destY, behavior: 'smooth' });
+    }
+    // let the ← back pill offer the way home (only for a meaningful jump)
+    if (fromY !== null && Math.abs(destY - fromY) > 40) {
+      document.dispatchEvent(new CustomEvent('anchor-return-show', { detail: { fromY: fromY } }));
+    }
+    pressY = null;
+    fromY = null;
+    dragging = false;
+  });
+
+  container.addEventListener('pointercancel', function () {
+    pressY = null;
+    fromY = null;
+    dragging = false;
+  });
 })();
