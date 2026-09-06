@@ -731,3 +731,18 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
+/* ── Anchor-jump centering (used by /projects#games etc.) ─────────────────── */
+html { scroll-behavior: smooth; }
+
+body.section.projects main h2[id] {
+  scroll-margin-top: 32vh;
+}
+
+body.section.projects main h2[id]:target {
+  animation: bc-section-target 1.6s ease-out;
+}
+@keyframes bc-section-target {
+  0%, 35% { color: var(--accent); text-shadow: 0 0 12px var(--accent); }
+  100%    { color: inherit; text-shadow: none; }
+}
+
