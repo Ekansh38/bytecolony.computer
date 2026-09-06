@@ -206,6 +206,10 @@
       st.mode = 'frames';
       st.name = name;
       st.manifest = m;
+      // fresh open: playback speed back to normal
+      st.speed = 1;
+      q('.fx-speed-slider').value = '1';
+      q('.fx-speed-label').textContent = '1x';
       q('.diagram-lightbox-panel').style.display = 'none';
       q('.diagram-lightbox-caption').style.display = 'none';
       q('.fx').hidden = false;
