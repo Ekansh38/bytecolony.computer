@@ -783,25 +783,6 @@ body.lightbox-open { overflow: hidden; }
   overflow: hidden;
 }
 
-/* inline reader mode (?frames=all): gallery embedded in the article */
-.svg-diagram.has-inline-frames {
-  cursor: default;
-  max-width: 760px;
-}
-.svg-diagram.has-inline-frames:hover { transform: none; }
-.fx-inline {
-  height: auto;
-  max-height: none;
-  overflow: visible;
-  text-align: left;
-  grid-auto-rows: auto;
-}
-.fx-inline .fx-cell-caption {
-  display: block;
-  -webkit-line-clamp: none;
-  overflow: visible;
-}
-
 @media (max-width: 860px) {
   .fx-main { grid-template-columns: 1fr; }
   .fx-side { order: 2; }

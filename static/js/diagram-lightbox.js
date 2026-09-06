@@ -389,13 +389,6 @@
 
   // ── click wiring ─────────────────────────────────────────────
   document.addEventListener('click', function (e) {
-    var inlineImg = e.target.closest('.fx-inline .fx-cell');
-    if (inlineImg) {
-      var host = inlineImg.closest('.fx-inline');
-      enterFrames(host.getAttribute('data-name'),
-                  [].indexOf.call(host.children, inlineImg));
-      return;
-    }
     var diagram = e.target.closest('.svg-diagram');
     if (!diagram) return;
     if (e.target.closest('a')) return;
@@ -412,7 +405,7 @@
     }
   });
 
-  // ── page-load entries: #f= deep link, ?frames=all reader mode ─
+  // ── page-load entry: #f= deep link ───────────────────────────
   function boot() {
     // stop native image dragging from eating clicks on diagrams
     document.querySelectorAll('.svg-diagram img').forEach(function (img) {
@@ -427,25 +420,6 @@
       if (diagram) diagram.scrollIntoView({ block: 'center' });
       getIndex().then(function (idx2) {
         if (idx2[name]) enterFrames(name, idx);
-      });
-    }
-    if (new URLSearchParams(location.search).get('frames') === 'all') {
-      getIndex().then(function (idx3) {
-        Object.keys(idx3).forEach(function (name) {
-          var diagram = findDiagram(name);
-          if (!diagram) return;
-          getManifest(name).then(function (mf) {
-            if (!mf) return;
-            var img = diagram.querySelector('img');
-            if (!img) return;
-            var gal = document.createElement('div');
-            gal.className = 'fx-inline fx-gallery';
-            gal.setAttribute('data-name', name);
-            buildGallery(gal, mf, null, -1);
-            img.replaceWith(gal);
-            diagram.classList.add('has-inline-frames');
-          });
-        });
       });
     }
   }
