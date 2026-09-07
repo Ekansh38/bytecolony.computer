@@ -10,8 +10,7 @@
 {{ if or .Params.article .Params.pdf .Params.raw }}
 <div class="format-buttons">
   {{ with .Params.article }}<a class="format-btn primary" href="{{ . }}">read article</a>{{ end }}
-  {{ with .Params.pdf }}<a class="format-btn" href="{{ . }}" target="_blank">pdf</a>{{ end }}
-  {{ with .Params.pdfdark }}<a class="format-btn" href="{{ . }}" target="_blank">pdf (dark)</a>{{ end }}
+  {{ with .Params.pdf }}<a class="format-btn pdf-theme-link" href="{{ . }}" data-pdf-light="{{ . }}"{{ with $.Params.pdfdark }} data-pdf-dark="{{ . }}"{{ end }} target="_blank">pdf</a>{{ end }}
   {{ with .Params.raw }}<a class="format-btn" href="{{ . }}" target="_blank">raw</a>{{ end }}
 </div>
 {{ end }}

@@ -16,6 +16,13 @@ function applyTheme(name) {
   var items = document.querySelectorAll('.tp-item');
   for (var i = 0; i < items.length; i++)
     items[i].classList.toggle('active', items[i].getAttribute('data-t') === name);
+  // pdf links follow the colorscheme: dark theme serves the dark build
+  var pdfLinks = document.querySelectorAll('.pdf-theme-link[data-pdf-dark]');
+  for (var j = 0; j < pdfLinks.length; j++) {
+    pdfLinks[j].setAttribute('href', isLight
+      ? pdfLinks[j].getAttribute('data-pdf-light')
+      : pdfLinks[j].getAttribute('data-pdf-dark'));
+  }
   window.requestAnimationFrame(function() { window.scrollTo(0, scrollY); });
 }
 
