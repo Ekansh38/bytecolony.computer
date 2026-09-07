@@ -101,8 +101,12 @@
     if (pressY === null) return;
     if (!dragging && Math.abs(e.clientY - pressY) < DRAG_THRESHOLD) return;
     dragging = true;
-    // instant scroll while scrubbing — smooth would lag behind the pointer
-    window.scrollTo({ top: yToScroll(e.clientY), behavior: 'auto' });
+    // scrollbar semantics: drag moves relative to where the press started,
+    // scaled so the full column height spans the full document
+    var rect = container.getBoundingClientRect();
+    var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    var delta = (e.clientY - pressY) / rect.height * max;
+    window.scrollTo({ top: Math.min(max, Math.max(0, fromY + delta)), behavior: 'auto' });
   });
 
   container.addEventListener('pointerup', function (e) {
