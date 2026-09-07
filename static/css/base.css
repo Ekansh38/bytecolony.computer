@@ -56,6 +56,7 @@ ul { list-style: none; }
 li { padding: 6px 0; }
 
 /* restore list styling inside article content */
+.project-content p { margin-bottom: 1.7em; }
 body.page ul, .project-content ul { list-style: disc; padding-left: 1.4em; margin-bottom: 1.8em; }
 body.page ol, .project-content ol { list-style: decimal; padding-left: 1.4em; margin-bottom: 1.8em; }
 body.page li, .project-content li { padding: 6px 0; line-height: 1.75; }
