@@ -1059,6 +1059,46 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
+/* ── PDF variant popover (light / dark choice) ───────────────── */
+.pdf-menu {
+  position: absolute;
+  z-index: 500;
+  display: none;
+  flex-direction: column;
+  min-width: 130px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.45);
+}
+.pdf-menu.open { display: flex; }
+.pdf-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 12px;
+  border-radius: 5px;
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.pdf-menu-item:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  text-decoration: none;
+}
+.pdf-menu-swatch {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.pdf-menu-swatch.light { background: #f5f2ea; }
+.pdf-menu-swatch.dark  { background: #16161e; }
+
 /* ── Anchor-jump centering (used by /projects#games etc.) ─────────────────── */
 html { scroll-behavior: smooth; }
 
