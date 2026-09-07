@@ -102,19 +102,21 @@
     if (!dragging && Math.abs(e.clientY - pressY) < DRAG_THRESHOLD) return;
     dragging = true;
     // scrollbar semantics: drag moves relative to where the press started,
-    // scaled so the full column height spans the full document
+    // scaled so the full column height spans the full document.
+    // behavior 'instant' — 'auto' obeys the page's CSS scroll-behavior:smooth
+    // and turns the drag into a laggy animation.
     var rect = container.getBoundingClientRect();
     var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     var delta = (e.clientY - pressY) / rect.height * max;
-    window.scrollTo({ top: Math.min(max, Math.max(0, fromY + delta)), behavior: 'auto' });
+    window.scrollTo({ top: Math.min(max, Math.max(0, fromY + delta)), behavior: 'instant' });
   });
 
   container.addEventListener('pointerup', function (e) {
     if (pressY === null) return;
     var destY = dragging ? window.scrollY : yToScroll(e.clientY);
     if (!dragging) {
-      // plain click: glide to the tapped point
-      window.scrollTo({ top: destY, behavior: 'smooth' });
+      // plain click: jump like a scrollbar track click — no glide
+      window.scrollTo({ top: destY, behavior: 'instant' });
     }
     // let the ← back pill offer the way home (only for a meaningful jump)
     if (fromY !== null && Math.abs(destY - fromY) > 40) {
