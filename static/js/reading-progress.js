@@ -75,10 +75,12 @@
   obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   // ── click / drag navigation ─────────────────────────────────
-  var DRAG_THRESHOLD = 4;   // px of pointer movement before a press becomes a drag
-  var pressY = null;        // clientY at pointerdown
+  // Absolute mapping: the press jumps straight to that point on the
+  // column, and dragging keeps the scroll position under the pointer.
+  // 'instant' throughout — 'auto' would obey the page's CSS
+  // scroll-behavior:smooth and lag behind the pointer.
+  var pressing = false;
   var fromY = null;         // scroll position when the gesture started
-  var dragging = false;
 
   function yToScroll(clientY) {
     var rect = container.getBoundingClientRect();
@@ -91,45 +93,29 @@
   container.addEventListener('pointerdown', function (e) {
     if (e.button !== 0) return;
     e.preventDefault();
-    pressY = e.clientY;
+    pressing = true;
     fromY = window.scrollY;
-    dragging = false;
     container.setPointerCapture(e.pointerId);
+    window.scrollTo({ top: yToScroll(e.clientY), behavior: 'instant' });
   });
 
   container.addEventListener('pointermove', function (e) {
-    if (pressY === null) return;
-    if (!dragging && Math.abs(e.clientY - pressY) < DRAG_THRESHOLD) return;
-    dragging = true;
-    // scrollbar semantics: drag moves relative to where the press started,
-    // scaled so the full column height spans the full document.
-    // behavior 'instant' — 'auto' obeys the page's CSS scroll-behavior:smooth
-    // and turns the drag into a laggy animation.
-    var rect = container.getBoundingClientRect();
-    var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    var delta = (e.clientY - pressY) / rect.height * max;
-    window.scrollTo({ top: Math.min(max, Math.max(0, fromY + delta)), behavior: 'instant' });
+    if (!pressing) return;
+    window.scrollTo({ top: yToScroll(e.clientY), behavior: 'instant' });
   });
 
-  container.addEventListener('pointerup', function (e) {
-    if (pressY === null) return;
-    var destY = dragging ? window.scrollY : yToScroll(e.clientY);
-    if (!dragging) {
-      // plain click: jump like a scrollbar track click — no glide
-      window.scrollTo({ top: destY, behavior: 'instant' });
-    }
+  container.addEventListener('pointerup', function () {
+    if (!pressing) return;
     // let the ← back pill offer the way home (only for a meaningful jump)
-    if (fromY !== null && Math.abs(destY - fromY) > 40) {
+    if (fromY !== null && Math.abs(window.scrollY - fromY) > 40) {
       document.dispatchEvent(new CustomEvent('anchor-return-show', { detail: { fromY: fromY } }));
     }
-    pressY = null;
+    pressing = false;
     fromY = null;
-    dragging = false;
   });
 
   container.addEventListener('pointercancel', function () {
-    pressY = null;
+    pressing = false;
     fromY = null;
-    dragging = false;
   });
 })();
