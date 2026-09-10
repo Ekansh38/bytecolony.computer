@@ -52,11 +52,12 @@
   <link rel="stylesheet" href="/css/terminal.css">
   <link rel="stylesheet" href="/css/settings.css">
   <link rel="stylesheet" href="/css/article-nav.css">
-  {{ if eq .Section "writing" }}
+  {{ $isArticle := or (eq .Section "writing") (and (eq .Kind "page") (eq .Section "projects")) }}
+  {{ if $isArticle }}
   <link rel="stylesheet" href="/css/writing.css">
   {{ end }}
 </head>
-<body class="{{ .Kind }} {{ .Section }}">
+<body class="{{ .Kind }} {{ .Section }}{{ if and (eq .Kind "page") (eq .Section "projects") }} writing{{ end }}">
 
   <a href="#main" class="skip-link">skip to content</a>
   <canvas id="bg-canvas"></canvas>
