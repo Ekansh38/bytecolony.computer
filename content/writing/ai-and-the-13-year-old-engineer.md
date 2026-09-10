@@ -353,5 +353,3 @@ Anyway, hope you didn't regret reading this. Feel free to leave some comments.
 **AI-tutored learning.** Using AI to explain concepts and answer questions.
 
 AI-assisted coding is here to stay. The argument is about strict vibe coding versus actually writing the code yourself. (I have ideas about autocomplete and LSPs too, but that's a different post.)
-
----
