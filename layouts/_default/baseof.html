@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  {{ $title := cond .IsHome "ByteColony" (printf "ByteColony - %s" .Title) }}
+  {{ $title := cond .IsHome "ByteColony" (printf "%s · ByteColony" .Title) }}
   {{ $desc := "" }}
   {{ with .Summary }}{{ $desc = . | plainify | truncate 160 }}{{ end }}
   {{ if not $desc }}{{ with .Params.summary }}{{ $desc = . | plainify | truncate 160 }}{{ end }}{{ end }}
