@@ -174,15 +174,17 @@ body.page.writing main table th {
   line-height: 1.75;
 }
 
-/* Headings — slightly refined size for the new reading rhythm */
+/* Headings — section titles carry real weight against the prose */
 body.page.writing main h2 {
-  font-size: 1.35rem;
-  letter-spacing: -0.005em;
-  margin-top: 2.6em;
-  margin-bottom: 0.7em;
+  font-size: 1.75rem;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  margin-top: 2.4em;
+  margin-bottom: 0.65em;
 }
 body.page.writing main h3 {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
+  color: var(--fg);
   margin-top: 2.2em;
   margin-bottom: 0.6em;
 }
@@ -196,6 +198,8 @@ body.page.writing main ol { margin-bottom: 1.3em; }
 @media (max-width: 700px) {
   body.page.writing .project-title { font-size: 1.5rem; }
   body.page.writing .article-subtitle { font-size: 1rem; }
+  body.page.writing main h2 { font-size: 1.45rem; }
+  body.page.writing main h3 { font-size: 1.2rem; }
   body.page.writing main p,
   body.page.writing main li {
     font-size: 16px;
