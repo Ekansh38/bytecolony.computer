@@ -179,14 +179,14 @@ body.page.writing main h2 {
   font-size: 1.75rem;
   color: var(--fg);
   letter-spacing: -0.01em;
-  margin-top: 2.4em;
-  margin-bottom: 0.65em;
+  margin-top: 2em;
+  margin-bottom: 1em;
 }
 body.page.writing main h3 {
   font-size: 1.3rem;
   color: var(--fg);
-  margin-top: 2.2em;
-  margin-bottom: 0.6em;
+  margin-top: 1.9em;
+  margin-bottom: 0.85em;
 }
 
 /* Tighter paragraph rhythm for the smaller font */
