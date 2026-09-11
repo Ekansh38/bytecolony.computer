@@ -372,6 +372,10 @@ body.page .hero-img {
   opacity: 0.92;
   text-align: center;
   cursor: pointer;
+  /* skip layout/paint for offscreen diagrams — the CPU article has ~28
+     inline SVGs with thousands of paths */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
   box-shadow:
     0 14px 40px -20px rgba(0, 0, 0, 0.35),
     0 2px 4px rgba(0, 0, 0, 0.06);

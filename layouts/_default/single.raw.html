@@ -13,6 +13,13 @@
 
 <!-- Recommended container snippet from the github-markdown-css README -->
 <style>
+  /* tldraw diagram font — inline SVGs have their embedded copies stripped
+     at build time, so serve the site's global copy here too */
+  @font-face {
+    font-family: 'tldraw_mono';
+    src: url('/fonts/tldraw_mono.woff2') format('woff2');
+    font-display: swap;
+  }
   body {
     box-sizing: border-box;
     min-width: 200px;

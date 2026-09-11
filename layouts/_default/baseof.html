@@ -55,6 +55,7 @@
   {{ $isArticle := or (eq .Section "writing") (and (eq .Kind "page") (eq .Section "projects")) }}
   {{ if $isArticle }}
   <link rel="stylesheet" href="/css/writing.css">
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/tldraw_mono.woff2" crossorigin>
   {{ end }}
 </head>
 <body class="{{ .Kind }} {{ .Section }}{{ if and (eq .Kind "page") (eq .Section "projects") }} writing{{ end }}">
@@ -175,14 +176,14 @@
 
   <div id="copy-toast">copied to clipboard</div>
 
-  <script src="/js/email-copy.js"></script>
-  <script src="/js/theme.js"></script>
-  <script src="/js/bg-sim.js"></script>
-  <script src="/js/terminal.js"></script>
-  <script src="/js/reading-progress.js"></script>
-  <script src="/js/article-nav.js"></script>
-  <script src="/js/diagram-lightbox.js"></script>
-  <script src="/js/pdf-menu.js"></script>
+  <script src="/js/email-copy.js" defer></script>
+  <script src="/js/theme.js" defer></script>
+  <script src="/js/bg-sim.js" defer></script>
+  <script src="/js/terminal.js" defer></script>
+  <script src="/js/reading-progress.js" defer></script>
+  <script src="/js/article-nav.js" defer></script>
+  <script src="/js/diagram-lightbox.js" defer></script>
+  <script src="/js/pdf-menu.js" defer></script>
   <script src="/js/analytics.js" defer></script>
 </body>
 </html>

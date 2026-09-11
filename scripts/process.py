@@ -156,6 +156,9 @@ def wrap_raster_imgs(content):
             wrapper_class = f'svg-diagram {cls_match.group(1)}'
         # Strip width/height/class attrs — the wrapper handles sizing + class
         cleaned = re.sub(r'\s+(width|height|class)="[^"]*"', '', tag)
+        # Defer offscreen raster loads (multi-MB of GIFs on the CPU article)
+        if 'loading=' not in cleaned:
+            cleaned = cleaned.replace('<img ', '<img loading="lazy" decoding="async" ', 1)
         return f'\n\n<div class="{wrapper_class}">{cleaned}</div>\n\n'
 
     # Match <img src="/assets/*.{gif,png,jpg,jpeg,webp}"> not already inside svg-diagram
@@ -227,6 +230,13 @@ def fix_obsidian_callouts(content):
         flags=re.MULTILINE
     )
 
+def add_lazy_loading(content):
+    """Idempotent: give already-wrapped diagram imgs lazy loading attrs."""
+    return re.sub(
+        r'(<div class="svg-diagram[^"]*"><img )(?!loading=)',
+        r'\1loading="lazy" decoding="async" ',
+        content)
+
 def process_file(path):
     with open(path, 'r', encoding='utf-8') as f:
         original = f.read()
@@ -235,6 +245,7 @@ def process_file(path):
     content = normalize_asset_paths(content)
     content = convert_svg_imgs(content)
     content = wrap_raster_imgs(content)
+    content = add_lazy_loading(content)
     content = isolate_block_diagrams(content)
     content = convert_superscripts(content)
     content = fix_obsidian_callouts(content)

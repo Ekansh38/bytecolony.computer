@@ -102,7 +102,7 @@ Here is a simple circuit:
 
 <a id="diagram-2-1"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
 
 *Diagram 2.1. The circuit.*
 
@@ -138,7 +138,7 @@ Let's see the circuit:
 
 <a id="diagram-3-1"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/switches-1.gif" alt="A logical AND circuit"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/switches-1.gif" alt="A logical AND circuit"></div>
 
 *Diagram 3.1. The hand-switch version of AND.*
 
@@ -156,7 +156,7 @@ Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
 <a id="diagram-3-2"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/or-gate-logical.gif" alt="A logical OR circuit"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/or-gate-logical.gif" alt="A logical OR circuit"></div>
 
 *Diagram 3.2. The hand-switch version of OR.*
 
@@ -188,7 +188,7 @@ One thing to mention: if you see several little batteries in a circuit, don't in
 
 <a id="diagram-3-4"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/basic-relay.gif" alt="An electromagnetic relay"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/basic-relay.gif" alt="An electromagnetic relay"></div>
 
 *Diagram 3.4. An electromagnetic relay.*
 
@@ -204,7 +204,7 @@ Now let's see how we can build an actual electrical AND gate that takes two inpu
 
 <a id="diagram-3-5"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/electronic-and-gate.gif" alt="An AND gate"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/electronic-and-gate.gif" alt="An AND gate"></div>
 
 *Diagram 3.5. An AND gate.*
 
@@ -234,7 +234,7 @@ Now here is the OR gate:
 
 <a id="diagram-3-7"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/electronic-or-gate.gif" alt="An electronic OR gate"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/electronic-or-gate.gif" alt="An electronic OR gate"></div>
 
 *Diagram 3.7. An electronic OR gate.*
 
@@ -242,7 +242,7 @@ That is an OR gate using relays. Now here is the full dog washer circuit up to t
 
 <a id="diagram-3-8"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/dog-washer-v1.gif" alt="The full dog washer circuit built with relays"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/dog-washer-v1.gif" alt="The full dog washer circuit built with relays"></div>
 
 *Diagram 3.8. The full dog washer circuit built with relays.*
 
@@ -262,7 +262,7 @@ That is what a NOT gate does.
 
 <a id="diagram-3-9"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/not-gate.gif" alt="A NOT gate"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/not-gate.gif" alt="A NOT gate"></div>
 
 *Diagram 3.9. A NOT gate.*
 
@@ -306,7 +306,7 @@ With our knowledge about logic gates, let's create the "should-I-wash-my-dog 500
 
 <a id="diagram-3-13"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/dog-washer-v2.gif" alt="The final dog washer circuit"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/dog-washer-v2.gif" alt="The final dog washer circuit"></div>
 
 *Diagram 3.13. The final dog washer circuit.*
 
@@ -352,7 +352,7 @@ Here are all the possible states we have with 3 wires:
 
 <a id="diagram-4-2"></a> 
 
-<div class="svg-diagram small"><img src="/assets/final/3-states.gif" alt="States with 3 wires"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/final/3-states.gif" alt="States with 3 wires"></div>
 
 *Diagram 4.2. States with 3 wires.*
 
@@ -413,7 +413,7 @@ Let's start with a brief reminder of how we algorithmically add two decimal numb
 
 <a id="diagram-5-1"></a> 
 
-<div class="svg-diagram small"><img src="/assets/final/decimal-addition.gif" alt="Standard decimal addition"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/final/decimal-addition.gif" alt="Standard decimal addition"></div>
 
 *Diagram 5.1. Standard decimal addition.*
 
@@ -421,7 +421,7 @@ We start at the rightmost column, do 5+8, get 13, we carry the 1. So we write 3 
 
 <a id="diagram-5-2"></a> 
 
-<div class="svg-diagram small"><img src="/assets/final/binary-addition.gif" alt="Binary addition"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/final/binary-addition.gif" alt="Binary addition"></div>
 
 *Diagram 5.2. Binary addition.*
 
@@ -469,7 +469,7 @@ If we combine an OR gate and a NAND gate, and AND them together we get XOR:
 
 <a id="diagram-5-3"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/half-adder-sum.gif" alt="Half adder sum / XOR"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/half-adder-sum.gif" alt="Half adder sum / XOR"></div>
 
 *Diagram 5.3. Half adder sum / XOR.*
 
@@ -489,7 +489,7 @@ Now here is our half adder:
 
 <a id="diagram-5-5"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/half-adder.gif" alt="A half adder"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/half-adder.gif" alt="A half adder"></div>
 
 *Diagram 5.5. A half adder.*
 
@@ -523,7 +523,7 @@ To add three binary numbers we use two half adders and a OR gate:
 
 <a id="diagram-5-8"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/full-adder.gif" alt="A full adder"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/full-adder.gif" alt="A full adder"></div>
 
 *Diagram 5.8. A full adder.*
 
@@ -571,7 +571,7 @@ Lets have a look at some example problems:
 
 <a id="diagram-5-12"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/8-bit-adder-examples.gif" alt="Some examples on the adder"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/8-bit-adder-examples.gif" alt="Some examples on the adder"></div>
 
 *Diagram 5.12. Some examples on the adder.*
 
@@ -641,7 +641,7 @@ This diagram should help this make sense:
 
 <a id="diagram-6-1"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/sr-latch.gif" alt="An SR latch"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/sr-latch.gif" alt="An SR latch"></div>
 
 *Diagram 6.1. An SR latch.*
 
@@ -686,7 +686,7 @@ If we want the accumulator to work correctly, we need the enable wire to turn on
 
 <a id="diagram-6-3"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/d-latch-accumulator.gif" alt="D latch accumulator"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/d-latch-accumulator.gif" alt="D latch accumulator"></div>
 
 *Diagram 6.3. D latch accumulator.*
 
@@ -752,7 +752,7 @@ Now with this register, let's build a basic accumulator/adder circuit.
 
 <a id="diagram-6-9"></a> 
 
-<div class="svg-diagram"><img src="/assets/final/full-accumulator.gif" alt="Our full accumulator"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/full-accumulator.gif" alt="Our full accumulator"></div>
 
 *Diagram 6.9. Our full accumulator.*
 

@@ -3,4 +3,9 @@
 {{ $class := "svg-diagram" }}
 {{ if $size }}{{ $class = printf "%s %s" $class $size }}{{ end }}
 {{ $path := printf "static/assets/%s.svg" $name }}
-<div class="{{ $class }}">{{ readFile $path | safeHTML }}</div>
+{{/* Strip embedded @font-face blocks — every tldraw export carries the same
+     ~60KB base64 tldraw_mono font, and the site already serves it globally
+     from /fonts/tldraw_mono.woff2 (see base.css). Saves ~1.6MB on the CPU
+     article alone. */}}
+{{ $svg := readFile $path | replaceRE `@font-face \{[^}]*\}` "" }}
+<div class="{{ $class }}">{{ $svg | safeHTML }}</div>

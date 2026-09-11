@@ -8,42 +8,104 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        }
       ]
     },
     {
       "source": "/js/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=600, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=600, must-revalidate"
+        }
       ]
     },
     {
       "source": "/css/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=600, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=600, must-revalidate"
+        }
       ]
     },
     {
       "source": "/images/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "has": [{ "type": "header", "key": "user-agent", "value": "curl.*" }],
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "curl.*"
+        }
+      ],
       "dest": "/api/index.js"
     },
-    { "src": "/api/guestbook", "dest": "/api/guestbook.js" },
-    { "src": "/api/games", "dest": "/api/games.js" },
-    { "src": "/api/themes", "dest": "/api/themes.js" },
-    { "src": "/api/comments", "dest": "/api/comments.js" },
-    { "handle": "filesystem" }
+    {
+      "src": "/api/guestbook",
+      "dest": "/api/guestbook.js"
+    },
+    {
+      "src": "/api/games",
+      "dest": "/api/games.js"
+    },
+    {
+      "src": "/api/themes",
+      "dest": "/api/themes.js"
+    },
+    {
+      "src": "/api/comments",
+      "dest": "/api/comments.js"
+    },
+    {
+      "handle": "filesystem"
+    }
   ]
 }
