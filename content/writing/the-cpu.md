@@ -825,3 +825,7 @@ Here is how it works if you care:
 Honestly? That's it. We can use two decoders, sixteen registers, some output wires and some inputs wires all mashed together with some extra logic gates and BOOM! We have some RAM.
 
 <diagram>
+
+<explain here>
+
+Now we have built Otto's abacus, desk drawers and upstairs cabinet, all working and functional!

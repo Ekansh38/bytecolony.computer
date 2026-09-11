@@ -7,7 +7,7 @@ title: electronic and gate
 `input 1` is closed, so its electromagnet starts to pull the first arm. But `input 2` is still open, and the first metal arm hasn't been pulled down, so the main loop is still broken. That is why the bulb is off.
 
 [frame 3]
-`input 1` is closed, thus the electromagnet has pulled the first arm down. But `input 2` is still open, so the main loop is still broken. That is why the bulb is off.
+`input 1` is closed, and the electromagnet has pulled the first arm down. But `input 2` is still open, so the main loop is still broken. That is why the bulb is off.
 
 [frame 4]
 `input 1` has just reopened, the electromagnet is releasing the first arm. But `input 2` is still open, so the main loop is still broken. That is why the bulb is off.
