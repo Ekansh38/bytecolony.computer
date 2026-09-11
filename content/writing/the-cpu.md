@@ -805,11 +805,23 @@ Thus, we will use 2 out of the 4 bits for the row, and the other 2 bits for the 
 
 Let's start with building a simple decoder. This decoder will take 2 bits of our address and, based on that number, turn on exactly one out of 4 wires.
 
-<diagram that cleanly explains it>
+<a id="diagram-7-1"></a> 
+
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/2-4-decoder.gif" alt="How a decoder works"></div>
+
+*Diagram 7.1. How a decoder works.*
+
+As you can tell, no matter the inputs, exactly one output wire is on at a time.
 
 We use one 2-to-4 decoder for the rows and another 2-to-4 decoder for the columns. Where the selected row and selected column cross, that is the byte we want to target.
 
-<diagram showing the concept>
+This diagram shows 3 random addresses as examples. Each address gets it's own little intersection. Each address from 1-16 has its own spot.
+
+<a id="diagram-7-2"></a> 
+
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/cross-section.gif" alt="Where the row and column meet"></div>
+
+*Diagram 7.2. Where the row and column meet.*
 
 How a decoder works is extremely simple. It just uses a bunch of logic gates to ask these simple questions.
 
