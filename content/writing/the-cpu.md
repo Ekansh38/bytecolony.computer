@@ -802,6 +802,8 @@ Thus, we will use 2 out of the 4 bits for the row, and the other 2 bits for the 
 
 Let's start with building a simple decoder. This decoder will take 2 bits of our address and, based on that number, turn on exactly one out of 4 wires.
 
+In the diagram, the two input bits are labeled `A1` and `A0`. `A1` is the bigger bit, the 2's place. `A0` is the smaller bit, the 1's place.
+
 <a id="diagram-7-1"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/2-4-decoder.gif" alt="How a decoder works"></div>
@@ -829,7 +831,11 @@ How a decoder works is extremely simple. It just uses a bunch of logic gates to 
 
 Here is how it works if you care:
 
-<diagram>
+<a id="diagram-7-3"></a> 
+
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/2-4-decoder-gates.gif" alt="2-4 decoder internals"></div>
+
+*Diagram 7.3. 2-4 decoder internals.*
 
 Honestly? That's it. We can use two decoders, sixteen registers, some output wires and some inputs wires all mashed together with some extra logic gates and BOOM! We have some RAM.
 
