@@ -5,9 +5,6 @@ project: "the-cpu-explainer"
 pdf: /assets/the-cpu-explainer-light.pdf
 pdfdark: /assets/the-cpu-explainer-dark.pdf
 github: https://github.com/Ekansh38/the-cpu-explainer/
-build:
-  list: never
-  render: always
 ---
 
 You can hear the phrase
