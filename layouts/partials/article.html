@@ -50,7 +50,9 @@ document.querySelectorAll('.callout-body br').forEach(function(br){
 });
 </script>
 
-{{ if or .NextInSection .PrevInSection }}
+{{/* prev/next only for project articles — neighbors within one project are
+     related; writing-section neighbors are unrelated essays */}}
+{{ if and (eq .Section "projects") (or .NextInSection .PrevInSection) }}
 <div class="article-nav">
   {{ with .NextInSection }}<a href="{{ .Permalink }}" class="article-nav-prev">← {{ .Title }}</a>{{ end }}
   {{ with .PrevInSection }}<a href="{{ .Permalink }}" class="article-nav-next">{{ .Title }} →</a>{{ end }}
