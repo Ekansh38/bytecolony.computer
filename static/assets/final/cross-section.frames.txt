@@ -1,19 +1,19 @@
 title: cross section
 
 [frame 1]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+The address is 0. So both decoders turn on their first output, the bottom row and the leftmost column. That's the one spot where two live wires meet, and that's the correct cell.
 
 [frame 2]
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+The address is 1. So the row decoder turns on output 1, its second wire. The column decoder is still 0, so the leftmost is on. That's the one spot where two live wires meet, and that's the correct cell.
 
 [frame 3]
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+The address is 2. So the row decoder turns on output 2, its third wire. The column decoder is still 0, so the leftmost is on. That's the one spot where two live wires meet, and that's the correct cell.
 
 [frame 4]
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.
+The address is 3. So the row decoder turns on output 3, its fourth wire. The column decoder is still 0, so the leftmost is on. That's the one spot where two live wires meet, and that's the correct cell.
 
 [frame 5]
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+The address is 4. So the row decoder is now 0 and turns on output 0, its first wire. The column decoder is now 1, so its second wire is on. That's the one spot where two live wires meet, and that's the correct cell.
 
 [frame 6]
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur.
+The address is 5. So the row decoder is now 1 and turns on output 1, its second wire. The column decoder is still 1, so its second wire is on. That's the one spot where two live wires meet, and that's the correct cell.
