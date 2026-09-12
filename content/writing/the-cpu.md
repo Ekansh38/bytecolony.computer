@@ -812,7 +812,7 @@ As you can tell, no matter the inputs, exactly one output wire is on at a time.
 
 We use one 2-to-4 decoder for the rows and another 2-to-4 decoder for the columns. Where the selected row and selected column cross, that is the byte we want to target.
 
-This diagram shows 3 random addresses as examples. Each address gets it's own little intersection. Each address from 1-16 has its own spot.
+This diagram shows a few addresses as examples. Each address gets it's own little intersection. Each address from 1-16 has its own spot.
 
 <a id="diagram-7-2"></a> 
 
