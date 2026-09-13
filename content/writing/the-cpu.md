@@ -800,6 +800,8 @@ Thus, we will use 2 out of the 4 bits for the row, and the other 2 bits for the 
 
 2 bits can store 4 values, so we will have a 4×4 array of memory, which is 16 total values!
 
+When we select an address, we want RAM to automatically put that register's stored byte onto `data out`. If `WRITE` is on, then on the edge of `WRITE` turning on, that register stores `data in`.
+
 Let's start with building a simple decoder. This decoder will take 2 bits of our address and, based on that number, turn on exactly one out of 4 wires.
 
 In the diagram, the two input bits are labeled `A1` and `A0`. `A1` is the bigger bit, the 2's place. `A0` is the smaller bit, the 1's place.
@@ -837,9 +839,55 @@ Here is how it works if you care:
 
 *Diagram 7.3. 2-4 decoder internals.*
 
+One more thing, moving forward when I want to draw a collection of 8 wires, instead of drawing each wire, I will just draw a thick arrow that represents 8 wires. So instead of our [previous register diagram](#diagram-6-8), we would have something like this:
+
+<a id="diagram-7-4"></a> 
+
+{{< svg "final/new-8-bit-register" >}}
+
+*Diagram 7.4. An 8-bit bus.*
+
+To show the state of the wires, I can just write a number in the arrow, in this case the number 0 means the wires are all of.
+
+Okay two more things we need to cover before I can show you the RAM diagram. First lets add one more input to our register:
+
+<a id="diagram-7-5"></a> 
+
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/read-register.gif" alt="A register with `READ` control"></div>
+
+*Diagram 7.5. A register with `READ` control.*
+
+These are our simple register diagrams that will be used in the RAM diagram later. `R` is `READ` and `W` is `WRITE`. It is of course a 8-bit register.
+
+So now the slot has two control inputs: `WRITE` and `READ`. We are already familiar with `WRITE` which works like the [previous enable wire](#diagram-6-8), and now `READ` controls whether the slot can output its stored value.
+
+The register's stored byte is sitting on eight output wires, `Q0` through `Q7`. Before that byte leaves the slot, each bit is ANDed with `READ`.
+
+Let's say `Q = 01011011`. If `READ` is `0`, every bit gets ANDed with `0`, so the slot outputs `00000000`. But if `READ` is `1`, every bit passes through unchanged, so the slot outputs `01011011`.
+
+Second thing. In our RAM design only one register will be selected at a time, and we need to combine all the outputs onto one bus that will show the output. To do this, we can just OR the values of each gate when we need to combine.
+
+This works because all the gates but one will be 0.
+
+```
+register 1: 00000000
+register 2: 00000000
+register 3: 01010111
+register 4: 00000000
+output:     01010111
+```
+
+So if we OR all of these buses together we just get the value of the enabled bus.
+
+In the later diagrams, when two buses merge through a blue connector, that means their bits are ORed together, they are not literally connect.
+
 Honestly? That's it. We can use two decoders, sixteen registers, some output wires and some inputs wires all mashed together with some extra logic gates and BOOM! We have some RAM.
 
 <diagram>
+
+You might have noticed a few oddities in this diagram. First, I changed `E` to `W`, because here the enable input specifically means "write enable." The register should only copy `data in` when this slot is selected and `WRITE` is on.
+
+I also draw an AND gate taking an 8-bit bus and one normal wire. That is just shorthand for eight small AND gates in parallel: `Q0 AND selected`, `Q1 AND selected`, `Q2 AND selected`, and so on. In other words, the selected slot is allowed to put its stored byte onto `data out`, while the other slots output `0`.
 
 <explain here>
 
