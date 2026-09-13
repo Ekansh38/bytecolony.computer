@@ -1,19 +1,19 @@
 title: read register
 
 [frame 1]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+Input bus is 0. Output is 0, `READ` and `WRITE` are both off.
 
 [frame 2]
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+Input bus is 17. Output is still 0, `READ` and `WRITE` are both off.
 
 [frame 3]
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Input bus is 17. `WRITE` now on, this stores the value 17 into the register. But the output is still 0, because `READ` is off.
 
 [frame 4]
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.
+Input bus is 17. `WRITE` is off, the value 17 is stored inside the register. But the output is still 0, because `READ` is off.
 
 [frame 5]
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+Input bus is now 0. `WRITE` is off, the value 17 is stored inside the register. But the output is still 0, because `READ` is off.
 
 [frame 6]
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur.
+Input bus is now 0. `WRITE` is off, the value 17 is stored inside the register. Now the output is 17, because `READ` is on.
