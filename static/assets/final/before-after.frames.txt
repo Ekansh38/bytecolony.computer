@@ -1,13 +1,13 @@
 title: before after
 
 [frame 1]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+The switch is open, so the coil is off. The relay is open, and there is a break in the circuit.
 
 [frame 2]
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+The switch is closed, so the coil is on. The relay is now closed, and the light bulb is powered because there is a difference in voltage.
 
 [frame 3]
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+The switch is open, so the coil is off. The relay is not pulling, so the arm rests on the `-` side and is actively driving the output wire low.
 
 [frame 4]
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.
+The switch is closed, so the coil is on. The relay has pulled the arm, so it rests on the `+` side and is actively driving the output wire high.
