@@ -285,7 +285,7 @@ An AND gate is drawn like this:
 
 *Diagram 3.11. An AND gate.*
 
-This symbol represents the [AND circuit](#diagram-3-5) we made previously.
+This symbol represents the [AND circuit](#diagram-3-5) we made previously, except instead of turning a bulb on and off, it drives an output wire.
 
 An OR gate is drawn like this:
 
@@ -295,9 +295,9 @@ An OR gate is drawn like this:
 
 *Diagram 3.12. An OR gate.*
 
-This symbol represents the [OR circuit](#diagram-3-7) we made previously.
+This symbol represents the [OR circuit](#diagram-3-7) we made previously, with the same idea about driving the output wire instead of a bulb.
 
-Whenever I use these symbols moving forward, they can directly translate to the circuits with the relays I showed you previously, the inputs and outputs are the same, but the internal components stay hidden for cleanliness sake.
+Whenever I use these symbols moving forward, they can almost directly translate to the circuits with the relays I showed you previously, but the internal components stay hidden for cleanliness sake.
 
 Here are three more useful gate symbols:
 
@@ -793,11 +793,17 @@ So before we build the cabinet, we need one more piece of plumbing: a clean way 
 
 ## Buses
 
-Now one simple solution would be to give every component a pair of 8-wires to every other component, but that would become a mess very quickly.
+Now one simple solution would be to give every component its own bundle of 8 wires to every other component, but that would become a mess very quickly.
 
-A simpler solution is to have one single 8-bit data highway, where components can put and take data off. This is collection of 8-wires is called a bus.
+A simpler solution is to have one single 8-bit data highway, where components can put and take data off. This collection of 8 wires is called a bus.
 
 <diagram showing the concept>
+
+But we have an issue, this diagram is technically not possible yet. If register `A` is outputting a value like `00000000`, and it is connected to the bus, and then register `B` is outputting a value like `00000001`, then the last wire will clash and short circuit.
+
+We need a way to connect these registers to the bus, but for them to not bother the bus, and not to actively drive a wire to `-` or `+` like we discussed [previously](#diagram-3-10).
+
+We need a way to make wires "free" when we don't want to output anything. `00000000` is not enough. The point I am trying to make is that `00000000` is not silent. It is actively driving the bus.
 
 But Otto also had the upstairs filing cabinet, not just three desk drawers. So the next problem is organization and scale. How do we organize many stored bytes so the machine can choose one slot, read it, and write back to it?
 
