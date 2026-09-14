@@ -263,25 +263,37 @@ That is what a NOT gate does.
 
 *Diagram 3.9. A NOT gate.*
 
+Now lets clean up some of our understanding of circuits before we move on. We have been showing our outputs as a light bulb. For a bulb to be on, it needs be connected to `+` and `-`, one on each side, that difference in voltage allows current to flow, turning on the bulb.
+
+But lets say we just want an output wire, not a bulb. We can't just remove the bulb, `+` connected directly to `-` would lead to a short-circuit. So what we do, is we either just drive the wire up or down, so either it is connected to `+` or `-`. All of our relay gates can be simply adapted to do this.
+
+<a id="diagram-3-10"></a> 
+
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/before-after.gif" alt="Driving an output wire"></div>
+
+*Diagram 3.10. Driving an output wire.*
+
+In this diagram, red wire means current is actively flowing, that's why `OUT = 1` is still white. Later when we stop drawing every logic gate, red wire will just mean high, or 1.
+
 Now before we look at the completed circuit, let's learn some basic logic gate symbols.
 
 An AND gate is drawn like this:
 
-<a id="diagram-3-10"></a> 
+<a id="diagram-3-11"></a> 
 
 {{< svg "final/and-gate" >}}
 
-*Diagram 3.10. An AND gate.*
+*Diagram 3.11. An AND gate.*
 
 This symbol represents the [AND circuit](#diagram-3-5) we made previously.
 
 An OR gate is drawn like this:
 
-<a id="diagram-3-11"></a> 
+<a id="diagram-3-12"></a> 
 
 {{< svg "final/or-gate" >}}
 
-*Diagram 3.11. An OR gate.*
+*Diagram 3.12. An OR gate.*
 
 This symbol represents the [OR circuit](#diagram-3-7) we made previously.
 
@@ -289,11 +301,11 @@ Whenever I use these symbols moving forward, they can directly translate to the 
 
 Here are three more useful gate symbols:
 
-<a id="diagram-3-12"></a> 
+<a id="diagram-3-13"></a> 
 
 {{< svg "final/not-nand-nor-gates" >}}
 
-*Diagram 3.12. NOT, NAND, NOR gates.*
+*Diagram 3.13. NOT, NAND, NOR gates.*
 
 NAND is AND with the output flipped. NOR is OR with the output flipped.
 
@@ -301,11 +313,11 @@ That little circle at the end of a gate means "flip the output."
 
 With our knowledge about logic gates, let's create the "should-I-wash-my-dog 5000" machine!
 
-<a id="diagram-3-13"></a> 
+<a id="diagram-3-14"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/dog-washer-v2.gif" alt="The final dog washer circuit"></div>
 
-*Diagram 3.13. The final dog washer circuit.*
+*Diagram 3.14. The final dog washer circuit.*
 
 Again this animation doesn't cover all possible states.
 
@@ -775,9 +787,21 @@ Just imagine the new accumulator with a clock signal instead of a `STEP` button.
 
 Now we have a circuit version of one of Otto's desk drawers: a register that can hold a byte and update when we want.
 
+But registers on their own are not enough. Otto needs to move numbers between his drawers, the abacus, and the upstairs cabinet.
+
+So before we build the cabinet, we need one more piece of plumbing: a clean way to move bytes around.
+
+## Buses
+
+Now one simple solution would be to give every component a pair of 8-wires to every other component, but that would become a mess very quickly.
+
+A simpler solution is to have one single 8-bit data highway, where components can put and take data off. This is collection of 8-wires is called a bus.
+
+<diagram showing the concept>
+
 But Otto also had the upstairs filing cabinet, not just three desk drawers. So the next problem is organization and scale. How do we organize many stored bytes so the machine can choose one slot, read it, and write back to it?
 
-## Organizing Data
+## Organizing Data (REDO, cuz i added BUSES)
 
 We want to build a system that organizes data into the structure of [Otto's cabinet slots](#diagram-1-2).
 
