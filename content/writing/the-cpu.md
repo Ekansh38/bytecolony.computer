@@ -31,6 +31,17 @@ The key point is that nothing here is smart in isolation. A CPU is not one hard 
 
 We are going to try to understand this simple CPU. It is not a modern CPU with decades of optimization, but it has the same core functionality.
 
+## How to Read This Article
+
+- If a diagram is hard to understand, click on it, and step through each frame one by one using the
+  arrow keys, with the provided descriptions. This only works if you are reading on my website.
+
+- Don't try and "memorize" every layout, focus on the mental models, concepts and what part each
+  piece has to play.
+
+- If a section feels dense, or hard to understand, follow the diagrams first and try to get a feel
+  for what is happening.
+
 ## The House
 
 Let's start with a high-level overview of how the CPU functions, so we have a goal to work towards.
@@ -42,8 +53,8 @@ Inside this house is one stupid but surprisingly pedantic worker. His name is Ot
 Inside this house we have our downstairs desk where Otto does all the serious work. On the desk are a few things:
 
 - three small drawers that can each hold one number, labeled `A`, `B`, and `PC`
-- an abacus for basic arithmetic.
-- A decoder chart that does some stuff. We will come back to this later.
+- an abacus for basic arithmetic
+- a decoder chart that does some stuff, which we will come back to later
 
 <a id="diagram-1-1"></a> 
 
@@ -793,7 +804,7 @@ So before we build the cabinet, we need one more piece of plumbing: a clean way 
 
 ## Buses
 
-Now one simple solution would be to give every component its own bundle of 8 wires to every other component, but that would become a mess very quickly.
+Now one simple solution to move bytes around would be to give every component its own bundle of 8 wires to every other component, but that would become a mess very quickly.
 
 A simpler solution is to have one single 8-bit data highway, where components can put and take data off. This collection of 8 wires is called a bus.
 
