@@ -235,6 +235,13 @@
       q('.fx-strip').hidden = false;
       q('.fx-grid-btn').textContent = 'grid';
       q('.fx-side-title').textContent = figureCaption(findDiagram(name)) || m.title;
+      // wide frames (bus diagrams etc.) get a stacked layout: caption below,
+      // stage at full width, larger filmstrip thumbs
+      var probe = new Image();
+      probe.onload = function () {
+        q('.fx').classList.toggle('wide', probe.naturalWidth / probe.naturalHeight > 2.1);
+      };
+      probe.src = m.frames[0].src;
       buildStrip(m);
       showFrame(Math.max(0, Math.min(frameIdx || 0, m.frames.length - 1)));
       overlay.classList.add('open');
