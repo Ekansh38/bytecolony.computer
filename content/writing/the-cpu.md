@@ -830,7 +830,7 @@ Here is an example where the content of register A gets copied into register B.
 
 <a id="diagram-7-5"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/common-data-bus-demo.gif" alt="Copying register A into register B through the shared bus"></div>
+<div class="svg-diagram big"><img loading="lazy" decoding="async" src="/assets/final/common-data-bus-demo.gif" alt="Copying register A into register B through the shared bus"></div>
 
 *Diagram 7.5. Copying register A into register B through the shared bus.*
 

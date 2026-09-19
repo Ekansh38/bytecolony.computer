@@ -412,6 +412,16 @@ body.page .hero-img {
 .svg-diagram.small img {
   max-height: 260px;
 }
+/* Big variant — for wide, detail-dense diagrams (buses, multi-register
+   layouts). Fills the full reading column instead of the 640px default. */
+.svg-diagram.big {
+  max-width: 100%;
+}
+.svg-diagram.big svg,
+.svg-diagram.big img {
+  max-height: 780px;
+}
+body.page .svg-diagram.big + p { max-width: 100%; }
 
 /* Light themes: warm the dark background so it doesn't punch out of the cream
    page. Radius/shadow live on the base rule so all themes get the same panel
