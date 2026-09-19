@@ -50,9 +50,9 @@ Here is a simple circuit:
 
 <a id="diagram-2-1"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/basic-circuit.gif" alt="A basic circuit with a switch and light bulb and drawings not symbols"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/basic-circuit.gif" alt="A basic circuit with a battery, switch, and bulb"></div>
 
-*Diagram 2.1. The circuit.*
+*Diagram 2.1. A basic circuit with a battery, switch, and bulb.*
 
 We can think of the battery as being able to push charge around the loop. Current can only flow when this loop is completed.
 
@@ -86,7 +86,7 @@ Here is the circuit:
 
 <a id="diagram-3-1"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/switches-1.gif" alt="A logical AND circuit"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/switches-1.gif" alt="The hand-switch version of AND"></div>
 
 *Diagram 3.1. The hand-switch version of AND.*
 
@@ -104,7 +104,7 @@ Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
 <a id="diagram-3-2"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/or-gate-logical.gif" alt="A logical OR circuit"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/or-gate-logical.gif" alt="The hand-switch version of OR"></div>
 
 *Diagram 3.2. The hand-switch version of OR.*
 
@@ -122,7 +122,7 @@ Or in other words, the OR circuit we built outputs a result as electricity, but 
 
 {{< svg "final/combination-problem" >}}
 
-*Diagram 3.3. The problem we currently face.*
+*Diagram 3.3. An electrical signal cannot move a metal switch by itself.*
 
 So if we want to chain circuits together, we need a way for an electrical signal to control a switch automatically. How can we do this?
 
@@ -304,7 +304,7 @@ A group of 8 bits is called a byte. With 8 bits, there are `2^8`, or 256, possib
 
 {{< svg "final/0-s-and-1-s" "small" >}}
 
-*Diagram 4.1. 0's and 1's.*
+*Diagram 4.1. One wire can represent two states: `0` or `1`.*
 
 If we want to represent numbers using wires, we are going to need more than one wire, because one wire can only represent up to two numbers, since it only has two possible states: `0` or `1`.
 
@@ -473,7 +473,7 @@ So if we have a number like this:
 
 {{< svg "final/carry-in-issue" >}}
 
-*Diagram 5.7. We can't add 3 numbers yet!*
+*Diagram 5.7. The next column has to add two bits plus a carry-in.*
 
 The half adder can handle the first column: `1 + 1`. That gives us a sum bit of `0` and a carry-out of `1`.
 
@@ -750,7 +750,7 @@ To show the state of the wires, I can write a number in the arrow; the number 0 
 
 {{< svg "final/common-bus-example" >}}
 
-*Diagram 7.1. A shared data bus example.*
+*Diagram 7.1. Two registers sharing a bus.*
 
 But we have an issue: this diagram is technically not possible yet. If register `A` is outputting a value like `00000000`, and it is connected to the bus, and then register `B` is outputting a value like `00000001`, then the last wire will clash and short-circuit.
 
@@ -804,21 +804,41 @@ So we have three states:
 | 0 | 0 | Z |
 | 0 | 1 | Z |
 
+This is the logic gate diagram for a tri-state buffer:
+
+<a id="diagram-7-3"></a> 
+
+{{< svg "final/tri-state-buffer" >}}
+
+*Diagram 7.3. A tri-state buffer logic gate.*
+
 Now let's address this enable conundrum. We now have two uses for the word enable, with completely different meanings and contexts. One means enabling writing, and the other means enabling output. From now on, we will use two separate terms to avoid confusion: `WRITE` and `OUT`.
 
 So we can make a new type of register, one with `WRITE`, `OUT`, `data`, and `Q`, the stored bits 0-7. By `data`, I simply mean the input data that we can store when `WRITE` is enabled.
 
-<diagram>
+<a id="diagram-7-4"></a> 
 
-<explain>
+{{< svg "final/new-register-internals" >}}
+
+*Diagram 7.4. Our register with an OUT input.*
+
+We are just connecting OUT to all of the enables in the tri-state buffers. So if `OUT` is `0` Q will be all Z and if `OUT` is 1, `Q` will be whatever is stored in the register.
 
 With that, we can use these new registers with a common bus to move data.
 
 Here is an example where the content of register A gets copied into register B.
 
-<diagram>
+<a id="diagram-7-5"></a> 
 
-<explain>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/common-data-bus-demo.gif" alt="Copying register A into register B through the shared bus"></div>
+
+*Diagram 7.5. Copying register A into register B through the shared bus.*
+
+I have some text inside the register that shows what it is storing. We of course have `W` and `O` which are `WRITE` and `OUT` as well as `D` and `Q` which are the inputs and outputs.
+
+Of course, on the second frame, when `OUT` of register A is enabled the `D` wires of both registers are also going to be 53 because they are directly connected to the bus.
+
+By the end of this sequence, we have copied the value 53 to register B! We can have many more registers sharing a common bus, as long as only one is driving the bus at a time.
 
 The next problem is organization and scale. How do we organize many stored bytes so the machine can choose one slot, read it, and write back to it?
 
