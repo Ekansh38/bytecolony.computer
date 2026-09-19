@@ -1,13 +1,21 @@
 title: tri state buffer internals
 
 [frame 1]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+`E` is on, so both relays arms on the right are pulled down, connecting one path to `+` and the other
+to `-`. `D` is on, so the top arm is pulled down onto the `+` path. The yellow path runs from the
+output all the way to the battery, so the output is driven to `1`.
 
 [frame 2]
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+`E` is on, so both relays arms on the right are pulled down, connecting one path to `+` and the other
+to `-`. `D` is off, so the top arm is up to the `-` path. The yellow path runs from the
+output all the way to ground, so the output is driven to `0`.
 
 [frame 3]
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+`E` is off, so both relay arms on the right are up, resting on contacts connected to nothing.
+`D` is off, so the top arm is up, onto the `-` path. But that path now leads nowhere. The yellow
+path runs from the output to a dead end, so the output is not driven at all, that is called `Z`.
 
 [frame 4]
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.
+`E` is off, so both relay arms on the right are up, resting on contacts connected to nothing.
+`D` is on, so the top arm is up, onto the `+` path. But that path now leads nowhere. The yellow
+path runs from the output to a dead end, so the output is not driven at all, that is called `Z`.
