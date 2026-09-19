@@ -710,19 +710,9 @@ body.lightbox-open { overflow: hidden; }
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Wide-aspect GIFs (bus diagrams): stack instead of side-by-side so the
-   stage gets the full viewer width; side panel becomes a bottom bar */
-.fx.wide .fx-main { grid-template-columns: 1fr; }
-.fx.wide .fx-side {
-  flex-direction: row;
-  align-items: baseline;
-  gap: 16px;
-  padding: 12px 18px;
-}
-.fx.wide .fx-side-title { flex-shrink: 0; }
-.fx.wide .fx-side-caption { min-height: 0; }
-.fx.wide .fx-img { max-height: 52vh; }
-.fx.wide .fx-thumb { width: 210px; }
+/* Wide-aspect GIFs (bus diagrams): keep the normal layout, just give the
+   filmstrip thumbs enough width that a 4:1 frame isn't a sliver */
+.fx.wide .fx-thumb { width: 170px; }
 
 /* filmstrip */
 .fx-strip {
