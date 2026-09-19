@@ -744,9 +744,13 @@ A simpler solution is to have one single 8-bit data highway, where components ca
 
 One more thing, moving forward when I want to draw a collection of 8 wires, instead of drawing each wire, I will just draw a thick arrow that represents 8 wires.
 
-To show the state of the wires, I can just write a number in the arrow; the number 0 for example means the wires are all off, and the number 2 would mean the second wire is on (`01000000 -> 2`).
+To show the state of the wires, I can write a number in the arrow; the number 0 for example means the wires are all off, and the number 2 would mean the wires are `00000010` which is 2 in binary.
 
-<diagram showing the concept>
+<a id="diagram-7-1"></a> 
+
+{{< svg "final/common-bus-example" >}}
+
+*Diagram 7.1. A shared data bus example.*
 
 But we have an issue: this diagram is technically not possible yet. If register `A` is outputting a value like `00000000`, and it is connected to the bus, and then register `B` is outputting a value like `00000001`, then the last wire will clash and short-circuit.
 
@@ -754,7 +758,7 @@ We need a way to connect these registers to the bus, but also let them get out o
 
 We need a way to make wires "free" when we don't want to output anything.
 
-`00000000` is not enough. The point I am trying to make is that on a shared bus `00000000` is not nothing. It is actively driving the bus to `-`.
+Just setting the output wires to `00000000` is not enough. The point I am trying to make is that on a shared bus `00000000` is not nothing. It is actively driving the bus to `-`.
 
 One clean way to solve this problem is by using something called a tri-state buffer. It has two inputs, `E` and `D`, which stand for enable and data.
 
@@ -771,12 +775,34 @@ Or in other words, this buffer is not touching the wire. `0` is very different: 
 0: driven low
 Z: disconnected
 ```
+This relay diagram of how a tri-state buffer works should make this concept crystal clear.
 
-This relay diagram of how a tri-state buffer works should make this concept crystal clear:
+Also I have drawn everything the output wire is currently touching in yellow. Yellow is just there so you can follow the path with your eyes, it doesn't mean anything.
 
-<diagram>
+<a id="diagram-7-2"></a> 
 
-<explain>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/tri-state-buffer-internals.gif" alt="A tri-state buffer built with relays"></div>
+
+*Diagram 7.2. A tri-state buffer built with relays.*
+
+This looks complicated, so let me break it down.
+
+First, ignore the two relays on the right and look only at the `D` relay at the top. Its arm is attached to the output wire, and it works just like [the output driver from before](#diagram-3-10). When `D` is `1`, the arm is pulled down onto the wire that leads toward the battery, `+`. When `D` is `0`, the arm goes up onto the wire that leads toward ground. Remember, ground is just the `-` side.
+
+The important idea is that neither of those wires is directly connected to `+` or `-`. Each one has a relay between it. Both of those relays are controlled by `E`.
+
+When `E` is `1`, both gaps close. The output is now connected to whichever side `D` picked, so it is driven to `1` or `0`.
+
+When `E` is `0`, both relays touch a point connected to nothing. Both wires lead to a dead end. The output wire is touching nothing. That is `Z`.
+
+So we have three states:
+
+| `E` | `D` | Output |
+|---:|---:|---:|
+| 1 | 1 | 1 |
+| 1 | 0 | 0 |
+| 0 | 0 | Z |
+| 0 | 1 | Z |
 
 Now let's address this enable conundrum. We now have two uses for the word enable, with completely different meanings and contexts. One means enabling writing, and the other means enabling output. From now on, we will use two separate terms to avoid confusion: `WRITE` and `OUT`.
 
