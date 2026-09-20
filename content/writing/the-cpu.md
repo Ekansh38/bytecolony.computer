@@ -838,13 +838,17 @@ I have some text inside the register that shows what it is storing. We of course
 
 Of course, on the second frame, when `OUT` of register A is enabled the `D` wires of both registers are also going to be 53 because they are directly connected to the bus.
 
+Also generally in this diagram, register `B`'s output is sometimes shown as `Z` even when the bus is
+53. That is because `B_OUT` is off, so register `B` is not driving the bus. It may be connected to a
+bus currently at 53, but the 53 is coming from register `A`. So technically, those wires are at 53 but... it just looks better to keep them at `Z`.
+
 By the end of this sequence, we have copied the value 53 to register B! We can have many more registers sharing a common bus, as long as only one is driving the bus at a time.
 
 Now we can store a byte, compute a sum, and move bytes around!
 
 The next problem is organization and scale. How do we organize many stored bytes so the machine can choose one slot, read it, and write back to it? A handful of registers aren't enough.
 
-## Organizing Data (REDO, because I added BUSES)
+## Organizing Data
 
 We want to build a system that organizes data into a simple structure.
 

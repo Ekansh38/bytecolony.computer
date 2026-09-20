@@ -1,16 +1,16 @@
 title: common data bus demo
 
 [frame 1]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+All of the control wires of both registers are all off. So the bus and the inputs and outputs of both registers are `Z`: disconnected. Register `A` has 53 stored inside of it, and register `B` has 0 stored in it.
 
 [frame 2]
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+The `OUT` control signal of register `A` is on. So it is outputting 53 onto the bus, and the input of itself and register `B` because those are both connected to the bus. The output of register `B` is shown as `Z` because it register `B` is not driving the bus, even though those output wires are 53, they aren't driving 53. Register `A` has 53 stored inside of it, and register `B` still has 0 stored in it.
 
 [frame 3]
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+The `OUT` control signal of register `A` is on. So it is outputting 53 onto the bus, and the input of itself and register `B` because those are both connected to the bus. Register `B`'s `WRITE` control signal is on, thus storing the value on the bus inside, in this case 53. The output of register `B` is still shown as `Z`. Register `A` has 53 stored inside of it, and register `B` now has 53 stored in it.
 
 [frame 4]
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.
+The `OUT` control signal of register `A` is on. So it is outputting 53 onto the bus, and the input of itself and register `B` because those are both connected to the bus. Register `B`'s `WRITE` control signal is now off. The output of register `B` is still shown as `Z`. Register `A` has 53 stored inside of it, and register `B` still has 53 stored in it.
 
 [frame 5]
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+All of the control signals of both registers are all off again. But now register `B` also has 53 stored in it!
