@@ -848,7 +848,7 @@ The next problem is organization and scale. How do we organize many stored bytes
 
 We want to build a system that organizes data into a simple structure.
 
-<a id="diagram-8-1"></a> 
+<a class="small" id="diagram-8-1"></a> 
 
 {{< svg "final/cabinet" "big" >}}
 
