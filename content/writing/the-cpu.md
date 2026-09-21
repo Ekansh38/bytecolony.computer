@@ -971,6 +971,14 @@ What AND gate 1 checks is, if `Row Select` and `Column Select`, and `OUT` is on,
 
 AND gate 2 checks, if `Row Select` and `Column Select`, and `WRITE` is on, then that means we have selected that register to write to, thus we turn on `WRITE` for that register, and it will write the data on the `Input` bus.
 
+So yea, both AND gates take in 3 inputs, if you are wondering how that works, just think of two AND gates changed together.
+
+<a id="diagram-7-7"></a> 
+
+{{< svg "final/three-input-and" >}}
+
+*Diagram 7.6. A three input AND gate.*
+
 So now that we have built RAM, lets pretend instead of 16 registers, we have a RAM array with 256 registers, the same logic can be copied, just with 4-16 decoders instead of 2-4 decoders and 8 address inputs rather than 4.
 
 <ram interface>
