@@ -21,7 +21,7 @@
     <li class="writing-li">
       <div>
         <a href="{{ .Permalink }}">{{ .Title }}</a>
-        {{ with .Params.project }}<br><a href="/projects/{{ . }}/" class="writing-project">↳ {{ . }}</a>{{ end }}
+        {{ with .Params.project }}<br><a href="/projects/{{ . }}/" class="writing-project">{{ . }}</a>{{ end }}
       </div>
       <span class="yr">{{ .Date.Format "Jan 2, 2006" }}</span>
     </li>
