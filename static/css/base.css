@@ -368,6 +368,43 @@ body.page .hero-img {
   margin: 0 !important;
 }
 
+/* Isolate diagram layout/paint so hydrating one can't reflow the page */
+.svg-diagram { contain: layout paint; }
+
+/* Unhydrated placeholder: soft shimmer + label until svg-lazy fills it */
+.svg-diagram[data-svg]:not(.svg-loaded) { position: relative; }
+.svg-diagram[data-svg]:not(.svg-loaded)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(100deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.045) 50%,
+    transparent 65%);
+  background-size: 220% 100%;
+  animation: svg-shimmer 1.5s linear infinite;
+}
+.svg-diagram[data-svg]:not(.svg-loaded)::after {
+  content: "loading diagram\2026";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.28);
+}
+@keyframes svg-shimmer {
+  from { background-position: 110% 0; }
+  to   { background-position: -110% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .svg-diagram[data-svg]:not(.svg-loaded)::before { animation: none; }
+}
+
 /* ── INLINE SVG DIAGRAMS (via {{< svg >}} shortcode) ────────── */
 .svg-diagram {
   display: block;
@@ -479,6 +516,22 @@ body.page .svg-diagram.big + p { max-width: 100%; }
   cursor: default;
   box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7);
 }
+/* spinner while the zoom clone (or a force-loaded diagram) is prepared */
+.diagram-lightbox-panel.loading {
+  min-width: 220px;
+  min-height: 160px;
+}
+.diagram-lightbox-panel.loading::after {
+  content: "";
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: var(--accent);
+  animation: lb-spin 0.7s linear infinite;
+}
+@keyframes lb-spin { to { transform: rotate(360deg); } }
+
 .diagram-lightbox-panel svg,
 .diagram-lightbox-panel img {
   display: block;

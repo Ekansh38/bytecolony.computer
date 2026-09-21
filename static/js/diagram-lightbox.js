@@ -176,35 +176,39 @@
   function q(sel) { return overlay.querySelector(sel); }
 
   // ── zoom mode (svg / unframed gif) ───────────────────────────
+  function makeZoomClone(content) {
+    var clone = content.cloneNode(true);
+    clone.removeAttribute('width');
+    clone.removeAttribute('height');
+    if (clone.tagName.toLowerCase() === 'svg') {
+      // A viewBox-only SVG has no intrinsic size and collapses inside the
+      // flex panel; size it explicitly to fill the available space.
+      var vb = (clone.getAttribute('viewBox') || '').trim().split(/[\s,]+/);
+      var aspect = (vb.length === 4 && +vb[2] > 0 && +vb[3] > 0) ? (+vb[2] / +vb[3]) : 4 / 3;
+      var availW = Math.min(1200, window.innerWidth * 0.95) - 48;
+      var availH = window.innerHeight * 0.8 - 44;
+      var w = Math.min(availW, availH * aspect);
+      clone.style.width = w + 'px';
+      clone.style.height = (w / aspect) + 'px';
+    }
+    return clone;
+  }
+
   function openZoom(diagram) {
     var ov = ensureOverlay();
     stopPlay();
     st.mode = 'zoom';
     st.name = gifName(diagram);
     q('.fx').hidden = true;
-    q('.diagram-lightbox-panel').style.display = '';
+    var panel = q('.diagram-lightbox-panel');
+    panel.style.display = '';
     q('.diagram-lightbox-caption').style.display = '';
 
-    var panel = q('.diagram-lightbox-panel');
+    // open the overlay immediately with a spinner; the expensive clone
+    // (layout of a big SVG) happens after the fade-in has started
     panel.innerHTML = '';
-    var content = diagram.querySelector('svg, img');
-    if (content) {
-      var clone = content.cloneNode(true);
-      clone.removeAttribute('width');
-      clone.removeAttribute('height');
-      if (clone.tagName.toLowerCase() === 'svg') {
-        // A viewBox-only SVG has no intrinsic size and collapses inside the
-        // flex panel; size it explicitly to fill the available space.
-        var vb = (clone.getAttribute('viewBox') || '').trim().split(/[\s,]+/);
-        var aspect = (vb.length === 4 && +vb[2] > 0 && +vb[3] > 0) ? (+vb[2] / +vb[3]) : 4 / 3;
-        var availW = Math.min(1200, window.innerWidth * 0.95) - 48;
-        var availH = window.innerHeight * 0.8 - 44;
-        var w = Math.min(availW, availH * aspect);
-        clone.style.width = w + 'px';
-        clone.style.height = (w / aspect) + 'px';
-      }
-      panel.appendChild(clone);
-    }
+    panel.classList.add('loading');
+
     var captionText = figureCaption(diagram);
     var captionEl = q('.diagram-lightbox-caption');
     captionEl.textContent = captionText;
@@ -213,6 +217,27 @@
     ov.classList.add('open');
     ov.setAttribute('aria-hidden', 'false');
     document.body.classList.add('lightbox-open');
+
+    function place(content) {
+      if (st.mode !== 'zoom') return;   // user already closed / switched
+      panel.classList.remove('loading');
+      panel.innerHTML = '';
+      if (content) panel.appendChild(makeZoomClone(content));
+    }
+
+    var content = diagram.querySelector('svg, img');
+    if (content) {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { place(content); });
+      });
+    } else if (diagram.getAttribute('data-svg') && window._svgLazyEnsure) {
+      // placeholder not hydrated yet — force-load it, then clone
+      window._svgLazyEnsure(diagram).then(function () {
+        place(diagram.querySelector('svg, img'));
+      });
+    } else {
+      panel.classList.remove('loading');
+    }
   }
 
   // ── frame mode ───────────────────────────────────────────────
