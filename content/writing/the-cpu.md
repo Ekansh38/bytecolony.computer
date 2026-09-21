@@ -947,6 +947,23 @@ So `D`, `Q`, `O`, and `W`.
 
 Honestly? That's it. We can use two decoders, sixteen registers, some wires and buses all mashed together with some extra logic gates and BOOM! We have some RAM.
 
-<diagram>
+In this diagram, green lines are 8-bit data buses. `OUT` is yellow, and `WRITE` is orange. They are still ordinary wires; the colors are only there to make the diagram easier to follow.
+
+<a id="diagram-7-5"></a> 
+
+{{< svg "final/zoomed-out-ram" >}}
+
+*Diagram 7.5. A zoomed out RAM diagram.*
 
 <explain here>
+
+This is kind of a lot, so lets zoom in:
+
+<one cell, with ... on each side>
+
+<explain this>
+
+So now that we have built RAM, lets pretend instead of 16 registers, we have a RAM array with 256 registers, the same logic can be copied, just with 4-16 decoders instead of 2-4 decoders and 8 address inputs rather than 4.
+
+<ram interface>
+
