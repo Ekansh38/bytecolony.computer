@@ -47,8 +47,8 @@
       return new Promise(function (resolve) {
         requestAnimationFrame(function () {
           if (t) {
+            // replaces the .svg-ph sizer with the svg at the same height
             el.innerHTML = t;
-            el.style.removeProperty('aspect-ratio');
             el.classList.add('svg-loaded');
           }
           resolve();

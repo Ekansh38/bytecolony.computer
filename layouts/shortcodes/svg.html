@@ -18,4 +18,7 @@
     {{ if gt $h 0.0 }}{{ $ratio = div $w $h }}{{ end }}
   {{ end }}
 {{ end }}
-<div class="{{ $class }}" data-svg="/assets/{{ $name }}.svg" style="aspect-ratio: {{ printf "%.4f" $ratio }};"><noscript><img src="/assets/{{ $name }}.svg" alt="" loading="lazy"></noscript></div>
+{{/* The ratio lives on an inner sizer that matches the hydrated SVG's box
+     exactly (svg renders inside the wrapper padding at width:100%), so
+     hydration causes zero layout shift and anchor jumps stay accurate. */}}
+<div class="{{ $class }}" data-svg="/assets/{{ $name }}.svg"><div class="svg-ph" style="aspect-ratio: {{ printf "%.4f" $ratio }};"></div><noscript><img src="/assets/{{ $name }}.svg" alt="" loading="lazy"></noscript></div>
