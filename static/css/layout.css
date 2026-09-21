@@ -54,6 +54,13 @@ footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--border
 
 body { background: transparent; text-shadow: 0 0 18px var(--shadow), 0 0 6px var(--shadow); }
 
+/* Touch devices: the site-wide glyph glow makes every raster tile carry two
+   blur passes — the cause of blank checkerboards on fast mobile scrolls.
+   Drop it there; desktop keeps the glow. */
+@media (pointer: coarse) {
+  body { text-shadow: none; }
+}
+
 #bg-canvas {
   position: fixed;
   top: 0; left: 0;

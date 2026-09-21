@@ -176,6 +176,10 @@
   function q(sel) { return overlay.querySelector(sel); }
 
   // ── zoom mode (svg / unframed gif) ───────────────────────────
+  // Clones are expensive to lay out for big SVGs — build once per
+  // diagram and reuse on every subsequent open.
+  var zoomCloneCache = new WeakMap();
+
   function makeZoomClone(content) {
     var clone = content.cloneNode(true);
     clone.removeAttribute('width');
@@ -222,14 +226,27 @@
       if (st.mode !== 'zoom') return;   // user already closed / switched
       panel.classList.remove('loading');
       panel.innerHTML = '';
-      if (content) panel.appendChild(makeZoomClone(content));
+      if (!content) return;
+      var clone = zoomCloneCache.get(diagram);
+      if (!clone) {
+        clone = makeZoomClone(content);
+        zoomCloneCache.set(diagram, clone);
+      }
+      panel.appendChild(clone);
     }
 
+    var cached = zoomCloneCache.get(diagram);
     var content = diagram.querySelector('svg, img');
-    if (content) {
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () { place(content); });
-      });
+    if (cached || content) {
+      if (cached) {
+        // already built once — reattach immediately, no wait
+        panel.classList.remove('loading');
+        panel.appendChild(cached);
+      } else {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { place(content); });
+        });
+      }
     } else if (diagram.getAttribute('data-svg') && window._svgLazyEnsure) {
       // placeholder not hydrated yet — force-load it, then clone
       window._svgLazyEnsure(diagram).then(function () {
