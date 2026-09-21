@@ -872,7 +872,7 @@ Now let's think about exactly what we would want this RAM chip to do.
 
 To be clear, `WRITE` and `OUT` are control signals, so just 1 input wire each.
 
-`address` is 8 input wires, while `data in` and `data out` carry bytes and are both connected directly to the common bus.
+For this demo RAM, `address` is only 4 input wires. `data in` and `data out` carry bytes and are both connected directly to the common bus.
 
 This only works if no other part is driving the bus when `OUT` is enabled.
 
@@ -900,23 +900,23 @@ Let's start with building a simple decoder. This decoder will take 2 bits of our
 
 In the diagram the top bit is the bigger bit, the 2's place, the bottom is the smaller bit, the 1's place.
 
-<a id="diagram-7-1"></a> 
+<a id="diagram-8-2"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/2-4-decoder.gif" alt="How a decoder works"></div>
 
-*Diagram 7.1. How a decoder works.*
+*Diagram 8.2. How a decoder works.*
 
 As you can tell, no matter the inputs, exactly one output wire is on at a time.
 
 We use one 2-to-4 decoder for the rows and another 2-to-4 decoder for the columns. Where the selected row and selected column cross, that is the byte we want to target.
 
-This diagram shows a few addresses as examples. Each address gets its own little intersection. Each address from 1-16 has its own spot.
+This diagram shows a few addresses as examples. Each address gets its own little intersection. Each address from 0-15 has its own spot.
 
-<a id="diagram-7-2"></a> 
+<a id="diagram-8-3"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/cross-section.gif" alt="Where the row and column meet"></div>
 
-*Diagram 7.2. Where the row and column meet.*
+*Diagram 8.3. Where the row and column meet.*
 
 How a decoder works is extremely simple. It just uses a bunch of logic gates to ask these simple questions.
 
@@ -927,33 +927,33 @@ How a decoder works is extremely simple. It just uses a bunch of logic gates to 
 
 Here is how it works if you care:
 
-<a id="diagram-7-3"></a> 
+<a id="diagram-8-4"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/final/2-4-decoder-gates.gif" alt="2-4 decoder internals"></div>
 
-*Diagram 7.3. 2-4 decoder internals.*
+*Diagram 8.4. 2-4 decoder internals.*
 
 Honestly? That's it. We can use two decoders, sixteen registers, some wires and buses all mashed together with some extra logic gates and BOOM! We have some RAM.
 
 In this diagram, green lines are 8-bit data buses. `OUT` is yellow, and `WRITE` is orange. They are still ordinary wires; the colors are only there to make the diagram easier to follow.
 
-<a id="diagram-7-4"></a> 
+<a id="diagram-8-5"></a> 
 
 {{< svg "final/zoomed-out-ram" "big" >}}
 
-*Diagram 7.4. A zoomed out RAM diagram.*
+*Diagram 8.5. A zoomed out RAM diagram.*
 
 This is kind of a lot to unpack, so let me explain the high level parts before we zoom in and take a closer look.
 
-We have a green data in bus that is fed into the bottom of all of the registers, we also have another green data out bus that comes out of the top of all the registers and combines into one output. Again this works because only one register will ever have `OUT` on at a time.
+We have a green data in bus that is fed into the bottom of all of the registers, we also have another green data out bus that comes out of the top of all the registers and combines into one output. Every slot is connected to both buses, but only the selected slot is allowed to use them. If the slot's row and column are selected, it can either read from `data in` when `WRITE` is on, or drive `data out` when `OUT` is on.
 
 Lets look at one cell more closely:
 
-<a id="diagram-7-5"></a> 
+<a id="diagram-8-6"></a> 
 
 {{< svg "final/zoomed-in-ram" >}}
 
-*Diagram 7.5. A zoomed in RAM cell diagram.*
+*Diagram 8.6. A zoomed in RAM cell diagram.*
 
 What AND gate 1 checks is, if `Row Select` and `Column Select`, and `OUT` is on, then that means we have selected that register to output its value, thus we turn on `OUT` and the register will output something on the `Output` bus.
 
@@ -961,11 +961,11 @@ AND gate 2 checks, if `Row Select` and `Column Select`, and `WRITE` is on, then 
 
 So yea, both AND gates take in 3 inputs, if you are wondering how that works, just think of two AND gates changed together.
 
-<a id="diagram-7-6"></a> 
+<a id="diagram-8-7"></a> 
 
 {{< svg "final/three-input-and" >}}
 
-*Diagram 7.6. A three input AND gate.*
+*Diagram 8.7. A three input AND gate.*
 
 So now that we have built RAM, lets pretend instead of 16 registers, we have a RAM array with 256 registers, the same logic can be copied, just with 4-16 decoders instead of 2-4 decoders and 8 address inputs rather than 4.
 
