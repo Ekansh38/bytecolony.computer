@@ -180,6 +180,11 @@
   // diagram and reuse on every subsequent open.
   var zoomCloneCache = new WeakMap();
 
+  // Every viewer open bumps this; async callbacks from a previous open
+  // (deferred clones, manifest fetches) check it and drop themselves,
+  // so a stale diagram can never overwrite the one the user just opened.
+  var openSeq = 0;
+
   function makeZoomClone(content) {
     var clone = content.cloneNode(true);
     clone.removeAttribute('width');
@@ -201,6 +206,7 @@
   function openZoom(diagram) {
     var ov = ensureOverlay();
     stopPlay();
+    var seq = ++openSeq;
     st.mode = 'zoom';
     st.name = gifName(diagram);
     q('.fx').hidden = true;
@@ -223,7 +229,8 @@
     document.body.classList.add('lightbox-open');
 
     function place(content) {
-      if (st.mode !== 'zoom') return;   // user already closed / switched
+      // dropped if the user closed or opened something else meanwhile
+      if (seq !== openSeq || st.mode !== 'zoom') return;
       panel.classList.remove('loading');
       panel.innerHTML = '';
       if (!content) return;
@@ -259,9 +266,13 @@
 
   // ── frame mode ───────────────────────────────────────────────
   function enterFrames(name, frameIdx) {
+    ensureOverlay();
+    var seq = ++openSeq;
     getManifest(name).then(function (m) {
       if (!m || !m.frames.length) return;
-      ensureOverlay();
+      if (seq !== openSeq) return;   // user opened something else meanwhile
+      // don't show the previous gif's frame while the new one decodes
+      if (st.name !== name) q('.fx-img').removeAttribute('src');
       st.mode = 'frames';
       st.name = name;
       st.manifest = m;
