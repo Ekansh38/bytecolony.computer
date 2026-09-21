@@ -3,9 +3,19 @@
 {{ $class := "svg-diagram" }}
 {{ if $size }}{{ $class = printf "%s %s" $class $size }}{{ end }}
 {{ $path := printf "static/assets/%s.svg" $name }}
-{{/* Strip embedded @font-face blocks — every tldraw export carries the same
-     ~60KB base64 tldraw_mono font, and the site already serves it globally
-     from /fonts/tldraw_mono.woff2 (see base.css). Saves ~1.6MB on the CPU
-     article alone. */}}
-{{ $svg := readFile $path | replaceRE `@font-face \{[^}]*\}` "" }}
-<div class="{{ $class }}">{{ $svg | safeHTML }}</div>
+{{/* Lazy diagram: emit a fixed-aspect placeholder; /js/svg-lazy.js fetches
+     and inlines the SVG as it nears the viewport (stripping the embedded
+     tldraw font — the site serves it globally). Keeps the CPU article's
+     initial HTML small instead of shipping ~30 inline SVGs up front. */}}
+{{ $svgRaw := readFile $path }}
+{{ $ratio := 1.5 }}
+{{ $vbm := findRE `viewBox="[^"]*"` $svgRaw 1 }}
+{{ with index $vbm 0 }}
+  {{ $nums := split (replaceRE `viewBox="([^"]*)"` "$1" .) " " }}
+  {{ if eq (len $nums) 4 }}
+    {{ $w := float (index $nums 2) }}
+    {{ $h := float (index $nums 3) }}
+    {{ if gt $h 0.0 }}{{ $ratio = div $w $h }}{{ end }}
+  {{ end }}
+{{ end }}
+<div class="{{ $class }}" data-svg="/assets/{{ $name }}.svg" style="aspect-ratio: {{ printf "%.4f" $ratio }};"><noscript><img src="/assets/{{ $name }}.svg" alt="" loading="lazy"></noscript></div>

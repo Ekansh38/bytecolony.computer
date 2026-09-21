@@ -23,6 +23,17 @@ python3 scripts/extract_frames.py
 # Build Hugo site
 ./hugo --gc --minify --baseURL "https://${VERCEL_PROJECT_PRODUCTION_URL}"
 
+# Strip embedded tldraw fonts from served SVG files — the site provides the
+# font globally, and diagrams are now fetched per-file by svg-lazy.js
+python3 - <<'PYEOF'
+import glob, re
+for p in glob.glob('public/assets/final/*.svg'):
+    t = open(p, encoding='utf-8').read()
+    s = re.sub(r'@font-face \{[^}]*\}', '', t)
+    if s != t:
+        open(p, 'w', encoding='utf-8').write(s)
+PYEOF
+
 # Minify JS
 for f in public/js/*.js; do
   $ESBUILD "$f" --minify --outfile="$f" --allow-overwrite

@@ -380,10 +380,6 @@ body.page .hero-img {
   opacity: 0.92;
   text-align: center;
   cursor: pointer;
-  /* skip layout/paint for offscreen diagrams — the CPU article has ~28
-     inline SVGs with thousands of paths */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 480px;
   box-shadow:
     0 14px 40px -20px rgba(0, 0, 0, 0.35),
     0 2px 4px rgba(0, 0, 0, 0.06);
@@ -523,6 +519,17 @@ body.lightbox-open { overflow: hidden; }
 @media (max-width: 700px) {
   .diagram-lightbox { padding: 60px 12px 20px; }
   .diagram-lightbox-panel { padding: 12px; }
+}
+
+/* Touch devices: backdrop blur is brutally slow on mobile GPUs — swap it
+   for a darker solid backdrop and a snappier fade */
+@media (pointer: coarse) {
+  .diagram-lightbox {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.88);
+    transition: opacity 0.12s ease;
+  }
 }
 
 /* ── FRAME EXPLORER (inside the lightbox) ────────────────────── */
@@ -824,12 +831,20 @@ body.lightbox-open { overflow: hidden; }
 }
 
 @media (max-width: 860px) {
-  .fx-main { grid-template-columns: 1fr; }
-  .fx-side { order: 2; }
-  .fx-img { max-height: 48vh; }
+  .fx-main { grid-template-columns: 1fr; gap: 10px; }
+  .fx-side { order: 2; padding: 12px 14px; gap: 6px; }
+  .fx-side-caption { min-height: 0; font-size: 0.82rem; }
+  .fx-img { max-height: 44vh; }
   .fx .fx-gallery { grid-template-columns: 1fr; height: auto; max-height: 78vh; overflow-y: auto; }
-  .fx-zone { display: none; }
-  .fx-controlbar { flex-wrap: wrap; gap: 10px; }
+  /* keep the step chevrons — always visible and easy to thumb */
+  .fx-zone { width: 30%; color: rgba(255, 255, 255, 0.4); font-size: 1.7rem; }
+  .fx-zone-prev { padding-left: 8px; }
+  .fx-zone-next { padding-right: 8px; }
+  .fx-controlbar { flex-wrap: wrap; gap: 8px; padding: 8px 10px; }
+  .fx-btn { padding: 5px 12px; font-size: 0.76rem; }
+  .fx-speed-slider { width: 80px; }
+  .fx-thumb { width: 76px; }
+  .fx.wide .fx-thumb { width: 140px; }
 }
 
 /* Caption immediately after a diagram — styled as figcaption, visually
