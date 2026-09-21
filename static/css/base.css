@@ -234,25 +234,16 @@ body.writing li:not(:where(.project-content *)), body.music li:not(:where(.proje
 .writing-li { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
 .writing-li a { color: var(--fg); }
 .writing-li .yr { white-space: nowrap; flex-shrink: 0; }
-/* Project association chip (writing lists, project meta lines) */
-.writing-project {
-  display: inline-block;
-  color: var(--muted) !important;
-  font-size: 0.72rem;
-  letter-spacing: 0.03em;
-  margin-top: 5px;
-  padding: 1px 9px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  line-height: 1.6;
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+/* Project association line under writing titles: "part of <name>" */
+.writing-project-line {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  margin-top: 3px;
 }
-.writing-project:hover {
-  color: var(--accent) !important;
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
-  text-decoration: none;
-}
+.writing-project { color: var(--muted) !important; }
+.writing-project:hover { color: var(--accent) !important; }
 
 .article-nav { display: flex; justify-content: space-between; margin-top: 40px; }
 .article-nav-next { margin-left: auto; }

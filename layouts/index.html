@@ -38,7 +38,7 @@
   <li class="writing-li">
     <div>
       <a href="{{ .Permalink }}">{{ .Title }}</a>
-      {{ with .Params.project }}<br><a href="/projects/{{ . }}/" class="writing-project">{{ . }}</a>{{ end }}
+      {{ with .Params.project }}<span class="writing-project-line">part of <a href="/projects/{{ . }}/" class="writing-project">{{ . }}</a></span>{{ end }}
     </div>
     <span class="yr">{{ .Date.Format "Jan 2006" }}</span>
   </li>
