@@ -854,7 +854,7 @@ We want to build a system that organizes data into a simple structure.
 
 <a class="small" id="diagram-8-1"></a> 
 
-{{< svg "final/cabinet" "big" >}}
+{{< svg "final/cabinet" >}}
 
 *Diagram 8.1. Our data structure.*
 
@@ -951,7 +951,7 @@ In this diagram, green lines are 8-bit data buses. `OUT` is yellow, and `WRITE` 
 
 <a id="diagram-7-5"></a> 
 
-{{< svg "final/zoomed-out-ram" >}}
+{{< svg "final/zoomed-out-ram" "big" >}}
 
 *Diagram 7.5. A zoomed out RAM diagram.*
 
@@ -977,7 +977,7 @@ So yea, both AND gates take in 3 inputs, if you are wondering how that works, ju
 
 {{< svg "final/three-input-and" >}}
 
-*Diagram 7.6. A three input AND gate.*
+*Diagram 7.7. A three input AND gate.*
 
 So now that we have built RAM, lets pretend instead of 16 registers, we have a RAM array with 256 registers, the same logic can be copied, just with 4-16 decoders instead of 2-4 decoders and 8 address inputs rather than 4.
 
