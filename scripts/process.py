@@ -230,6 +230,17 @@ def fix_obsidian_callouts(content):
         flags=re.MULTILINE
     )
 
+def swap_gifs_for_webp(content):
+    """Serve the animated WebP twin (built by extract_frames.py) instead of
+    the GIF — same look, ~60-90% smaller. Only rewrites when the twin
+    exists; idempotent. The .gif stays the authoring format."""
+    def swap(m):
+        name = m.group(1)
+        if os.path.exists(f"static/assets/frames-gen/{name}/anim.webp"):
+            return f'src="/assets/frames-gen/{name}/anim.webp"'
+        return m.group(0)
+    return re.sub(r'src="/assets/final/([A-Za-z0-9_-]+)\.gif"', swap, content)
+
 def add_lazy_loading(content):
     """Idempotent: give already-wrapped diagram imgs lazy loading attrs."""
     return re.sub(
@@ -245,6 +256,7 @@ def process_file(path):
     content = normalize_asset_paths(content)
     content = convert_svg_imgs(content)
     content = wrap_raster_imgs(content)
+    content = swap_gifs_for_webp(content)
     content = add_lazy_loading(content)
     content = isolate_block_diagrams(content)
     content = convert_superscripts(content)

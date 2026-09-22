@@ -10,15 +10,16 @@ curl -L "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hug
 npm install --no-save esbuild@${ESBUILD_VERSION}
 ESBUILD=./node_modules/.bin/esbuild
 
-# Pre-process markdown: reflow paragraphs, convert SVG tags, fix callouts
-python3 scripts/process.py
-
-# Extract GIF frames for the diagram frame explorer (needs Pillow).
+# Extract GIF frames + animated WebP twins BEFORE process.py, which
+# rewrites gif srcs to the webp twins (needs Pillow).
 # Vercel's python is uv-managed and rejects plain pip installs.
 python3 -m pip install --quiet --break-system-packages Pillow \
   || uv pip install --system --quiet Pillow \
   || python3 -m pip install --quiet Pillow
 python3 scripts/extract_frames.py
+
+# Pre-process markdown: reflow paragraphs, convert SVG tags, fix callouts
+python3 scripts/process.py
 
 # Build Hugo site
 ./hugo --gc --minify --baseURL "https://${VERCEL_PROJECT_PRODUCTION_URL}"

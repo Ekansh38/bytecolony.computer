@@ -48,14 +48,19 @@
   function gifName(diagram) {
     var img = diagram.querySelector('img');
     if (!img) return '';
-    var m = /\/([^\/]+)\.gif(\?|#|$)/.exec(img.getAttribute('src') || '');
+    var src = img.getAttribute('src') || '';
+    // /assets/final/<name>.gif or its webp twin /assets/frames-gen/<name>/anim.webp
+    var m = /\/([^\/]+)\.gif(\?|#|$)/.exec(src) ||
+            /frames-gen\/([^\/]+)\/anim\.webp/.exec(src);
     return m ? m[1] : '';
   }
 
   function findDiagram(name) {
     var imgs = document.querySelectorAll('.svg-diagram img');
     for (var i = 0; i < imgs.length; i++) {
-      if ((imgs[i].getAttribute('src') || '').indexOf('/' + name + '.gif') >= 0)
+      var src = imgs[i].getAttribute('src') || '';
+      if (src.indexOf('/' + name + '.gif') >= 0 ||
+          src.indexOf('frames-gen/' + name + '/anim.webp') >= 0)
         return imgs[i].closest('.svg-diagram');
     }
     return null;

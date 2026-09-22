@@ -81,18 +81,29 @@ def parse_sidecar(path):
 
 
 def extract(gif_path, out_dir):
-    """Extract coalesced RGBA frames. Returns list of {file, delay}."""
+    """Extract coalesced RGBA frames as WebP + an animated WebP twin of the
+    whole GIF (~60-90% smaller; the article page serves the twin instead of
+    the GIF). Returns list of {file, delay}."""
     frames = []
+    pil_frames = []
+    delays = []
     with Image.open(gif_path) as im:
         for i, frame in enumerate(ImageSequence.Iterator(im)):
-            fname = f"frame-{i + 1:02d}.png"
+            fname = f"frame-{i + 1:02d}.webp"
             delay = frame.info.get("duration", 100)
             if delay < 20:  # browsers clamp tiny delays; mirror that
                 delay = 100
-            frame.convert("RGBA").save(
-                os.path.join(out_dir, fname), "PNG", optimize=True
-            )
+            rgba = frame.convert("RGBA")
+            rgba.save(os.path.join(out_dir, fname), "WEBP", quality=85, method=4)
             frames.append({"file": fname, "delay": delay})
+            pil_frames.append(rgba)
+            delays.append(delay)
+    if pil_frames:
+        pil_frames[0].save(
+            os.path.join(out_dir, "anim.webp"), "WEBP",
+            save_all=True, append_images=pil_frames[1:],
+            duration=delays, loop=0, quality=85, method=4,
+        )
     return frames
 
 
@@ -121,7 +132,8 @@ def main():
         if needs_rebuild(gif_path, sidecar_path, manifest_path):
             os.makedirs(out_dir, exist_ok=True)
             # clear stale frames so a shrinking GIF doesn't leave orphans
-            for old in glob.glob(os.path.join(out_dir, "frame-*.png")):
+            for old in glob.glob(os.path.join(out_dir, "frame-*.png")) + \
+                       glob.glob(os.path.join(out_dir, "frame-*.webp")):
                 os.remove(old)
             frame_files = extract(gif_path, out_dir)
             built += 1
