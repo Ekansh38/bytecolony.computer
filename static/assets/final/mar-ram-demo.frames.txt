@@ -1,22 +1,22 @@
 title: mar ram demo
 
 [frame 1]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+The `MAR` has 0 stored in it. The common bus is empty, and all of the control signals are off.
 
 [frame 2]
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+The `MAR` still has 0 stored in it. We have put the value 28 onto the common bus, this is the address we want to access in RAM.
 
 [frame 3]
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+We enable `MAR_WRITE` so now the `MAR` has 28 stored in it. The common bus still has the value 28 on it.
 
 [frame 4]
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.
+`MAR_WRITE` is now off, but the `MAR` still has 28 stored in it. The common bus still has the value 28 on it.
 
 [frame 5]
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+The common bus is now empty so it can accept output from the RAM and `MAR` has the value 28 stored in it.
 
 [frame 6]
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur.
+`RAM_OUT` is enabled so the value stored in address 28 is outputted onto the common bus in this case 6.
 
 [frame 7]
-Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.
+`RAM_OUT` is now back off so the common bus is back to being empty.
