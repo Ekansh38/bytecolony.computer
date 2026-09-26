@@ -997,9 +997,9 @@ So first, we put 28 onto the common bus. Enable `MAR_WRITE` and store that into 
 
 ## The ALU
 
-If we have a handful of registers and RAM, we can now move bytes around using this common data bus. But what we really need is a component that can "process" numbers, a component that can do arithmetic and logic. Thus we have, "The Arithmetic and Logic Unit" or ALU for short.
+If we have a handful of registers and RAM, we can now move bytes around using this common data bus. But what we really need is a component that can "process" numbers, a component that can do arithmetic and logic. Thus we have "The Arithmetic and Logic Unit," or ALU for short.
 
-Imagine a chip where, we could input two numbers, an operation, and output a result, along with some other information.
+Imagine a chip where we could input two numbers, an operation, and output a result, along with some other information.
 
 <a id="diagram-9-1"></a> 
 
@@ -1036,9 +1036,15 @@ So in total: a data input that is always being stored, an `OUT` control signal, 
 
 Also, you'll see me feeding two buses into a single logic gate. "How does that work?", you might think. Well, there are really just eight gates, one per bit. One gate takes `A0` and `B0`, the next takes `A1` and `B1`, and so on. Eight output wires, which is just another bus.
 
-<diagram showing internals>
+<a id="diagram-9-2"></a> 
 
-At its crux, the ALU works by routing A and B both into 4 operations, in this case XOR, OR, AND, and ADD. We store each of the results in a corresponding result register. Then based on the op-code that is entered, we output that result. Simple!
+{{< svg "final/alu-internals" >}}
+
+*Diagram 9.2. ALU internals.*
+
+At its crux, the ALU works by routing `A` and `B` into all 4 operations at once, in this case XOR, OR, AND, and ADD. We store each of the results in a corresponding result register.
+
+To decide which one to output, the `OP` bits go into a 2-4 decoder that enables exactly 1 of the result registers onto the `R` bus.
 
 Now for the flags.
 
