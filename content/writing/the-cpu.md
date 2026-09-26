@@ -1038,7 +1038,7 @@ Also, you'll see me feeding two buses into a single logic gate. "How does that w
 
 <a id="diagram-9-2"></a> 
 
-{{< svg "final/alu-internals" >}}
+{{< svg "final/alu-internals" "big" >}}
 
 *Diagram 9.2. ALU internals.*
 
