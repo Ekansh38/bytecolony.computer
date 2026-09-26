@@ -1038,7 +1038,9 @@ Also, you'll see me feeding two buses into a single logic gate. "How does that w
 
 <diagram showing internals>
 
-<explain main other stuff, (still gotta do this btw)>
+At its crux, the ALU works by routing A and B both into 4 operations, in this case XOR, OR, AND, and ADD. We store each of the results in a corresponding result register. Then based on the op-code that is entered, we output that result. Simple!
+
+Now for the flags.
 
 First, the `ZERO` circuitry. It consists of:
 
