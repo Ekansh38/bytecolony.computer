@@ -1003,8 +1003,6 @@ The CPU first puts an address on the data bus and turns on `MAR_WRITE`. The MAR 
 
 *Diagram 8.10. How the MAR works.*
 
-Quick note: I have labeled the pin `D`, but on this chip it does the work of both `D` and `Q`. So from here on, think of `D` as standing for data, not input. Real memory chips do the same thing: their two-way pins are labeled `D`, or sometimes literally `DQ`.
-
 So first, we put 28 onto the common bus. Enable `MAR_WRITE` and store that into the MAR. We then remove 28 from the common bus, and enable `RAM_OUT`, we get 6 as the value stored in slot 28. Cool.
 
 ## The ALU
