@@ -965,7 +965,7 @@ So now that we have built RAM, let's pretend that instead of 16 registers, we ha
 
 Technically, there are still two buses inside the RAM: a data-in path and a data-out path. That is basically what we saw with the [register in the bus section](#diagram-7-5).
 
-But drawing two separate data buses every time is cumbersome. From the outside, we can abstract this as one shared data bus with a double-headed arrow.
+But drawing two separate data buses every time is cumbersome. From the outside, we can abstract this as one shared data bus with a double-headed arrow called `I/O` which stands for input/output.
 
 It is practically just like having two buses, one for input one for output.
 
