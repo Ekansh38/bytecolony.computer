@@ -241,6 +241,35 @@ def swap_gifs_for_webp(content):
         return m.group(0)
     return re.sub(r'src="/assets/final/([A-Za-z0-9_-]+)\.gif"', swap, content)
 
+def add_img_dimensions(content):
+    """Stamp intrinsic width/height on diagram imgs so the page's layout is
+    final before lazy images load. Without this, a jump to a late anchor
+    (e.g. the Comments TOC link) lands short: every unloaded image starts
+    ~0px tall and the page grows underneath the reader. Idempotent."""
+    try:
+        from PIL import Image
+    except ImportError:
+        return content
+
+    def stamp(m):
+        tag = m.group(0)
+        if 'width=' in tag:
+            return tag
+        src = m.group(1)
+        path = os.path.join("static", src.lstrip("/"))
+        if not os.path.exists(path):
+            return tag
+        try:
+            with Image.open(path) as im:
+                w, h = im.size
+        except Exception:
+            return tag
+        return tag[:-1].rstrip("/").rstrip() + f' width="{w}" height="{h}">'
+
+    return re.sub(
+        r'<img\s+[^>]*src="(/assets/[^"]+\.(?:gif|png|jpg|jpeg|webp))"[^>]*/?>',
+        stamp, content, flags=re.IGNORECASE)
+
 def add_lazy_loading(content):
     """Idempotent: give already-wrapped diagram imgs lazy loading attrs."""
     return re.sub(
@@ -258,6 +287,7 @@ def process_file(path):
     content = wrap_raster_imgs(content)
     content = swap_gifs_for_webp(content)
     content = add_lazy_loading(content)
+    content = add_img_dimensions(content)
     content = isolate_block_diagrams(content)
     content = convert_superscripts(content)
     content = fix_obsidian_callouts(content)

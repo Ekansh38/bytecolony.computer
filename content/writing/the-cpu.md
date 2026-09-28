@@ -50,7 +50,7 @@ Here is a simple circuit:
 
 <a id="diagram-2-1"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-circuit/anim.webp" alt="A basic circuit with a battery, switch, and bulb"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-circuit/anim.webp" alt="A basic circuit with a battery, switch, and bulb" width="642" height="500"></div>
 
 *Diagram 2.1. A basic circuit with a battery, switch, and bulb.*
 
@@ -86,7 +86,7 @@ Here is the circuit:
 
 <a id="diagram-3-1"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/switches-1/anim.webp" alt="The hand-switch version of AND"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/switches-1/anim.webp" alt="The hand-switch version of AND" width="623" height="473"></div>
 
 *Diagram 3.1. The hand-switch version of AND.*
 
@@ -104,7 +104,7 @@ Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
 <a id="diagram-3-2"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/or-gate-logical/anim.webp" alt="The hand-switch version of OR"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/or-gate-logical/anim.webp" alt="The hand-switch version of OR" width="630" height="626"></div>
 
 *Diagram 3.2. The hand-switch version of OR.*
 
@@ -134,7 +134,7 @@ Here is how it works:
 
 <a id="diagram-3-4"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-relay/anim.webp" alt="An electromagnetic relay"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-relay/anim.webp" alt="An electromagnetic relay" width="1278" height="812"></div>
 
 *Diagram 3.4. An electromagnetic relay.*
 
@@ -150,7 +150,7 @@ Now let's see how we can build an actual electrical AND gate that takes two inpu
 
 <a id="diagram-3-5"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-and-gate/anim.webp" alt="An AND gate"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-and-gate/anim.webp" alt="An AND gate" width="1920" height="1388"></div>
 
 *Diagram 3.5. An AND gate.*
 
@@ -180,7 +180,7 @@ Now here is the OR gate:
 
 <a id="diagram-3-7"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-or-gate/anim.webp" alt="An electronic OR gate"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-or-gate/anim.webp" alt="An electronic OR gate" width="1493" height="1462"></div>
 
 *Diagram 3.7. An electronic OR gate.*
 
@@ -188,7 +188,7 @@ That is an OR gate using relays. Now here is the full dog washer circuit up to t
 
 <a id="diagram-3-8"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v1/anim.webp" alt="The full dog washer circuit built with relays"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v1/anim.webp" alt="The full dog washer circuit built with relays" width="1920" height="1584"></div>
 
 *Diagram 3.8. The full dog washer circuit built with relays.*
 
@@ -206,7 +206,7 @@ Let's focus on this NOT for a second. NOT just inverts a signal: if it receives 
 
 <a id="diagram-3-9"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/not-gate/anim.webp" alt="A NOT gate"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/not-gate/anim.webp" alt="A NOT gate" width="1278" height="812"></div>
 
 *Diagram 3.9. A NOT gate.*
 
@@ -218,7 +218,7 @@ This distinction matters later. A `1` output is a wire being driven high. A `0` 
 
 <a id="diagram-3-10"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/before-after/anim.webp" alt="Driving an output wire"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/before-after/anim.webp" alt="Driving an output wire" width="1278" height="812"></div>
 
 *Diagram 3.10. Driving an output wire.*
 
@@ -264,7 +264,7 @@ With our knowledge about logic gates, let's create the "should-I-wash-my-dog 500
 
 <a id="diagram-3-14"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v2/anim.webp" alt="The final dog washer circuit"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v2/anim.webp" alt="The final dog washer circuit" width="1920" height="755"></div>
 
 *Diagram 3.14. The final dog washer circuit.*
 
@@ -310,7 +310,7 @@ Here are all the possible states we have with 3 wires:
 
 <a id="diagram-4-2"></a> 
 
-<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/3-states/anim.webp" alt="States with 3 wires"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/3-states/anim.webp" alt="States with 3 wires" width="383" height="251"></div>
 
 *Diagram 4.2. States with 3 wires.*
 
@@ -369,7 +369,7 @@ Let's start with a brief reminder of how we algorithmically add two decimal numb
 
 <a id="diagram-5-1"></a> 
 
-<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/decimal-addition/anim.webp" alt="Standard decimal addition"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/decimal-addition/anim.webp" alt="Standard decimal addition" width="252" height="278"></div>
 
 *Diagram 5.1. Standard decimal addition.*
 
@@ -377,7 +377,7 @@ We start at the rightmost column, do 5+8, get 13, we carry the 1. So we write 3 
 
 <a id="diagram-5-2"></a> 
 
-<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/binary-addition/anim.webp" alt="Binary addition"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/binary-addition/anim.webp" alt="Binary addition" width="439" height="291"></div>
 
 *Diagram 5.2. Binary addition.*
 
@@ -425,7 +425,7 @@ If we combine an OR gate and a NAND gate, and AND them together we get XOR:
 
 <a id="diagram-5-3"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder-sum/anim.webp" alt="Half adder sum / XOR"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder-sum/anim.webp" alt="Half adder sum / XOR" width="1626" height="819"></div>
 
 *Diagram 5.3. Half adder sum / XOR.*
 
@@ -445,7 +445,7 @@ Now here is our half adder:
 
 <a id="diagram-5-5"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder/anim.webp" alt="A half adder"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder/anim.webp" alt="A half adder" width="1411" height="806"></div>
 
 *Diagram 5.5. A half adder.*
 
@@ -479,7 +479,7 @@ To add three bits, we use two half adders and an OR gate:
 
 <a id="diagram-5-8"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-adder/anim.webp" alt="A full adder"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-adder/anim.webp" alt="A full adder" width="1554" height="393"></div>
 
 *Diagram 5.8. A full adder.*
 
@@ -527,7 +527,7 @@ Let's have a look at some example problems:
 
 <a id="diagram-5-12"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/8-bit-adder-examples/anim.webp" alt="Some examples on the adder"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/8-bit-adder-examples/anim.webp" alt="Some examples on the adder" width="1618" height="812"></div>
 
 *Diagram 5.12. Some examples on the adder.*
 
@@ -591,7 +591,7 @@ This diagram should help this make sense:
 
 <a id="diagram-6-1"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/sr-latch/anim.webp" alt="An SR latch"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/sr-latch/anim.webp" alt="An SR latch" width="1468" height="1179"></div>
 
 *Diagram 6.1. An SR latch.*
 
@@ -634,7 +634,7 @@ If we want the accumulator to work correctly, we need the enable wire to turn on
 
 <a id="diagram-6-3"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/d-latch-accumulator/anim.webp" alt="D latch accumulator"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/d-latch-accumulator/anim.webp" alt="D latch accumulator" width="1802" height="1920"></div>
 
 *Diagram 6.3. D latch accumulator.*
 
@@ -698,7 +698,7 @@ Now with this register, let's build a basic accumulator/adder circuit.
 
 <a id="diagram-6-9"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-accumulator/anim.webp" alt="Our full accumulator"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-accumulator/anim.webp" alt="Our full accumulator" width="1802" height="1920"></div>
 
 *Diagram 6.9. Our full accumulator.*
 
@@ -769,7 +769,7 @@ Also I have drawn everything the output wire is currently touching in yellow. Ye
 
 <a id="diagram-7-2"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/tri-state-buffer-internals/anim.webp" alt="A tri-state buffer built with relays"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/tri-state-buffer-internals/anim.webp" alt="A tri-state buffer built with relays" width="1742" height="1341"></div>
 
 *Diagram 7.2. A tri-state buffer built with relays.*
 
@@ -818,7 +818,7 @@ Here is an example where the content of register A gets copied into register B.
 
 <a id="diagram-7-5"></a> 
 
-<div class="svg-diagram big"><img loading="lazy" decoding="async" src="/assets/frames-gen/common-data-bus-demo/anim.webp" alt="Copying register A into register B through the shared bus"></div>
+<div class="svg-diagram big"><img loading="lazy" decoding="async" src="/assets/frames-gen/common-data-bus-demo/anim.webp" alt="Copying register A into register B through the shared bus" width="1920" height="763"></div>
 
 *Diagram 7.5. Copying register A into register B through the shared bus.*
 
@@ -890,7 +890,7 @@ In the diagram the top bit is the bigger bit, the 2's place, the bottom is the s
 
 <a id="diagram-8-2"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/2-4-decoder/anim.webp" alt="How a decoder works"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/2-4-decoder/anim.webp" alt="How a decoder works" width="863" height="635"></div>
 
 *Diagram 8.2. How a decoder works.*
 
@@ -902,7 +902,7 @@ This diagram shows a few addresses as examples. Each address gets its own little
 
 <a id="diagram-8-3"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/cross-section/anim.webp" alt="Where the row and column meet"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/cross-section/anim.webp" alt="Where the row and column meet" width="1175" height="1077"></div>
 
 *Diagram 8.3. Where the row and column meet.*
 
@@ -917,7 +917,7 @@ Here is how it works if you care:
 
 <a id="diagram-8-4"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/2-4-decoder-gates/anim.webp" alt="2-4 decoder internals"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/2-4-decoder-gates/anim.webp" alt="2-4 decoder internals" width="1620" height="1113"></div>
 
 *Diagram 8.4. 2-4 decoder internals.*
 
@@ -989,7 +989,7 @@ The CPU first puts an address on the data bus and turns on `MAR_WRITE`. The MAR 
 
 <a id="diagram-8-9"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/mar-ram-demo/anim.webp" alt="How the MAR works"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/mar-ram-demo/anim.webp" alt="How the MAR works" width="1920" height="1004"></div>
 
 *Diagram 8.9. How the MAR works.*
 
