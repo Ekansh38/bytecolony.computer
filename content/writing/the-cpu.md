@@ -967,13 +967,23 @@ Technically, there are still two buses inside the RAM: a data-in path and a data
 
 But drawing two separate data buses every time is cumbersome. From the outside, we can abstract this as one shared data bus with a double-headed arrow.
 
-The double-headed arrow does not mean data flows both ways at the same time. It means the direction depends on the control signals.
+It is practically just like having two buses, one for input one for output.
 
 If `W` is on, RAM copies the value from the data bus into the selected address.
 
 If `O` is on, RAM drives the selected address's value onto the data bus.
 
-So the same 8 data wires are used for both reading and writing. The rule is just that `W` and `O` should not both be on at the same time.
+So from now on, instead of drawing registers connected to a common bus [like this](#diagram-7-5), where we have a separate D and Q. We can just draw them like this:
+
+<a id="diagram-8-9"></a> 
+
+{{< svg "final/io-registers" >}}
+
+*Diagram 8.9. I/O Registers.*
+
+They both are the same technically, just this is easier to draw, so moving forward, instead of drawing two buses for `D` and `Q` I'll just draw one double-headed `I/O` bus.
+
+Now back to the `RAM` chip.
 
 If you pay close attention to [the diagram](#diagram-8-8), you will notice that the address input is not directly connected to the common data bus.
 
@@ -987,11 +997,13 @@ The MAR is just a regular 8-bit register with no `OUT` control signal as it is a
 
 The CPU first puts an address on the data bus and turns on `MAR_WRITE`. The MAR stores that address. Then the MAR keeps sending that address to RAM, leaving the data bus free to carry the value being read or written.
 
-<a id="diagram-8-9"></a> 
+<a id="diagram-8-10"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/mar-ram-demo/anim.webp" alt="How the MAR works" width="1920" height="1004"></div>
 
-*Diagram 8.9. How the MAR works.*
+*Diagram 8.10. How the MAR works.*
+
+Quick note: I have labeled the pin `D`, but on this chip it does the work of both `D` and `Q`. So from here on, think of `D` as standing for data, not input. Real memory chips do the same thing: their two-way pins are labeled `D`, or sometimes literally `DQ`.
 
 So first, we put 28 onto the common bus. Enable `MAR_WRITE` and store that into the MAR. We then remove 28 from the common bus, and enable `RAM_OUT`, we get 6 as the value stored in slot 28. Cool.
 
@@ -1067,3 +1079,9 @@ The XOR gate, labeled 6, is basically like last time: we XOR each pair of bits f
 Then we flip the bits with gate 7, getting `11111111`, and if we AND them all together with gate 8, we can check if they are all true. If even one pair of bits differs, that wire ends up `0` after the flip, and the AND outputs `0`. Simple.
 
 The `CARRY` flag is simple: we just connect the adder's Carry Out, `CO`, straight out. Of course, it only means anything when we are actually adding.
+
+## The Big Picture
+
+1. Mention the change in the ALU
+1. mention MAR interface change.
+2. Explain the tri-state intercept in register A.
