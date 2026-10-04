@@ -27,7 +27,11 @@ We start with a simple circuit turning a light bulb on and off, then work our wa
 
 The key point is that nothing here is smart in isolation. A CPU is not one hard idea. It is a very tall pile of simple ones.
 
-(Full simple CPU drawing: a few labeled boxes, data bus, address bus, and some control wires)
+<a id="diagram-1-1"></a> 
+
+{{< svg "final/big-picture-cpu" "big" >}}
+
+*Diagram 1.1. The whole CPU.*
 
 We are going to try to understand this simple CPU. It is not a modern CPU with decades of optimization, but it has the same core functionality.
 
@@ -48,11 +52,11 @@ First, we need the basics of how electricity and circuits work.
 
 Here is a simple circuit:
 
-<a id="diagram-2-1"></a> 
+<a id="diagram-3-1"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-circuit/anim.webp" alt="A basic circuit with a battery, switch, and bulb" width="642" height="500"></div>
 
-*Diagram 2.1. A basic circuit with a battery, switch, and bulb.*
+*Diagram 3.1. A basic circuit with a battery, switch, and bulb.*
 
 We can think of the battery as being able to push charge around the loop. Current can only flow when this loop is completed.
 
@@ -84,11 +88,11 @@ Or in other words, if the dog is stinky and its last wash was over 5 days ago, t
 
 Here is the circuit:
 
-<a id="diagram-3-1"></a> 
+<a id="diagram-4-1"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/switches-1/anim.webp" alt="The hand-switch version of AND" width="623" height="473"></div>
 
-*Diagram 3.1. The hand-switch version of AND.*
+*Diagram 4.1. The hand-switch version of AND.*
 
 This circuit shows a logical AND operation. A person is flipping the switches manually. The output turns on only when both inputs are true.
 
@@ -102,11 +106,11 @@ All this says is, if the dog is muddy or stinky and it's been at least 5 days si
 
 Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
-<a id="diagram-3-2"></a> 
+<a id="diagram-4-2"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/or-gate-logical/anim.webp" alt="The hand-switch version of OR" width="630" height="626"></div>
 
-*Diagram 3.2. The hand-switch version of OR.*
+*Diagram 4.2. The hand-switch version of OR.*
 
 This is a logical OR: either `MUDDY` or `STINKY` needs to be on for the bulb to turn on.
 
@@ -116,11 +120,11 @@ But now we have a problem.
 
 The OR circuit we built outputs a result as electricity, but the AND circuit we want to combine it with expects an input as a metal switch physically being moved. A signal in a wire can't reach over and close that switch by itself.
 
-<a id="diagram-3-3"></a> 
+<a id="diagram-4-3"></a> 
 
 {{< svg "final/combination-problem" >}}
 
-*Diagram 3.3. An electrical signal cannot move a metal switch by itself.*
+*Diagram 4.3. An electrical signal cannot move a metal switch by itself.*
 
 So if we want to chain circuits together, we need a way for an electrical signal to control a switch automatically. How can we do this?
 
@@ -132,11 +136,11 @@ One thing to mention before the next diagram: if you see several little batterie
 
 Here is how it works:
 
-<a id="diagram-3-4"></a> 
+<a id="diagram-4-4"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-relay/anim.webp" alt="An electromagnetic relay" width="1278" height="812"></div>
 
-*Diagram 3.4. An electromagnetic relay.*
+*Diagram 4.4. An electromagnetic relay.*
 
 This relay is made from a coil of wire and a movable metal arm. When current flows through the coil, the coil becomes a magnet and pulls the arm down. When current stops, a spring pulls the arm back up.
 
@@ -148,11 +152,11 @@ As you can also tell by the diagram, there is a slight delay between the coil tu
 
 Now let's see how we can build an actual electrical AND gate that takes two input wires and outputs an electrical signal.
 
-<a id="diagram-3-5"></a> 
+<a id="diagram-4-5"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-and-gate/anim.webp" alt="An AND gate" width="1920" height="1388"></div>
 
-*Diagram 3.5. An AND gate.*
+*Diagram 4.5. An AND gate.*
 
 The output circuit has two breaks in it, one controlled by each input relay. Only when both inputs have signal do both relays close, completing the output loop.
 
@@ -170,27 +174,27 @@ In a real schematic, the ground symbol itself would usually stay white. In these
 
 This is how the ground symbol looks:
 
-<a id="diagram-3-6"></a> 
+<a id="diagram-4-6"></a> 
 
 {{< svg "final/ground-symbol" "small" >}}
 
-*Diagram 3.6. The ground symbol.*
+*Diagram 4.6. The ground symbol.*
 
 Now here is the OR gate:
 
-<a id="diagram-3-7"></a> 
+<a id="diagram-4-7"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-or-gate/anim.webp" alt="An electronic OR gate" width="1493" height="1462"></div>
 
-*Diagram 3.7. An electronic OR gate.*
+*Diagram 4.7. An electronic OR gate.*
 
 That is an OR gate using relays. Now here is the full dog washer circuit up to this point:
 
-<a id="diagram-3-8"></a> 
+<a id="diagram-4-8"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v1/anim.webp" alt="The full dog washer circuit built with relays" width="1920" height="1584"></div>
 
-*Diagram 3.8. The full dog washer circuit built with relays.*
+*Diagram 4.8. The full dog washer circuit built with relays.*
 
 The animation does not show every possible combination of switches, only a handful. But in a nutshell, if `MUDDY` or `STINKY` is on, and `OLD_WASH` is also on, the bulb turns on.
 
@@ -204,11 +208,11 @@ If the dog is muddy or stinky and it's been at least 5 days since the dog's last
 
 Let's focus on this NOT for a second. NOT just inverts a signal: if it receives signal, it outputs no signal; if it receives no signal, it outputs signal.
 
-<a id="diagram-3-9"></a> 
+<a id="diagram-4-9"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/not-gate/anim.webp" alt="A NOT gate" width="1278" height="812"></div>
 
-*Diagram 3.9. A NOT gate.*
+*Diagram 4.9. A NOT gate.*
 
 Now let's clean up some of our understanding of circuits before we move on. We have been showing our outputs as a light bulb. For a bulb to be on, it needs to be connected to `+` and `-`, one on each side. That difference in voltage allows current to flow, turning on the bulb.
 
@@ -216,11 +220,11 @@ But let's say we just want an output wire, not a bulb. We can't just remove the 
 
 This distinction matters later. A `1` output is a wire being driven high. A `0` output is not "nothing"; it is a wire being driven low. It will make sense why I am mentioning this early, later.
 
-<a id="diagram-3-10"></a> 
+<a id="diagram-4-10"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/before-after/anim.webp" alt="Driving an output wire" width="1278" height="812"></div>
 
-*Diagram 3.10. Driving an output wire.*
+*Diagram 4.10. Driving an output wire.*
 
 In this diagram, red wire means current is actively flowing, that's why `OUT = 1` is still white. Later when we stop drawing every logic gate, red wire will just mean high, or 1.
 
@@ -228,33 +232,33 @@ Now before we look at the completed circuit, let's learn some basic logic gate s
 
 An AND gate is drawn like this:
 
-<a id="diagram-3-11"></a> 
+<a id="diagram-4-11"></a> 
 
 {{< svg "final/and-gate" >}}
 
-*Diagram 3.11. An AND gate.*
+*Diagram 4.11. An AND gate.*
 
-This symbol represents the [AND circuit](#diagram-3-5) we made previously, except instead of turning a bulb on and off, it drives an output wire.
+This symbol represents the [AND circuit](#diagram-4-5) we made previously, except instead of turning a bulb on and off, it drives an output wire.
 
 An OR gate is drawn like this:
 
-<a id="diagram-3-12"></a> 
+<a id="diagram-4-12"></a> 
 
 {{< svg "final/or-gate" >}}
 
-*Diagram 3.12. An OR gate.*
+*Diagram 4.12. An OR gate.*
 
-This symbol represents the [OR circuit](#diagram-3-7) we made previously.
+This symbol represents the [OR circuit](#diagram-4-7) we made previously.
 
 Whenever I use these symbols moving forward, they can almost directly translate to the circuits with the relays I showed you previously, but the internal components stay hidden for cleanliness.
 
 Here are three more useful gate symbols:
 
-<a id="diagram-3-13"></a> 
+<a id="diagram-4-13"></a> 
 
 {{< svg "final/not-nand-nor-gates" >}}
 
-*Diagram 3.13. NOT, NAND, NOR gates.*
+*Diagram 4.13. NOT, NAND, NOR gates.*
 
 NAND is AND with the output flipped. NOR is OR with the output flipped.
 
@@ -262,15 +266,15 @@ That little circle at the end of a gate means "flip the output."
 
 With our knowledge about logic gates, let's create the "should-I-wash-my-dog 5000" machine!
 
-<a id="diagram-3-14"></a> 
+<a id="diagram-4-14"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v2/anim.webp" alt="The final dog washer circuit" width="1920" height="755"></div>
 
-*Diagram 3.14. The final dog washer circuit.*
+*Diagram 4.14. The final dog washer circuit.*
 
 Again this animation doesn't cover all possible states.
 
-Keep in mind these [electromagnetic relays](#diagram-3-4) we used in the examples are quite big and slow.
+Keep in mind these [electromagnetic relays](#diagram-4-4) we used in the examples are quite big and slow.
 
 Relays aren't the only solution. They are simply one of the early and intuitive methods to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) actually used these types of relays.
 
@@ -296,11 +300,11 @@ These are just labels that represent the state of a wire.
 
 A group of 8 bits is called a byte. With 8 bits, there are `2^8`, or 256, possible patterns. So if we use those patterns to represent non-negative numbers, one byte can represent 0 through 255.
 
-<a id="diagram-4-1"></a> 
+<a id="diagram-5-1"></a> 
 
 {{< svg "final/0-s-and-1-s" "small" >}}
 
-*Diagram 4.1. One wire can represent two states: `0` or `1`.*
+*Diagram 5.1. One wire can represent two states: `0` or `1`.*
 
 If we want to represent numbers using wires, we are going to need more than one wire, because one wire can only represent up to two numbers, since it only has two possible states: `0` or `1`.
 
@@ -308,11 +312,11 @@ But two wires have `2^2`, or four states, and three wires have `2^3`, or eight s
 
 Here are all the possible states we have with 3 wires:
 
-<a id="diagram-4-2"></a> 
+<a id="diagram-5-2"></a> 
 
 <div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/3-states/anim.webp" alt="States with 3 wires" width="383" height="251"></div>
 
-*Diagram 4.2. States with 3 wires.*
+*Diagram 5.2. States with 3 wires.*
 
 We can represent 8 numbers just like this.
 
@@ -320,21 +324,21 @@ But, why does `010` mean 2? Why does `101` mean 5? Is it just randomly assigned?
 
 Not exactly. To understand this, let's take a quick detour to decimal, a.k.a. base ten.
 
-<a id="diagram-4-3"></a> 
+<a id="diagram-5-3"></a> 
 
 {{< svg "final/decimal" >}}
 
-*Diagram 4.3. The decimal system.*
+*Diagram 5.3. The decimal system.*
 
 In our decimal counting system, each place value is a multiple of 10. That is because we have ten digits: 0-9.
 
 This exact same place value logic can apply to the binary system too. We have two digits, 0 and 1, so each place is a multiple of 2.
 
-<a id="diagram-4-4"></a> 
+<a id="diagram-5-4"></a> 
 
 {{< svg "final/binary" >}}
 
-*Diagram 4.4. The binary system.*
+*Diagram 5.4. The binary system.*
 
 So binary is, at the end of the day, decimal but with only two digits instead of ten.
 
@@ -349,37 +353,37 @@ You don't need to do these problems in your head, but I hope the idea of how bin
 
 Let's walk through `1101` together.
 
-<a id="diagram-4-5"></a> 
+<a id="diagram-5-5"></a> 
 
 {{< svg "final/binary-example" >}}
 
-*Diagram 4.5. An example in binary.*
+*Diagram 5.5. An example in binary.*
 
 So now that we can represent numbers with wires, how can we add numbers together? That is what the next section is all about.
 
-<a id="diagram-4-6"></a> 
+<a id="diagram-5-6"></a> 
 
 {{< svg "final/add-magic-box" >}}
 
-*Diagram 4.6. Addition?*
+*Diagram 5.6. Addition?*
 
 ## Addition
 
 Let's start with a brief reminder of how we algorithmically add two decimal numbers.
 
-<a id="diagram-5-1"></a> 
+<a id="diagram-6-1"></a> 
 
 <div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/decimal-addition/anim.webp" alt="Standard decimal addition" width="252" height="278"></div>
 
-*Diagram 5.1. Standard decimal addition.*
+*Diagram 6.1. Standard decimal addition.*
 
 We start at the rightmost column, do 5+8, get 13, we carry the 1. So we write 3 as the sum, and 1 as the carry. We then move left and repeat over and over remembering to add any carry-in values. Binary addition works the same way.
 
-<a id="diagram-5-2"></a> 
+<a id="diagram-6-2"></a> 
 
 <div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/binary-addition/anim.webp" alt="Binary addition" width="439" height="291"></div>
 
-*Diagram 5.2. Binary addition.*
+*Diagram 6.2. Binary addition.*
 
 This works the same in binary because if we have:
 
@@ -423,51 +427,51 @@ This is called XOR, short for exclusive OR.
 
 If we combine an OR gate and a NAND gate, and AND them together we get XOR:
 
-<a id="diagram-5-3"></a> 
+<a id="diagram-6-3"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder-sum/anim.webp" alt="Half adder sum / XOR" width="1626" height="819"></div>
 
-*Diagram 5.3. Half adder sum / XOR.*
+*Diagram 6.3. Half adder sum / XOR.*
 
 OR checks that at least one input is on, and NAND makes sure that both inputs are not on.
 
 Here is how an XOR gate looks:
 
-<a id="diagram-5-4"></a> 
+<a id="diagram-6-4"></a> 
 
 {{< svg "final/xor-gate" >}}
 
-*Diagram 5.4. An XOR gate.*
+*Diagram 6.4. An XOR gate.*
 
 Now let's do the carry value. The carry is simple! We only want to carry if we are doing `1 + 1`, so we just use an AND gate to check if both inputs are on.
 
 Now here is our half adder:
 
-<a id="diagram-5-5"></a> 
+<a id="diagram-6-5"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder/anim.webp" alt="A half adder" width="1411" height="806"></div>
 
-*Diagram 5.5. A half adder.*
+*Diagram 6.5. A half adder.*
 
 As you can see it works! `0 + 0 = 0`, `1 + 0 = 1`, `0 + 1 = 1`, and `1 + 1 = 10`.
 
 Now let's package up our half adder into a little box. From now on, I will call these packaged-up circuits chips:
 
-<a id="diagram-5-6"></a> 
+<a id="diagram-6-6"></a> 
 
 {{< svg "final/half-adder-box" >}}
 
-*Diagram 5.6. A half adder chip.*
+*Diagram 6.6. A half adder chip.*
 
 Now that we have a half adder, we can add the rightmost column. That works because the rightmost column has no carry-in from a previous column. It only needs to add two bits.
 
 So if we have a number like this:
 
-<a id="diagram-5-7"></a> 
+<a id="diagram-6-7"></a> 
 
 {{< svg "final/carry-in-issue" >}}
 
-*Diagram 5.7. The next column has to add two bits plus a carry-in.*
+*Diagram 6.7. The next column has to add two bits plus a carry-in.*
 
 The half adder can handle the first column: `1 + 1`. That gives us a sum bit of `0` and a carry-out of `1`.
 
@@ -477,11 +481,11 @@ A half adder cannot do that. It only accepts two inputs. To continue adding up t
 
 To add three bits, we use two half adders and an OR gate:
 
-<a id="diagram-5-8"></a> 
+<a id="diagram-6-8"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-adder/anim.webp" alt="A full adder" width="1554" height="393"></div>
 
-*Diagram 5.8. A full adder.*
+*Diagram 6.8. A full adder.*
 
 This might look confusing at first. What if both half adders output a carry-out at the same time?
 
@@ -491,21 +495,21 @@ So we can confidently OR the two carry outputs together. If either one is `1`, t
 
 Let's again package this up into a chip:
 
-<a id="diagram-5-9"></a> 
+<a id="diagram-6-9"></a> 
 
 {{< svg "final/full-adder-box" >}}
 
-*Diagram 5.9. A full adder chip.*
+*Diagram 6.9. A full adder chip.*
 
 We have made a full adder!
 
 Now we can chain full adders together to add two 8-bit numbers. Since 8 bits make one byte, this is an adder that can add two one-byte numbers: anything from 0 to 255.
 
-<a id="diagram-5-10"></a> 
+<a id="diagram-6-10"></a> 
 
 {{< svg "final/8-bit-adder" >}}
 
-*Diagram 5.10. An 8-bit adder.*
+*Diagram 6.10. An 8-bit adder.*
 
 Each full adder handles one column. The carry-out from one column becomes the carry-in for the next column. That is it! That is all addition is!
 
@@ -515,21 +519,21 @@ Also, notice how we have 9 outputs, not 8. That is because two 8-bit values can 
 
 Now let's package this up into a chip once again:
 
-<a id="diagram-5-11"></a> 
+<a id="diagram-6-11"></a> 
 
 {{< svg "final/8-bit-adder-box" >}}
 
-*Diagram 5.11. An 8-bit adder chip.*
+*Diagram 6.11. An 8-bit adder chip.*
 
 Now we have the carry-out and carry-in as separate inputs and outputs and the whole adder nicely organized into this chip.
 
 Let's have a look at some example problems:
 
-<a id="diagram-5-12"></a> 
+<a id="diagram-6-12"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/8-bit-adder-examples/anim.webp" alt="Some examples on the adder" width="1618" height="812"></div>
 
-*Diagram 5.12. Some examples on the adder.*
+*Diagram 6.12. Some examples on the adder.*
 
 As you can see in the third example, adding 1 to 255 turns every sum bit to `0` and turns the carry-out on.
 
@@ -589,11 +593,11 @@ The cool part is, if both set and reset are `0`, then `Q` is whatever we last di
 
 This diagram should help this make sense:
 
-<a id="diagram-6-1"></a> 
+<a id="diagram-7-1"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/sr-latch/anim.webp" alt="An SR latch" width="1468" height="1179"></div>
 
-*Diagram 6.1. An SR latch.*
+*Diagram 7.1. An SR latch.*
 
 A simple way to think about this is:
 
@@ -620,11 +624,11 @@ It basically checks: if data is true and enable is true, set is true, and if dat
 
 If you really want to know how it works, have a look at [this site](https://www.build-electronic-circuits.com/d-latch/).
 
-<a id="diagram-6-2"></a> 
+<a id="diagram-7-2"></a> 
 
 {{< svg "final/d-latch" >}}
 
-*Diagram 6.2. D latch.*
+*Diagram 7.2. D latch.*
 
 But we have a problem. Let's say we now try to use 8 of these D latches to hold the result from our adder, which would then feed back into the input for our accumulator. It still wouldn't work.
 
@@ -632,11 +636,11 @@ Here is the problem: say we have the enable wire hooked up to a button. When tha
 
 If we want the accumulator to work correctly, we need the enable wire to turn on for an instant and then turn back off. That is just hard to do.
 
-<a id="diagram-6-3"></a> 
+<a id="diagram-7-3"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/d-latch-accumulator/anim.webp" alt="D latch accumulator" width="1802" height="1920"></div>
 
-*Diagram 6.3. D latch accumulator.*
+*Diagram 7.3. D latch accumulator.*
 
 As you can see in this diagram, even pressing the button quickly jumps the result up by 5. With real transistors, even if you try to physically tap the button, it could count up by millions, overflowing these 8 bits thousands of times.
 
@@ -644,11 +648,11 @@ How long you hold the button decides the answer. It doesn't count in ones.
 
 But what if we had a storage circuit that only copied `D` into `Q` at the exact instant `E` turns on?
 
-<a id="diagram-6-4"></a> 
+<a id="diagram-7-4"></a> 
 
 {{< svg "final/edge-graph" >}}
 
-*Diagram 6.4. The rising edge of a signal.*
+*Diagram 7.4. The rising edge of a signal.*
 
 This graph shows the state of a wire. When the line is at the top, it is on. When it is at the bottom, it is off.
 
@@ -658,11 +662,11 @@ Now what if we only set `Q` to `D` on that transition, at the rising edge? The e
 
 The circuit that does this is called a D-type edge-triggered flip-flop. This might sound like a mouthful, but D-type just means it takes in a data input, edge-triggered means it triggers on the edge of a signal, and flip-flop means it is a storage circuit similar to a latch, but usually edge-triggered.
 
-<a id="diagram-6-5"></a> 
+<a id="diagram-7-5"></a> 
 
 {{< svg "final/d-type-edge-triggered-flip-flop" >}}
 
-*Diagram 6.5. A flip-flop.*
+*Diagram 7.5. A flip-flop.*
 
 How it works is, when the enable wire is off, the first latch mirrors `D`. That is because the NOT gate flips the enable signal, so the first latch sees it as on.
 
@@ -672,35 +676,35 @@ So if `D` changes while enable is off, we are all good because the second latch 
 
 Here is one storage cell, which is just the flip-flop we showed above:
 
-<a id="diagram-6-6"></a> 
+<a id="diagram-7-6"></a> 
 
 {{< svg "final/flip-flop-storage-cell" >}}
 
-*Diagram 6.6. A one-bit storage cell.*
+*Diagram 7.6. A one-bit storage cell.*
 
 If we connect 8 of them side by side, we get one byte of storage:
 
-<a id="diagram-6-7"></a> 
+<a id="diagram-7-7"></a> 
 
 {{< svg "final/8-storage-cells" >}}
 
-*Diagram 6.7. Eight storage cells.*
+*Diagram 7.7. Eight storage cells.*
 
 And we can put all that into a chip called an 8-bit register:
 
-<a id="diagram-6-8"></a> 
+<a id="diagram-7-8"></a> 
 
 {{< svg "final/8-bit-register" >}}
 
-*Diagram 6.8. An 8-bit register.*
+*Diagram 7.8. An 8-bit register.*
 
 Now with this register, let's build a basic accumulator/adder circuit.
 
-<a id="diagram-6-9"></a> 
+<a id="diagram-7-9"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-accumulator/anim.webp" alt="Our full accumulator" width="1802" height="1920"></div>
 
-*Diagram 6.9. Our full accumulator.*
+*Diagram 7.9. Our full accumulator.*
 
 As you can see, the circuit kindly waits for us, and is incrementing by ones!
 
@@ -710,11 +714,11 @@ Now, a real computer would need to do these kinds of things millions and billion
 
 Here is the basic concept of a clock:
 
-<a id="diagram-6-10"></a> 
+<a id="diagram-7-10"></a> 
 
 {{< svg "final/clock-signal" >}}
 
-*Diagram 6.10. A clock signal.*
+*Diagram 7.10. A clock signal.*
 
 This repeating on-off behavior can be achieved in different ways. A rough toy example is feeding the output of a NOT gate back into its input, so the signal keeps trying to flip back and forth between on and off.
 
@@ -736,15 +740,15 @@ One more thing, moving forward when I want to draw a collection of 8 wires, inst
 
 To show the state of the wires, I can write a number in the arrow; the number 0 for example means the wires are all off, and the number 2 would mean the wires are `00000010` which is 2 in binary.
 
-<a id="diagram-7-1"></a> 
+<a id="diagram-8-1"></a> 
 
 {{< svg "final/common-bus-example" >}}
 
-*Diagram 7.1. Two registers sharing a bus.*
+*Diagram 8.1. Two registers sharing a bus.*
 
 But we have an issue: this diagram is technically not possible yet. If register `A` is outputting a value like `00000000`, and it is connected to the bus, and then register `B` is outputting a value like `00000001`, then the last wire will clash and short-circuit.
 
-We need a way to connect these registers to the bus, but also let them get out of the way when they are not supposed to actively drive a wire to `-` or `+`, like we discussed [previously](#diagram-3-10).
+We need a way to connect these registers to the bus, but also let them get out of the way when they are not supposed to actively drive a wire to `-` or `+`, like we discussed [previously](#diagram-4-10).
 
 Just setting the output wires to `00000000` is not enough. On a shared bus `00000000` is not nothing. It is actively driving the bus to `-`.
 
@@ -767,15 +771,15 @@ This relay diagram of how a tri-state buffer works should make this concept crys
 
 Also I have drawn everything the output wire is currently touching in yellow. Yellow is just there so you can follow the path with your eyes, it doesn't mean anything.
 
-<a id="diagram-7-2"></a> 
+<a id="diagram-8-2"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/tri-state-buffer-internals/anim.webp" alt="A tri-state buffer built with relays" width="1742" height="1341"></div>
 
-*Diagram 7.2. A tri-state buffer built with relays.*
+*Diagram 8.2. A tri-state buffer built with relays.*
 
 This looks complicated, so let me break it down.
 
-First, ignore the two relays on the right and look only at the `D` relay at the top. Its arm is attached to the output wire, and it works just like [the output driver from before](#diagram-3-10). When `D` is `1`, the arm is pulled down onto the wire that leads toward the battery, `+`. When `D` is `0`, the arm goes up onto the wire that leads toward ground. Remember, ground is just the `-` side.
+First, ignore the two relays on the right and look only at the `D` relay at the top. Its arm is attached to the output wire, and it works just like [the output driver from before](#diagram-4-10). When `D` is `1`, the arm is pulled down onto the wire that leads toward the battery, `+`. When `D` is `0`, the arm goes up onto the wire that leads toward ground. Remember, ground is just the `-` side.
 
 The important idea is that neither of those wires is directly connected to `+` or `-`. Each one has a relay between it. Both of those relays are controlled by `E`.
 
@@ -794,21 +798,21 @@ So we have three states:
 
 This is the logic gate diagram for a tri-state buffer:
 
-<a id="diagram-7-3"></a> 
+<a id="diagram-8-3"></a> 
 
 {{< svg "final/tri-state-buffer" >}}
 
-*Diagram 7.3. A tri-state buffer logic gate.*
+*Diagram 8.3. A tri-state buffer logic gate.*
 
 Now let's address this enable conundrum. We now have two uses for the word enable, with completely different meanings and contexts. One means enabling writing, and the other means enabling output. From now on, we will use two separate terms to avoid confusion: `WRITE` and `OUT`.
 
 So we can make a new type of register, one with `WRITE`, `OUT`, `data`, and `Q`, the stored bits 0-7. By `data`, I simply mean the input data that we can store when `WRITE` is enabled.
 
-<a id="diagram-7-4"></a> 
+<a id="diagram-8-4"></a> 
 
 {{< svg "final/new-register-internals" >}}
 
-*Diagram 7.4. Our register with an OUT input.*
+*Diagram 8.4. Our register with an OUT input.*
 
 We are just connecting OUT to all of the enables in the tri-state buffers. So if `OUT` is `0` Q will be all Z and if `OUT` is 1, `Q` will be whatever is stored in the register.
 
@@ -816,11 +820,11 @@ With that, we can use these new registers with a common bus to move data.
 
 Here is an example where the content of register A gets copied into register B.
 
-<a id="diagram-7-5"></a> 
+<a id="diagram-8-5"></a> 
 
 <div class="svg-diagram big"><img loading="lazy" decoding="async" src="/assets/frames-gen/common-data-bus-demo/anim.webp" alt="Copying register A into register B through the shared bus" width="1920" height="763"></div>
 
-*Diagram 7.5. Copying register A into register B through the shared bus.*
+*Diagram 8.5. Copying register A into register B through the shared bus.*
 
 I have some text inside the register that shows what it is storing. We of course have `W` and `O` which are `WRITE` and `OUT` as well as `D` and `Q` which are the inputs and outputs.
 
@@ -840,11 +844,11 @@ The next problem is organization and scale. How do we organize many stored bytes
 
 We want to build a system that organizes data into a simple structure.
 
-<a id="diagram-8-1"></a> 
+<a id="diagram-9-1"></a> 
 
 {{< svg "final/cabinet" >}}
 
-*Diagram 8.1. Our data structure.*
+*Diagram 9.1. Our data structure.*
 
 Many slots, each with its own address.
 
@@ -888,11 +892,11 @@ Let's start with building a simple decoder. This decoder will take 2 bits of our
 
 In the diagram the top bit is the bigger bit, the 2's place, the bottom is the smaller bit, the 1's place.
 
-<a id="diagram-8-2"></a> 
+<a id="diagram-9-2"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/2-4-decoder/anim.webp" alt="How a decoder works" width="863" height="635"></div>
 
-*Diagram 8.2. How a decoder works.*
+*Diagram 9.2. How a decoder works.*
 
 As you can tell, no matter the inputs, exactly one output wire is on at a time.
 
@@ -900,11 +904,11 @@ We use one 2-to-4 decoder for the rows and another 2-to-4 decoder for the column
 
 This diagram shows a few addresses as examples. Each address gets its own little intersection.
 
-<a id="diagram-8-3"></a> 
+<a id="diagram-9-3"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/cross-section/anim.webp" alt="Where the row and column meet" width="1175" height="1077"></div>
 
-*Diagram 8.3. Where the row and column meet.*
+*Diagram 9.3. Where the row and column meet.*
 
 How a decoder works is extremely simple. It just uses a bunch of logic gates to ask these simple questions.
 
@@ -915,21 +919,21 @@ How a decoder works is extremely simple. It just uses a bunch of logic gates to 
 
 Here is how it works if you care:
 
-<a id="diagram-8-4"></a> 
+<a id="diagram-9-4"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/2-4-decoder-gates/anim.webp" alt="2-4 decoder internals" width="1620" height="1113"></div>
 
-*Diagram 8.4. 2-4 decoder internals.*
+*Diagram 9.4. 2-4 decoder internals.*
 
 Honestly? That's it. We can use two decoders, sixteen registers, some wires and buses all mashed together with some extra logic gates and BOOM! We have some RAM.
 
 In this diagram, green lines are 8-bit data buses. `OUT` is yellow, and `WRITE` is orange. They are still ordinary wires; the colors are only there to make the diagram easier to follow.
 
-<a id="diagram-8-5"></a> 
+<a id="diagram-9-5"></a> 
 
 {{< svg "final/zoomed-out-ram" "big" >}}
 
-*Diagram 8.5. A zoomed out RAM diagram.*
+*Diagram 9.5. A zoomed out RAM diagram.*
 
 This is kind of a lot to unpack, so let me explain the high level parts before we zoom in and take a closer look.
 
@@ -937,11 +941,11 @@ We have a green data in bus that is fed into the bottom of all of the registers,
 
 Let's look at one cell more closely:
 
-<a id="diagram-8-6"></a> 
+<a id="diagram-9-6"></a> 
 
 {{< svg "final/zoomed-in-ram" >}}
 
-*Diagram 8.6. A zoomed in RAM cell diagram.*
+*Diagram 9.6. A zoomed in RAM cell diagram.*
 
 What AND gate 1 checks is, if `Row Select` and `Column Select`, and `OUT` is on, then that means we have selected that register to output its value, thus we turn on `OUT` and the register will output something on the `Output` bus.
 
@@ -949,21 +953,21 @@ AND gate 2 checks, if `Row Select` and `Column Select`, and `WRITE` is on, then 
 
 So yea, both AND gates take in 3 inputs, if you are wondering how that works, just think of two AND gates chained together.
 
-<a id="diagram-8-7"></a> 
+<a id="diagram-9-7"></a> 
 
 {{< svg "final/three-input-and" >}}
 
-*Diagram 8.7. A three input AND gate.*
+*Diagram 9.7. A three input AND gate.*
 
 So now that we have built RAM, let's pretend that instead of 16 registers, we have a RAM array with 256 registers. The same logic can be copied, just with two 4-16 decoders instead of two 2-4 decoders and 8 address inputs rather than 4.
 
-<a id="diagram-8-8"></a> 
+<a id="diagram-9-8"></a> 
 
 {{< svg "final/ram-interface" >}}
 
-*Diagram 8.8. Our RAM chip.*
+*Diagram 9.8. Our RAM chip.*
 
-Technically, there are still two buses inside the RAM: a data-in path and a data-out path. That is basically what we saw with the [register in the bus section](#diagram-7-5).
+Technically, there are still two buses inside the RAM: a data-in path and a data-out path. That is basically what we saw with the [register in the bus section](#diagram-8-5).
 
 But drawing two separate data buses every time is cumbersome. From the outside, we can abstract this as one shared data bus with a double-headed arrow called `I/O`, which stands for input/output.
 
@@ -973,19 +977,19 @@ If `W` is on, RAM copies the value from the data bus into the selected address.
 
 If `O` is on, RAM drives the selected address's value onto the data bus.
 
-So from now on, instead of drawing registers connected to a common bus [like this](#diagram-7-5), where we have a separate `D` and `Q`, we can just draw them like this:
+So from now on, instead of drawing registers connected to a common bus [like this](#diagram-8-5), where we have a separate `D` and `Q`, we can just draw them like this:
 
-<a id="diagram-8-9"></a> 
+<a id="diagram-9-9"></a> 
 
 {{< svg "final/io-registers" >}}
 
-*Diagram 8.9. I/O Registers.*
+*Diagram 9.9. I/O Registers.*
 
 They both are the same technically, just this is easier to draw, so moving forward, instead of drawing two buses for `D` and `Q` I'll just draw one double-headed `I/O` bus.
 
 Now back to the `RAM` chip.
 
-If you pay close attention to [the diagram](#diagram-8-8), you will notice that the address input is not directly connected to the common data bus.
+If you pay close attention to [the diagram](#diagram-9-8), you will notice that the address input is not directly connected to the common data bus.
 
 That is intentional. The data bus is for moving values around the CPU. During a RAM operation, it needs to carry the value being written to RAM or the value being read from RAM. So it cannot also keep holding the address at the same time.
 
@@ -997,11 +1001,11 @@ The MAR is just a regular 8-bit register with no `OUT` control signal as it is a
 
 The CPU first puts an address on the data bus and turns on `MAR_WRITE`. The MAR stores that address. Then the MAR keeps sending that address to RAM, leaving the data bus free to carry the value being read or written.
 
-<a id="diagram-8-10"></a> 
+<a id="diagram-9-10"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/mar-ram-demo/anim.webp" alt="How the MAR works" width="1920" height="1004"></div>
 
-*Diagram 8.10. How the MAR works.*
+*Diagram 9.10. How the MAR works.*
 
 So first, we put 28 onto the common bus. Enable `MAR_WRITE` and store that into the MAR. We then remove 28 from the common bus, and enable `RAM_OUT`, we get 6 as the value stored in slot 28. Cool.
 
@@ -1011,11 +1015,11 @@ If we have a handful of registers and RAM, we can now move bytes around using th
 
 Imagine a chip where we could input two numbers, an operation, and output a result, along with some other information.
 
-<a id="diagram-9-1"></a> 
+<a id="diagram-10-1"></a> 
 
 {{< svg "final/alu-interface" >}}
 
-*Diagram 9.1. The ALU chip.*
+*Diagram 10.1. The ALU chip.*
 
 For this CPU, I am keeping the ALU simple. It will have two operation-select bits, which gives us four possible operations:
 
@@ -1034,11 +1038,11 @@ The ALU will also output a few flags, which are just extra yes/no facts about th
 | `CARRY` | addition spills past 8 bits |
 | `EQUAL` | `A` and `B` are the same |
 
-So, in the [previous diagram](#diagram-9-1), we did 0+0 which is 0, so the `ZERO` flag is on, and the `EQUAL` flag too because both inputs are equal.
+So, in the [previous diagram](#diagram-10-1), we did 0+0 which is 0, so the `ZERO` flag is on, and the `EQUAL` flag too because both inputs are equal.
 
 This next diagram uses a new component. It is a mix of two registers we have already seen.
 
-Remember the [D latch](#diagram-6-2), the first storage circuit we built? While its enable was on, `Q` simply equaled `D`. No edges wedges whatever involved. This new register is a D latch with the enable permanently on: it is always storing whatever value is on its input.
+Remember the [D latch](#diagram-7-2), the first storage circuit we built? While its enable was on, `Q` simply equaled `D`. No edges wedges whatever involved. This new register is a D latch with the enable permanently on: it is always storing whatever value is on its input.
 
 But like our newer registers, its output goes through tri-state buffers with an `OUT` control signal, so we still decide when it outputs.
 
@@ -1046,11 +1050,11 @@ So in total: a data input that is always being stored, an `OUT` control signal, 
 
 Also, you'll see me feeding two buses into a single logic gate. "How does that work?", you might think. Well, there are really just eight gates, one per bit. One gate takes `A0` and `B0`, the next takes `A1` and `B1`, and so on. Eight output wires, which is just another bus.
 
-<a id="diagram-9-2"></a> 
+<a id="diagram-10-2"></a> 
 
 {{< svg "final/alu-internals" "big" >}}
 
-*Diagram 9.2. ALU internals.*
+*Diagram 10.2. ALU internals.*
 
 At its crux, the ALU works by routing `A` and `B` into all 4 operations at once, in this case XOR, OR, AND, and ADD. We store each of the results in a corresponding result register.
 
@@ -1064,7 +1068,7 @@ First, the `ZERO` circuitry. It consists of:
 
 The NOT gate on the right, labeled 4, is just like before: there are actually eight NOT gates, each flipping one wire of the bus. So it takes in a bus, and outputs a bus.
 
-But the AND gate next to it, labeled 5, takes in a bus and outputs just one wire. Like the [three-input AND](#diagram-8-7) from the RAM section, this AND gate takes in 8 inputs and produces 1 output. It just checks if all of its inputs are on.
+But the AND gate next to it, labeled 5, takes in a bus and outputs just one wire. Like the [three-input AND](#diagram-9-7) from the RAM section, this AND gate takes in 8 inputs and produces 1 output. It just checks if all of its inputs are on.
 
 So if we flip each bit, and then check if all of them are on, we get the `ZERO` flag. This makes sense because all the bits going into the AND gate can only be on if they were originally `00000000`, a.k.a. zero!
 
@@ -1082,51 +1086,62 @@ The `CARRY` flag is simple: we just connect the adder's Carry Out, `CO`, straigh
 
 Here is a big picture diagram of the whole CPU.
 
-<a id="diagram-10-1"></a> 
+<a id="diagram-11-1"></a> 
 
 {{< svg "final/big-picture-cpu" "big" >}}
 
-*Diagram 10.1. The big picture.*
+*Diagram 11.1. The whole CPU.*
+
+Hey? Doesn't this diagram look familiar? Well, yes, we have come full circle from the intro, except this time the CPU isn't something completely foreign. Of course we still have a lot to learn and build, but wow. Just wow.
 
 Some quick notes on the diagram before we dig in.
 
-The 8-bit data buses are blue when not being driven, or in other words, in the state `Z`. Just like always, if a control wire is red, it means its on, if a bus is red, it means its being driven. But we have something new here that we haven seen before.
+The 8-bit data buses are blue when not being driven, or in other words, in the state `Z`. Just like always, if a control wire is red, it means it's on. If a bus is red, it means it's being driven. But we have something new here that we haven't seen before.
 
 Purple and `G` mean garbage in the context of wires and buses. This is not the same as `Z`. A `Z` wire is one that nothing is driving, a `G` wire is being driven, with an actual value on it. That value is just nonsense, hence the name garbage. So where does that garbage value come from in this diagram?
 
-Remember, the ALU never stops computing. It always takes its inputs and has a result instantly. One input comes from register A (we will talk more about how register A works later) but the other input comes from the bus, and when nothing is driving the bus, the input is sitting at `Z`. The thing is, in this CPU a input at `Z` would just behave like 0. Our gates are built from relays, and a relay coil with nothing driving it is simply off, exactly as if you fed it 0. So really, the ALU would be computing `A + 0` if the second input was `Z`.
+Remember, the ALU never stops computing. It always takes its inputs and has a result instantly. One input comes from register `A` (we will talk more about how register `A` works later), but the other input comes from the bus, and when nothing is driving the bus, the input is sitting at `Z`. The thing is, in this CPU an input at `Z` would just behave like 0. Our gates are built from relays, and a relay coil with nothing driving it is simply off, exactly as if you fed it 0. So really, the ALU would be computing `A + 0` if the second input was `Z`.
 
-But we mark it as garbage anyway, because in a real CPU made from transistors instead of relays, a `Z` value does not settle to clean 0, it drifts and can get really funky. So that is why, we treat those values as garbage, we just ignore them. If the bus is being driven then we can of course use those values.
+But we mark it as garbage anyway, because in a real CPU made from transistors instead of relays, a `Z` value does not settle to a clean 0; it drifts and can get really funky. That is why we treat those values as garbage: we just ignore them. If the bus is being driven then we can of course use those values.
 
 Now back to the diagram.
 
-Almost every single chip here, we have already built. The `RAM` and `MAR` combination, we have seen how that works [previously](#diagram-8-10). `A`, `B`, `ACC`, `IR`, `FLAGS`, and `DISPLAY` are all just slight variations of registers. `PC` is an accumulator style circuit, and we know how `ALU` in the bottom left [works](#diagram-9-2).
+Almost every single chip here, we have already built. The `RAM` and `MAR` combination, we have seen how that works [previously](#diagram-9-10). `A`, `B`, `ACC`, `IR`, `FLAGS`, and `DISPLAY` are all just slight variations of registers. `PC` is an accumulator style circuit, and we know how `ALU` in the bottom left [works](#diagram-10-2).
 
 Let's examine each element of the CPU closely and see what details changed and why.
 
 First register `B`. Register `B` is a normal tri-state 8-bit register with `W` and `O` control wires. We will talk about its use in more detail later.
 
-We then have register `A` which is just like register `B` but it also has a `Q` output in addition to `I/O`. This `Q` output is simply the value stored inside the `A` register bypassing the tri-state buffers feeding directly into the first input of the ALU. So even though the output (`O`) control signal is off, that `Q` is still driving the ALU's first input, in this case to 0.
+We then have register `A`, which is just like register `B`, but it also has a `Q` output in addition to `I/O`. This `Q` output is simply the value stored inside the `A` register, bypassing the tri-state buffers and feeding directly into the first input of the ALU. So even though the output (`O`) control signal is off, that `Q` is still driving the ALU's first input, in this case to 0.
 
-Next we have the ALU. Its second input comes from the common bus, so the other number it works with is just whatever is on the bus at the time. Other than that it is as normal, but the flags are all going into a register called `FLAGS`. This register is just a 3-bit register, it only stores 3 bits. These three bits are just the values for each flag. This 3-bit register has no `O` control signal, thus no tri-state buffers, it is always outputting.
+Next we have the ALU. Its second input comes from the common bus, so the other number it works with is just whatever is on the bus at the time. Other than that it is as normal, but the flags are all going into a register called `FLAGS`. This register is just a 3-bit register: it only stores 3 bits. These three bits are just the values for each flag. This 3-bit register has no `O` control signal, thus no tri-state buffers, so it is always outputting.
 
 Then we can see the result of the ALU operation is being fed into another regular 8-bit register called `ACC`. It is slightly different to register `B` because its input doesn't come from the common bus, but from the ALU, so it has two separate `Q` and `D` instead of just one `I/O`. It still has the regular `W` and `O` control signals though.
 
 Register `IR` is a simple register without an `O` control signal. It just takes input from the bus, and outputs it into the `CU`. We will talk about what exactly the `CU` is and the jobs of these different parts a little later on.
 
-Next we have `PC`. `PC` is a combination of an adder and a register, something like what we have seen [previously](#diagram-6-9). The register part of `PC` has its regular control signals `W` and `O` and the accumulator has replaced the `STEP` button from before with a `I` control signal which stands for increment. We also have the `R` signal which just resets the register back to 0 with some more logic gates and wires. Nothing too fancy.
+Next we have `PC`, which is a combination of an adder and a register, something like what we have seen [previously](#diagram-7-9). The register part of `PC` has its regular control signals `W` and `O`, and the `STEP` button from before has been replaced with an `I` control signal, which stands for increment. We also have the `R` signal which just resets the register back to 0 with some more logic gates and wires. Nothing too fancy.
 
-Our `MAR` and `RAM` are the same as [before](#diagram-8-10), but if all of the bits stored in `MAR` are 1, aka the value stored is 255, then the result of that first AND gate will be true. So if we are selecting address 255 and `RAM_WRITE` is enabled, then we need to write to the `DISPLAY` register too.
+Our `MAR` and `RAM` are the same as [before](#diagram-9-10), but if all of the bits stored in `MAR` are 1, meaning the value stored is 255, then the output of that first AND gate in the diagram, labeled 1, would be on. So if we are selecting address 255 and `RAM_WRITE` is enabled, then we need to write to the `DISPLAY` register too.
 
 What ends up happening is that `DISPLAY` stores whatever is stored in `RAM` address 255, and displays that value on 8 bulbs for us to see. You can think of this as our simple output for any programs we might write.
 
 Lastly, we have the `Control Panel`. Its job is to load a program into `RAM` in the first place. It can read and write to any `RAM` address it wants.
 
-How it works is, first you flip the `TAKEOVER` switch, which inside the `CU` basically freezes the computer and resets `PC`. Then, while `TAKEOVER` is on and the `RAM_OUT` button is off, the value on the panel's input switches is put onto the common bus. If `RAM_OUT` was on, then `RAM` would try to drive the bus at the same time as the control panel. That's why we need to make sure it's off before we can safely drive the bus.
+How it works is, first you flip the `TAKEOVER` switch, which inside the `CU` basically freezes the computer and resets `PC`. Then, while `TAKEOVER` is on and the `RAM_OUT` button is off, the value on the panel's input switches is put onto the common bus. If `RAM_OUT` were on, then `RAM` would try to drive the bus at the same time as the control panel. That's why we need to make sure it's off before we can safely drive the bus.
 
 From there you can hit `MAR_WRITE`, which stores that as the address you want to work with in `RAM`. To write, you then flip the switches to the value you want and press `RAM_WRITE`. To read, you instead press `RAM_OUT`, which makes the `Control Panel` stop driving the bus, because `RAM` will then drive the bus, and the output bulbs will turn on to that value.
 
 Also, the panel's buttons only actually drive their control wires if `TAKEOVER` is on, using tri-state buffers. This is to ensure that while the CPU is running like normal, the `CU` and the panel don't drive the wires at the same time. This works the other way too: when `TAKEOVER` is on, the `CU` makes sure not to drive those `RAM` control wires, again using tri-state buffers.
 
-NEXT (explain the basic fetch-execute decode cycle of the CPU simply, in around 250 words)
+Now, about this mysterious box labeled `CU`. What is it exactly? Well, it is the control unit. Think back to most of our previous demos. Turn `O` on, then `W`, flip this control signal and then flip this control signal. The `CU` does all of that flipping for us. It turns the control wires on and off in the right order, at the right times, to make the computer actually work.
 
+But how exactly does the computer work in the first place?
+
+First we load our program into `RAM`. A program is just a set of instructions that tell the CPU what to do, like "move this value here", "add these two numbers", etc. These instructions are coded as numbers.
+
+The control unit then fetches the instruction from `RAM` at the address stored in `PC`, so if `PC` is 0, it fetches the instruction at address 0 and stores it in `IR`. How? It copies `PC` into the `MAR` and flips on `RAM_OUT`, [exactly like we have done before](#diagram-9-10). Next it figures out what that instruction means, and executes a bunch of steps to actually do that instruction, then it increments or changes `PC` and repeats that whole cycle.
+
+This is kind of a simplified version of what our CPU will do, but we will dive into it in the following sections. You can think of this cycle as fetch, decode, execute. Fetching gets us the instruction, decoding figures out what it means, and executing actually flips those control wires on and off to accomplish that instruction!
+
+But, how does the `CU` know what wires to flip and when?
