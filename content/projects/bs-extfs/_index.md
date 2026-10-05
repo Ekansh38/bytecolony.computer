@@ -1,6 +1,6 @@
 ---
 title: "BS-EXTFS"
-weight: 2
+weight: 3
 layout: "list"
 summary: "A custom inode-based filesystem inspired by ext2, built for byte-space"
 status: "in progress"

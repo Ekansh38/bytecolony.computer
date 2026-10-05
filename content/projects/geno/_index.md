@@ -1,7 +1,7 @@
 ---
 title: "geno"
 draft: true
-weight: 4
+weight: 5
 layout: "list"
 summary: "A genetic evolution simulator. genomes, natural selection, emergent behavior."
 stack: "C"

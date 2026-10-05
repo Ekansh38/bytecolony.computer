@@ -1,6 +1,6 @@
 ---
 title: "f1-driver"
-weight: 5
+weight: 6
 layout: "list"
 summary: "Top-down F1 style racing game with custom maps, cryptographically authenticated laptimes, and easy installs."
 stack: "Python, Pygame"

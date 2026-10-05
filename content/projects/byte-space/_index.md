@@ -1,6 +1,6 @@
 ---
 title: "byte-space"
-weight: 1
+weight: 2
 layout: "list"
 summary: "Recreates the early 1980s internet in the terminal (WIP)"
 stack: "Go"
