@@ -218,7 +218,9 @@ Now let's clean up some of our understanding of circuits before we move on. We h
 
 But let's say we just want an output wire, not a bulb. We can't just remove the bulb; `+` connected directly to `-` would lead to a short-circuit. So what we do is either drive the wire up or down, so it is connected to either `+` or `-`. All of our relay gates can be simply adapted to do this.
 
-This distinction matters later. A `1` output is a wire being driven high. A `0` output is not "nothing"; it is a wire being driven low. It will make sense why I am mentioning this early, later.
+A `1` output is a wire being driven high. A `0` output is not "nothing"; it is a wire being driven low. Remember this information; it will come in handy later on.
+
+As you can see in the after example, even when the relay is not pulling the arm, even when the output is 0, it is still touching the negative end of that battery, it is being driven to `-`.
 
 <a id="diagram-4-10"></a> 
 
@@ -927,7 +929,7 @@ Here is how it works if you care:
 
 Honestly? That's it. We can use two decoders, sixteen registers, some wires and buses all mashed together with some extra logic gates and BOOM! We have some RAM.
 
-In this diagram, green lines are 8-bit data buses. `OUT` is yellow, and `WRITE` is orange. They are still ordinary wires; the colors are only there to make the diagram easier to follow.
+In this diagram, blue lines are 8-bit data buses. `OUT` is yellow, and `WRITE` is orange. They are still ordinary wires; the colors are only there to make the diagram easier to follow.
 
 <a id="diagram-9-5"></a> 
 
@@ -937,7 +939,7 @@ In this diagram, green lines are 8-bit data buses. `OUT` is yellow, and `WRITE` 
 
 This is kind of a lot to unpack, so let me explain the high level parts before we zoom in and take a closer look.
 
-We have a green data in bus that is fed into the bottom of all of the registers, we also have another green data out bus that comes out of the top of all the registers and combines into one output. Every slot is connected to both buses, but only the selected slot is allowed to use them. If the slot's row and column are selected, it can either read from `data in` when `WRITE` is on, or drive `data out` when `OUT` is on.
+We have a blue data in bus that is fed into the bottom of all of the registers, we also have another blue data out bus that comes out of the top of all the registers and combines into one output. Every slot is connected to both buses, but only the selected slot is allowed to use them. If the slot's row and column are selected, it can either read from `data in` when `WRITE` is on, or drive `data out` when `OUT` is on.
 
 Let's look at one cell more closely:
 
@@ -1096,9 +1098,9 @@ Hey? Doesn't this diagram look familiar? Well, yes, we have come full circle fro
 
 Some quick notes on the diagram before we dig in.
 
-The 8-bit data buses are blue when not being driven, or in other words, in the state `Z`. Just like always, if a control wire is red, it means it's on. If a bus is red, it means it's being driven. But we have something new here that we haven't seen before.
+The 8-bit data buses are blue when not being driven, just like before. If a control wire is red, it means it's on. If a bus is red, it means it's being driven like normal. But we have something new here that we haven't seen before.
 
-Purple and `G` mean garbage in the context of wires and buses. This is not the same as `Z`. A `Z` wire is one that nothing is driving, a `G` wire is being driven, with an actual value on it. That value is just nonsense, hence the name garbage. So where does that garbage value come from in this diagram?
+Purple wires and buses mean garbage. This is not the same as `Z`. A `Z` wire is one that nothing is driving, a `G` wire is being driven, with an actual value on it. That value is just nonsense, hence the name garbage. So where does that garbage value come from in this diagram?
 
 Remember, the ALU never stops computing. It always takes its inputs and has a result instantly. One input comes from register `A` (we will talk more about how register `A` works later), but the other input comes from the bus, and when nothing is driving the bus, the input is sitting at `Z`. The thing is, in this CPU an input at `Z` would just behave like 0. Our gates are built from relays, and a relay coil with nothing driving it is simply off, exactly as if you fed it 0. So really, the ALU would be computing `A + 0` if the second input was `Z`.
 
@@ -1145,3 +1147,6 @@ The control unit then fetches the instruction from `RAM` at the address stored i
 This is kind of a simplified version of what our CPU will do, but we will dive into it in the following sections. You can think of this cycle as fetch, decode, execute. Fetching gets us the instruction, decoding figures out what it means, and executing actually flips those control wires on and off to accomplish that instruction!
 
 But, how does the `CU` know what wires to flip and when?
+
+## Instructions Are Numbers
+
