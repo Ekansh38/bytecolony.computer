@@ -54,7 +54,7 @@ Here is a simple circuit:
 
 <a id="diagram-3-1"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-circuit/anim.webp" alt="A basic circuit with a battery, switch, and bulb" width="642" height="500"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-circuit/anim.webp" alt="A basic circuit with a battery, switch, and bulb"></div>
 
 *Diagram 3.1. A basic circuit with a battery, switch, and bulb.*
 
@@ -90,7 +90,7 @@ Here is the circuit:
 
 <a id="diagram-4-1"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/switches-1/anim.webp" alt="The hand-switch version of AND" width="623" height="473"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/switches-1/anim.webp" alt="The hand-switch version of AND"></div>
 
 *Diagram 4.1. The hand-switch version of AND.*
 
@@ -108,7 +108,7 @@ Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
 <a id="diagram-4-2"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/or-gate-logical/anim.webp" alt="The hand-switch version of OR" width="630" height="626"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/or-gate-logical/anim.webp" alt="The hand-switch version of OR"></div>
 
 *Diagram 4.2. The hand-switch version of OR.*
 
@@ -128,7 +128,7 @@ Here is how it works:
 
 <a id="diagram-4-3"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-relay/anim.webp" alt="An electromagnetic relay" width="1278" height="812"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-relay/anim.webp" alt="An electromagnetic relay"></div>
 
 *Diagram 4.3. An electromagnetic relay.*
 
@@ -144,7 +144,7 @@ Now let's see how we can build an actual electrical AND gate that takes two inpu
 
 <a id="diagram-4-4"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-and-gate/anim.webp" alt="An AND gate" width="1920" height="1388"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-and-gate/anim.webp" alt="An AND gate"></div>
 
 *Diagram 4.4. An AND gate.*
 
@@ -174,7 +174,7 @@ Now here is the OR gate:
 
 <a id="diagram-4-6"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-or-gate/anim.webp" alt="An electronic OR gate" width="1493" height="1462"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-or-gate/anim.webp" alt="An electronic OR gate"></div>
 
 *Diagram 4.6. An electronic OR gate.*
 
@@ -182,7 +182,7 @@ That is an OR gate using relays. Now here is the full dog washer circuit up to t
 
 <a id="diagram-4-7"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v1/anim.webp" alt="The full dog washer circuit built with relays" width="1920" height="1584"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v1/anim.webp" alt="The full dog washer circuit built with relays"></div>
 
 *Diagram 4.7. The full dog washer circuit built with relays.*
 
@@ -200,7 +200,7 @@ Let's focus on this NOT for a second. NOT just inverts a signal: if it receives 
 
 <a id="diagram-4-8"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/not-gate/anim.webp" alt="A NOT gate" width="1278" height="812"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/not-gate/anim.webp" alt="A NOT gate"></div>
 
 *Diagram 4.8. A NOT gate.*
 
@@ -214,7 +214,7 @@ As you can see in the after example below, even when the relay is not pulling th
 
 <a id="diagram-4-9"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/before-after/anim.webp" alt="Driving an output wire" width="1278" height="812"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/before-after/anim.webp" alt="Driving an output wire"></div>
 
 *Diagram 4.9. Driving an output wire.*
 
@@ -260,7 +260,7 @@ With our knowledge about logic gates, let's create the "should-I-wash-my-dog 500
 
 <a id="diagram-4-13"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v2/anim.webp" alt="The final dog washer circuit" width="1920" height="755"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v2/anim.webp" alt="The final dog washer circuit"></div>
 
 *Diagram 4.13. The final dog washer circuit.*
 
@@ -284,7 +284,7 @@ That is what the next section is about.
 
 ## Counting With Wires
 
-Okay, before we continue with this section, let's define some terms.
+Before we continue with this section, let's define some terms.
 
 A wire driven low is `0`, and a wire driven high is `1`. Let's call one wire, one bit. A bit can either be `0` or `1`.
 
@@ -306,7 +306,7 @@ Here are all the possible states we have with 3 wires:
 
 <a id="diagram-5-2"></a> 
 
-<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/3-states/anim.webp" alt="States with 3 wires" width="383" height="251"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/3-states/anim.webp" alt="States with 3 wires"></div>
 
 *Diagram 5.2. States with 3 wires.*
 
@@ -365,7 +365,7 @@ Let's start with a brief reminder of how we algorithmically add two decimal numb
 
 <a id="diagram-6-1"></a> 
 
-<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/decimal-addition/anim.webp" alt="Standard decimal addition" width="252" height="278"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/decimal-addition/anim.webp" alt="Standard decimal addition"></div>
 
 *Diagram 6.1. Standard decimal addition.*
 
@@ -373,7 +373,7 @@ We start at the rightmost column, do 5+8, get 13, we carry the 1. So we write 3 
 
 <a id="diagram-6-2"></a> 
 
-<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/binary-addition/anim.webp" alt="Binary addition" width="439" height="291"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/binary-addition/anim.webp" alt="Binary addition"></div>
 
 *Diagram 6.2. Binary addition.*
 
@@ -421,7 +421,7 @@ If we combine an OR gate and a NAND gate, and AND them together we get XOR:
 
 <a id="diagram-6-3"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder-sum/anim.webp" alt="Half adder sum / XOR" width="1626" height="819"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder-sum/anim.webp" alt="Half adder sum / XOR"></div>
 
 *Diagram 6.3. Half adder sum / XOR.*
 
@@ -441,7 +441,7 @@ Now here is our half adder:
 
 <a id="diagram-6-5"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder/anim.webp" alt="A half adder" width="1411" height="806"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder/anim.webp" alt="A half adder"></div>
 
 *Diagram 6.5. A half adder.*
 
@@ -475,7 +475,7 @@ To add three bits, we use two half adders and an OR gate:
 
 <a id="diagram-6-8"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-adder/anim.webp" alt="A full adder" width="1554" height="393"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-adder/anim.webp" alt="A full adder"></div>
 
 *Diagram 6.8. A full adder.*
 
@@ -523,7 +523,7 @@ Let's have a look at some example problems:
 
 <a id="diagram-6-12"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/8-bit-adder-examples/anim.webp" alt="Some examples on the adder" width="1618" height="812"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/8-bit-adder-examples/anim.webp" alt="Some examples on the adder"></div>
 
 *Diagram 6.12. Some examples on the adder.*
 
@@ -587,7 +587,7 @@ This diagram should help this make sense:
 
 <a id="diagram-7-1"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/sr-latch/anim.webp" alt="An SR latch" width="1468" height="1179"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/sr-latch/anim.webp" alt="An SR latch"></div>
 
 *Diagram 7.1. An SR latch.*
 
@@ -630,7 +630,7 @@ If we want the accumulator to work correctly, we need the enable wire to turn on
 
 <a id="diagram-7-3"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/d-latch-accumulator/anim.webp" alt="D latch accumulator" width="1802" height="1920"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/d-latch-accumulator/anim.webp" alt="D latch accumulator"></div>
 
 *Diagram 7.3. D latch accumulator.*
 
@@ -694,7 +694,7 @@ Now with this register, let's build a basic accumulator/adder circuit.
 
 <a id="diagram-7-9"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-accumulator/anim.webp" alt="Our full accumulator" width="1802" height="1920"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-accumulator/anim.webp" alt="Our full accumulator"></div>
 
 *Diagram 7.9. Our full accumulator.*
 
@@ -767,7 +767,7 @@ Also I have drawn everything the output wire is currently touching in yellow. Ye
 
 <a id="diagram-8-2"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/tri-state-buffer-internals/anim.webp" alt="A tri-state buffer built with relays" width="1742" height="1341"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/tri-state-buffer-internals/anim.webp" alt="A tri-state buffer built with relays"></div>
 
 *Diagram 8.2. A tri-state buffer built with relays.*
 
@@ -816,7 +816,7 @@ Here is an example where the content of register A gets copied into register B.
 
 <a id="diagram-8-5"></a> 
 
-<div class="svg-diagram big"><img loading="lazy" decoding="async" src="/assets/frames-gen/common-data-bus-demo/anim.webp" alt="Copying register A into register B through the shared bus" width="1920" height="763"></div>
+<div class="svg-diagram big"><img loading="lazy" decoding="async" src="/assets/frames-gen/common-data-bus-demo/anim.webp" alt="Copying register A into register B through the shared bus"></div>
 
 *Diagram 8.5. Copying register A into register B through the shared bus.*
 
@@ -848,7 +848,7 @@ Many slots, each with its own address.
 
 This system is known technically as RAM: Random Access Memory. It is called RAM because when the CPU wants to access a slot, it just knows the number and can access any slot at will. It is not like flipping through a book looking for the right page. It is more like grabbing a book from a bookshelf, where you already know exactly where the book sits.
 
-Now let's think about exactly what we would want this RAM chip to do.
+Now let's think about exactly what we would want this `RAM` chip to do.
 
 - `address`: the slot we wish to access
 - `WRITE`: whether we want to write a value to this address
@@ -858,11 +858,11 @@ Now let's think about exactly what we would want this RAM chip to do.
 
 To be clear, `WRITE` and `OUT` are control signals, so just 1 input wire each.
 
-For this demo RAM, `address` is only 4 input wires. `data in` and `data out` carry bytes and are both connected directly to the common bus.
+For this demo `RAM`, `address` is only 4 input wires. `data in` and `data out` carry bytes and are both connected directly to the common bus.
 
 This only works if no other part is driving the bus when `OUT` is enabled.
 
-So we are going to build a minuscule 16-byte RAM: 16 addresses, with each address storing one byte. This design can be scaled up easily.
+So we are going to build a minuscule 16-byte `RAM`: 16 addresses, with each address storing one byte. This design can be scaled up easily.
 
 Our address will be 4 bits long, because `2^4` is 16.
 
@@ -888,7 +888,7 @@ In the diagram the top bit is the bigger bit, the 2's place, the bottom is the s
 
 <a id="diagram-9-2"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/2-4-decoder/anim.webp" alt="How a decoder works" width="863" height="635"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/2-4-decoder/anim.webp" alt="How a decoder works"></div>
 
 *Diagram 9.2. How a decoder works.*
 
@@ -900,7 +900,7 @@ This diagram shows a few addresses as examples. Each address gets its own little
 
 <a id="diagram-9-3"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/cross-section/anim.webp" alt="Where the row and column meet" width="1175" height="1077"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/cross-section/anim.webp" alt="Where the row and column meet"></div>
 
 *Diagram 9.3. Where the row and column meet.*
 
@@ -915,11 +915,11 @@ Here is how it works if you care:
 
 <a id="diagram-9-4"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/2-4-decoder-gates/anim.webp" alt="2-4 decoder internals" width="1620" height="1113"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/2-4-decoder-gates/anim.webp" alt="2-4 decoder internals"></div>
 
 *Diagram 9.4. 2-4 decoder internals.*
 
-Honestly? That's it. We can use two decoders, sixteen registers, some wires and buses all mashed together with some extra logic gates and BOOM! We have some RAM.
+Honestly? That's it. We can use two decoders, sixteen registers, some wires and buses all mashed together with some extra logic gates and BOOM! We have some `RAM`.
 
 In this diagram, blue lines are 8-bit data buses. `OUT` is yellow, and `WRITE` is orange. They are still ordinary wires; the colors are only there to make the diagram easier to follow.
 
@@ -953,7 +953,7 @@ So yea, both AND gates take in 3 inputs, if you are wondering how that works, ju
 
 *Diagram 9.7. A three input AND gate.*
 
-So now that we have built RAM, let's pretend that instead of 16 registers, we have a RAM array with 256 registers. The same logic can be copied, just with two 4-16 decoders instead of two 2-4 decoders and 8 address inputs rather than 4.
+So now that we have built `RAM`, let's pretend that instead of 16 registers, we have a `RAM` array with 256 registers. The same logic can be copied, just with two 4-16 decoders instead of two 2-4 decoders and 8 address inputs rather than 4.
 
 <a id="diagram-9-8"></a> 
 
@@ -961,15 +961,15 @@ So now that we have built RAM, let's pretend that instead of 16 registers, we ha
 
 *Diagram 9.8. Our RAM chip.*
 
-Technically, there are still two buses inside the RAM: a data-in path and a data-out path. That is basically what we saw with the [register in the bus section](#diagram-8-5).
+Technically, there are still two buses inside the `RAM`: a data-in path and a data-out path. That is basically what we saw with the [register in the bus section](#diagram-8-5).
 
 But drawing two separate data buses every time is cumbersome. From the outside, we can abstract this as one shared data bus with a double-headed arrow called `I/O`, which stands for input/output.
 
 It is practically just like having two buses, one for input, one for output.
 
-If `W` is on, RAM copies the value from the data bus into the selected address.
+If `W` is on, `RAM` copies the value from the data bus into the selected address.
 
-If `O` is on, RAM drives the selected address's value onto the data bus.
+If `O` is on, `RAM` drives the selected address's value onto the data bus.
 
 So from now on, instead of drawing registers connected to a common bus [like this](#diagram-8-5), where we have a separate `D` and `Q`, we can just draw them like this:
 
@@ -985,19 +985,19 @@ Now back to the `RAM` chip.
 
 If you pay close attention to [the diagram](#diagram-9-8), you will notice that the address input is not directly connected to the common data bus.
 
-That is intentional. The data bus is for moving values around the CPU. During a RAM operation, it needs to carry the value being written to RAM or the value being read from RAM. So it cannot also keep holding the address at the same time.
+That is intentional. The data bus is for moving values around the CPU. During a `RAM` operation, it needs to carry the value being written to `RAM` or the value being read from `RAM`. So it cannot also keep holding the address at the same time.
 
 We need something to hold the address while the data bus is being used for the actual I/O.
 
 This is called the Memory Address Register, or MAR.
 
-The MAR is just a regular 8-bit register with no `OUT` control signal as it is always outputting directly into RAM.
+The MAR is just a regular 8-bit register with no `OUT` control signal as it is always outputting directly into `RAM`.
 
-We first put an address on the data bus and turn on `MAR_WRITE`. The MAR stores that address. Then the MAR keeps sending that address to RAM, leaving the data bus free to carry the value being read or written.
+We first put an address on the data bus and turn on `MAR_WRITE`. The MAR stores that address. Then the MAR keeps sending that address to `RAM`, leaving the data bus free to carry the value being read or written.
 
 <a id="diagram-9-10"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/mar-ram-demo/anim.webp" alt="How the MAR works" width="1920" height="1004"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/mar-ram-demo/anim.webp" alt="How the MAR works"></div>
 
 *Diagram 9.10. How the MAR works.*
 
@@ -1005,7 +1005,7 @@ So first, we put 28 onto the common bus. Enable `MAR_WRITE` and store that into 
 
 ## The ALU
 
-If we have a handful of registers and RAM, we can now move bytes around using this common data bus. But what we really need is a component that can "process" numbers, a component that can do arithmetic and logic. Thus we have "The Arithmetic and Logic Unit," or ALU for short.
+If we have a handful of registers and `RAM`, we can now move bytes around using this common data bus. But what we really need is a component that can "process" numbers, a component that can do arithmetic and logic. Thus we have "The Arithmetic and Logic Unit," or ALU for short.
 
 Imagine a chip where we could input two numbers, an operation, and output a result, along with some other information.
 
@@ -1141,4 +1141,108 @@ This is kind of a simplified version of what our CPU will do, but we will dive i
 But, how does the `CU` know what wires to flip and when?
 
 ## Instructions Are Numbers
+
+Instructions tell the CPU what to do, and a list of instructions is a program. There are game programs, calculator programs, email programs, everything on your computer is a program. Just a long, long list of instructions telling the CPU do do simple things like, add these two numbers, move this value here, etc.
+
+All programs are just a list of instructions stored in `RAM`, each instruction coded as a number.
+
+So here is what number each instruction in our CPU translates too:
+
+<a id="isa-table"></a>
+
+| # | Binary | Mnemonic | Bytes | Action |
+|---:|---|---|---:|---|
+| 0 | `0000` | `NOP` | 1 | do nothing |
+| 1 | `0001` | `LOAD A, n` | 2 | next byte -> A |
+| 2 | `0010` | `LOAD A, [addr]` | 2 | RAM slot -> A |
+| 3 | `0011` | `STORE A, [addr]` | 2 | A -> RAM slot |
+| 4 | `0100` | `MOV B, A` | 1 | copy A into B |
+| 5 | `0101` | `MOV A, B` | 1 | copy B into A |
+| 6 | `0110` | `JMP addr` | 2 | addr -> PC |
+| 7 | `0111` | `JE addr` | 2 | if EQUAL flag: addr -> PC |
+| 8 | `1000` | `ADD` | 1 | A = A + B |
+| 9 | `1001` | `AND` | 1 | A = A AND B |
+| 10 | `1010` | `OR` | 1 | A = A OR B |
+| 11 | `1011` | `XOR` | 1 | A = A XOR B |
+| 12 | `1100` | `JC addr` | 2 | if CARRY flag: addr -> PC |
+| 13 | `1101` | `JZ addr` | 2 | if ZERO flag: addr -> PC |
+| 14 | `1110` | `HALT` | 1 | stop the clock |
+
+*Table 12.1. The full instruction set.*
+
+So if we store `00000001` in address 0 of RAM. Then store `00000101` in address 1 of RAM. Then store `00000011` in address 2, and then `11111111` in address 3.
+
+Our RAM looks like this:
+
+```
+0: 00000001
+1: 00000101
+2: 00000011
+3: 11111111
+```
+
+If PC starts at 0, which it does. Then tell me what you think this program would do?
+
+The first instruction loads a number into `register A`, that number is 5, we know that because the value stored in address 1 of RAM is binary for 5, so those two bytes make up the instruction:
+
+`LOAD A, 5`
+
+The first byte tells us what the instruction is, the second tells us what value to load. The next instruction is `3` which is `STORE A, [addr]` which basically puts the content of A, into the address of RAM that we specify. Again the first byte tells us the instruction and the second byte tells us the address in this case `11111111` which is address 255.
+
+Hey? Isn't address 255 special from the rest? Yep, if we write to address 255 we also write to the OUTPUT register where we can see that value on some light bulbs. Have a look at [this diagram for a recap](#diagram-11-1).
+
+So this program just puts 5 on the output. Pretty simple.
+
+As you can tell, some instructions take two bytes, and some only need one. A two-byte instruction is one where the first byte alone is not enough. `LOAD A, n` needs to know what value to load, so the next byte in `RAM` is that value.
+
+One more thing: the order things are written in. For `MOV`, the destination comes first. `MOV B, A` copies A into B, not the other way around. `LOAD` and `STORE` are different, `LOAD A` means a value going into A, and `STORE A` means A going out into memory.
+
+Now, about the jump instructions: `JMP`, `JE`, `JC`, and `JZ`. All of these instructions set `PC` to the address stored in the second byte.
+
+`JE`, `JC`, and `JZ` each check one flag. The flags from the last ALU instruction sit in the `FLAGS` register until the next ALU instruction overwrites them. So to make a decision, you run an ALU instruction, then jump based on what it found. If the flag is on, the jump sets `PC` to that address. If not, the program just carries on to the next instruction. This is the core element used in creating programs that can decide stuff and loop. A fundamental part of what a computer can do relates to being able to run in a loop.
+
+For example:
+
+```
+0: LOAD A, 1
+2: STORE A, [255]
+4: MOV B, A
+5: ADD
+6: JMP 2
+```
+
+This jumping back to the start of the loop is done with a jump instruction, so for example whenever `PC` reaches 6, it jumps back to 2 and repeats all over again.
+
+The number before each instruction is just the address in RAM where it would be stored, that is why you can see it jump in twos for two byte instructions.
+
+We can also make decisions based on the flags, jumping to different parts of our program depending on what the last ALU instruction found.
+
+```
+0: LOAD A, 1
+2: STORE A, [255]
+4: MOV B, A
+5: ADD
+6: JC 0
+8: JMP 2
+```
+
+Because this computer is built from relays, and thus pretty slow, we can probably see this adding program count. If we want to slow it down some, we can pad the program with some `NOP`s that waste clock cycles.
+
+Real computers are insanely fast and usually have specialized timer hardware and such, but sometimes just run "do-nothing loops" that just waste clock cycles for a set time. Here is an example of a simple do-nothing delay loop:
+
+```
+0:  LOAD A, 1
+2:  MOV B, A
+3:  LOAD A, 0
+5:  ADD
+6:  JC 10
+8:  JMP 5
+10: (rest of the program)
+```
+
+All this loop does is add 1 to `A` over and over, 256 times, until the addition overflows and the `CARRY` flag lets it escape. It computes nothing useful, it just eats up time.
+
+But we don't really need these for our slow computer. Just know real computers use a combination of timer hardware, little counter circuits that tick along with the clock, and loops like these to wait for the right amount of time. Some CPUs even have a sleep instruction that shuts them down completely until something wakes them up.
+
+(then a bit about microsteps, saying like for this instruction what control wires and micro steps do you think the CPU would have to make?)
 
