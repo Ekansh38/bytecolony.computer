@@ -1295,3 +1295,15 @@ Each step changes on a clock edge, and each step is a signal, 1 full clock cycle
 `O` is directly connected to that step line. If we enable `O` on step 1, the bus is driven for that full cycle.
 
 `W` is the same, but with `NOT CLOCK` ANDed in, like `step 1 AND NOT CLOCK`. The thing is, they don't come on at the same time. The step line is already on, and then halfway through the cycle `NOT CLOCK` goes up, and that is when the AND gate's output goes up. That is the edge `W` needs, right in the middle, after `O` has had some time to settle.
+
+The first thing the `CU` will have to do for every instruction no matter what is to actually fetch that instruction from `RAM` and store it in `IR`. `IR` stands simply for `Instruction Register` and is used to store the instruction so the `CU` can decode it and figure out what it means.
+
+The register `PC` stands for `Program Counter` and all it does, is it stores the address of the next instruction that we need to fetch. Then after we have fetched that instruction it usually gets incremented by 1, but with jump instructions, the value in `PC` gets changed, so the program starts executing from somewhere else.
+
+To fetch the next instruction, first we would need to put the value in `PC` into the `MAR`. Then activate `RAM_OUT` putting that instruction on the common bus, and then storing that value inside the `IR` register. Then we increment `PC` so it points at the next byte in RAM, sometimes this next byte is an instruction and sometimes it's part of a 2 byte instruction.
+
+1. `PC_OUT`, `MAR_WRITE`
+2. `RAM_OUT`, `IR_WRITE`
+3. `PC_INC`
+
+So to accomplish this, we only need 3 simple micro-steps.
