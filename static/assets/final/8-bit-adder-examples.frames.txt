@@ -1,10 +1,10 @@
-title: 8 bit adder examples
+title: 8-bit adder examples
 
 [frame 1]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+`A` is 42 and `B` is 5, and the output is 47. No `Carry Out`, since the result fits in 8 bits.
 
 [frame 2]
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+`A` is 15 and `B` is 1, and the output is 16.
 
 [frame 3]
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+`A` is 255 and `B` is 1. 255 is the largest number 8 bits can hold, so adding 1 overflows: the output wraps around to 0 and the `Carry Out` turns on.
