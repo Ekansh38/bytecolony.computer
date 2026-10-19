@@ -1,49 +1,49 @@
-title: cu internals two demo
+title: load a [addr] demo
 
 [frame 1]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+The control unit is sitting idle. The step counter is at 0, which is wired to nothing, and `CLK` is off. Let's step through a `LOAD A, [addr]` instruction.
 
 [frame 2]
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+`CLK` turns on and the counter increments to 1. This is step 1, the start of every fetch. `PC_OUT` turns on, so the `PC` drives the address of the first instruction.
 
 [frame 3]
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+`CLK` turns off. Then `MAR_WRITE` fires on `NOT CLOCK`, and the `MAR` captures that address. Now the `MAR` points at our instruction.
 
 [frame 4]
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.
+`CLK` on, the counter increments to 2. Step 2. `RAM_OUT` turns on, so the `RAM` puts the instruction byte onto the bus.
 
 [frame 5]
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+`CLK` off. `IR_WRITE` fires and the `IR` captures the opcode, a 2. `PC_INC` also fires, bumping the `PC` forward. The `4-16` decoder lights up line 2, so the `CPU` now knows this is a `LOAD A, [addr]`.
 
 [frame 6]
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur.
+`CLK` on, counter increments to 3. Step 3. This is a 2-byte instruction, so gate 6 turns `PC_OUT` back on to fetch the second byte. The `PC` puts the new address on the bus.
 
 [frame 7]
-Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.
+`CLK` off. `MAR_WRITE` fires again, and the `MAR` captures that address.
 
 [frame 8]
-Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae.
+`CLK` on, counter increments to 4. Step 4. `RAM_OUT` turns on and the `RAM` puts the second byte onto the bus. For a `LOAD A, [addr]`, that byte is itself an address.
 
 [frame 9]
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+`CLK` off. This time `MAR_WRITE` fires, so the `MAR` captures that byte as the new address. `PC_INC` bumps the `PC` again.
 
 [frame 10]
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+`CLK` on, counter increments to 5. Step 5. `RAM_OUT` turns on once more, and the `RAM` puts the value stored at that address onto the bus.
 
 [frame 11]
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+`CLK` off. `A_WRITE` fires and register `A` captures the value. The `LOAD` is done, `A` now holds whatever was sitting at `[addr]`.
 
 [frame 12]
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.
+`CLK` on, counter increments to 6. This step isn't used by this instruction, so nothing turns on.
 
 [frame 13]
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+`CLK` off. Still nothing, the counter just holds.
 
 [frame 14]
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur.
+`CLK` on, counter increments to 7. Also unused.
 
 [frame 15]
-Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.
+`CLK` off. Nothing happening.
 
 [frame 16]
-Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae.
+`CLK` on, and the counter wraps back around to 0. The instruction is complete, and the `CPU` is ready to fetch the next one.
