@@ -331,7 +331,10 @@ body.page.writing li { margin-bottom: 0.35em; }
 .jump-comments:hover { color: var(--accent); }
 
 body.page .hero-img {
-  width: 60%; border-radius: 6px; margin-bottom: 28px;
+  /* height:auto is required — the build stamps intrinsic width/height
+     attributes on article images, and without it the height attribute
+     wins over the percentage width and stretches the image. */
+  width: 60%; height: auto; border-radius: 6px; margin-bottom: 28px;
   border: 1px solid var(--border);
   box-shadow: 0 2px 12px rgba(0,0,0,0.15);
   opacity: 0.78;

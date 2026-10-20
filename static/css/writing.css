@@ -213,20 +213,28 @@ body.page.writing main h3 {
    and must read exactly like the h2 of a flat article, while the h2
    becomes a major divider announcing a new part. Articles without parts
    are untouched, since .has-parts is only set when headings nest. */
+/* The part is a structural divider, not a bigger section heading, so it
+   differs in colour as well as scale: muted (the site's h2 convention)
+   and set above a rule, while sections stay solid --fg. Differing on two
+   axes is what stops the two levels reading as rivals. */
 body.page.writing main .has-parts h2 {
-  font-size: 2rem;
-  margin-top: 3em;
-  margin-bottom: 1.1em;
-  padding-top: 1em;
+  font-size: 2.2rem;
+  color: var(--muted);
+  margin-top: 3.2em;
+  margin-bottom: 0.9em;
+  padding-top: 1.1em;
   border-top: 1px solid var(--border);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 body.page.writing main .has-parts h3 {
-  font-size: 1.75rem;
+  font-size: 1.7rem;
   margin-top: 2.4em;
   margin-bottom: 0.65em;
   letter-spacing: -0.01em;
 }
+/* a part and the section that opens it belong together */
+body.page.writing main .has-parts h2 + h3 { margin-top: 1.5em; }
 
 /* Tighter paragraph rhythm for the smaller font */
 body.page.writing main p { margin-bottom: 1.3em; }
@@ -239,8 +247,8 @@ body.page.writing main ol { margin-bottom: 1.3em; }
   body.page.writing .article-subtitle { font-size: 1rem; }
   body.page.writing main h2 { font-size: 1.45rem; }
   body.page.writing main h3 { font-size: 1.2rem; }
-  body.page.writing main .has-parts h2 { font-size: 1.7rem; margin-top: 2.4em; }
-  body.page.writing main .has-parts h3 { font-size: 1.45rem; }
+  body.page.writing main .has-parts h2 { font-size: 1.8rem; margin-top: 2.4em; }
+  body.page.writing main .has-parts h3 { font-size: 1.4rem; }
   body.page.writing main p,
   body.page.writing main li {
     font-size: 16px;
