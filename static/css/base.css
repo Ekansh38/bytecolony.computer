@@ -1149,7 +1149,7 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
 .formats { scroll-margin-top: 24px; }
 .formats-title {
   color: var(--muted);
-  margin: 28px 0 14px;
+  margin: 34px 0 18px;
   font-size: 1.3rem;
   font-weight: 700;
 }
@@ -1161,17 +1161,23 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
 }
 .formats .formats-list li {
   padding: 0;
-  margin: 0 0 10px;
+  margin: 0 0 11px;
   line-height: 1.6;
   font-size: 1rem;
 }
 .formats .formats-list li:last-child { margin-bottom: 0; }
-.formats-list a { font-weight: 700; }
+/* fixed-width name column so the sizes line up (monospace, so ch is exact) */
+.formats-list a {
+  display: inline-block;
+  min-width: 13ch;
+  font-weight: 700;
+}
 .format-size {
   color: var(--muted);
   font-size: 0.85rem;
-  margin-left: 5px;
 }
+/* the global hr has no bottom margin; the prose was butting right against it */
+.formats + hr { margin: 34px 0 30px; }
 
 /* ── PDF variant popover (light / dark choice) ───────────────── */
 .pdf-menu {
