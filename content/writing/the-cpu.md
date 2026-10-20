@@ -7,6 +7,8 @@ pdfdark: /assets/the-cpu-explainer-dark.pdf
 github: https://github.com/Ekansh38/the-cpu-explainer/
 ---
 
+## Part 1: Foundations
+
 You can hear the phrase
 
 "computers think in 1s and 0s"
@@ -45,8 +47,6 @@ We are going to try to understand this simple CPU. It is not a modern CPU with d
 
 - If a section feels dense or hard to understand, follow the diagrams first and try to get a feel for
   what is happening.
-
-## Part 1: Foundations
 
 ### Circuits & Electricity
 
