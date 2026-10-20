@@ -1145,41 +1145,26 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
 
 /* ── FORMATS BLOCK (project pages, linkable as #formats) ─────── */
 .formats {
-  margin: 44px 0 8px;
+  margin: 38px 0 8px;
   scroll-margin-top: 28vh;
 }
 .formats-title {
-  font-size: 0.78rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.95rem;
   color: var(--muted);
   font-weight: 700;
-  margin: 0 0 4px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
+  margin: 0 0 8px;
 }
-.formats-list { margin: 0; }
-.format-row {
-  display: grid;
-  grid-template-columns: 140px minmax(0, 1fr);
-  gap: 4px 18px;
-  padding: 11px 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
-}
-.format-row dt { font-weight: 700; font-size: 0.9rem; }
-.format-row dd {
+.formats-list {
+  list-style: none;
   margin: 0;
-  color: var(--muted);
-  font-size: 0.85rem;
-  line-height: 1.6;
+  padding: 0;
 }
-.format-size {
-  color: color-mix(in srgb, var(--muted) 75%, transparent);
-  white-space: nowrap;
+.formats-list li {
+  padding: 2px 0;
+  font-size: 0.88rem;
+  line-height: 1.7;
 }
-@media (max-width: 620px) {
-  .format-row { grid-template-columns: 1fr; gap: 2px; }
-}
+.format-note { color: var(--muted); }
 
 /* ── PDF variant popover (light / dark choice) ───────────────── */
 .pdf-menu {
