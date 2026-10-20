@@ -1595,13 +1595,11 @@ Some user would have to manually sit there at the control panel flipping these v
 
 ## The End
 
-So what about keyboards, monitors? All the things that turn a CPU into a computer. Well, you have already seen the core idea. Imagine the `DISPLAY` register, just much bigger: thousands of memory slots instead of one, where each number sets the color of one tiny pixel on a screen. A keyboard is the same trick in reverse, a slot you read instead of write, where the value is a code for the last key pressed. We could genuinely bolt both of those onto our CPU today.
+So what about keyboards, monitors? All the things that turn a CPU into a computer. Well, you have already seen the core idea. Imagine the `DISPLAY` register, just much bigger: thousands of memory slots instead of one, where each number sets the color of one tiny pixel on a screen. A keyboard is the same thing but in reverse, a slot you read instead of write, where the value is a code for the last key pressed.
 
-Real computers are a lot fancier about it. They have dedicated I/O buses, whole controller chips that talk to the devices so the CPU doesn't have to, and devices that can even write into `RAM` directly on their own. A modern keyboard is a full back-and-forth conversation over a protocol, not one little slot.
+Real computers are a lot fancier about it. They have dedicated I/O buses, whole controller chips that talk to the devices so the CPU doesn't have to, and devices that can even write into `RAM` directly on their own.
 
 So to recap, a program is just a list of numbers sitting in `RAM`. The control unit fetches those numbers one at a time, decodes them, and executes each one as a few micro-steps, flipping control wires that move bytes between registers. Every one of those components is made up of simple logic gates, and every gate is made up of relays, or more commonly these days, transistors.
-
-All the way down, there is no step where something smart happens.
 
 I hope you now understand why computers aren't "just" 1s and 0s, but a very tall pile of simple.
 
