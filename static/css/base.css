@@ -1146,10 +1146,10 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
 /* ── FORMATS BLOCK (project pages, linkable as #formats) ─────── */
 /* Uses the site's native hr + h2 section rhythm so it sits like any
    other section on the page. */
-.formats { scroll-margin-top: 28vh; }
+.formats { scroll-margin-top: 24px; }
 .formats-title {
   color: var(--muted);
-  margin: 36px 0 16px;
+  margin: 28px 0 14px;
   font-size: 1.3rem;
   font-weight: 700;
 }

@@ -7,7 +7,6 @@
 */}}
 {{ $hasAny := or .Params.article (or .Params.pdf (or .Params.raw .Params.github)) }}
 {{ if $hasAny }}
-<hr>
 <section class="formats" id="formats">
   <h2 class="formats-title">formats</h2>
   <ul class="formats-list">
@@ -28,4 +27,5 @@
     {{ end }}
   </ul>
 </section>
+<hr>
 {{ end }}
