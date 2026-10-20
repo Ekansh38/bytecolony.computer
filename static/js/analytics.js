@@ -4,6 +4,8 @@
 //   view   on every page load (the pageview), with a source: either a
 //          ?ref= campaign tag or the external referrer's origin
 //   depth  on page-hide / unload, with the max scroll depth reached
+//   time   on page-hide, engaged seconds (visible tab only)
+//   action on click: pdf downloads, diagram opens, outbound links
 // Skips (self-exclusion):
 //   - localStorage.bc_internal = '1', set by any of:
 //       * visiting any page with ?internal=1
@@ -76,7 +78,7 @@
     } catch (e) {}
   }
 
-  beacon({ event: 'view', path: path, ref: ref, tag: tag });
+  beacon({ event: 'view', path: path, ref: ref, tag: tag, hour: new Date().getHours() });
 
   // Keep the shared URL clean once the tag is recorded, so a reader
   // copying it out of the address bar doesn't re-attribute to the tag.
@@ -89,12 +91,79 @@
     } catch (e) {}
   }
 
+  // ── engaged time ─────────────────────────────────────────────
+  // Only counts seconds while the tab is actually visible, so a page
+  // left open in a background tab does not inflate the number.
+  var engaged = 0;
+  var lastTick = Date.now();
+  var timeSent = false;
+
+  function accrue() {
+    var now = Date.now();
+    if (document.visibilityState === 'visible') engaged += (now - lastTick) / 1000;
+    lastTick = now;
+  }
+  setInterval(accrue, 5000);
+
+  function sendTime() {
+    if (timeSent) return;
+    accrue();
+    var s = Math.round(engaged);
+    if (s < 2) return;            // ignore instant bounces
+    timeSent = true;
+    beacon({ event: 'time', path: path, secs: s });
+  }
+
+  // ── actions: downloads, diagram opens, outbound links ─────────
+  function act(name, label) {
+    beacon({ event: 'action', path: path, name: name, label: label });
+  }
+
+  document.addEventListener('click', function (e) {
+    var diagram = e.target.closest && e.target.closest('.svg-diagram');
+    if (diagram) {
+      var img = diagram.querySelector('img');
+      var src = img ? (img.getAttribute('src') || '') : '';
+      var m = /([^\/]+?)(?:\.gif|\.webp|\.png|\.jpg)?$/.exec(src.split('/').pop() || '');
+      act('diagram', m ? m[1] : 'unknown');
+      return;
+    }
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+
+    // Every format choice is recorded, not just PDFs, so the editions
+    // can be compared against each other and against reading on the web.
+    if (/\.pdf($|\?)/i.test(href)) {
+      act('format', (href.split('/').pop() || '').replace(/\.pdf.*$/i, ''));
+      act('download', (href.split('/').pop() || '').replace(/\.pdf.*$/i, ''));
+      return;
+    }
+    if (/raw\.html($|\?)/i.test(href)) { act('format', 'plain-html'); return; }
+    if (a.closest('.formats, .article-formats, .format-buttons')) {
+      if (/^\/writing\//.test(href)) { act('format', 'read-online'); return; }
+      if (/github\.com/i.test(href))  { act('format', 'source'); }
+    }
+    if (/^https?:\/\//i.test(href)) {
+      try {
+        var u = new URL(href);
+        if (u.origin !== location.origin) act('outbound', u.hostname.replace(/^www\./, ''));
+      } catch (err) {}
+    }
+  }, true);
+
   // Depth tracker — only on writing pages (articles) and project pages
   var isArticle =
     /^\/writing\//.test(path) ||
     /^\/projects\//.test(path) ||
     document.body.classList.contains('writing');
-  if (!isArticle) return;
+  if (!isArticle) {
+    window.addEventListener('pagehide', sendTime);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') sendTime();
+    });
+    return;
+  }
 
   var maxDepth = 0;
   var sent = false;
@@ -120,8 +189,8 @@
   window.addEventListener('resize', measure, { passive: true });
 
   // pagehide fires more reliably on mobile Safari than beforeunload
-  window.addEventListener('pagehide', send);
+  window.addEventListener('pagehide', function () { send(); sendTime(); });
   document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'hidden') send();
+    if (document.visibilityState === 'hidden') { send(); sendTime(); }
   });
 })();

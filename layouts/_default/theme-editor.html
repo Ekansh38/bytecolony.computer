@@ -363,6 +363,22 @@
   .an-ref-count { color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 700; }
   .an-empty { color: var(--muted); font-size: 0.85rem; padding: 20px 0; text-align: center; }
 
+  .an-bd-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 48px;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.82rem;
+  }
+  .an-bd-label {
+    color: var(--fg);
+    font-size: 0.78rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 720px) { .an-bd-row { grid-template-columns: 96px 1fr 42px; } }
+
   .an-ref-builder {
     display: flex;
     gap: 8px;
@@ -1182,10 +1198,10 @@
 
     // ── Stat tiles ──
     var tiles = el('div', 'an-tiles');
-    tiles.appendChild(mkTile('Views (30d)',   fmtNum(t.views_30d), fmtNum(t.views_all) + ' all-time', true));
-    tiles.appendChild(mkTile('Reads (30d)',   fmtNum(t.reads_30d), fmtNum(t.reads_all) + ' all-time', false));
-    tiles.appendChild(mkTile('Read rate',     pct(t.reads_30d, t.views_30d), 'reads / views · 30d', false));
-    tiles.appendChild(mkTile('Paths',         String(anData.articles.length), 'unique paths seen', false));
+    tiles.appendChild(mkTile('Visitors (30d)', fmtNum(t.visitors_30d), 'unique people', true));
+    tiles.appendChild(mkTile('Views (30d)',    fmtNum(t.views_30d), fmtNum(t.views_all) + ' all-time', false));
+    tiles.appendChild(mkTile('Reads (30d)',    fmtNum(t.reads_30d), 'scrolled past 80%', false));
+    tiles.appendChild(mkTile('Read rate',      pct(t.reads_30d, t.views_30d), 'reads / views · 30d', false));
     app.appendChild(tiles);
 
     // ── Big 30-day chart ──
@@ -1218,7 +1234,7 @@
 
     var thead = el('div', 'an-articles-hd');
     thead.appendChild(el('span', null, 'path'));
-    thead.appendChild(el('span', 'hide-sm', 'sparkline'));
+    thead.appendChild(el('span', 'hide-sm', 'visitors'));
     thead.appendChild(el('span', null, 'views'));
     thead.appendChild(el('span', 'reads hide-sm', 'reads'));
     thead.appendChild(el('span', null, 'read%'));
@@ -1232,7 +1248,7 @@
       var sub = el('span', 'an-row-sub', a.path);
       pathCell.appendChild(sub);
       row.appendChild(pathCell);
-      row.appendChild(mkSparklineFor(a.path));
+      row.appendChild(el('span', 'an-row-num hide-sm', fmtNum(a.visitors || 0)));
       row.appendChild(el('span', 'an-row-num', fmtNum(a.views)));
       row.appendChild(el('span', 'an-row-num reads', fmtNum(a.reads)));
       row.appendChild(el('span', 'an-row-num dim', pct(a.reads, a.views)));
@@ -1242,8 +1258,103 @@
     listCard.appendChild(rows);
     app.appendChild(listCard);
 
+    var grid = el('div', 'an-two-col');
+    grid.appendChild(mkBreakdownCard('Countries', anData.geo || [], 'reach', countryName));
+    grid.appendChild(mkBreakdownCard('Devices', anData.devices || [], 'how people read', null));
+    app.appendChild(grid);
+
+    var grid2 = el('div', 'an-two-col');
+    grid2.appendChild(mkBreakdownCard('Format chosen', anData.formats || [], 'how people took it away', null));
+    grid2.appendChild(mkHoursCard(anData.hours || []));
+    app.appendChild(grid2);
+
     app.appendChild(mkRefBuilder());
     app.appendChild(mkResetAll());
+  }
+
+  // ── generic breakdown (countries, devices, downloads, ...) ────
+  function mkBreakdownCard(title, rows, hint, labelFn) {
+    var card = el('div', 'an-card');
+    var hd = el('div', 'an-card-hd');
+    hd.appendChild(el('span', 'an-card-title', title));
+    if (hint) hd.appendChild(el('span', 'an-card-hint', hint));
+    card.appendChild(hd);
+    if (!rows || !rows.length) {
+      card.appendChild(el('div', 'an-empty', 'nothing recorded yet'));
+      return card;
+    }
+    var max = rows.reduce(function (m, r) { return Math.max(m, r.count); }, 0);
+    var list = el('div', 'an-depth-list');
+    rows.slice(0, 12).forEach(function (r) {
+      var row = el('div', 'an-bd-row');
+      row.appendChild(el('span', 'an-bd-label', labelFn ? labelFn(r.key) : r.key));
+      var bar = el('div', 'an-depth-bar');
+      var fill = el('div', 'an-depth-fill');
+      fill.style.width = (max ? (r.count / max * 100) : 0) + '%';
+      bar.appendChild(fill);
+      row.appendChild(bar);
+      row.appendChild(el('span', 'an-depth-count', fmtNum(r.count)));
+      list.appendChild(row);
+    });
+    card.appendChild(list);
+    return card;
+  }
+
+  // ── when people read (local hour of the reader) ───────────────
+  function mkHoursCard(hours) {
+    var card = el('div', 'an-card');
+    var hd = el('div', 'an-card-hd');
+    hd.appendChild(el('span', 'an-card-title', 'Reading hours'));
+    hd.appendChild(el('span', 'an-card-hint', "reader's local time"));
+    card.appendChild(hd);
+    var max = hours.reduce(function (m, v) { return Math.max(m, v); }, 0);
+    if (!max) {
+      card.appendChild(el('div', 'an-empty', 'nothing recorded yet'));
+      return card;
+    }
+    var W = 480, H = 110, padB = 16;
+    var s = svg('svg', { class: 'an-chart', viewBox: '0 0 ' + W + ' ' + H, preserveAspectRatio: 'none' });
+    var bw = W / 24;
+    hours.forEach(function (v, i) {
+      var h = Math.round(v / max * (H - padB));
+      if (h > 0) {
+        var r = svg('rect', {
+          x: i * bw + bw * 0.15, y: H - padB - h,
+          width: bw * 0.7, height: h, rx: 1.5, class: 'an-chart-bar'
+        });
+        r.appendChild(mkTitle(i + ':00 — ' + v + ' views'));
+        s.appendChild(r);
+      }
+      if (i % 6 === 0) {
+        var lbl = svg('text', { x: i * bw + bw / 2, y: H - 4, 'text-anchor': 'middle', class: 'an-chart-tick' });
+        lbl.textContent = i;
+        s.appendChild(lbl);
+      }
+    });
+    card.appendChild(s);
+    return card;
+  }
+
+  var COUNTRIES = {
+    US:'United States', GB:'United Kingdom', IN:'India', CA:'Canada', AU:'Australia',
+    DE:'Germany', FR:'France', NL:'Netherlands', SG:'Singapore', JP:'Japan',
+    BR:'Brazil', ES:'Spain', IT:'Italy', SE:'Sweden', NO:'Norway', DK:'Denmark',
+    PL:'Poland', IE:'Ireland', NZ:'New Zealand', CH:'Switzerland', AT:'Austria',
+    BE:'Belgium', FI:'Finland', PT:'Portugal', CZ:'Czechia', RO:'Romania',
+    MX:'Mexico', AR:'Argentina', ZA:'South Africa', KR:'South Korea', CN:'China',
+    HK:'Hong Kong', TW:'Taiwan', IL:'Israel', AE:'UAE', TR:'Turkey', UA:'Ukraine',
+    RU:'Russia', ID:'Indonesia', PH:'Philippines', MY:'Malaysia', TH:'Thailand',
+    VN:'Vietnam', PK:'Pakistan', BD:'Bangladesh', NG:'Nigeria', KE:'Kenya', EG:'Egypt'
+  };
+  function countryName(code) { return COUNTRIES[code] ? (COUNTRIES[code] + '  ' + code) : code; }
+
+  function fmtDuration(s) {
+    s = Number(s) || 0;
+    if (s < 60) return s + 's';
+    var m = Math.floor(s / 60), r = s % 60;
+    if (m < 60) return m + 'm ' + (r < 10 ? '0' : '') + r + 's';
+    var h = Math.floor(m / 60);
+    return h + 'h ' + (m % 60) + 'm';
   }
 
   // ── share-link builder ────────────────────────────────────────
@@ -1496,13 +1607,13 @@
 
     // ── Tiles ──
     var tiles = el('div', 'an-tiles');
-    tiles.appendChild(mkTile('Views',      fmtNum(d.totals.views), 'all-time', true));
-    tiles.appendChild(mkTile('Reads',      fmtNum(d.totals.reads), '≥80% depth + dwell', false));
-    tiles.appendChild(mkTile('Read rate',  pct(d.totals.reads, d.totals.views), 'reads / views', false));
-    var refCount = d.referrers.reduce(function (s, r) { return s + r.count; }, 0);
-    var tagCount = (d.tags || []).reduce(function (s, r) { return s + r.count; }, 0);
-    tiles.appendChild(mkTile('Attributed', fmtNum(refCount + tagCount),
-      tagCount + ' tagged \u00b7 ' + refCount + ' referred', false));
+    tiles.appendChild(mkTile('Visitors', fmtNum(d.totals.visitorsAll || 0),
+      fmtNum(d.totals.visitors || 0) + ' in last 30d', true));
+    tiles.appendChild(mkTile('Views', fmtNum(d.totals.views), 'all-time', false));
+    tiles.appendChild(mkTile('Read rate', pct(d.totals.reads, d.totals.views),
+      fmtNum(d.totals.reads) + ' reads', false));
+    tiles.appendChild(mkTile('Avg. time', fmtDuration(d.totals.avgSecs || 0),
+      fmtDuration(d.totals.totalSecs || 0) + ' total', false));
     app.appendChild(tiles);
 
     // ── 30-day chart ──
@@ -1523,6 +1634,23 @@
     two.appendChild(mkDepthCard(d.depth));
     two.appendChild(mkRefCard(d.referrers, d.tags || []));
     app.appendChild(two);
+
+    var two2 = el('div', 'an-two-col');
+    two2.appendChild(mkBreakdownCard('Countries', d.geo || [], 'reach', countryName));
+    two2.appendChild(mkBreakdownCard('Devices', d.devices || [], null, null));
+    app.appendChild(two2);
+
+    var two3 = el('div', 'an-two-col');
+    two3.appendChild(mkBreakdownCard('Time on page', d.times || [], 'engaged, visible tab only', null));
+    two3.appendChild(mkBreakdownCard('Diagrams opened', d.diagrams || [], 'frame explorer', null));
+    app.appendChild(two3);
+
+    if ((d.formats && d.formats.length) || (d.outbound && d.outbound.length)) {
+      var two4 = el('div', 'an-two-col');
+      two4.appendChild(mkBreakdownCard('Format chosen', d.formats || [], 'which edition', null));
+      two4.appendChild(mkBreakdownCard('Outbound clicks', d.outbound || [], 'links followed off-site', null));
+      app.appendChild(two4);
+    }
 
     // ── Danger zone ──
     var danger = el('div', 'an-danger-zone');
