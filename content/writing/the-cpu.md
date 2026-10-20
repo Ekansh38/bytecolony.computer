@@ -1,6 +1,6 @@
 ---
 title: "The CPU: A very tall pile of simple"
-date: 2026-07-31
+date: 2026-10-20
 project: "the-cpu-explainer"
 pdf: /assets/the-cpu-explainer-light.pdf
 pdfdark: /assets/the-cpu-explainer-dark.pdf
