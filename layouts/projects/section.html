@@ -10,7 +10,10 @@
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
-    <div class="li-meta">{{ with .Params.stack }}{{ . }}, {{ end }}{{ .Params.status }}{{ with .Params.github }}, <a href="{{ . }}" target="_blank">source</a>{{ end }}{{ with .Params.parent }}, part of <a href="/projects/{{ . }}/">{{ . }}</a>{{ end }}</div>
+    {{ $bits := slice }}
+    {{ with .Params.stack }}{{ $bits = $bits | append . }}{{ end }}
+    {{ with .Params.status }}{{ $bits = $bits | append . }}{{ end }}
+    <div class="li-meta">{{ delimit $bits ", " }}{{ with .Params.github }}{{ if $bits }}, {{ end }}<a href="{{ . }}" target="_blank">source</a>{{ end }}{{ with .Params.parent }}, part of <a href="/projects/{{ . }}/">{{ . }}</a>{{ end }}</div>
   </li>
   {{ end }}{{ end }}
 </ul>
