@@ -1,5 +1,5 @@
 // ── Analytics beacon + stats readback ─────────────────────────────────────────
-// Writes: POST /api/beacon   { event: "view"|"depth", path, ref?, depth? }
+// Writes: POST /api/beacon   { event: "view"|"depth", path, ref?, tag?, depth? }
 // Reads:  GET  /api/beacon?action=overview   (auth)
 //         GET  /api/beacon?action=path&p=<path>  (auth)
 //
@@ -10,6 +10,8 @@
 //   an:paths                         → set  of all seen paths
 //   an:depth:<path>                  → hash { 0, 25, 50, 75, 100 }
 //   an:ref:<path>                    → hash { <origin> → count }
+//   an:tag:<path>                    → hash { <?ref= tag> → count }
+//   an:tags                          → hash { <?ref= tag> → count } site-wide
 
 async function kv(commands) {
   const url   = process.env.KV_REST_API_URL;
@@ -78,6 +80,13 @@ function refOrigin(ref) {
   } catch { return ''; }
 }
 
+// Campaign tag from a ?ref= link. Restricted charset and length so a
+// crafted URL can't create unbounded hash fields.
+function cleanTag(s) {
+  if (!s || typeof s !== 'string') return '';
+  return s.toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 32);
+}
+
 // Depth bucket labels: 0, 25, 50, 75, 100 — one bucket wide each.
 function depthBucket(d) {
   d = Number(d);
@@ -117,8 +126,16 @@ async function handleWrite(body) {
     // TTL guardrails: per-day keys expire after 400 days so old data doesn't pile up
     cmds.push(['expire',  `an:day:${t}`,             String(60 * 60 * 24 * 400)]);
     cmds.push(['expire',  `an:day-path:${t}:${path}`, String(60 * 60 * 24 * 400)]);
-    const ro = refOrigin(body.ref || '');
-    if (ro) cmds.push(['hincrby', `an:ref:${path}`, ro, '1']);
+    const tag = cleanTag(body.tag || '');
+    if (tag) {
+      // campaign tags live in their own hash so they can't be confused
+      // with browser referrers, and are counted site-wide too
+      cmds.push(['hincrby', `an:tag:${path}`, tag, '1']);
+      cmds.push(['hincrby', `an:tags`, tag, '1']);
+    } else {
+      const ro = refOrigin(body.ref || '');
+      if (ro) cmds.push(['hincrby', `an:ref:${path}`, ro, '1']);
+    }
   } else if (body.event === 'depth') {
     const bucket = depthBucket(body.depth);
     cmds.push(['hincrby', `an:depth:${path}`, bucket, '1']);
@@ -208,6 +225,7 @@ async function handlePath(pathParam) {
     ['hgetall', `an:path:${p}`],
     ['hgetall', `an:depth:${p}`],
     ['hgetall', `an:ref:${p}`],
+    ['hgetall', `an:tag:${p}`],
   ];
   days.forEach(d => cmds.push(['hgetall', `an:day-path:${d}:${p}`]));
   const results = await kv(cmds);
@@ -215,9 +233,10 @@ async function handlePath(pathParam) {
   const total = toObj(results[0]?.result);
   const depth = toObj(results[1]?.result);
   const refs  = toObj(results[2]?.result);
+  const tags  = toObj(results[3]?.result);
 
   const timeseries = days.map((d, i) => {
-    const h = toObj(results[3 + i]?.result);
+    const h = toObj(results[4 + i]?.result);
     return { day: d, views: Number(h.views || 0), reads: Number(h.reads || 0) };
   });
 
@@ -225,6 +244,11 @@ async function handlePath(pathParam) {
     .map(k => ({ origin: k, count: Number(refs[k]) }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 12);
+
+  const tagList = Object.keys(tags)
+    .map(k => ({ tag: k, count: Number(tags[k]) }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 20);
 
   return {
     path: p,
@@ -243,6 +267,7 @@ async function handlePath(pathParam) {
     },
     timeseries,
     referrers,
+    tags: tagList,
   };
 }
 
@@ -255,6 +280,7 @@ async function handleReset(body) {
       ['del', `an:path:${p}`],
       ['del', `an:depth:${p}`],
       ['del', `an:ref:${p}`],
+      ['del', `an:tag:${p}`],
       ['srem', `an:paths`, p],
     ];
     days.forEach(d => cmds.push(['del', `an:day-path:${d}:${p}`]));
@@ -265,11 +291,12 @@ async function handleReset(body) {
     const pathsRes = await kv([['smembers', 'an:paths']]);
     const paths = (pathsRes[0]?.result || []);
     const days = lastNDays(400);
-    const cmds = [['del', 'an:paths']];
+    const cmds = [['del', 'an:paths'], ['del', 'an:tags']];
     paths.forEach(p => {
       cmds.push(['del', `an:path:${p}`]);
       cmds.push(['del', `an:depth:${p}`]);
       cmds.push(['del', `an:ref:${p}`]);
+      cmds.push(['del', `an:tag:${p}`]);
       days.forEach(d => cmds.push(['del', `an:day-path:${d}:${p}`]));
     });
     days.forEach(d => cmds.push(['del', `an:day:${d}`]));

@@ -1,15 +1,33 @@
 // ================================================================
 // ANALYTICS — thin client tracker for /api/beacon
 // Fires:
-//   view   on every page load (once per session per path — the pageview)
+//   view   on every page load (the pageview), with a source: either a
+//          ?ref= campaign tag or the external referrer's origin
 //   depth  on page-hide / unload, with the max scroll depth reached
-// Skips:
-//   - localStorage.bc_internal = '1'  (set via :internal on in the terminal)
+// Skips (self-exclusion):
+//   - localStorage.bc_internal = '1', set by any of:
+//       * visiting any page with ?internal=1
+//       * logging in to /admin (see theme-editor.html)
+//       * the `internal on` terminal command
 //   - navigator.webdriver             (Lighthouse, headless browsers)
 //   - localhost / vercel preview hostnames
 //   - the /admin page itself
 // ================================================================
 (function () {
+  // ?internal=1 marks this browser as the author's, from any device,
+  // without needing the terminal. ?internal=0 undoes it.
+  try {
+    var qp = new URLSearchParams(location.search);
+    if (qp.has('internal')) {
+      var on = qp.get('internal') !== '0';
+      if (on) localStorage.setItem('bc_internal', '1');
+      else localStorage.removeItem('bc_internal');
+      qp.delete('internal');
+      var q = qp.toString();
+      history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+    }
+  } catch (e) {}
+
   try {
     if (localStorage.getItem('bc_internal') === '1') return;
   } catch (e) {}
@@ -41,15 +59,35 @@
     } catch (e) {}
   }
 
+  // Source of this visit. A ?ref= tag wins over the browser referrer,
+  // since it was deliberately minted for a specific place a link was
+  // shared — and it works for Discord/email/etc, which send no referrer.
   var ref = '';
-  if (document.referrer) {
+  var tag = '';
+  try {
+    var t = new URLSearchParams(location.search).get('ref');
+    if (t) tag = t.toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 32);
+  } catch (e) {}
+
+  if (!tag && document.referrer) {
     try {
       var r = new URL(document.referrer);
       if (r.origin !== location.origin) ref = r.origin;
     } catch (e) {}
   }
 
-  beacon({ event: 'view', path: path, ref: ref });
+  beacon({ event: 'view', path: path, ref: ref, tag: tag });
+
+  // Keep the shared URL clean once the tag is recorded, so a reader
+  // copying it out of the address bar doesn't re-attribute to the tag.
+  if (tag) {
+    try {
+      var qp2 = new URLSearchParams(location.search);
+      qp2.delete('ref');
+      var q2 = qp2.toString();
+      history.replaceState(null, '', location.pathname + (q2 ? '?' + q2 : '') + location.hash);
+    } catch (e) {}
+  }
 
   // Depth tracker — only on writing pages (articles) and project pages
   var isArticle =

@@ -363,6 +363,35 @@
   .an-ref-count { color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 700; }
   .an-empty { color: var(--muted); font-size: 0.85rem; padding: 20px 0; text-align: center; }
 
+  .an-ref-builder {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .an-ref-input, .an-ref-out {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 0.82rem;
+    padding: 6px 10px;
+    border-radius: 4px;
+    outline: none;
+  }
+  .an-ref-input { flex: 1; min-width: 150px; }
+  .an-ref-input:focus, .an-ref-out:focus { border-color: var(--accent); }
+  .an-ref-out { flex: 1; min-width: 240px; color: var(--accent); }
+  .an-ref-group {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin: 12px 0 6px;
+  }
+  .an-ref-group:first-child { margin-top: 0; }
+
   .an-danger-zone {
     margin-top: 22px; padding-top: 14px;
     border-top: 1px dashed var(--border);
@@ -393,6 +422,9 @@
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (!d.ok) { authErr.textContent = 'wrong code'; return; }
+        // Anyone who can log in here is the author, so stop counting this
+        // browser in analytics from now on.
+        try { localStorage.setItem('bc_internal', '1'); } catch (e) {}
         showPanel();
       })
       .catch(function () { authErr.textContent = 'network error'; });
@@ -1209,6 +1241,94 @@
     });
     listCard.appendChild(rows);
     app.appendChild(listCard);
+
+    app.appendChild(mkRefBuilder());
+    app.appendChild(mkResetAll());
+  }
+
+  // ── share-link builder ────────────────────────────────────────
+  // Mints ?ref= URLs. Apps like Discord and email strip the referrer,
+  // so a tag is the only way to attribute links shared there.
+  function mkRefBuilder() {
+    var card = el('div', 'an-card');
+    var hd = el('div', 'an-card-hd');
+    hd.appendChild(el('span', 'an-card-title', 'Share links'));
+    hd.appendChild(el('span', 'an-card-hint', 'tag a link so you can tell where visits came from'));
+    card.appendChild(hd);
+
+    var row = el('div', 'an-ref-builder');
+
+    var pathSel = document.createElement('select');
+    pathSel.className = 'an-ref-input';
+    var seen = {};
+    [{ path: '/writing/the-cpu/' }, { path: '/projects/the-cpu-explainer/' }, { path: '/' }]
+      .concat(anData.articles)
+      .forEach(function (a) {
+        if (seen[a.path]) return;
+        seen[a.path] = 1;
+        var o = document.createElement('option');
+        o.value = a.path; o.textContent = a.path;
+        pathSel.appendChild(o);
+      });
+
+    var tagInput = document.createElement('input');
+    tagInput.type = 'text';
+    tagInput.className = 'an-ref-input';
+    tagInput.placeholder = 'tag, e.g. discord';
+
+    var out = document.createElement('input');
+    out.type = 'text';
+    out.className = 'an-ref-out';
+    out.readOnly = true;
+
+    var copyBtn = el('button', 'adm-btn adm-btn-sm', 'copy');
+
+    function build() {
+      var tag = tagInput.value.toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 32);
+      out.value = tag
+        ? location.origin + pathSel.value + '?ref=' + tag
+        : location.origin + pathSel.value;
+    }
+    tagInput.addEventListener('input', build);
+    pathSel.addEventListener('change', build);
+    copyBtn.addEventListener('click', function () {
+      out.select();
+      navigator.clipboard.writeText(out.value).then(function () {
+        copyBtn.textContent = 'copied';
+        setTimeout(function () { copyBtn.textContent = 'copy'; }, 1200);
+      }).catch(function () {});
+    });
+    build();
+
+    row.appendChild(pathSel);
+    row.appendChild(tagInput);
+    card.appendChild(row);
+    var outRow = el('div', 'an-ref-builder');
+    outRow.appendChild(out);
+    outRow.appendChild(copyBtn);
+    card.appendChild(outRow);
+    return card;
+  }
+
+  // ── wipe everything ───────────────────────────────────────────
+  function mkResetAll() {
+    var zone = el('div', 'an-danger-zone');
+    var btn = el('button', 'adm-btn adm-btn-sm adm-btn-danger', 'reset ALL analytics');
+    btn.addEventListener('click', function () {
+      if (!confirm('Wipe every analytics counter for the whole site?\n\nThis cannot be undone.')) return;
+      if (!confirm('Really? All views, reads, depth and referrer data will be deleted.')) return;
+      btn.textContent = 'wiping...';
+      fetch('/api/beacon', {
+        method: 'POST',
+        headers: headers(),
+        body: JSON.stringify({ action: 'reset', all: true })
+      }).then(function (r) { return r.json(); }).then(function (out) {
+        if (out.ok) { anDrillCache = {}; anLoaded = false; anLoad(true); }
+        else btn.textContent = 'error';
+      }).catch(function () { btn.textContent = 'error'; });
+    });
+    zone.appendChild(btn);
+    return zone;
   }
 
   function mkTile(label, num, sub, accent) {
@@ -1380,7 +1500,9 @@
     tiles.appendChild(mkTile('Reads',      fmtNum(d.totals.reads), '≥80% depth + dwell', false));
     tiles.appendChild(mkTile('Read rate',  pct(d.totals.reads, d.totals.views), 'reads / views', false));
     var refCount = d.referrers.reduce(function (s, r) { return s + r.count; }, 0);
-    tiles.appendChild(mkTile('External refs', fmtNum(refCount), (d.referrers.length || 0) + ' unique origins', false));
+    var tagCount = (d.tags || []).reduce(function (s, r) { return s + r.count; }, 0);
+    tiles.appendChild(mkTile('Attributed', fmtNum(refCount + tagCount),
+      tagCount + ' tagged \u00b7 ' + refCount + ' referred', false));
     app.appendChild(tiles);
 
     // ── 30-day chart ──
@@ -1399,7 +1521,7 @@
     // ── Two-column: depth histogram + referrers ──
     var two = el('div', 'an-two-col');
     two.appendChild(mkDepthCard(d.depth));
-    two.appendChild(mkRefCard(d.referrers));
+    two.appendChild(mkRefCard(d.referrers, d.tags || []));
     app.appendChild(two);
 
     // ── Danger zone ──
@@ -1458,25 +1580,42 @@
     return card;
   }
 
-  function mkRefCard(refs) {
+  function mkRefCard(refs, tags) {
     var card = el('div', 'an-card');
     var hd = el('div', 'an-card-hd');
-    hd.appendChild(el('span', 'an-card-title', 'Top referrers'));
-    hd.appendChild(el('span', 'an-card-hint', 'external origins only'));
+    hd.appendChild(el('span', 'an-card-title', 'Where visits came from'));
+    hd.appendChild(el('span', 'an-card-hint', 'tagged links and external sites'));
     card.appendChild(hd);
-    if (!refs.length) {
-      card.appendChild(el('div', 'an-empty', 'no external referrers yet'));
+
+    if (!refs.length && !tags.length) {
+      card.appendChild(el('div', 'an-empty', 'nothing recorded yet'));
       return card;
     }
-    var list = el('div', 'an-ref-list');
-    refs.forEach(function (r) {
-      var row = el('div', 'an-ref-row');
-      var origin = r.origin.replace(/^https?:\/\//, '');
-      row.appendChild(el('span', 'an-ref-origin', origin));
-      row.appendChild(el('span', 'an-ref-count', fmtNum(r.count)));
-      list.appendChild(row);
-    });
-    card.appendChild(list);
+
+    if (tags.length) {
+      card.appendChild(el('div', 'an-ref-group', 'tagged links'));
+      var tl = el('div', 'an-ref-list');
+      tags.forEach(function (x) {
+        var row = el('div', 'an-ref-row');
+        row.appendChild(el('span', 'an-ref-origin', '?ref=' + x.tag));
+        row.appendChild(el('span', 'an-ref-count', fmtNum(x.count)));
+        tl.appendChild(row);
+      });
+      card.appendChild(tl);
+    }
+
+    if (refs.length) {
+      if (tags.length) card.appendChild(el('div', 'an-ref-group', 'referring sites'));
+      var list = el('div', 'an-ref-list');
+      refs.forEach(function (r) {
+        var row = el('div', 'an-ref-row');
+        var origin = r.origin.replace(/^https?:\/\//, '');
+        row.appendChild(el('span', 'an-ref-origin', origin));
+        row.appendChild(el('span', 'an-ref-count', fmtNum(r.count)));
+        list.appendChild(row);
+      });
+      card.appendChild(list);
+    }
     return card;
   }
 })();
