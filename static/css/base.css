@@ -1144,37 +1144,33 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
 }
 
 /* ── FORMATS BLOCK (project pages, linkable as #formats) ─────── */
-.formats-rule { margin: 40px 0 0; }
-.formats {
-  margin: 26px 0 8px;
-  scroll-margin-top: 28vh;
-}
+/* Uses the site's native hr + h2 section rhythm so it sits like any
+   other section on the page. */
+.formats { scroll-margin-top: 28vh; }
 .formats-title {
-  font-size: 1.15rem;
-  color: var(--fg);
+  color: var(--muted);
+  margin: 36px 0 16px;
+  font-size: 1.3rem;
   font-weight: 700;
-  margin: 0 0 14px;
 }
-/* beat the global `li { padding: 6px 0 }` that was spacing these out */
-.formats-list,
-body.page .formats-list {
+/* two classes, to beat `body.projects li { padding: 14px 0 }` */
+.formats .formats-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.formats-list li,
-body.page .formats-list li {
+.formats .formats-list li {
   padding: 0;
-  margin: 0 0 9px;
-  line-height: 1.5;
+  margin: 0 0 10px;
+  line-height: 1.6;
   font-size: 1rem;
 }
-.formats-list li:last-child { margin-bottom: 0; }
+.formats .formats-list li:last-child { margin-bottom: 0; }
 .formats-list a { font-weight: 700; }
 .format-size {
   color: var(--muted);
   font-size: 0.85rem;
-  margin-left: 4px;
+  margin-left: 5px;
 }
 
 /* ── PDF variant popover (light / dark choice) ───────────────── */
