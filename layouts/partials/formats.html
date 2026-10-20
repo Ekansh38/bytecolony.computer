@@ -1,23 +1,21 @@
 {{/*
   Formats list — the canonical "how do I read this" menu for a project.
-  Deliberately plain: a heading and a list of links, arXiv-style.
-  Only the PDFs carry a note, and only their file size, read from disk at
-  build time so it never goes stale.
+
+  Plain links for the web formats, then a PDF editions table: one row per
+  edition (complete, then each part), each offering a light and a dark
+  file with its size. Sizes are read from disk at build time so they
+  never go stale.
+
   Linkable as #formats (the article header's single button points here).
 */}}
 {{ $hasAny := or .Params.article (or .Params.pdf (or .Params.raw .Params.github)) }}
 {{ if $hasAny }}
 <section class="formats" id="formats">
   <h2 class="formats-title">formats</h2>
+
   <ul class="formats-list">
     {{ with .Params.article }}
     <li><a href="{{ . }}">read online</a></li>
-    {{ end }}
-    {{ with .Params.pdf }}
-    <li><a href="{{ . }}" target="_blank" rel="noopener">pdf, light</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.0f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</li>
-    {{ end }}
-    {{ with .Params.pdfdark }}
-    <li><a href="{{ . }}" target="_blank" rel="noopener">pdf, dark</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.0f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</li>
     {{ end }}
     {{ with .Params.raw }}
     <li><a href="{{ . }}" target="_blank" rel="noopener">plain html</a></li>
@@ -26,6 +24,35 @@
     <li><a href="{{ . }}" target="_blank" rel="noopener">source</a></li>
     {{ end }}
   </ul>
+
+  {{ if .Params.pdf }}
+  <h3 class="formats-subtitle">pdf editions</h3>
+  <div class="fmt-editions">
+
+    <div class="fmt-row">
+      <span class="fmt-name">complete</span>
+      {{ with .Params.pdf }}
+      <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">light</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
+      {{ end }}
+      {{ with .Params.pdfdark }}
+      <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">dark</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
+      {{ end }}
+    </div>
+
+    {{ range .Params.pdfparts }}
+    <div class="fmt-row">
+      <span class="fmt-name">{{ .name }}</span>
+      {{ with .light }}
+      <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">light</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
+      {{ end }}
+      {{ with .dark }}
+      <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">dark</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
+      {{ end }}
+    </div>
+    {{ end }}
+
+  </div>
+  {{ end }}
 </section>
 <hr>
 {{ end }}

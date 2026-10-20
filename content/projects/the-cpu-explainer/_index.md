@@ -8,6 +8,17 @@ article: "/writing/the-cpu/"
 pdf: "/assets/the-cpu-explainer-light.pdf"
 pdfdark: "/assets/the-cpu-explainer-dark.pdf"
 raw: "/writing/the-cpu/raw.html"
+# Per-part PDF editions, listed under the complete edition in the formats block
+pdfparts:
+  - name: "Part 1: Foundations"
+    light: "/assets/the-cpu-explainer-part1-light.pdf"
+    dark: "/assets/the-cpu-explainer-part1-dark.pdf"
+  - name: "Part 2: Machinery"
+    light: "/assets/the-cpu-explainer-part2-light.pdf"
+    dark: "/assets/the-cpu-explainer-part2-dark.pdf"
+  - name: "Part 3: Execution"
+    light: "/assets/the-cpu-explainer-part3-light.pdf"
+    dark: "/assets/the-cpu-explainer-part3-dark.pdf"
 github: "https://github.com/Ekansh38/the-cpu-explainer/"
 ---
 

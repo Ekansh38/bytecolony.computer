@@ -1179,6 +1179,39 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
   color: var(--muted);
   font-size: 0.85rem;
 }
+
+/* PDF editions: one row per edition, each with a light and a dark file.
+   Monospace makes ch-based columns exact, so this aligns like a proper
+   table of editions without needing any table chrome. */
+.formats-subtitle {
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 26px 0 12px;
+}
+.fmt-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 10px;
+  margin-bottom: 11px;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.fmt-row:last-child { margin-bottom: 0; }
+.fmt-name {
+  min-width: 22ch;
+  color: var(--fg);
+}
+.fmt-file {
+  min-width: 11ch;
+}
+.fmt-file a { font-weight: 700; }
+@media (max-width: 620px) {
+  .fmt-name { min-width: 100%; margin-bottom: 2px; }
+  .fmt-file { min-width: 10ch; }
+}
+
 /* the global hr has no bottom margin; the prose was butting right against it */
 .formats + hr { margin: 34px 0 30px; }
 
