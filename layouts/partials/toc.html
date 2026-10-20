@@ -1,0 +1,29 @@
+{{/*
+  Article table of contents.
+
+  Built from .Fragments.Headings rather than .TableOfContents so that
+  "part" headings can be told apart from ordinary sections.
+
+  Rule: a heading that CONTAINS other headings is a part (rendered as an
+  unnumbered header); a heading with no children is a numbered section.
+  So an article with a flat run of h2s and no parts renders exactly as it
+  always has, with every entry numbered.
+*/}}
+{{ $s := newScratch }}
+{{ $s.Set "entries" slice }}
+{{ partial "toc-walk.html" (dict "nodes" .Fragments.Headings "s" $s) }}
+{{ $entries := $s.Get "entries" }}
+
+{{ if $entries }}
+<nav class="article-toc" aria-label="table of contents">
+  <hr class="toc-rule">
+  <h2 class="toc-heading">Table of Contents</h2>
+  <ul>
+    {{ range $entries }}
+    <li{{ if .part }} class="toc-part"{{ end }}><a href="#{{ .id }}">{{ .title | safeHTML }}</a></li>
+    {{ end }}
+    <li class="toc-extra"><a href="#comments">Comments</a></li>
+  </ul>
+  <hr class="toc-rule">
+</nav>
+{{ end }}

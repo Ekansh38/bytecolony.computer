@@ -35,7 +35,7 @@ The key point is that nothing here is smart in isolation. A CPU is not one hard 
 
 We are going to try to understand this simple CPU. It is not a modern CPU with decades of optimization, but it has the same core functionality.
 
-## How to Read This Article
+### How to Read This Article
 
 - If a diagram is hard to understand, click it and step through each frame one by one using the arrow
   keys, with the provided descriptions. This only works if you are reading on my website.
@@ -46,7 +46,9 @@ We are going to try to understand this simple CPU. It is not a modern CPU with d
 - If a section feels dense or hard to understand, follow the diagrams first and try to get a feel for
   what is happening.
 
-## Circuits & Electricity
+## Part 1: Foundations
+
+### Circuits & Electricity
 
 First, we need the basics of how electricity and circuits work.
 
@@ -68,7 +70,7 @@ Now we have a circuit that can do one yes/no thing. Current flows or it doesn't.
 
 Now let's see if we can combine switches and relays so the circuit can "answer" slightly more interesting questions.
 
-## Switches, Relays, & Logic Gates
+### Switches, Relays, & Logic Gates
 
 Say we want to build a simple dog washer circuit: a circuit that, based on some inputs, can tell us whether to wash our dog or not.
 
@@ -282,7 +284,7 @@ To make a CPU, we need to give wires a different kind of meaning: numbers. Befor
 
 That is what the next section is about.
 
-## Counting With Wires
+### Counting With Wires
 
 Before we continue with this section, let's define some terms.
 
@@ -359,7 +361,7 @@ So now that we can represent numbers with wires, how can we add numbers together
 
 *Diagram 5.6. Addition?*
 
-## Addition
+### Addition
 
 Let's start with a brief reminder of how we algorithmically add two decimal numbers.
 
@@ -565,7 +567,9 @@ So this is not enough. We need a circuit that can hold a value still, then updat
 
 That is the next problem: memory.
 
-## Storing a Bit
+## Part 2: Machinery
+
+### Storing a Bit
 
 In the last section, wiring the output of a circuit back into its input led to chaos. But with a smarter configuration, we can use this trick to store a bit.
 
@@ -720,7 +724,7 @@ We now have some storage. A register that can hold a byte, and update exactly wh
 
 But registers on their own are not enough. We need to be able to move numbers between registers, the adders, and the main memory, which we will build later.
 
-## Buses
+### Buses
 
 One simple solution to move bytes around would be to give every component its own bundle of 8 wires to every other component, but that would become a mess very quickly.
 
@@ -832,7 +836,7 @@ Now we can store a byte, compute a sum, and move bytes around!
 
 The next problem is organization and scale. How do we organize many stored bytes so the machine can choose one slot, read it, and write back to it? A handful of registers aren't enough.
 
-## Organizing Data
+### Organizing Data
 
 We want to build a system that organizes data into a simple structure.
 
@@ -1001,7 +1005,7 @@ We first put an address on the data bus and turn on `MAR_WRITE`. The `MAR` store
 
 So first, we put 28 onto the common bus. Enable `MAR_WRITE` and store that into the `MAR`. We then remove 28 from the common bus and enable `RAM_OUT`, and we get 6 as the value stored in slot 28. Cool.
 
-## The ALU
+### The ALU
 
 If we have a handful of registers and `RAM`, we can now move bytes around using this common data bus. But what we really need is a component that can "process" numbers, a component that can do arithmetic and logic. Thus we have "The Arithmetic and Logic Unit," or `ALU` for short.
 
@@ -1076,7 +1080,7 @@ Then we flip the bits with gate 7, getting `11111111`, and if we AND them all to
 
 The `CARRY` flag is simple: we just connect the adder's carry-out, `CO`, straight out. Of course, it only means anything when we are actually adding.
 
-## The Big Picture
+### The Big Picture
 
 Here is a big picture diagram of the whole CPU.
 
@@ -1140,7 +1144,9 @@ This is kind of a simplified version of what our CPU will do, but we will dive i
 
 But, how does the `CU` know what wires to flip and when?
 
-## Instructions Are Numbers
+## Part 3: Execution
+
+### Instructions Are Numbers
 
 Instructions tell the CPU what to do, and a list of instructions is a program. There are game programs, calculator programs, email programs. Everything on your computer is a program. Just a long, long list of instructions telling the CPU to do simple things like add these two numbers, move this value here, etc.
 
@@ -1263,7 +1269,7 @@ First the `CU` would flip the `O` signal on the `A` register, driving the bus to
 
 How does the `CU` know which wires to flip and when? That is what the next section is all about.
 
-## The Not-So-Clever Control Unit
+### The Not-So-Clever Control Unit
 
 The first thing the control unit needs is a step counter. Something that counts, step 0, then step 1, then step 2, and so on, back to step 0. That is the core flow of the control unit.
 
@@ -1471,7 +1477,7 @@ Umm, yes, that's it. Just combine all of those diagrams together, add in some ex
 
 In the next short section, let's see how our computer can run a simple program.
 
-## Finally, The Fun Part
+### Finally, The Fun Part
 
 That's it huh? A whole computer. To test it, let's watch it run.
 
@@ -1593,7 +1599,7 @@ And in `RAM`, it is actually just this:
 
 Some user would have to manually sit there at the control panel flipping these values into addresses of `RAM` one at a time. In the next closing section, we will touch a little bit on modern things like keyboards and monitors, all that other stuff that really turns a CPU into a computer.
 
-## The End
+### The End
 
 So what about keyboards, monitors? All the things that turn a CPU into a computer. Well, you have already seen the core idea. Imagine the `DISPLAY` register, just much bigger: thousands of memory slots instead of one, where each number sets the color of one tiny pixel on a screen. A keyboard is the same thing but in reverse, a slot you read instead of write, where the value is a code for the last key pressed.
 

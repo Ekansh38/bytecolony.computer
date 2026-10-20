@@ -144,6 +144,22 @@
   content: "→";
   opacity: 0.6;
 }
+/* Part headings — unnumbered dividers, so the section counter runs on */
+.toc-overlay-item.is-part {
+  counter-increment: none;
+  margin-top: 16px;
+}
+.toc-overlay-list .toc-overlay-item.is-part:first-child { margin-top: 0; }
+.toc-overlay-item.is-part::before { content: ""; width: 0; margin: 0; padding: 0; }
+.toc-overlay-item.is-part .toc-overlay-link {
+  color: var(--fg);
+  font-weight: 700;
+  opacity: 1;
+}
+/* sections sit indented under their part so the grouping reads at a glance */
+.toc-overlay-item.is-part ~ .toc-overlay-item:not(.is-part):not(.is-comments)::before {
+  padding-left: 16px;
+}
 .toc-overlay-link {
   flex: 1;
   text-align: left;

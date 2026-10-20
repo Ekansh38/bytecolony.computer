@@ -35,22 +35,20 @@
   {{ end }}
 </header>
 
-{{ if in .TableOfContents "<ul" }}
-{{ with .TableOfContents }}
-<nav class="article-toc" aria-label="table of contents">
-  <hr class="toc-rule">
-  <h2 class="toc-heading">Table of Contents</h2>
-  {{ replace . `</ul>` `<li class="toc-extra"><a href="#comments">Comments</a></li></ul>` | safeHTML }}
-  <hr class="toc-rule">
-</nav>
-{{ end }}
-{{ end }}
+{{ partial "toc.html" . }}
 
 {{ with .Params.description }}
 <p class="article-abstract">{{ . }}</p>
 {{ end }}
 
-{{ .Content }}
+{{/* An article whose headings nest (## Part / ### Section) needs the two
+     levels styled differently from a flat article, where ## is a section.
+     has-parts lets the stylesheet tell the two shapes apart. */}}
+{{ $hp := newScratch }}{{ $hp.Set "entries" slice }}
+{{ partial "toc-walk.html" (dict "nodes" .Fragments.Headings "s" $hp) }}
+{{ $hasParts := false }}
+{{ range $hp.Get "entries" }}{{ if .part }}{{ $hasParts = true }}{{ end }}{{ end }}
+<div class="article-body{{ if $hasParts }} has-parts{{ end }}">{{ .Content }}</div>
 
 <script>
 document.querySelectorAll('.callout-body br').forEach(function(br){

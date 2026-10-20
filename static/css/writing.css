@@ -127,6 +127,26 @@ body.page.writing .article-toc a {
 }
 body.page.writing .article-toc a:hover { color: var(--accent); }
 
+/* Part headings — structural dividers between runs of numbered sections.
+   Unnumbered, so the section counter runs continuously across them. */
+body.page.writing .article-toc li.toc-part {
+  counter-increment: none;
+  margin: 24px 0 9px;
+}
+body.page.writing .article-toc li.toc-part:first-child { margin-top: 0; }
+body.page.writing .article-toc li.toc-part::before { content: none; }
+body.page.writing .article-toc li.toc-part a {
+  color: var(--fg);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.005em;
+}
+body.page.writing .article-toc li.toc-part a:hover { color: var(--accent); }
+/* sections sit indented under their part, so the grouping reads at a glance */
+body.page.writing .article-toc li.toc-part ~ li:not(.toc-part):not(.toc-extra) {
+  padding-left: 18px;
+}
+
 /* Non-chapter entries (Comments, etc.) — visually separated from the numbered chapters */
 body.page.writing .article-toc li.toc-extra {
   counter-increment: none;
@@ -189,6 +209,25 @@ body.page.writing main h3 {
   margin-bottom: 0.6em;
 }
 
+/* Articles built as "## Part / ### Section": the h3 is the real section
+   and must read exactly like the h2 of a flat article, while the h2
+   becomes a major divider announcing a new part. Articles without parts
+   are untouched, since .has-parts is only set when headings nest. */
+body.page.writing main .has-parts h2 {
+  font-size: 2rem;
+  margin-top: 3em;
+  margin-bottom: 1.1em;
+  padding-top: 1em;
+  border-top: 1px solid var(--border);
+  letter-spacing: -0.015em;
+}
+body.page.writing main .has-parts h3 {
+  font-size: 1.75rem;
+  margin-top: 2.4em;
+  margin-bottom: 0.65em;
+  letter-spacing: -0.01em;
+}
+
 /* Tighter paragraph rhythm for the smaller font */
 body.page.writing main p { margin-bottom: 1.3em; }
 body.page.writing main ul,
@@ -200,6 +239,8 @@ body.page.writing main ol { margin-bottom: 1.3em; }
   body.page.writing .article-subtitle { font-size: 1rem; }
   body.page.writing main h2 { font-size: 1.45rem; }
   body.page.writing main h3 { font-size: 1.2rem; }
+  body.page.writing main .has-parts h2 { font-size: 1.7rem; margin-top: 2.4em; }
+  body.page.writing main .has-parts h3 { font-size: 1.45rem; }
   body.page.writing main p,
   body.page.writing main li {
     font-size: 16px;

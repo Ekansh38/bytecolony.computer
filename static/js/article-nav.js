@@ -2,14 +2,23 @@
 // ARTICLE NAVIGATION (sticky pill + overlay)
 // ================================================================
 (function () {
-  // Collect h2s inside the article, EXCLUDING the comments-section
+  // Collect h2/h3 inside the article, EXCLUDING the comments-section
   // heading (which is itself a nav target we add manually as "comments").
   function collectHeadings() {
     var scope = document.querySelector('main, article, .project-content') || document.body;
-    var all = Array.prototype.slice.call(scope.querySelectorAll('h2'));
+    var all = Array.prototype.slice.call(scope.querySelectorAll('h2, h3'));
     return all.filter(function (h) {
       return !h.closest('header, nav, footer, aside, .comments-section, .article-nav');
     });
+  }
+
+  // An h2 is a "part" when an h3 follows it before the next h2, i.e. it
+  // contains sections rather than being one. Mirrors the server-side TOC
+  // rule, so an article of flat h2s has no parts and numbers as before.
+  function isPart(list, i) {
+    if (list[i].tagName !== 'H2') return false;
+    var next = list[i + 1];
+    return !!next && next.tagName === 'H3';
   }
 
   var headings = collectHeadings();
@@ -44,10 +53,11 @@
       target: titleEl || document.body
     });
   }
-  headings.forEach(function (h) {
+  headings.forEach(function (h, i) {
     entries.push({
       label: h.textContent,
       key: h.id,
+      isPart: isPart(headings, i),
       getTop: function () { return h.getBoundingClientRect().top + window.scrollY - 24; },
       target: h
     });
@@ -103,7 +113,9 @@
   overlayList.className = 'toc-overlay-list';
   entries.forEach(function (entry) {
     var li = document.createElement('li');
-    li.className = 'toc-overlay-item' + (entry.isComments ? ' is-comments' : '');
+    li.className = 'toc-overlay-item'
+      + (entry.isComments ? ' is-comments' : '')
+      + (entry.isPart ? ' is-part' : '');
     var b = document.createElement('button');
     b.type = 'button';
     b.className = 'toc-overlay-link';

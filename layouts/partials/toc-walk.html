@@ -1,0 +1,20 @@
+{{/*
+  Depth-first walk of a .Fragments.Headings node list, flattening it into
+  an ordered list of TOC entries on the supplied scratch.
+
+  Hugo wraps the headings in a titleless root node, and puts any headings
+  that appear before the first deeper-level heading into their own
+  titleless wrapper, so nodes without a title are containers to descend
+  into rather than entries to emit.
+
+  A heading that contains other headings is a "part"; a leaf is a section.
+*/}}
+{{ $s := .s }}
+{{ range .nodes }}
+  {{ if .Title }}
+    {{ $s.Add "entries" (slice (dict "title" .Title "id" .ID "part" (gt (len .Headings) 0))) }}
+  {{ end }}
+  {{ with .Headings }}
+    {{ partial "toc-walk.html" (dict "nodes" . "s" $s) }}
+  {{ end }}
+{{ end }}
