@@ -1,28 +1,30 @@
 {{/*
   Formats list — the canonical "how do I read this" menu for a project.
   Deliberately plain: a heading and a list of links, arXiv-style.
-  PDF sizes are read from disk at build time so they never go stale.
+  Only the PDFs carry a note, and only their file size, read from disk at
+  build time so it never goes stale.
   Linkable as #formats (the article header's single button points here).
 */}}
 {{ $hasAny := or .Params.article (or .Params.pdf (or .Params.raw .Params.github)) }}
 {{ if $hasAny }}
+<hr class="formats-rule">
 <section class="formats" id="formats">
   <h2 class="formats-title">formats</h2>
   <ul class="formats-list">
     {{ with .Params.article }}
-    <li><a href="{{ . }}">read online</a> <span class="format-note">full interactive version</span></li>
+    <li><a href="{{ . }}">read online</a></li>
     {{ end }}
     {{ with .Params.pdf }}
-    <li><a href="{{ . }}" target="_blank" rel="noopener">pdf, light</a> <span class="format-note">print ready{{ with os.Stat (printf "static%s" .) }}, {{ printf "%.0f MB" (div (float .Size) 1048576.0) }}{{ end }}</span></li>
+    <li><a href="{{ . }}" target="_blank" rel="noopener">pdf, light</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.0f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</li>
     {{ end }}
     {{ with .Params.pdfdark }}
-    <li><a href="{{ . }}" target="_blank" rel="noopener">pdf, dark</a> <span class="format-note">dark background{{ with os.Stat (printf "static%s" .) }}, {{ printf "%.0f MB" (div (float .Size) 1048576.0) }}{{ end }}</span></li>
+    <li><a href="{{ . }}" target="_blank" rel="noopener">pdf, dark</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.0f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</li>
     {{ end }}
     {{ with .Params.raw }}
-    <li><a href="{{ . }}" target="_blank" rel="noopener">plain html</a> <span class="format-note">text only, no site chrome</span></li>
+    <li><a href="{{ . }}" target="_blank" rel="noopener">plain html</a></li>
     {{ end }}
     {{ with .Params.github }}
-    <li><a href="{{ . }}" target="_blank" rel="noopener">source</a> <span class="format-note">markdown and drawings, on github</span></li>
+    <li><a href="{{ . }}" target="_blank" rel="noopener">source</a></li>
     {{ end }}
   </ul>
 </section>

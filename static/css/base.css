@@ -1144,27 +1144,38 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
 }
 
 /* ── FORMATS BLOCK (project pages, linkable as #formats) ─────── */
+.formats-rule { margin: 40px 0 0; }
 .formats {
-  margin: 38px 0 8px;
+  margin: 26px 0 8px;
   scroll-margin-top: 28vh;
 }
 .formats-title {
-  font-size: 0.95rem;
-  color: var(--muted);
+  font-size: 1.15rem;
+  color: var(--fg);
   font-weight: 700;
-  margin: 0 0 8px;
+  margin: 0 0 14px;
 }
-.formats-list {
+/* beat the global `li { padding: 6px 0 }` that was spacing these out */
+.formats-list,
+body.page .formats-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.formats-list li {
-  padding: 2px 0;
-  font-size: 0.88rem;
-  line-height: 1.7;
+.formats-list li,
+body.page .formats-list li {
+  padding: 0;
+  margin: 0 0 9px;
+  line-height: 1.5;
+  font-size: 1rem;
 }
-.format-note { color: var(--muted); }
+.formats-list li:last-child { margin-bottom: 0; }
+.formats-list a { font-weight: 700; }
+.format-size {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-left: 4px;
+}
 
 /* ── PDF variant popover (light / dark choice) ───────────────── */
 .pdf-menu {
