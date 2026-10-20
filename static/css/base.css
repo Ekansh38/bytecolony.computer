@@ -1199,6 +1199,14 @@ textarea.cmt-input { resize: vertical; min-height: 80px; }
   line-height: 1.6;
 }
 .fmt-row:last-child { margin-bottom: 0; }
+/* the complete edition is the primary download, so it leads and is set
+   apart from the per-part group that follows */
+.fmt-row.is-complete .fmt-name { font-weight: 700; }
+.fmt-group-label {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin: 22px 0 11px;
+}
 .fmt-name {
   min-width: 22ch;
   color: var(--fg);

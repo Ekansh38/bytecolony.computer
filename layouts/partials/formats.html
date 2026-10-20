@@ -29,7 +29,7 @@
   <h3 class="formats-subtitle">pdf editions</h3>
   <div class="fmt-editions">
 
-    <div class="fmt-row">
+    <div class="fmt-row is-complete">
       <span class="fmt-name">complete</span>
       {{ with .Params.pdf }}
       <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">light</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
@@ -38,6 +38,10 @@
       <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">dark</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
       {{ end }}
     </div>
+
+    {{ with .Params.pdfparts }}
+    <div class="fmt-group-label">by part</div>
+    {{ end }}
 
     {{ range .Params.pdfparts }}
     <div class="fmt-row">

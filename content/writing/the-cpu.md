@@ -37,7 +37,7 @@ The key point is that nothing here is smart in isolation. A CPU is not one hard 
 
 We are going to try to understand this simple CPU. It is not a modern CPU with decades of optimization, but it has the same core functionality.
 
-### How to Read This Article
+### How to Read This
 
 - If a diagram is hard to understand, click it and step through each frame one by one using the arrow
   keys, with the provided descriptions. This only works if you are reading on my website.
@@ -156,7 +156,7 @@ Using these relays chained in clever ways, you can create every fundamental logi
 
 But before the next diagram, I am going to use one more new symbol: ground.
 
-For the purposes of this article, the ground symbol will simply refer to the common return point of the circuit, usually connected to the negative side of the battery.
+For our purposes here, the ground symbol will simply refer to the common return point of the circuit, usually connected to the negative side of the battery.
 
 Every point marked with the ground symbol is connected together, as if there were hidden wires joining them underneath the drawing. It is not a new component. It is just a less messy way to draw the return path of the circuit.
 
