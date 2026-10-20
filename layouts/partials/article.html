@@ -18,7 +18,15 @@
   <h1 class="project-title">{{ .Title }}</h1>
   {{ with .Params.subtitle }}<p class="article-subtitle">{{ . }}</p>{{ end }}
   <time class="article-date">{{ .Date.Format "January 2, 2006" }}</time>
-  {{ if or (.OutputFormats.Get "raw") .Params.pdf .Params.github }}
+  {{/* One button to the project page's formats block (the canonical menu).
+       Articles with no project fall back to the individual links. */}}
+  {{ $proj := "" }}
+  {{ with .Params.project }}{{ $proj = site.GetPage (printf "/projects/%s" .) }}{{ end }}
+  {{ if and $proj $proj.Params.article }}
+  <div class="article-formats" aria-label="other formats">
+    <a class="format-link" href="{{ $proj.RelPermalink }}#formats">formats</a>
+  </div>
+  {{ else if or (.OutputFormats.Get "raw") .Params.pdf .Params.github }}
   <div class="article-formats" aria-label="other formats">
     {{ with .OutputFormats.Get "raw" }}<a class="format-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">raw</a>{{ end }}
     {{ with .Params.pdf }}<a class="format-link pdf-theme-link" href="{{ . }}" data-pdf-light="{{ . }}"{{ with $.Params.pdfdark }} data-pdf-dark="{{ . }}"{{ end }} target="_blank" rel="noopener">pdf</a>{{ end }}

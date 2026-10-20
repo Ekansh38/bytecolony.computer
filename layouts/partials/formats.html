@@ -1,0 +1,50 @@
+{{/*
+  Formats block — the canonical "how do I read this" menu for a project.
+  Driven by frontmatter: article, pdf, pdfdark, raw, github.
+  PDF sizes are read from disk at build time so they never go stale.
+  Linkable as #formats (the article header's single button points here).
+*/}}
+{{ $hasAny := or .Params.article (or .Params.pdf (or .Params.raw .Params.github)) }}
+{{ if $hasAny }}
+<section class="formats" id="formats">
+  <h2 class="formats-title">formats</h2>
+  <dl class="formats-list">
+
+    {{ with .Params.article }}
+    <div class="format-row">
+      <dt><a href="{{ . }}">read online</a></dt>
+      <dd>the full version. interactive diagrams, and every animation can be stepped through frame by frame with an explanation for each one.</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.pdf }}
+    <div class="format-row">
+      <dt><a href="{{ . }}" target="_blank" rel="noopener">pdf, light</a></dt>
+      <dd>typeset for print and reading offline. animations appear as stills.{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.0f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.pdfdark }}
+    <div class="format-row">
+      <dt><a href="{{ . }}" target="_blank" rel="noopener">pdf, dark</a></dt>
+      <dd>same document on a dark background, easier on a screen.{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.0f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.raw }}
+    <div class="format-row">
+      <dt><a href="{{ . }}" target="_blank" rel="noopener">plain html</a></dt>
+      <dd>text and diagrams with no site around them. good for printing, archiving, or reader apps.</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.github }}
+    <div class="format-row">
+      <dt><a href="{{ . }}" target="_blank" rel="noopener">source</a></dt>
+      <dd>the markdown and the original drawing files, on github.</dd>
+    </div>
+    {{ end }}
+
+  </dl>
+</section>
+{{ end }}

@@ -7,19 +7,22 @@
 
 <div class="project-content">{{ .Content }}</div>
 
-{{ if or .Params.article .Params.pdf .Params.raw }}
+{{ $hasFormats := or .Params.article (or .Params.pdf .Params.raw) }}
+
+{{ with .Params.article }}
 <div class="format-buttons">
-  {{ with .Params.article }}<a class="format-btn primary" href="{{ . }}">read article</a>{{ end }}
-  {{ with .Params.pdf }}<a class="format-btn pdf-theme-link" href="{{ . }}" data-pdf-light="{{ . }}"{{ with $.Params.pdfdark }} data-pdf-dark="{{ . }}"{{ end }} target="_blank">pdf</a>{{ end }}
-  {{ with .Params.raw }}<a class="format-btn" href="{{ . }}" target="_blank">raw</a>{{ end }}
+  <a class="format-btn primary" href="{{ . }}">read article</a>
 </div>
 {{ end }}
 
 <div class="links">
   {{ with .Params.live }}<a href="{{ . }}" target="_blank">live site ↗</a>{{ end }}
-  {{ with .Params.github }}<a href="{{ . }}" target="_blank">github ↗</a>{{ end }}
+  {{/* when a formats block is shown, github lives in there as "source" */}}
+  {{ if not $hasFormats }}{{ with .Params.github }}<a href="{{ . }}" target="_blank">github ↗</a>{{ end }}{{ end }}
   {{ with .Params.devlog }}<a href="{{ . }}" target="_blank">dev log series ↗</a>{{ end }}
 </div>
+
+{{ if $hasFormats }}{{ partial "formats.html" . }}{{ end }}
 
 {{ $subprojects := where (.Site.GetPage "/projects").Sections "Params.parent" .Title }}
 {{ with $subprojects }}
