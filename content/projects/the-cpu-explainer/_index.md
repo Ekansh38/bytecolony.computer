@@ -1,5 +1,5 @@
 ---
-title: "The CPU Article"
+title: "The CPU Explainer"
 weight: 1
 layout: "list"
 summary: "A writeup of how a CPU works, from basic circuits to a simple CPU."
