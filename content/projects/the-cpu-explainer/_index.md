@@ -7,6 +7,7 @@ stack: "writing, diagrams, animation"
 article: "/writing/the-cpu/"
 pdf: "/assets/the-cpu-explainer-light.pdf"
 pdfdark: "/assets/the-cpu-explainer-dark.pdf"
+pdfprint: "/assets/the-cpu-explainer-print.pdf"
 raw: "/writing/the-cpu/raw.html"
 # Per-part PDF editions, listed under the complete edition in the formats block
 pdfparts:

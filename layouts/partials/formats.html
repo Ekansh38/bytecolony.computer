@@ -37,6 +37,10 @@
       {{ with .Params.pdfdark }}
       <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">dark</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
       {{ end }}
+      {{/* a third rendering of the same document, set on pure white for paper */}}
+      {{ with .Params.pdfprint }}
+      <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">print</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
+      {{ end }}
     </div>
 
     {{ with .Params.pdfparts }}
