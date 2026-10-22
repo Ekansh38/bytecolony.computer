@@ -35,7 +35,7 @@ The key point is that nothing here is smart in isolation. A CPU is not one hard 
 
 *Diagram 1.1. The whole CPU.*
 
-We are going to try to understand this simple CPU. It is not a modern CPU with decades of optimization, but it has the same core functionality.
+This probably looks like an overwhelming mess, but don't worry, that's normal. We are going to try to understand this simple CPU. It is not a modern CPU with decades of optimization, but it has the same core functionality.
 
 ### How to Read This
 
