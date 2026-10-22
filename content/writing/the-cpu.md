@@ -110,7 +110,7 @@ Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
 
 <a id="diagram-4-2"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/or-gate-logical/anim.webp" alt="The hand-switch version of OR" width="630" height="626"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,2,3,4,5,6" src="/assets/frames-gen/or-gate-logical/anim.webp" alt="The hand-switch version of OR" width="630" height="626"></div>
 
 *Diagram 4.2. The hand-switch version of OR.*
 
@@ -146,7 +146,7 @@ Now let's see how we can build an actual electrical AND gate that takes two inpu
 
 <a id="diagram-4-4"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-and-gate/anim.webp" alt="An AND gate" width="1920" height="1388"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,3,6,8,10" src="/assets/frames-gen/electronic-and-gate/anim.webp" alt="An AND gate" width="1920" height="1388"></div>
 
 *Diagram 4.4. An AND gate.*
 
@@ -176,7 +176,7 @@ Now here is the OR gate:
 
 <a id="diagram-4-6"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/electronic-or-gate/anim.webp" alt="An electronic OR gate" width="1493" height="1462"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,3,5,7" src="/assets/frames-gen/electronic-or-gate/anim.webp" alt="An electronic OR gate" width="1493" height="1462"></div>
 
 *Diagram 4.6. An electronic OR gate.*
 
@@ -308,7 +308,7 @@ Here are all the possible states we have with 3 wires:
 
 <a id="diagram-5-2"></a> 
 
-<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/3-states/anim.webp" alt="States with 3 wires" width="383" height="251"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" pdf-frames="1,2,3,4,5,6,7,8" src="/assets/frames-gen/3-states/anim.webp" alt="States with 3 wires" width="383" height="251"></div>
 
 *Diagram 5.2. States with 3 wires.*
 
@@ -375,7 +375,7 @@ We start at the rightmost column, do 5+8, get 13, and carry the 1. So we write 3
 
 <a id="diagram-6-2"></a> 
 
-<div class="svg-diagram small"><img loading="lazy" decoding="async" src="/assets/frames-gen/binary-addition/anim.webp" alt="Binary addition" width="439" height="291"></div>
+<div class="svg-diagram small"><img loading="lazy" decoding="async" pdf-frames="1,2,3,4,5,6" src="/assets/frames-gen/binary-addition/anim.webp" alt="Binary addition" width="439" height="291"></div>
 
 *Diagram 6.2. Binary addition.*
 
@@ -475,7 +475,7 @@ To add three bits, we use two half adders and an OR gate:
 
 <a id="diagram-6-8"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-adder/anim.webp" alt="A full adder" width="1554" height="393"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,2,3,4,5,6,7,8" src="/assets/frames-gen/full-adder/anim.webp" alt="A full adder" width="1554" height="393"></div>
 
 *Diagram 6.8. A full adder.*
 
@@ -523,7 +523,7 @@ Let's have a look at some example problems:
 
 <a id="diagram-6-12"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/8-bit-adder-examples/anim.webp" alt="Some examples on the adder" width="1618" height="812"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/8-bit-adder-example/anim.webp" alt="Some examples on the adder" width="1618" height="812"></div>
 
 *Diagram 6.12. Some examples on the adder.*
 
@@ -632,7 +632,7 @@ If we want the accumulator to work correctly, we need the enable wire to turn on
 
 <a id="diagram-7-3"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/d-latch-accumulator/anim.webp" alt="D latch accumulator" width="1802" height="1920"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,2,3,4,5,6,7" src="/assets/frames-gen/d-latch-accumulator/anim.webp" alt="D latch accumulator" width="1802" height="1920"></div>
 
 *Diagram 7.3. D latch accumulator.*
 
@@ -696,7 +696,7 @@ Now with this register, let's build a basic accumulator/adder circuit.
 
 <a id="diagram-7-9"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/full-accumulator/anim.webp" alt="Our full accumulator" width="1802" height="1920"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,2,3,4,5,6,7" src="/assets/frames-gen/full-accumulator/anim.webp" alt="Our full accumulator" width="1802" height="1920"></div>
 
 *Diagram 7.9. Our full accumulator.*
 
@@ -902,7 +902,7 @@ This diagram shows a few addresses as examples. Each address gets its own little
 
 <a id="diagram-9-3"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/cross-section/anim.webp" alt="Where the row and column meet" width="1175" height="1077"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,2,3,4,5,6" src="/assets/frames-gen/cross-section/anim.webp" alt="Where the row and column meet" width="1175" height="1077"></div>
 
 *Diagram 9.3. Where the row and column meet.*
 
@@ -999,7 +999,7 @@ We first put an address on the data bus and turn on `MAR_WRITE`. The `MAR` store
 
 <a id="diagram-9-10"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/mar-ram-demo/anim.webp" alt="How the MAR works" width="1920" height="1004"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,2,3,4,5,6,7" src="/assets/frames-gen/mar-ram-demo/anim.webp" alt="How the MAR works" width="1920" height="1004"></div>
 
 *Diagram 9.10. How the MAR works.*
 
