@@ -262,7 +262,7 @@ With our knowledge about logic gates, let's create the "should-I-wash-my-dog 500
 
 <a id="diagram-4-13"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v2/anim.webp" alt="The final dog washer circuit" width="1920" height="755"></div>
+<div class="svg-diagram big"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v2/anim.webp" alt="The final dog washer circuit" width="1920" height="755"></div>
 
 *Diagram 4.13. The final dog washer circuit.*
 
@@ -276,7 +276,7 @@ In modern computers, similar behavior is achieved by using transistors. If you w
 
 I don't know about you, but addition seems like a pretty logical next step to these logic gates. But not so fast.
 
-This is how circuits make yes/no decisions. Not by understanding what `MUDDY` means, but by wiring simple gates so the output turns on only for the input pattern we care about.
+This is how circuits make yes/no decisions. Not by understanding what `MUDDY` means, but by wiring simple gates so the output turns on only for the exact input we want.
 
 A wire is just a wire. We gave these wires meaning. We decided that one wire means `STINKY`, another wire means `MUDDY`, and another means `RAIN_SOON`.
 
