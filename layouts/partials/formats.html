@@ -5,15 +5,14 @@
   type. Each row is one edition: the variant name is the link, and the
   size sits in a column beside it so the whole set scans vertically.
 
-  The print edition leads its group and carries a note, because it is
-  the recommended way to read the whole thing away from the site.
+  The print edition is listed first, which is enough to mark it as the
+  one to reach for away from the site.
   Sizes are read from disk at build time so they never go stale.
 
   Linkable as #formats (the article header's single button points here).
 */}}
 {{ $pdfs := slice }}
-{{ with .Params.pdfprint }}{{ $pdfs = $pdfs | append (dict "label" "print" "url" . "primary" true
-     "note" "Plain white background, laid out for paper. The best way to read the whole thing away from the site, on screen or printed.") }}{{ end }}
+{{ with .Params.pdfprint }}{{ $pdfs = $pdfs | append (dict "label" "print" "url" .) }}{{ end }}
 {{ with .Params.pdf }}{{ $pdfs = $pdfs | append (dict "label" "light" "url" .) }}{{ end }}
 {{ with .Params.pdfdark }}{{ $pdfs = $pdfs | append (dict "label" "dark" "url" .) }}{{ end }}
 
@@ -42,12 +41,10 @@
   <h3 class="formats-subtitle">pdf</h3>
   <div class="fmt-editions">
     {{ range . }}
-    <div class="fmt-row{{ if .primary }} is-primary{{ end }}">
+    <div class="fmt-row">
       <span class="fmt-name"><a href="{{ .url }}" target="_blank" rel="noopener">{{ .label }}</a></span>
       {{ with os.Stat (printf "static%s" .url) }}<span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}
-      {{ if .primary }}<span class="fmt-tag">recommended</span>{{ end }}
     </div>
-    {{ with .note }}<p class="fmt-note">{{ . }}</p>{{ end }}
     {{ end }}
   </div>
   {{ end }}
