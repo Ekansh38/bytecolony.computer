@@ -1,0 +1,43 @@
+# FAQ shown at the end of the CPU article, and emitted as FAQPage JSON-LD.
+# Lives here rather than in article.md so it survives every resync and stays
+# out of the PDF editions. Edit freely: no rebuild of anything else needed.
+- q: "How does a CPU work?"
+  a: >-
+    The CPU follows a simple cycle, first it fetches an instruction from memory,
+    decodes what it means, and executes it. Then it moves onto the next
+    instruction. All of the parts of the CPU are built with logic gates.
+
+- q: "What is a logic gate?"
+  a: >-
+    A logic gate is a circuit, usually made with transistors but in the past also
+    made with relays. A logic gate takes one or more inputs in the form of a wire,
+    either on or off, and outputs a response, either on or off. For example, an AND
+    gate only outputs on if both of its inputs are also on.
+
+- q: "How does a computer store data?"
+  a: >-
+    By feeding a circuit's output back into its own input so it holds its own state.
+    Two cross-connected gates will stay in whatever state they were last put into,
+    with no outside power needed to keep them there. You can use millions of those
+    little circuits to create RAM.
+
+- q: "What is a common bus in a CPU?"
+  a: >-
+    A bus is a shared bundle of wires every component connects to, instead of every
+    component having its own private wires to every other. Only one component is
+    allowed to drive the bus at a time, which is what tri-state buffers are for.
+
+- q: "What does the ALU do in a CPU?"
+  a: >-
+    It takes in two numbers, and a code which tells it what to do, then based on that
+    code it does some calculation, addition, and nowadays even division,
+    multiplication and more. It can also do logical operations. The ALU built in this
+    article keeps it simple with four: ADD, AND, OR and XOR. It can also turn on flags
+    that tell us little facts about those numbers, like whether the result is 0,
+    whether the inputs are equal in value, or whether an addition spilled past 8 bits.
+
+- q: "Do I need to know electronics to read this?"
+  a: >-
+    No. It starts with a battery, a switch and a light bulb, and every idea is built
+    from the one before it. No prior electronics, maths or programming knowledge is
+    assumed.

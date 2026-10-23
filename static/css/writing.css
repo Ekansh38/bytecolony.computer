@@ -255,3 +255,38 @@ body.page.writing main ol { margin-bottom: 1.3em; }
     line-height: 1.7;
   }
 }
+
+/* ── FAQ block (end of article) ──────────────────────────────── */
+body.page.writing .article-faq { margin: 0 0 48px; }
+body.page.writing .article-faq .faq-rule {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0 0 28px;
+}
+body.page.writing .article-faq .faq-heading {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  margin: 0 0 24px;
+}
+body.page.writing .faq-list { margin: 0; }
+body.page.writing .faq-item { margin-bottom: 26px; }
+body.page.writing .faq-item:last-child { margin-bottom: 0; }
+body.page.writing .faq-q {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--fg);
+  margin: 0 0 7px;
+}
+body.page.writing .faq-a {
+  margin: 0;
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: color-mix(in srgb, var(--fg) 88%, transparent);
+  max-width: 78ch;
+}
+@media (max-width: 700px) {
+  body.page.writing .article-faq .faq-heading { font-size: 1.4rem; }
+  body.page.writing .faq-a { font-size: 16px; }
+}

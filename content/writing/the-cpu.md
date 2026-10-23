@@ -1,11 +1,13 @@
 ---
 title: "The CPU: A very tall pile of simple"
+subtitle: "How a computer works from the ground up."
 date: 2026-10-20
 project: "the-cpu-explainer"
 description: "How a computer works from the ground up, starting with circuits. Begin with a light bulb and a switch, then build through logic gates, binary addition, flip-flops, memory, buses, the ALU and the control unit to a simple working CPU. Animated diagrams you can step through frame by frame."
 about: ["Central processing unit", "Computer architecture", "Logic gate", "Digital electronics"]
 teaches: ["How logic gates are built from switches and relays", "How binary addition works", "How a bit is stored", "How RAM is addressed", "How a control unit decodes instructions"]
 readingTime: 60
+faq: "cpu"
 pdf: /assets/the-cpu-explainer-light.pdf
 pdfdark: /assets/the-cpu-explainer-dark.pdf
 github: https://github.com/Ekansh38/the-cpu-explainer/

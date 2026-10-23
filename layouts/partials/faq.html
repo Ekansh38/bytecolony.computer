@@ -1,0 +1,33 @@
+{{/*
+  FAQ block, shown after the article and emitted as FAQPage JSON-LD.
+
+  Content comes from data/faq/<name>.yaml, selected by a `faq:` frontmatter
+  key. Keeping it in a data file means it survives every article resync and
+  never reaches the PDF editions, where an FAQ after the conclusion would
+  read oddly.
+*/}}
+{{/* pages without a `faq:` key simply render nothing */}}
+{{ $items := slice }}
+{{ with .Params.faq }}{{ $items = index site.Data.faq . }}{{ end }}
+{{ with $items }}
+<section class="article-faq" id="faq" aria-labelledby="faq-heading">
+  <hr class="faq-rule">
+  <h2 class="faq-heading" id="faq-heading">Common questions</h2>
+  <dl class="faq-list">
+    {{ range . }}
+    <div class="faq-item">
+      <dt class="faq-q">{{ .q }}</dt>
+      <dd class="faq-a">{{ .a }}</dd>
+    </div>
+    {{ end }}
+  </dl>
+</section>
+{{ $mainEntity := slice }}
+{{ range . }}
+  {{ $mainEntity = $mainEntity | append (dict
+      "@type" "Question"
+      "name" .q
+      "acceptedAnswer" (dict "@type" "Answer" "text" .a)) }}
+{{ end }}
+<script type="application/ld+json">{{ (dict "@context" "https://schema.org" "@type" "FAQPage" "mainEntity" $mainEntity) | jsonify | safeJS }}</script>
+{{ end }}
