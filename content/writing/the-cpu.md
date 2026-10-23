@@ -250,7 +250,7 @@ Again this animation doesn't cover all possible states.
 
 Keep in mind these [electromagnetic relays](#diagram-4-3) we used in the examples are quite big and slow.  Relays aren't the only solution. They are simply one of the early and intuitive methods to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) actually used these types of relays.
 
-In modern computers, similar behavior is achieved by using transistors. If you want to learn more about transistor based logic gates: [visit this site](https://www.electronics-tutorials.ws/logic/logic-gates-using-transistors.html).
+In modern computers, similar behavior is achieved by using transistors.
 
 I don't know about you, but addition seems like a pretty logical next step to these logic gates. But not so fast.
 
@@ -567,8 +567,6 @@ When the enable wire turns on, `Data` gets stored in `Q`. Or in other words, whe
 This type of latch is called a D latch, D meaning data. It can be made using the SR latch and a few extra logic gates.
 
 It basically checks: if `D` is true and `E` is true, `SET` is true, and if `D` is false and `E` is true, `RESET` is true. That's it, so let's not worry about the exact implementation.
-
-If you really want to know how it works, have a look at [this site](https://www.build-electronic-circuits.com/d-latch/).
 
 <a id="diagram-7-2"></a> 
 
