@@ -37,7 +37,9 @@
 
 {{ partial "toc.html" . }}
 
-{{ with .Params.description }}
+{{/* `description` is meta only (search results, AI, schema). A visible
+     standfirst comes from `abstract`, so setting one never forces the other. */}}
+{{ with .Params.abstract }}
 <p class="article-abstract">{{ . }}</p>
 {{ end }}
 
