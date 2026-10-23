@@ -138,7 +138,7 @@ Now let's see how we can build an actual electrical AND gate that takes two inpu
 
 The output circuit has two breaks in it, one controlled by each input relay. Only when both inputs are on do both relays close, completing the output loop. Using these relays chained in clever ways, you can create every fundamental logic gate, such as the OR gate.
 
-But before the next diagram, I am going to use one more new symbol: ground.  For our purposes here, the ground symbol will simply refer to the common return point of the circuit, usually connected to the negative side of the battery.
+But before the next diagram, I am going to use one more new symbol: ground. For our purposes here, the ground symbol will simply refer to the common return point of the circuit, usually connected to the negative side of the battery.
 
 Every point marked with the ground symbol is connected together, as if there were hidden wires joining them underneath the drawing. It is not a new component. It is just a less messy way to draw the return path of the circuit. The circuits are still loops. I am just not explicitly drawing the return wire anymore.
 
@@ -248,7 +248,7 @@ With our knowledge about logic gates, let's create the "should-I-wash-my-dog 500
 
 Again this animation doesn't cover all possible states.
 
-Keep in mind these [electromagnetic relays](#diagram-4-3) we used in the examples are quite big and slow.  Relays aren't the only solution. They are simply one of the early and intuitive methods to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) actually used these types of relays.
+Keep in mind these [electromagnetic relays](#diagram-4-3) we used in the examples are quite big and slow. Relays aren't the only solution. They are simply one of the early and intuitive methods to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) actually used these types of relays.
 
 In modern computers, similar behavior is achieved by using transistors.
 
@@ -802,7 +802,7 @@ Now let's think about exactly what we would want this `RAM` chip to do.
 
 To be clear, `WRITE` and `OUT` are control signals, so just 1 input wire each.
 
-For this demo `RAM`, `address` is only 4 input wires. `data in` and `data out` carry bytes and are both connected directly to the common bus.  This only works if no other part is driving the bus when `OUT` is enabled.
+For this demo `RAM`, `address` is only 4 input wires. `data in` and `data out` carry bytes and are both connected directly to the common bus. This only works if no other part is driving the bus when `OUT` is enabled.
 
 So we are going to build a minuscule 16-byte `RAM`: 16 addresses, with each address storing one byte. This design can be scaled up easily. Our address will be 4 bits long, because `2^4` is 16.
 

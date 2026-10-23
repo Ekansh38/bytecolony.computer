@@ -1,14 +1,27 @@
 {{/*
   Formats list — the canonical "how do I read this" menu for a project.
 
-  Plain links for the web formats, then a PDF editions table: one row per
-  edition (complete, then each part), each offering a light and a dark
-  file with its size, then the epub. Sizes are read from disk at build
-  time so they never go stale.
+  Plain links for the web formats, then the downloads, grouped by file
+  type. Each row is one edition: the variant name is the link, and the
+  size sits in a column beside it so the whole set scans vertically.
+
+  The print edition leads its group and carries a note, because it is
+  the recommended way to read the whole thing away from the site.
+  Sizes are read from disk at build time so they never go stale.
 
   Linkable as #formats (the article header's single button points here).
 */}}
-{{ $hasAny := or .Params.article (or .Params.pdf (or .Params.epub (or .Params.raw .Params.github))) }}
+{{ $pdfs := slice }}
+{{ with .Params.pdfprint }}{{ $pdfs = $pdfs | append (dict "label" "print" "url" . "primary" true
+     "note" "Plain white background, laid out for paper. The best way to read the whole thing away from the site, on screen or printed.") }}{{ end }}
+{{ with .Params.pdf }}{{ $pdfs = $pdfs | append (dict "label" "light" "url" .) }}{{ end }}
+{{ with .Params.pdfdark }}{{ $pdfs = $pdfs | append (dict "label" "dark" "url" .) }}{{ end }}
+
+{{ $epubs := slice }}
+{{ with .Params.epub }}{{ $epubs = $epubs | append (dict "label" "light" "url" .) }}{{ end }}
+{{ with .Params.epubdark }}{{ $epubs = $epubs | append (dict "label" "dark" "url" .) }}{{ end }}
+
+{{ $hasAny := or .Params.article (or $pdfs (or $epubs (or .Params.raw .Params.github))) }}
 {{ if $hasAny }}
 <section class="formats" id="formats">
   <h2 class="formats-title">formats</h2>
@@ -25,52 +38,29 @@
     {{ end }}
   </ul>
 
-  {{ if .Params.pdf }}
-  <h3 class="formats-subtitle">pdf editions</h3>
+  {{ with $pdfs }}
+  <h3 class="formats-subtitle">pdf</h3>
   <div class="fmt-editions">
-
-    <div class="fmt-row is-complete">
-      <span class="fmt-name">complete</span>
-      {{ with .Params.pdf }}
-      <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">light</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
-      {{ end }}
-      {{ with .Params.pdfdark }}
-      <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">dark</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
-      {{ end }}
-      {{/* a third rendering of the same document, set on pure white for paper */}}
-      {{ with .Params.pdfprint }}
-      <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">print</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
-      {{ end }}
+    {{ range . }}
+    <div class="fmt-row{{ if .primary }} is-primary{{ end }}">
+      <span class="fmt-name"><a href="{{ .url }}" target="_blank" rel="noopener">{{ .label }}</a></span>
+      {{ with os.Stat (printf "static%s" .url) }}<span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}
+      {{ if .primary }}<span class="fmt-tag">recommended</span>{{ end }}
     </div>
-
-    {{ with .Params.pdfparts }}
-    <div class="fmt-group-label">by part</div>
+    {{ with .note }}<p class="fmt-note">{{ . }}</p>{{ end }}
     {{ end }}
-
-    {{ range .Params.pdfparts }}
-    <div class="fmt-row">
-      <span class="fmt-name">{{ .name }}</span>
-      {{ with .light }}
-      <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">light</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
-      {{ end }}
-      {{ with .dark }}
-      <span class="fmt-file"><a href="{{ . }}" target="_blank" rel="noopener">dark</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
-      {{ end }}
-    </div>
-    {{ end }}
-
   </div>
   {{ end }}
 
-  {{/* epub reflows to the reader's device, so there is no light/dark or
-       per-part split to offer: one file, listed in its own group. */}}
-  {{ with .Params.epub }}
-  <h3 class="formats-subtitle">ebook</h3>
+  {{ with $epubs }}
+  <h3 class="formats-subtitle">epub</h3>
   <div class="fmt-editions">
-    <div class="fmt-row is-complete">
-      <span class="fmt-name">complete</span>
-      <span class="fmt-file"><a href="{{ . }}">epub</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
+    {{ range . }}
+    <div class="fmt-row">
+      <span class="fmt-name"><a href="{{ .url }}">{{ .label }}</a></span>
+      {{ with os.Stat (printf "static%s" .url) }}<span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}
     </div>
+    {{ end }}
   </div>
   {{ end }}
 </section>
