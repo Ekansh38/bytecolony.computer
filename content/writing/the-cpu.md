@@ -2,6 +2,10 @@
 title: "The CPU: A very tall pile of simple"
 date: 2026-10-20
 project: "the-cpu-explainer"
+description: "How a computer works from the ground up, starting with circuits. Begin with a light bulb and a switch, then build through logic gates, binary addition, flip-flops, memory, buses, the ALU and the control unit to a simple working CPU. Animated diagrams you can step through frame by frame."
+about: ["Central processing unit", "Computer architecture", "Logic gate", "Digital electronics"]
+teaches: ["How logic gates are built from switches and relays", "How binary addition works", "How a bit is stored", "How RAM is addressed", "How a control unit decodes instructions"]
+readingTime: 60
 pdf: /assets/the-cpu-explainer-light.pdf
 pdfdark: /assets/the-cpu-explainer-dark.pdf
 github: https://github.com/Ekansh38/the-cpu-explainer/
@@ -25,7 +29,7 @@ The key point is that nothing here is smart in isolation. A CPU is not one hard 
 
 <a id="diagram-1-1"></a> 
 
-{{< svg "final/big-picture-cpu" "big" >}}
+{{< svg "final/big-picture-cpu" "big" "The whole CPU" >}}
 
 *Diagram 1.1. The whole CPU.*
 
@@ -142,7 +146,7 @@ This is how the ground symbol looks:
 
 <a id="diagram-4-5"></a> 
 
-{{< svg "final/ground-symbol" "small" >}}
+{{< svg "final/ground-symbol" "small" "The ground symbol" >}}
 
 *Diagram 4.5. The ground symbol.*
 
@@ -164,6 +168,8 @@ That is an OR gate using relays. Now here is the full dog washer circuit up to t
 
 The animation does not show every possible combination of switches, only a handful. But in a nutshell, if `MUDDY` or `STINKY` is on, and `OLD_WASH` is also on, the bulb turns on.
 
+Notice the OR gate's bulb is gone. Its output wire feeds the next relay's coil directly. I'll show exactly how a gate drives a wire like that in a bit.
+
 Okay, now let's introduce one last input, or "sensor": `RAIN_SOON`, whether it is predicted to rain soon. The rules of the circuit change once again:
 
 `((MUDDY OR STINKY) AND OLD_WASH) AND NOT RAIN_SOON`
@@ -180,7 +186,7 @@ Let's focus on this NOT for a second. NOT just inverts a signal: if it receives 
 
 *Diagram 4.8. A NOT gate.*
 
-Now let's clean up some of our understanding of circuits before we move on. We have been showing our outputs as a light bulb. For a bulb to be on, it needs to be connected to `+` and `-`, one on each side. That difference in voltage allows current to flow, turning on the bulb.
+Remember the OR output feeding that relay in the dog washer? Here is what is actually going on there. We have been showing our outputs as a light bulb. For a bulb to be on, it needs to be connected to `+` and `-`, one on each side. That difference in voltage allows current to flow, turning on the bulb.
 
 But a bulb is not always what we want. From now on, our gates' outputs will mostly feed other gates' inputs, so the output needs to be a wire, not a bulb. We can't just remove the bulb though; `+` connected directly to `-` would lead to a short-circuit. So what we do is either drive the wire up or down, so it is connected to either `+` or `-`. All of our relay gates can be simply adapted to do this.
 
@@ -200,7 +206,7 @@ Now before we look at the completed circuit, let's learn some basic logic gate s
 
 <a id="diagram-4-10"></a> 
 
-{{< svg "final/and-gate" >}}
+{{< svg "final/and-gate" "" "An AND gate" >}}
 
 *Diagram 4.10. An AND gate.*
 
@@ -210,7 +216,7 @@ An OR gate is drawn like this:
 
 <a id="diagram-4-11"></a> 
 
-{{< svg "final/or-gate" >}}
+{{< svg "final/or-gate" "" "An OR gate" >}}
 
 *Diagram 4.11. An OR gate.*
 
@@ -222,7 +228,7 @@ Here are three more useful gate symbols:
 
 <a id="diagram-4-12"></a> 
 
-{{< svg "final/not-nand-nor-gates" >}}
+{{< svg "final/not-nand-nor-gates" "" "NOT, NAND, NOR gates" >}}
 
 *Diagram 4.12. NOT, NAND, NOR gates.*
 
@@ -262,7 +268,7 @@ A group of 8 bits is called a byte. With 8 bits, there are `2^8`, or 256, possib
 
 <a id="diagram-5-1"></a> 
 
-{{< svg "final/0-s-and-1-s" "small" >}}
+{{< svg "final/0-s-and-1-s" "small" "One wire can represent two states: `0` or `1`" >}}
 
 *Diagram 5.1. One wire can represent two states: `0` or `1`.*
 
@@ -286,7 +292,7 @@ Not exactly. To understand this, let's take a quick detour to decimal, a.k.a. ba
 
 <a id="diagram-5-3"></a> 
 
-{{< svg "final/decimal" >}}
+{{< svg "final/decimal" "" "The decimal system" >}}
 
 *Diagram 5.3. The decimal system.*
 
@@ -296,7 +302,7 @@ This exact same place value logic can apply to the binary system too. We have tw
 
 <a id="diagram-5-4"></a> 
 
-{{< svg "final/binary" >}}
+{{< svg "final/binary" "" "The binary system" >}}
 
 *Diagram 5.4. The binary system.*
 
@@ -315,7 +321,7 @@ Let's walk through `1101` together.
 
 <a id="diagram-5-5"></a> 
 
-{{< svg "final/binary-example" >}}
+{{< svg "final/binary-example" "" "An example in binary" >}}
 
 *Diagram 5.5. An example in binary.*
 
@@ -323,7 +329,7 @@ So now that we can represent numbers with wires, how can we add numbers together
 
 <a id="diagram-5-6"></a> 
 
-{{< svg "final/add-magic-box" >}}
+{{< svg "final/add-magic-box" "" "Addition?" >}}
 
 *Diagram 5.6. Addition?*
 
@@ -393,7 +399,7 @@ Here is how an XOR gate looks:
 
 <a id="diagram-6-4"></a> 
 
-{{< svg "final/xor-gate" >}}
+{{< svg "final/xor-gate" "" "An XOR gate" >}}
 
 *Diagram 6.4. An XOR gate.*
 
@@ -413,7 +419,7 @@ Now let's package up our half adder into a little box. From now on, I will call 
 
 <a id="diagram-6-6"></a> 
 
-{{< svg "final/half-adder-box" >}}
+{{< svg "final/half-adder-box" "" "A half adder chip" >}}
 
 *Diagram 6.6. A half adder chip.*
 
@@ -423,7 +429,7 @@ So if we have a number like this:
 
 <a id="diagram-6-7"></a> 
 
-{{< svg "final/carry-in-issue" >}}
+{{< svg "final/carry-in-issue" "" "The next column has to add two bits plus a carry-in" >}}
 
 *Diagram 6.7. The next column has to add two bits plus a carry-in.*
 
@@ -449,7 +455,7 @@ Let's again package this up into a chip:
 
 <a id="diagram-6-9"></a> 
 
-{{< svg "final/full-adder-box" >}}
+{{< svg "final/full-adder-box" "" "A full adder chip" >}}
 
 *Diagram 6.9. A full adder chip.*
 
@@ -459,7 +465,7 @@ Now we can chain full adders together to add two 8-bit numbers. Since 8 bits mak
 
 <a id="diagram-6-10"></a> 
 
-{{< svg "final/8-bit-adder" >}}
+{{< svg "final/8-bit-adder" "" "An 8-bit adder" >}}
 
 *Diagram 6.10. An 8-bit adder.*
 
@@ -471,7 +477,7 @@ Now let's package this up into a chip once again:
 
 <a id="diagram-6-11"></a> 
 
-{{< svg "final/8-bit-adder-box" >}}
+{{< svg "final/8-bit-adder-box" "" "An 8-bit adder chip" >}}
 
 *Diagram 6.11. An 8-bit adder chip.*
 
@@ -566,7 +572,7 @@ If you really want to know how it works, have a look at [this site](https://www.
 
 <a id="diagram-7-2"></a> 
 
-{{< svg "final/d-latch" >}}
+{{< svg "final/d-latch" "" "D latch" >}}
 
 *Diagram 7.2. D latch.*
 
@@ -588,7 +594,7 @@ But what if we had a storage circuit that only copied `D` into `Q` at the exact 
 
 <a id="diagram-7-4"></a> 
 
-{{< svg "final/edge-graph" >}}
+{{< svg "final/edge-graph" "" "The rising edge of a signal" >}}
 
 *Diagram 7.4. The rising edge of a signal.*
 
@@ -602,7 +608,7 @@ The circuit that does this is called a D-type edge-triggered flip-flop. This mig
 
 <a id="diagram-7-5"></a> 
 
-{{< svg "final/d-type-edge-triggered-flip-flop" >}}
+{{< svg "final/d-type-edge-triggered-flip-flop" "" "A flip-flop" >}}
 
 *Diagram 7.5. A flip-flop.*
 
@@ -616,7 +622,7 @@ Here is one storage cell, which is just the flip-flop we showed above:
 
 <a id="diagram-7-6"></a> 
 
-{{< svg "final/flip-flop-storage-cell" >}}
+{{< svg "final/flip-flop-storage-cell" "" "A one-bit storage cell" >}}
 
 *Diagram 7.6. A one-bit storage cell.*
 
@@ -624,7 +630,7 @@ If we connect 8 of them side by side, we get one byte of storage:
 
 <a id="diagram-7-7"></a> 
 
-{{< svg "final/8-storage-cells" >}}
+{{< svg "final/8-storage-cells" "" "Eight storage cells" >}}
 
 *Diagram 7.7. Eight storage cells.*
 
@@ -632,7 +638,7 @@ And we can put all that into a chip called an 8-bit register:
 
 <a id="diagram-7-8"></a> 
 
-{{< svg "final/8-bit-register" >}}
+{{< svg "final/8-bit-register" "" "An 8-bit register" >}}
 
 *Diagram 7.8. An 8-bit register.*
 
@@ -654,7 +660,7 @@ Here is the basic concept of a clock:
 
 <a id="diagram-7-10"></a> 
 
-{{< svg "final/clock-signal" >}}
+{{< svg "final/clock-signal" "" "A clock signal" >}}
 
 *Diagram 7.10. A clock signal.*
 
@@ -678,7 +684,7 @@ To show the state of the wires, I can write a number in the arrow; the number 0 
 
 <a id="diagram-8-1"></a> 
 
-{{< svg "final/common-bus-example" >}}
+{{< svg "final/common-bus-example" "" "Two registers sharing a bus" >}}
 
 *Diagram 8.1. Two registers sharing a bus.*
 
@@ -738,7 +744,7 @@ This is the logic gate diagram for a tri-state buffer:
 
 <a id="diagram-8-3"></a> 
 
-{{< svg "final/tri-state-buffer" >}}
+{{< svg "final/tri-state-buffer" "" "A tri-state buffer logic gate" >}}
 
 *Diagram 8.3. A tri-state buffer logic gate.*
 
@@ -748,7 +754,7 @@ So we can make a new type of register, one with `WRITE`, `OUT`, `data`, and a `Q
 
 <a id="diagram-8-4"></a> 
 
-{{< svg "final/new-register-internals" >}}
+{{< svg "final/new-register-internals" "" "Our register with an OUT input" >}}
 
 *Diagram 8.4. Our register with an OUT input.*
 
@@ -780,7 +786,7 @@ We want to build a system that organizes data into a simple structure.
 
 <a id="diagram-9-1"></a> 
 
-{{< svg "final/cabinet" >}}
+{{< svg "final/cabinet" "" "Our data structure" >}}
 
 *Diagram 9.1. Our data structure.*
 
@@ -859,7 +865,7 @@ In this diagram, blue lines are 8-bit data buses. `OUT` is yellow, and `WRITE` i
 
 <a id="diagram-9-5"></a> 
 
-{{< svg "final/zoomed-out-ram" "big" >}}
+{{< svg "final/zoomed-out-ram" "big" "A zoomed out RAM diagram" >}}
 
 *Diagram 9.5. A zoomed out RAM diagram.*
 
@@ -871,7 +877,7 @@ Let's look at one cell more closely:
 
 <a id="diagram-9-6"></a> 
 
-{{< svg "final/zoomed-in-ram" >}}
+{{< svg "final/zoomed-in-ram" "" "A zoomed in RAM cell diagram" >}}
 
 *Diagram 9.6. A zoomed in RAM cell diagram.*
 
@@ -883,7 +889,7 @@ So yea, both AND gates take in 3 inputs, if you are wondering how that works, ju
 
 <a id="diagram-9-7"></a> 
 
-{{< svg "final/three-input-and" >}}
+{{< svg "final/three-input-and" "" "A three input AND gate" >}}
 
 *Diagram 9.7. A three input AND gate.*
 
@@ -891,7 +897,7 @@ So now that we have built `RAM`, let's pretend that instead of 16 registers, we 
 
 <a id="diagram-9-8"></a> 
 
-{{< svg "final/ram-interface" >}}
+{{< svg "final/ram-interface" "" "Our RAM chip" >}}
 
 *Diagram 9.8. Our RAM chip.*
 
@@ -905,7 +911,7 @@ So from now on, instead of drawing registers connected to a common bus [like thi
 
 <a id="diagram-9-9"></a> 
 
-{{< svg "final/io-registers" >}}
+{{< svg "final/io-registers" "" "I/O Registers" >}}
 
 *Diagram 9.9. I/O Registers.*
 
@@ -937,7 +943,7 @@ Imagine a chip where we could input two numbers, an operation, and output a resu
 
 <a id="diagram-10-1"></a> 
 
-{{< svg "final/alu-interface" >}}
+{{< svg "final/alu-interface" "" "The `ALU` chip" >}}
 
 *Diagram 10.1. The `ALU` chip.*
 
@@ -970,7 +976,7 @@ Also, you'll see me feeding two buses into a single logic gate. "How does that w
 
 <a id="diagram-10-2"></a> 
 
-{{< svg "final/alu-internals" "big" >}}
+{{< svg "final/alu-internals" "big" "`ALU` internals" >}}
 
 *Diagram 10.2. `ALU` internals.*
 
@@ -1006,7 +1012,7 @@ Here is a big picture diagram of the whole CPU.
 
 <a id="diagram-11-1"></a> 
 
-{{< svg "final/big-picture-cpu" "big" >}}
+{{< svg "final/big-picture-cpu" "big" "The whole CPU" >}}
 
 *Diagram 11.1. The whole CPU.*
 
@@ -1205,7 +1211,7 @@ The best approach to this is just taking our clock signal and flipping it:
 
 <a id="diagram-13-2"></a> 
 
-{{< svg "final/timing-diagram" "big" >}}
+{{< svg "final/timing-diagram" "big" "Micro-step timing diagram" >}}
 
 *Diagram 13.2. Micro-step timing diagram.*
 
@@ -1236,7 +1242,7 @@ And notice, these 2 micro-steps are exactly the same for every single instructio
 
 <a id="diagram-13-3"></a> 
 
-{{< svg "final/cu-internals-one" "big" >}}
+{{< svg "final/cu-internals-one" "big" "The first few micro-steps" >}}
 
 *Diagram 13.3. The first few micro-steps.*
 
@@ -1272,7 +1278,7 @@ Feel free to try and step through this diagram, or don't, it's a giant mess:
 
 <a id="diagram-13-4"></a> 
 
-{{< svg "final/cu-internals-two" "big" >}}
+{{< svg "final/cu-internals-two" "big" "All of the 2-byte instructions" >}}
 
 *Diagram 13.4. All of the 2-byte instructions.*
 
@@ -1315,7 +1321,7 @@ Quite simple:
 
 <a id="diagram-13-6"></a> 
 
-{{< svg "final/cu-internals-movs" "big" >}}
+{{< svg "final/cu-internals-movs" "big" "The MOV instructions" >}}
 
 *Diagram 13.6. The MOV instructions.*
 
@@ -1345,7 +1351,7 @@ So here we are:
 
 <a id="diagram-13-7"></a> 
 
-{{< svg "final/cu-internals-alu" "big" >}}
+{{< svg "final/cu-internals-alu" "big" "The ALU instructions" >}}
 
 *Diagram 13.7. The ALU instructions.*
 
@@ -1357,7 +1363,7 @@ One last thing. The `HALT` instruction, this instruction just stops the clock. T
 
 <a id="diagram-13-8"></a> 
 
-{{< svg "final/cu-internals-halt" "big" >}}
+{{< svg "final/cu-internals-halt" "big" "The HALT instruction" >}}
 
 *Diagram 13.8. The `HALT` instruction freezing the computer.*
 
@@ -1375,7 +1381,7 @@ Here is how the `HALT` and `TAKEOVER` wiring would look in the `CU`:
 
 <a id="diagram-13-9"></a> 
 
-{{< svg "final/cu-internals-halt-takeover" "big" >}}
+{{< svg "final/cu-internals-halt-takeover" "big" "The HALT and TAKEOVER wiring" >}}
 
 *Diagram 13.9. The `HALT` and `TAKEOVER` wiring.*
 

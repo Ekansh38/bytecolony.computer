@@ -1,0 +1,34 @@
+# ByteColony
+
+> Personal site of Ekansh Goenka (ByteColony). Long-form technical writing
+> about how computers work at a low level, plus projects, tools and games.
+
+## Main work
+
+- [The CPU: A very tall pile of simple](https://bytecolony.computer/writing/the-cpu/):
+  How a computer works from the ground up, starting with circuits. Builds from a
+  light bulb and a switch through logic gates, binary addition, flip-flops,
+  memory, buses, the ALU and the control unit to a simple working CPU.
+  Roughly an hour to read. Around 16,000 words with 70+ hand-drawn diagrams,
+  many animated and steppable frame by frame.
+  Plain-text version: https://bytecolony.computer/writing/the-cpu/raw.html
+  PDF editions: https://bytecolony.computer/projects/the-cpu-explainer/#formats
+
+- [AI and the 13-Year-Old Engineer](https://bytecolony.computer/writing/ai-and-the-13-year-old-engineer/):
+  Essay on learning to program while AI coding tools exist, and what is lost
+  by skipping the part where you write the code yourself.
+  Plain-text version: https://bytecolony.computer/writing/ai-and-the-13-year-old-engineer/raw.html
+
+## Notes for machine readers
+
+- Every article has a chrome-free plain-HTML version at `<article-url>raw.html`.
+  Prefer it: same text, no navigation, no scripts, no styling.
+- Diagrams are injected client-side. If you do not execute JavaScript, read the
+  `<noscript>` fallback images, which carry descriptive alt text.
+- Structured data (schema.org TechArticle) is embedded as JSON-LD on each article.
+
+## Index
+
+- Writing: https://bytecolony.computer/writing/
+- Projects: https://bytecolony.computer/projects/
+- Source: https://github.com/ekansh38

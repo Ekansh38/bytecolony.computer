@@ -1,0 +1,17 @@
+{{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+{{/* Private and utility surfaces are kept out so crawl budget and quality
+     signals go to real content only. Mirrors the noindex list in baseof. */}}
+{{ $skip := slice "admin" "pitch" "work" "themez" "categories" "tags" }}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {{ range .Data.Pages }}
+  {{ $seg := index (split (strings.TrimPrefix "/" .RelPermalink) "/") 0 }}
+  {{ if not (in $skip $seg) }}
+  <url>
+    <loc>{{ .Permalink }}</loc>
+    {{ if not .Lastmod.IsZero }}<lastmod>{{ safeHTML (.Lastmod.Format "2006-01-02T15:04:05-07:00") }}</lastmod>{{ end }}
+    <changefreq>{{ .Sitemap.ChangeFreq | default "weekly" }}</changefreq>
+    <priority>{{ if .IsHome }}1.0{{ else if eq .Section "writing" }}0.9{{ else if eq .Section "projects" }}0.8{{ else }}0.5{{ end }}</priority>
+  </url>
+  {{ end }}
+  {{ end }}
+</urlset>

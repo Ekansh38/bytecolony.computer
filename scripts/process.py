@@ -122,8 +122,16 @@ def convert_svg_imgs(content):
         tag = m.group(0)
         path_stem = m.group(1)   # everything between /assets/ and .svg
         cls_match = re.search(r'class="([^"]+)"', tag)
-        if cls_match:
-            return f'\n\n{{{{< svg "{path_stem}" "{cls_match.group(1)}" >}}}}\n\n'
+        alt_match = re.search(r'alt="([^"]*)"', tag)
+        cls = cls_match.group(1) if cls_match else ""
+        # Alt is carried through as a third arg. Without it the only copy
+        # of a diagram in the HTML is the <noscript> fallback, which left
+        # every diagram unlabelled for crawlers that do not run JS.
+        alt = (alt_match.group(1) if alt_match else "").replace('"', "'")
+        if alt:
+            return f'\n\n{{{{< svg "{path_stem}" "{cls}" "{alt}" >}}}}\n\n'
+        if cls:
+            return f'\n\n{{{{< svg "{path_stem}" "{cls}" >}}}}\n\n'
         return f'\n\n{{{{< svg "{path_stem}" >}}}}\n\n'
 
     result = re.sub(

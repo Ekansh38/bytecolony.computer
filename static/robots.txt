@@ -1,0 +1,35 @@
+# Search and AI crawlers are both welcome: being quotable in AI answers is
+# a goal here, not a risk to be defended against.
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /pitch/
+Disallow: /work/
+Disallow: /themez/
+Disallow: /tags/
+Disallow: /categories/
+Disallow: /api/
+
+# Named AI crawlers, stated explicitly so permission is unambiguous
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://bytecolony.computer/sitemap.xml

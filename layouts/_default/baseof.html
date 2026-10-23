@@ -5,20 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   {{ $title := cond .IsHome "ByteColony" (printf "%s · ByteColony" .Title) }}
+  {{/* A hand-written `description` wins: auto-summaries truncate mid-sentence
+       and are what both search results and AI systems read first. */}}
   {{ $desc := "" }}
-  {{ with .Summary }}{{ $desc = . | plainify | truncate 160 }}{{ end }}
+  {{ with .Params.description }}{{ $desc = . }}{{ end }}
   {{ if not $desc }}{{ with .Params.summary }}{{ $desc = . | plainify | truncate 160 }}{{ end }}{{ end }}
+  {{ if not $desc }}{{ with .Summary }}{{ $desc = . | plainify | truncate 160 }}{{ end }}{{ end }}
   {{ if not $desc }}{{ $desc = "a journey underground" }}{{ end }}
 
   <title>{{ $title }}</title>
   <meta name="description" content="{{ $desc }}">
   <link rel="canonical" href="{{ .Permalink }}">
+  {{/* private or utility surfaces: keep them out of the index entirely */}}
+  {{ $noindex := slice "admin" "pitch" "work" "themez" "categories" "tags" }}
+  {{ if or (in $noindex .Section) (in $noindex (path.Base .RelPermalink)) }}<meta name="robots" content="noindex, nofollow">{{ end }}
+  {{ partial "schema.html" . }}
 
   <meta property="og:type"        content="{{ if .IsPage }}article{{ else }}website{{ end }}">
   <meta property="og:url"         content="{{ .Permalink }}">
   <meta property="og:title"       content="{{ $title }}">
   <meta property="og:description" content="{{ $desc }}">
-  {{ if and .IsPage (not .Date.IsZero) }}<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ end }}
+  {{ if and .IsPage (not .Date.IsZero) }}<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+  <meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+  <meta property="article:author" content="Ekansh Goenka">{{ end }}
+  <meta property="og:locale"      content="en_US">
   <meta property="og:site_name"   content="{{ .Site.Title }}">
   <meta property="og:image"       content="{{ "images/og.png" | absURL }}">
   <meta property="og:image:width"  content="1200">

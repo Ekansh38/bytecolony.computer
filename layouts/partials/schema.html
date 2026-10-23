@@ -1,0 +1,66 @@
+{{/*
+  JSON-LD structured data.
+
+  Tells machines what a page IS rather than leaving them to infer it from
+  prose. Three graphs, emitted per page type:
+    - Person + WebSite on every page, so "ByteColony" and the author
+      resolve to one entity with known profiles elsewhere
+    - TechArticle on writing/project articles
+    - BreadcrumbList mirroring the visible breadcrumbs
+*/}}
+{{- $site := "https://bytecolony.computer" -}}
+{{- $person := dict
+      "@type" "Person"
+      "@id" (printf "%s/#person" $site)
+      "name" "Ekansh Goenka"
+      "alternateName" "ByteColony"
+      "url" $site
+      "sameAs" (slice .Site.Params.github .Site.Params.youtube .Site.Params.itchio)
+-}}
+{{- $website := dict
+      "@type" "WebSite"
+      "@id" (printf "%s/#website" $site)
+      "url" $site
+      "name" "ByteColony"
+      "inLanguage" "en"
+      "publisher" (dict "@id" (printf "%s/#person" $site))
+-}}
+{{- $graph := slice $person $website -}}
+
+{{- if and .IsPage (or (eq .Section "writing") (eq .Section "projects")) -}}
+  {{- $desc := "" -}}
+  {{- with .Params.description }}{{ $desc = . }}{{ else }}{{ $desc = .Summary | plainify | truncate 200 }}{{ end -}}
+  {{- $img := printf "%s/images/og.png" $site -}}
+  {{- $article := dict
+        "@type" "TechArticle"
+        "@id" (printf "%s#article" .Permalink)
+        "headline" .Title
+        "name" .Title
+        "description" $desc
+        "url" .Permalink
+        "datePublished" (.Date.Format "2006-01-02")
+        "dateModified" (.Lastmod.Format "2006-01-02")
+        "wordCount" .WordCount
+        "image" $img
+        "inLanguage" "en"
+        "isAccessibleForFree" true
+        "author" (dict "@id" (printf "%s/#person" $site))
+        "publisher" (dict "@id" (printf "%s/#person" $site))
+        "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
+  -}}
+  {{- with .Params.subtitle }}{{ $article = merge $article (dict "alternativeHeadline" .) }}{{ end -}}
+  {{- with .Params.about }}{{ $article = merge $article (dict "about" .) }}{{ end -}}
+  {{- with .Params.teaches }}{{ $article = merge $article (dict "teaches" .) }}{{ end -}}
+  {{- with .Params.readingTime }}{{ $article = merge $article (dict "timeRequired" (printf "PT%dM" .)) }}{{ end -}}
+  {{- $graph = $graph | append $article -}}
+
+  {{/* breadcrumbs: home → section → page */}}
+  {{- $items := slice
+        (dict "@type" "ListItem" "position" 1 "name" "Home" "item" $site)
+        (dict "@type" "ListItem" "position" 2 "name" (title .Section) "item" (printf "%s/%s/" $site .Section))
+        (dict "@type" "ListItem" "position" 3 "name" .Title "item" .Permalink)
+  -}}
+  {{- $graph = $graph | append (dict "@type" "BreadcrumbList" "itemListElement" $items) -}}
+{{- end -}}
+
+<script type="application/ld+json">{{ (dict "@context" "https://schema.org" "@graph" $graph) | jsonify | safeJS }}</script>

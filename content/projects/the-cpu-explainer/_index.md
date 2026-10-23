@@ -3,6 +3,7 @@ title: "The CPU Explainer"
 weight: 1
 layout: "list"
 summary: "A writeup of how a CPU works, from basic circuits to a simple CPU."
+description: "How a computer works from the ground up: a ground-up explainer that starts with circuits and logic gates and builds to a working CPU. Read online with animated diagrams, or download as PDF."
 stack: "writing, diagrams, animation"
 article: "/writing/the-cpu/"
 pdf: "/assets/the-cpu-explainer-light.pdf"
