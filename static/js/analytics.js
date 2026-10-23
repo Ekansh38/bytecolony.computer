@@ -134,9 +134,14 @@
 
     // Every format choice is recorded, not just PDFs, so the editions
     // can be compared against each other and against reading on the web.
-    if (/\.pdf($|\?)/i.test(href)) {
-      act('format', (href.split('/').pop() || '').replace(/\.pdf.*$/i, ''));
-      act('download', (href.split('/').pop() || '').replace(/\.pdf.*$/i, ''));
+    var dl = /\.(pdf|epub)($|\?)/i.exec(href);
+    if (dl) {
+      var name = (href.split('/').pop() || '').replace(/\.(pdf|epub).*$/i, '');
+      // epub has no light/dark split, so label it by extension to keep it
+      // distinguishable from the complete PDF, which shares the same stem
+      if (dl[1].toLowerCase() === 'epub') name = name + '-epub';
+      act('format', name);
+      act('download', name);
       return;
     }
     if (/raw\.html($|\?)/i.test(href)) { act('format', 'plain-html'); return; }

@@ -3,12 +3,12 @@
 
   Plain links for the web formats, then a PDF editions table: one row per
   edition (complete, then each part), each offering a light and a dark
-  file with its size. Sizes are read from disk at build time so they
-  never go stale.
+  file with its size, then the epub. Sizes are read from disk at build
+  time so they never go stale.
 
   Linkable as #formats (the article header's single button points here).
 */}}
-{{ $hasAny := or .Params.article (or .Params.pdf (or .Params.raw .Params.github)) }}
+{{ $hasAny := or .Params.article (or .Params.pdf (or .Params.epub (or .Params.raw .Params.github))) }}
 {{ if $hasAny }}
 <section class="formats" id="formats">
   <h2 class="formats-title">formats</h2>
@@ -59,6 +59,18 @@
     </div>
     {{ end }}
 
+  </div>
+  {{ end }}
+
+  {{/* epub reflows to the reader's device, so there is no light/dark or
+       per-part split to offer: one file, listed in its own group. */}}
+  {{ with .Params.epub }}
+  <h3 class="formats-subtitle">ebook</h3>
+  <div class="fmt-editions">
+    <div class="fmt-row is-complete">
+      <span class="fmt-name">complete</span>
+      <span class="fmt-file"><a href="{{ . }}">epub</a>{{ with os.Stat (printf "static%s" .) }} <span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}</span>
+    </div>
   </div>
   {{ end }}
 </section>

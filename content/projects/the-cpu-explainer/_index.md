@@ -3,12 +3,13 @@ title: "The CPU Explainer"
 weight: 1
 layout: "list"
 summary: "How a computer works from the ground up, from a light bulb and a switch to a simple working CPU."
-description: "The CPU Explainer: an hour-long, ground-up guide to how a computer works. Read it online with steppable animated diagrams, or download it as a PDF, complete or split into three parts, in light, dark or print editions."
+description: "The CPU Explainer: an hour-long, ground-up guide to how a computer works. Read it online with steppable animated diagrams, or download it as a PDF, complete or split into three parts, in light, dark or print editions, or as an epub."
 stack: "writing, diagrams, animation"
 article: "/writing/the-cpu/"
 pdf: "/assets/the-cpu-explainer-light.pdf"
 pdfdark: "/assets/the-cpu-explainer-dark.pdf"
 pdfprint: "/assets/the-cpu-explainer-print.pdf"
+epub: "/assets/the-cpu-explainer.epub"
 raw: "/writing/the-cpu/raw.html"
 # Per-part PDF editions, listed under the complete edition in the formats block
 pdfparts:
