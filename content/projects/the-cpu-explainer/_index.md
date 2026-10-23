@@ -2,8 +2,8 @@
 title: "The CPU Explainer"
 weight: 1
 layout: "list"
-summary: "A writeup of how a CPU works, from basic circuits to a simple CPU."
-description: "How a computer works from the ground up: a ground-up explainer that starts with circuits and logic gates and builds to a working CPU. Read online with animated diagrams, or download as PDF."
+summary: "How a computer works from the ground up, from a light bulb and a switch to a simple working CPU."
+description: "The CPU Explainer: an hour-long, ground-up guide to how a computer works. Read it online with steppable animated diagrams, or download it as a PDF, complete or split into three parts, in light, dark or print editions."
 stack: "writing, diagrams, animation"
 article: "/writing/the-cpu/"
 pdf: "/assets/the-cpu-explainer-light.pdf"
@@ -24,7 +24,7 @@ pdfparts:
 github: "https://github.com/Ekansh38/the-cpu-explainer/"
 ---
 
-This is a technical writeup on how the CPU functions, starting with basic circuits and finishing with a simple CPU.
+This is a technical writeup on how a CPU works, starting with basic circuits and finishing with a simple working CPU.
 
 It was written for people who have a genuine curiosity about how computers work at a fundamental level. Most resources on the subject go one of two ways: either they stay so shallow that the CPU still feels like a black box, or they go so deep and book-length that most people never finish them. This one sits in the middle: a roughly hour-long read that starts with basic circuits and builds up through logic gates, addition, flip-flops, and memory, all the way to a simple working CPU.
 
