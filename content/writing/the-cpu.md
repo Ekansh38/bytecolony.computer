@@ -60,11 +60,11 @@ First, we need the basics of how electricity and circuits work. Here is a simple
 
 The wire connected to the `-` of the battery is being driven low, and the wire connected to the `+` of the battery is being driven high. This difference in voltage causes current to flow through the filament of the light bulb, turning the light on. But current can only flow when the loop is complete, from `+` through the bulb to `-`.
 
-If the loop is broken, nothing flows. A switch is simply a controlled break in the loop, allowing us to break and complete the loop whenever we want. And a light bulb is just a simple light bulb. It glows when current flows through the filament. Now we have a circuit that can do one yes/no thing. Current flows or it doesn't.
+If the loop is broken, nothing flows. A switch is simply a controlled break in the loop, allowing us to break and complete the loop whenever we want. And a light bulb is just a simple light bulb. It glows when current flows through the filament. Now we have a circuit that can do one yes/no thing.
 
-Now let's see if we can combine switches and relays so the circuit can "answer" slightly more interesting questions. Say we want to build a simple dog washer circuit: a circuit that, based on some inputs, can tell us whether to wash our dog or not. Our simple circuit is going to use a light bulb being on to mean yes, wash the dog. Light bulb off means no, don't wash the dog. So we start with an extremely simple version with two switches. In this first version, the switches are directly inside the bulb circuit. The person using the circuit can open or close each switch to answer a yes/no question.
+Let's see if we can combine more switches so the circuit can "answer" slightly more interesting questions. Say we want to build a simple dog washer circuit: a circuit that, based on some inputs, can tell us whether to wash our dog or not. Our simple circuit is going to use a light bulb being on to mean yes, wash the dog. Light bulb off means no, don't wash the dog. So we start with an extremely simple version with two switches. In this first version, the switches are directly inside the bulb circuit. The person using the circuit can open or close each switch to answer a yes/no question.
 
-Let's say switch 1 represents `STINKY`: whether the dog is stinky or not. Switch 2 represents `OLD_WASH`: has it been more than 5 days since the last wash. So the rules for our first circuit are:
+Let's say switch 1 represents `STINKY`: whether the dog is stinky or not. Switch 2 represents `OLD_WASH`: has it been more than 5 days since the last wash. The rules for our first circuit are:
 
 If `STINKY AND OLD_WASH`, the bulb is on. Or in other words, if the dog is stinky and its last wash was over 5 days ago, then wash the dog. Here is the circuit:
 
@@ -74,29 +74,31 @@ If `STINKY AND OLD_WASH`, the bulb is on. Or in other words, if the dog is stink
 
 *Diagram 3.2. The hand-switch version of AND.*
 
-This circuit shows a logical AND operation. A person is flipping the switches manually. The output turns on only when both inputs are true. Now add a new input: `MUDDY`, if the dog is muddy. The rules of the circuit change:
+This circuit shows a logical AND operation. A person is flipping the switches manually. The output turns on only when both inputs are true.
+
+Let's add a new input: `MUDDY`, if the dog is muddy. The rules of the circuit change:
 
 If `(MUDDY OR STINKY) AND OLD_WASH`, the bulb is on.
 
-All this says is, if the dog is muddy or stinky and it's been more than 5 days since the dog's last wash, you should wash the dog. Now let's focus on the (`MUDDY` OR `STINKY`) part of this circuit:
+All this says is, if the dog is muddy or stinky and it's been more than 5 days since the dog's last wash, you should wash the dog. Let's focus on the `MUDDY OR STINKY` part of this circuit:
 
 <a id="diagram-3-3"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,2,3,4,5,6" src="/assets/frames-gen/or-gate-logical/anim.webp" alt="The hand-switch version of OR" width="630" height="626"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,2,4,6" src="/assets/frames-gen/or-gate-logical/anim.webp" alt="The hand-switch version of OR" width="630" height="626"></div>
 
 *Diagram 3.3. The hand-switch version of OR.*
 
-This is a logical OR: at least one of `MUDDY` or `STINKY` needs to be on for the bulb to turn on. Both on also counts.
+This is a logical OR: at least one of `MUDDY` or `STINKY` needs to be on for the bulb to turn on. Both of them could also be on, and that is fine.
 
-Before we combine these, let's tackle a bigger problem. So far, every switch is flipped by a human. If we ever want to build a computer, it needs to run by itself: electricity has to be able to flip a switch by itself! But how?
+Before we continue, let's tackle a bigger problem. So far, every switch is flipped by a human. If we ever want to build a computer, it needs to run by itself: electricity has to be able to flip a switch by itself in order to chain circuits! But how?
 
 ### Relays & Logic Gates
 
 Electromagnetic relays, that's how. Or at least, that is one early solution to this problem. We will talk about other solutions a little more later on. This probably sounds quite complicated, but it is just a magnet powered by electricity.
 
-One thing to mention before the next diagram: if you see many little batteries in a circuit, don't interpret that as several separate power sources. I am using the battery drawing as a symbol for "this point is connected to power," so diagrams stay clear.
+One thing to mention before the next diagram: if you see many little batteries in a circuit, don't interpret that as several power sources. The battery symbols show if a wire is connected to power.
 
-Here is how a relay works:
+Anyway, here is how a relay works:
 
 <a id="diagram-4-1"></a> 
 
@@ -106,9 +108,9 @@ Here is how a relay works:
 
 This relay is made from a coil of wire and a movable metal arm. When current flows through the coil, the coil becomes a magnet and pulls the arm down. When current stops, a spring pulls the arm back up.
 
-A relay lets one circuit open or close a switch in another circuit. Inside the relay, the coil and the arm never touch electrically; the coil just magnetically pulls the arm.
+A relay lets one circuit open or close a switch in another circuit.
 
-Also, in this example, we end up using a switch in the input circuit anyway, but any kind of electrical signal could be used, like the output of another circuit. The switch is just there to demonstrate how the relay works.
+In this example, we end up using a switch in the input circuit anyway, but any kind of electrical signal could be used, like the output of another circuit. The switch is just there to demonstrate how the relay works.
 
 As you can also tell by the diagram, there is a slight delay between the coil turning on and the metal arm moving. Relays are mechanical, so they do not switch instantly.
 
@@ -116,7 +118,7 @@ Now let's see how we can build an actual electrical AND gate that takes two inpu
 
 <a id="diagram-4-2"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,3,6,8,10" src="/assets/frames-gen/electronic-and-gate/anim.webp" alt="An AND gate" width="1920" height="1388"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,3,6,8" src="/assets/frames-gen/electronic-and-gate/anim.webp" alt="An AND gate" width="1920" height="1388"></div>
 
 *Diagram 4.2. An AND gate.*
 
@@ -126,9 +128,9 @@ That is the big difference from the hand-switch version. The inputs are still dr
 
 But before the next diagram, I am going to use one more new symbol: ground. For our purposes here, the ground symbol will simply refer to the common return point of the circuit, usually connected to the negative side of the battery.
 
-Every point marked with the ground symbol is connected together, as if there were hidden wires joining them underneath the drawing. It is not a new component. It is just a less messy way to draw the return path of the circuit. The circuits are still loops. I am just not explicitly drawing the return wire anymore.
+Every point marked with the ground symbol is connected together, as if there were hidden wires joining them underneath the drawing. It is not a new component. It is a less messy way to draw the return path of the circuit. The circuits are still loops. I am not explicitly drawing the return wire anymore.
 
-In a real schematic, the ground symbol itself would usually stay white. In these diagrams, I color it red when that return point is part of the active path for that frame. I think it makes the current path easier to follow visually, and so the concept is just easier to understand, especially for beginners.
+In a real schematic, the ground symbol itself would usually stay white. In these diagrams, I color it red when that return point is part of the active path for that frame. I think it makes the current path easier to follow visually, and so the concept is easier to understand, especially for beginners.
 
 This is how the ground symbol looks:
 
@@ -150,45 +152,43 @@ That is an OR gate using relays. Now here is the full dog washer circuit up to t
 
 <a id="diagram-4-5"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/dog-washer-v1/anim.webp" alt="The full dog washer circuit built with relays" width="1920" height="1584"></div>
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="states" src="/assets/frames-gen/dog-washer-v1/anim.webp" alt="The full dog washer circuit built with relays" width="1920" height="1584"></div>
 
 *Diagram 4.5. The full dog washer circuit built with relays.*
 
 The animation does not show every possible combination of switches, only a handful. But in a nutshell, if `MUDDY` or `STINKY` is on, and `OLD_WASH` is also on, the bulb turns on.
 
-Notice the OR gate's bulb is gone. Its output wire feeds the next relay's coil directly. I'll show exactly how a gate drives a wire like that in a bit.
+Notice the OR gate's bulb is gone. Its output is now a wire, feeding straight into the next relay's coil. When `MUDDY` or `STINKY` pulls its arm, that wire gets connected to `+`, current flows through the coil, and the next relay pulls. When neither pulls, the wire is connected to nothing at all, so no current flows and the relay lets go.
 
-Okay, now let's introduce one last input, or "sensor": `RAIN_SOON`, whether it is predicted to rain soon. The rules of the circuit change once again:
-
-`((MUDDY OR STINKY) AND OLD_WASH) AND NOT RAIN_SOON`
-
-The parentheses indicate order of operations. So in plain English: if the dog is muddy or stinky and it's been more than 5 days since the dog's last wash and it's not going to rain soon, then wash the dog.
-
-Let's focus on this NOT for a second. NOT just flips its input: if the input is on, the output is off, and if the input is off, the output is on.
-
-<a id="diagram-4-6"></a> 
-
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/not-gate/anim.webp" alt="A NOT gate" width="1278" height="812"></div>
-
-*Diagram 4.6. A NOT gate.*
-
-Remember the OR output feeding that relay in the dog washer? Here is what is actually going on there. We have been showing our outputs as a light bulb. For a bulb to be on, it needs to be connected to `+` and `-`, one on each side. That difference in voltage allows current to flow, turning on the bulb.
-
-But a bulb is not always what we want. From now on, our gates' outputs will mostly feed other gates' inputs, so the output needs to be a wire, not a bulb. We can't just remove the bulb though; `+` connected directly to `-` would lead to a short-circuit. So what we do is either drive the wire up or down, so it is connected to either `+` or `-`. All of our relay gates can be simply adapted to do this.
+That works, but from now on, our gates' outputs will mostly feed other gates' inputs, so the output needs to be a wire, not a bulb, and we want that wire to always be in one of exactly two states: connected to `+`, or connected to `-`. Never disconnected (unless we are using specific gate that we will cover later).
 
 A `1` output is a wire being driven high. A `0` output is not "nothing"; it is a wire being driven low. Remember this information; it will come in handy later on.
 
-As you can see in the after example below, even when the relay is not pulling the arm, even when the output is 0, it is still touching the negative end of that battery, so it is being driven to `-`.
-
 Technically, with relays, we could get away with leaving a `0` output disconnected: an unpowered coil just stays off. We drive it low anyway. Real gates, built from transistors, need a `0` to actually be driven low for the logic to work correctly, and since we are using relays to replace them, we should still follow that rule.
 
-<a id="diagram-4-7"></a> 
+All of our relay gates can be simply adapted to do this. As you can see in the after example below, even when the relay is not pulling the arm, even when the output is 0, it is still touching the negative end of that battery, so it is being driven to `-`.
+
+<a id="diagram-4-6"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/before-after/anim.webp" alt="Driving an output wire" width="1278" height="812"></div>
 
-*Diagram 4.7. Driving an output wire.*
+*Diagram 4.6. Driving an output wire.*
 
 In this diagram, red wire means current is actively flowing. That's why `OUT = 1` is still white. Later when we start drawing logic gates, and more high-level diagrams, red wire will just mean high, or 1.
+
+Okay, back to the dog washer. Let's introduce one last input, or "sensor": `RAIN_SOON`, whether it is predicted to rain soon. The rules of the circuit change once again:
+
+`((MUDDY OR STINKY) AND OLD_WASH) AND NOT RAIN_SOON`
+
+The parentheses indicate the groupings of logic, similar to math. So in plain English: if the dog is muddy or stinky and it's been more than 5 days since the dog's last wash and it's not going to rain soon, then wash the dog.
+
+Let's focus on this NOT for a second. NOT just flips its input: if the input is on, the output is off, and if the input is off, the output is on.
+
+<a id="diagram-4-7"></a> 
+
+<div class="svg-diagram"><img loading="lazy" decoding="async" pdf-frames="1,3" src="/assets/frames-gen/not-gate/anim.webp" alt="A NOT gate" width="1278" height="812"></div>
+
+*Diagram 4.7. A NOT gate.*
 
 Now before we look at the completed circuit, let's learn some basic logic gate symbols. An AND gate is drawn like this:
 
@@ -234,7 +234,7 @@ To make a CPU, we need to give wires a different kind of meaning: numbers. Befor
 
 ### Counting With Wires
 
-First, let's define some terms. A wire driven low is `0`, and a wire driven high is `1`. Let's call one wire one bit. A bit can either be `0` or `1`. These are just labels that represent the state of a wire.
+First, let's define some terms. A wire driven low is `0`, and a wire driven high is `1`. Let's call one wire one bit. A bit can either be `0` or `1`. These are labels that represent the state of a wire.
 
 <a id="diagram-5-1"></a> 
 
@@ -252,7 +252,7 @@ But two wires have `2^2`, or four states, and three wires have `2^3`, or eight s
 
 *Diagram 5.2. States with 3 wires.*
 
-We can represent 8 numbers just like this. Keep going to 8 wires and there are `2^8`, or 256, possible patterns. A group of 8 bits is called a byte. So if we use those patterns to represent non-negative numbers, one byte can represent 0 through 255.
+We can represent 8 numbers just like this. Keep going to 8 wires and there are `2^8`, or 256, possible patterns. A group of 8 bits is called a byte. If we use those patterns to represent non-negative numbers, one byte can represent 0 through 255.
 
 But why does `010` mean 2? Why does `101` mean 5? Is it just randomly assigned? Not exactly. To understand this, let's take a quick detour to decimal, a.k.a. base ten.
 
@@ -270,7 +270,7 @@ In our decimal counting system, each place-value is a power of 10. That is becau
 
 *Diagram 5.4. The binary system.*
 
-So binary is, at the end of the day, the same place-value idea as decimal, just with two digits instead of ten. A few examples:
+Binary is, at the end of the day, the same place-value idea as decimal, just with two digits instead of ten. A few examples:
 
 - `101` means 5
 - `1101` means 13
@@ -289,9 +289,9 @@ So now that we can represent numbers with wires, how can we add numbers together
 
 <a id="diagram-5-6"></a> 
 
-{{< svg "final/add-magic-box" "" "Addition?" >}}
+{{< svg "final/add-magic-box" "" "Math?" >}}
 
-*Diagram 5.6. Addition?*
+*Diagram 5.6. Math?*
 
 ### Math?
 
@@ -353,7 +353,7 @@ OR checks that at least one input is on, and NAND makes sure the inputs aren't b
 
 *Diagram 6.4. An XOR gate.*
 
-Now let's do the carry value. The carry is simple! We only want to carry if we are doing `1 + 1`, so we just use an AND gate to check if both inputs are on. Now here is our half adder:
+Now let's do the carry value. The carry is simple! We only want to carry if we are doing `1 + 1`, so we use an AND gate to check if both inputs are on. Here is our half adder:
 
 <a id="diagram-6-5"></a> 
 
@@ -413,7 +413,7 @@ Each full adder handles one column. The carry-out from one column becomes the ca
 
 Keep in mind, carry-in for the first adder is set to ground, a.k.a. 0. In the chip version below I bring that first carry-in out as a `CI` pin instead, so the chip can be chained too. For now we just feed it 0. Also, notice how we have 9 outputs, not 8. That is because two 8-bit values can add up to a number too big to fit in eight bits. It's like how adding two 2-digit numbers could result in a three-digit number for us. Like `50 + 50 = 100`.
 
-Now let's package this up into a chip once again:
+Let's package this up into a chip once again:
 
 <a id="diagram-6-11"></a> 
 
@@ -622,7 +622,7 @@ But we have an issue: this diagram is technically not possible yet. Say register
 
 Yep. A short-circuit.
 
-We need a way to connect these registers to the bus, but also let them get out of the way when they are not supposed to actively drive a wire to `-` or `+`, like I discussed [previously](#diagram-4-7).
+We need a way to connect these registers to the bus, but also let them get out of the way when they are not supposed to actively drive a wire to `-` or `+`, like I discussed [previously](#diagram-4-6).
 
 Just setting the output wires to `00000000` is not enough. On a shared bus `00000000` is not nothing. It is actively driving the bus to `-`. Of course, in our relay world technically we don't need to drive to `-` like I mentioned before, but in the real world, where transistors are used, we certainly do and that causes problems.
 
@@ -651,7 +651,7 @@ Also I have drawn everything the output wire is currently touching in yellow. Ye
 
 *Diagram 8.2. A tri-state buffer built with relays.*
 
-This looks complicated, so let me break it down. First, ignore the two relays on the right and look only at the `D` relay at the top. Its arm is attached to the output wire, and it works just like [the output driver from before](#diagram-4-7). When `D` is `1`, the arm is pulled down onto the wire that leads toward the battery, `+`. When `D` is `0`, the arm goes up onto the wire that leads toward ground. Remember, ground is just the `-` side.
+This looks complicated, so let me break it down. First, ignore the two relays on the right and look only at the `D` relay at the top. Its arm is attached to the output wire, and it works just like [the output driver from before](#diagram-4-6). When `D` is `1`, the arm is pulled down onto the wire that leads toward the battery, `+`. When `D` is `0`, the arm goes up onto the wire that leads toward ground. Remember, ground is just the `-` side.
 
 The important idea is that neither of those wires is directly connected to `+` or `-`. Each one has a relay between it. Both of those relays are controlled by `E`.
 
@@ -674,9 +674,9 @@ This is the logic gate diagram for a tri-state buffer:
 
 *Diagram 8.3. A tri-state buffer logic gate.*
 
-Now let's address this enable conundrum. We now have two uses for the word enable, with completely different meanings and contexts. One means enabling writing, and the other means enabling output. From now on, we will use two separate terms to avoid confusion: `WRITE` and `OUT`. This `OUT` has nothing to do with the output of the tri-state buffer.
+Let's address this enable conundrum. We have two uses for the word enable, with completely different meanings and contexts. One means enabling writing, and the other means enabling output. From now on, we will use two separate terms to avoid confusion: `WRITE` and `OUT`. This `OUT` has nothing to do with the output of the tri-state buffer.
 
-So we can make a new type of register, one with `WRITE`, `OUT`, a `D` input, and a `Q` output that shows the stored bits 0-7. By `D`, I simply mean the input data that we can store when `WRITE` is enabled.
+We can make a new type of register, one with `WRITE`, `OUT`, a `D` input, and a `Q` output that shows the stored bits 0-7. By `D`, I simply mean the input data that we can store when `WRITE` is enabled.
 
 <a id="diagram-8-4"></a> 
 
@@ -726,7 +726,7 @@ Now let's think about exactly what we would want this `RAM` chip to do.
 - `data in`: the value we would like to write
 - `data out`: the data output line
 
-To be clear, `WRITE` and `OUT` are control signals, so just 1 input wire each. For this demo `RAM`, `address` is only 4 input wires. `data in` and `data out` carry bytes and are both connected directly to the common bus. This only works if no other part is driving the bus when `OUT` is enabled.
+To be clear, `WRITE` and `OUT` are control signals, so 1 input wire each. For this demo `RAM`, `address` is only 4 input wires. `data in` and `data out` carry bytes and are both connected directly to the common bus. This only works if no other part is driving the bus when `OUT` is enabled.
 
 So we are going to build a minuscule 16-byte `RAM`: 16 addresses, with each address storing one byte. This design can be scaled up easily. Our address will be 4 bits long, because `2^4` is 16.
 
@@ -752,7 +752,7 @@ In the diagram, the top bit is the bigger bit (the 2's place) and the bottom bit
 
 *Diagram 9.2. How a decoder works.*
 
-As you can tell, no matter the inputs, exactly one output wire is on at a time. How a decoder works is extremely simple. It just uses a bunch of logic gates to ask these simple questions.
+As you can tell, no matter the inputs, exactly one output wire is on at a time. How a decoder works is extremely simple. It uses a bunch of logic gates to ask these simple questions.
 
 - If `00` -> turn on output 0
 - If `01` -> turn on output 1
@@ -801,7 +801,7 @@ What AND gate 1 checks is, if `Row Select` and `Column Select`, and `OUT` is on,
 
 AND gate 2 checks, if `Row Select` and `Column Select`, and `WRITE` is on, then that means we have selected that register to write to, thus we turn on `WRITE` for that register, and it will write the data on the `data in` bus.
 
-So yea, both AND gates take in 3 inputs. If you are wondering how that works, just think of two AND gates chained together.
+Both AND gates take in 3 inputs. If you are wondering how that works, think of two AND gates chained together.
 
 <a id="diagram-9-7"></a> 
 
@@ -882,7 +882,7 @@ So, in the [previous diagram](#diagram-10-1), we did 0+0 which is 0, so the `ZER
 
 This next diagram uses a new component. It is a mix of two registers we have already seen. Remember the [D latch](#diagram-7-2), the one with the `D` and `E` inputs, before we made it edge-triggered? While its enable was on, `Q` simply equaled `D`. No edge-triggering or anything like that. This new register is a D latch with the enable permanently on: it never really holds anything. Its output just follows its input.
 
-But like our newer registers, its output goes through tri-state buffers with an `OUT` control signal, so we still decide when it outputs. So in total: a data input that is always being stored, an `OUT` control signal, and an output.
+But like our newer registers, its output goes through tri-state buffers with an `OUT` control signal, so we still decide when it outputs. In total: a data input that is always being stored, an `OUT` control signal, and an output.
 
 Also, you'll see me feeding two buses into a single logic gate. "How does that work?", you might think. Well, there are really just eight gates, one per bit. One gate takes `A0` and `B0`, the next takes `A1` and `B1`, and so on. Eight output wires, which is just another bus.
 
@@ -942,13 +942,13 @@ Let's examine each element of the CPU closely and see what details changed and w
 
 We then have register `A`, which is just like register `B`, but it also has a `Q` output in addition to `I/O`. This `Q` output is simply the value stored inside the `A` register, bypassing the tri-state buffers and feeding directly into the first input of the `ALU`. So even though the output (`O`) control signal is off, that `Q` is still driving the `ALU`'s first input, in this case to 0.
 
-Next we have the `ALU`. Its second input comes from the common bus, so the other number it works with is just whatever is on the bus at the time. Other than that it is as normal, but the flags are all going into a register called `FLAGS`. This register is just a 3-bit register: it only stores 3 bits. These three bits are just the values for each flag. This 3-bit register has no `O` control signal, thus no tri-state buffers, so it is always outputting.
+Next we have the `ALU`. Its second input comes from the common bus, so the other number it works with is just whatever is on the bus at the time. Other than that it is as normal, but the flags are all going into a register called `FLAGS`. This register is a 3-bit register: it only stores 3 bits. These three bits are just the values for each flag. This 3-bit register has no `O` control signal, thus no tri-state buffers, so it is always outputting.
 
 Then we can see the result of the `ALU` operation is being fed into another regular 8-bit register called `ACC`. It is slightly different to register `B` because its input doesn't come from the common bus, but from the `ALU`, so it has a separate `D` and `Q` instead of just one `I/O`. It still has the regular `W` and `O` control signals though.
 
-Register `IR` is a simple register without an `O` control signal. It just takes input from the bus, and outputs it into the `CU`. We will talk about what exactly the `CU` is and the jobs of these different parts a little later on.
+Register `IR` is a simple register without an `O` control signal. It takes input from the bus, and outputs it into the `CU`. We will talk about what exactly the `CU` is and the jobs of these different parts a little later on.
 
-Next we have `PC`, which is a combination of an adder and a register, something like what we have seen [previously](#diagram-7-9). The register part of `PC` has its regular control signals `W` and `O`, and the `STEP` button from before has been replaced with an `I` control signal, which stands for increment. Inside, a few gates pick which value reaches the register's input: the bus when `W` is on, the adder's output when `I` is on. We also have the `R` signal which just resets the register back to 0 with some more logic gates and wires. Nothing too fancy.
+Next we have `PC`, which is a combination of an adder and a register, something like what we have seen [previously](#diagram-7-9). The register part of `PC` has its regular control signals `W` and `O`, and the `STEP` button from before has been replaced with an `I` control signal, which stands for increment. Inside, a few gates pick which value reaches the register's input: the bus when `W` is on, the adder's output when `I` is on. We also have the `R` signal which resets the register back to 0 with some more logic gates and wires. Nothing too fancy.
 
 Our `MAR` and `RAM` are the same as [before](#diagram-9-10), but if all of the bits stored in `MAR` are 1, meaning the address is 255, then that first AND gate in the diagram, labeled 1, turns on. We then AND that with `RAM_WRITE`: if we are writing to address 255, we also write into the `DISPLAY` register.
 
@@ -962,7 +962,7 @@ From there you can hit `MAR_WRITE`, which stores that as the address you want to
 
 Also, the panel's buttons only actually drive their control wires if `TAKEOVER` is on, using tri-state buffers. This is to ensure that while the CPU is running like normal, the `CU` and the panel don't drive the wires at the same time. This works the other way too: when `TAKEOVER` is on, the `CU` makes sure not to drive those `RAM` control wires, again using tri-state buffers.
 
-Now, about this mysterious box labeled `CU`. What is it exactly? Well, it is the control unit. Think back to most of our previous demos. Turn `O` on, then `W`, flip this control signal and then flip this control signal. The `CU` does all of that flipping for us. It turns the control wires on and off in the right order, at the right times, to make the computer actually work.
+Now, about this mysterious box labeled `CU`. What is it exactly? It is the control unit. Think back to most of our previous demos. Turn `O` on, then `W`, flip this control signal and then flip this control signal. The `CU` does all of that flipping for us. It turns the control wires on and off in the right order, at the right times, to make the computer actually work.
 
 But how exactly does the computer work in the first place? First we load our program into `RAM`: a list of instructions, each one just a number. The control unit then fetches the instruction from `RAM` at the address stored in `PC`, so if `PC` is 0, it fetches the instruction at address 0 and stores it in `IR`. How? It copies `PC` into the `MAR` and flips on `RAM_OUT`, [exactly like we have done before](#diagram-9-10). Next it figures out what that instruction means, and executes a bunch of steps to actually do that instruction, then it increments or changes `PC` and repeats that whole cycle.
 
@@ -1022,7 +1022,7 @@ The last byte is `14`, which the [table](#isa-table) says is `HALT`. It stops th
 
 But, why do we even need to stop the CPU? Well, if we don't, `PC` would just keep counting up and the CPU would keep fetching. It doesn't know our program ended at address 4. It would march straight into the rest of `RAM` and run whatever is sitting there as if it were instructions, leftovers from the last program, or whatever junk the memory happened to wake up holding. We need a way to stop.
 
-So this program just puts 5 on the output and stops. Pretty simple. As you can tell, some instructions take two bytes, and some only need one. A 2-byte instruction is one where the first byte alone is not enough. `LOAD A, n` needs to know what value to load, so the next byte in `RAM` is that value.
+This program puts 5 on the output and stops. Pretty simple. As you can tell, some instructions take two bytes, and some only need one. A 2-byte instruction is one where the first byte alone is not enough. `LOAD A, n` needs to know what value to load, so the next byte in `RAM` is that value.
 
 One more thing: the order things are written in. For `MOV`, the destination comes first. `MOV B, A` copies `A` into `B`, not the other way around. `STORE` is the odd one out: `LOAD A` means a value going into `A`, and `STORE A` means `A` going out into memory.
 
@@ -1079,7 +1079,7 @@ All this loop does is add 1 to `A` over and over, 256 times, until the addition 
 
 But we don't really need these for our slow computer. Just know real computers use a combination of timer hardware, little counter circuits that tick along with the clock, and loops like these to wait for the right amount of time. Some CPUs even have a sleep instruction that shuts them down completely until something wakes them up.
 
-So basically, these jump instructions can help us branch on certain conditions, letting our program decide stuff, and also run in loops.
+These jump instructions can help us branch on certain conditions, letting our program decide stuff, and also run in loops.
 
 But how would the CPU actually execute an instruction? What control wires would it flip, and in what order? Let's take the `MOV B, A` instruction as an example.
 
@@ -1105,11 +1105,11 @@ Output 0 of the decoder is wired to nothing, so step 0 is an idle tick: the coun
 
 One thing: remember the [`TAKEOVER`](#diagram-11-1) switch? Well, when it is on, it basically resets this step counter's accumulator to 0, so after a reset the first thing that happens is step 1. This also means `TAKEOVER` is a reset switch. Flick it on and off, and both `PC` and the step counter get reset to 0.
 
-So basically each of the decoder's output wires turning on is 1 micro-step. Take `MOV B, A` from before: enable the output of `A` onto the bus, then enable `W` on `B` to store that value.
+Each of the decoder's output wires turning on is 1 micro-step. Take `MOV B, A` from before: enable the output of `A` onto the bus, then enable `W` on `B` to store that value.
 
 If we tried to just turn `O` and `W` on at the same time, the register might capture the value on the bus before the other register has started driving the bus. The bus hasn't had time to settle. So this won't work. What we want is to turn `O` on, wait for the bus to settle, and then turn `W` on, right in the middle of `O` being on.
 
-We could try spreading this across two steps: turn `O` on for step 1, then keep `O` on for step 2 and turn on `W` too. The problem is that when the counter switches from one step to the next, the decoder briefly flickers through the wrong output, so `O` can drop at the exact moment `W` fires. And every move would now cost two steps instead of one. So yea, it's just not a good way to do it.
+We could try spreading this across two steps: turn `O` on for step 1, then keep `O` on for step 2 and turn on `W` too. The problem is that when the counter switches from one step to the next, the decoder briefly flickers through the wrong output, so `O` can drop at the exact moment `W` fires. And every move would now cost two steps instead of one. It's not a good way to do it.
 
 The best approach to this is just taking our clock signal and flipping it:
 
@@ -1136,7 +1136,7 @@ So to accomplish this, we only need 2 simple micro-steps:
 1. `PC_OUT`, `MAR_WRITE`
 2. `RAM_OUT`, `IR_WRITE`, `PC_INC`
 
-We know how we can output and write to a register in one micro-step, but three things? How can we increment `PC` too? Well incrementing `PC` has nothing to do with the bus and doesn't disrupt anything else going on, so we just can! And notice, these 2 micro-steps are exactly the same for every single instruction.
+We know how we can output and write to a register in one micro-step, but three things? How can we increment `PC` too? Incrementing `PC` has nothing to do with the bus and doesn't disrupt anything else going on, so we just can! And notice, these 2 micro-steps are exactly the same for every single instruction.
 
 One thing I am not drawing: every `W` signal is ANDed with `NOT CLOCK`, like we just discussed. The same goes for `PC`'s `I` signal: incrementing stores a value too, it just comes from `PC`'s own little adder instead of the bus, so it waits for `NOT CLOCK` like every other store. Drawing that same little AND gate nine times would clutter everything up, so instead, every pin colored pink has it secretly. Pink pin means stores on `NOT CLOCK`.
 
@@ -1160,7 +1160,7 @@ Because all of these instructions need to fetch another byte, the third micro-st
 
 3. `PC_OUT`, `MAR_WRITE`
 
-So we can just check, "is this instruction one of the 2-byte instructions?", using a giant OR gate, and if it is, on step 3, we can just execute the same micro-step. Steps 4 and 5 of these instructions all vary slightly, but nothing a few logic gates can't solve.
+We can check, "is this instruction one of the 2-byte instructions?", using a giant OR gate, and if it is, on step 3, we can just execute the same micro-step. Steps 4 and 5 of these instructions all vary slightly, but nothing a few logic gates can't solve.
 
 | # | Instruction | Step 4 | Step 5 |
 |---:|---|---|---|
@@ -1233,7 +1233,7 @@ In our [CPU](#diagram-11-1), if you remember, register `A` has a special `Q` tha
 
 That is why on step 3 we only have `B_OUT` and no `A_OUT` since `A` is directly connected to the `ALU` already.
 
-But what is `ACC` you might be asking? Well `ACC` is kind of like a temporary register that the `ALU` uses to store its result. The `ALU` can't directly put the result onto the bus, since register `B` is driving the bus.
+But what is `ACC` you might be asking? `ACC` is kind of like a temporary register that the `ALU` uses to store its result. The `ALU` can't directly put the result onto the bus, since register `B` is driving the bus.
 
 So on step 3, the `CU` lets `B` drive the bus, the `ALU` computes its result, and the `CU` stores the flags in `FLAGS` and the result in `ACC`. Then in step 4, when `B` stops driving the bus, we let `ACC` drive the bus and store that value into register `A`.
 
@@ -1349,7 +1349,7 @@ You might notice something weird:
 
 This little sequence adds 255 to slot 101. It loads the right values into the CPU's registers, adds 255, and stores that back into slot 101. But why?
 
-Well on this computer adding 255 is just like subtracting 1! This is because the byte throws away anything past 255, so adding 255 and dropping the overflow is the same as taking 1 away. For example, let's say we have the number 5, we add 255, we get 260, but a byte runs out after 255 and rolls back over to 0, so 260 wraps around to 4!
+On this computer, adding 255 is just like subtracting 1! This is because the byte throws away anything past 255, so adding 255 and dropping the overflow is the same as taking 1 away. For example, let's say we have the number 5, we add 255, we get 260, but a byte runs out after 255 and rolls back over to 0, so 260 wraps around to 4!
 
 One more oddity:
 
