@@ -337,7 +337,9 @@ Let's first build this half adder. Let's start by computing the sum, not the car
 | 1 | 0 | 1 |
 | 1 | 1 | 0 |
 
-The sum is `1` only when exactly one input is `1`. This is called XOR, short for exclusive OR. If we combine an OR gate and a NAND gate, and AND them together, we get XOR: <a id="diagram-6-3"></a>
+The sum is `1` only when exactly one input is `1`. This is called XOR, short for exclusive OR. If we combine an OR gate and a NAND gate, and AND them together, we get XOR:
+
+<a id="diagram-6-3"></a> 
 
 <div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/half-adder-sum/anim.webp" alt="Half adder sum / XOR" width="1626" height="819"></div>
 
@@ -750,7 +752,9 @@ In the diagram, the top bit is the bigger bit (the 2's place) and the bottom bit
 
 *Diagram 9.2. How a decoder works.*
 
-As you can tell, no matter the inputs, exactly one output wire is on at a time. How a decoder works is extremely simple. It just uses a bunch of logic gates to ask these simple questions. - If `00` -> turn on output 0
+As you can tell, no matter the inputs, exactly one output wire is on at a time. How a decoder works is extremely simple. It just uses a bunch of logic gates to ask these simple questions.
+
+- If `00` -> turn on output 0
 - If `01` -> turn on output 1
 - If `10` -> turn on output 2
 - If `11` -> turn on output 3
