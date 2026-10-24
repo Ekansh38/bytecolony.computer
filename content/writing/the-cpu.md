@@ -138,7 +138,7 @@ But before the next diagram, I am going to use one more new symbol: ground. For 
 
 Every point marked with the ground symbol is connected together, as if there were hidden wires joining them underneath the drawing. It is not a new component. It is just a less messy way to draw the return path of the circuit. The circuits are still loops. I am just not explicitly drawing the return wire anymore.
 
-In a real schematic, the ground symbol itself would usually stay white. In these diagrams, I color it red when that return point is part of the active path for that frame. I think it makes the current path easier to follow visually.
+In a real schematic, the ground symbol itself would usually stay white. In these diagrams, I color it red when that return point is part of the active path for that frame. I think it makes the current path easier to follow visually, and so the concept is just easier to understand, especially for beginners.
 
 This is how the ground symbol looks:
 
