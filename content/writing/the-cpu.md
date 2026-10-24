@@ -101,7 +101,7 @@ Anyway, here is how a relay works:
 
 <a id="diagram-4-1"></a> 
 
-<div class="svg-diagram"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-relay/anim.webp" alt="An electromagnetic relay" width="1278" height="812"></div>
+<div class="svg-diagram big"><img loading="lazy" decoding="async" src="/assets/frames-gen/basic-relay/anim.webp" alt="An electromagnetic relay" width="1278" height="812"></div>
 
 *Diagram 4.1. An electromagnetic relay.*
 
