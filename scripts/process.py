@@ -104,6 +104,58 @@ def reflow_paragraphs(content):
 
     return '\n'.join(result)
 
+def split_glued_code_fences(content):
+    """Put an opening ``` fence back on its own line.
+
+    An editing pass upstream sometimes merges the paragraph that introduces a
+    code block with the fence that follows it, leaving the ``` at the end of a
+    prose line. Markdown then stops seeing a fence there, so the opening one
+    renders as literal backticks and the closing one starts a block that
+    swallows whatever comes next, diagrams included.
+    """
+    lines = content.split('\n')
+    out = []
+    in_code_block = False
+    in_frontmatter = False
+
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+
+        if i == 0 and stripped == '---':
+            in_frontmatter = True
+            out.append(line)
+            continue
+        if in_frontmatter:
+            if stripped == '---':
+                in_frontmatter = False
+            out.append(line)
+            continue
+
+        # a fence that already stands alone only toggles the state
+        if stripped.startswith('```'):
+            in_code_block = not in_code_block
+            out.append(line)
+            continue
+
+        if in_code_block or '```' not in line:
+            out.append(line)
+            continue
+
+        # prose with an opening fence glued to the end of it
+        idx = line.rfind('```')
+        lang = line[idx + 3:].strip()
+        if idx > 0 and line[:idx].strip() and line.count('```') == 1 and ' ' not in lang:
+            out.append(line[:idx].rstrip())
+            out.append('')
+            out.append('```' + lang)
+            in_code_block = True
+            continue
+
+        out.append(line)
+
+    return '\n'.join(out)
+
+
 def normalize_asset_paths(content):
     """Convert relative `./assets/…` paths to absolute `/assets/…` so Hugo
     serves them correctly from the site root regardless of the article's
@@ -290,6 +342,7 @@ def process_file(path):
         original = f.read()
 
     content = original
+    content = split_glued_code_fences(content)
     content = normalize_asset_paths(content)
     content = convert_svg_imgs(content)
     content = wrap_raster_imgs(content)

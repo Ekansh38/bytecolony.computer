@@ -4,3 +4,4 @@ public/
 resources/
 static/assets/frames-gen/
 node_modules/
+__pycache__/
