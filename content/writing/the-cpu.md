@@ -316,7 +316,7 @@ We start at the rightmost column, do `5 + 8`, get 13, and carry the 1. So we wri
 
 `1 + 1` gives `10`, which is binary for 2.
 
-So the sum bit for that column is `0`, and the carry is `1`. `1 + 1 + 1` gives `11`, which is binary for 3. So the sum bit is `1`, and the carry is `1`, and so on.
+So the sum bit for that column is `0`, and the carry is `1`. `1 + 1 + 1` in the second column gives `11`, which is binary for 3. So the sum bit is `1`, and the carry is `1`, and so on.
 
 How do we build a circuit using logic gates that performs this standard addition algorithm? Well, let's start with the rightmost column. If we think about it, all the possible states are:
 
@@ -340,7 +340,7 @@ Let's first build this half adder. Let's start by computing the sum, not the car
 | 1 | 0 | 1 |
 | 1 | 1 | 0 |
 
-The sum is `1` only when exactly one input is `1`. This is called XOR, short for exclusive OR. If we combine an OR gate and a NAND gate, and AND them together, we get XOR:
+The sum is `1` only when exactly one input is `1`, not both. This is called XOR, short for exclusive OR. If we combine an OR gate and a NAND gate, and AND them together, we get XOR:
 
 <a id="diagram-6-3"></a> 
 
@@ -348,7 +348,7 @@ The sum is `1` only when exactly one input is `1`. This is called XOR, short for
 
 *Diagram 6.3. Half adder sum / XOR.*
 
-OR checks that at least one input is on, and NAND makes sure the inputs aren't both on. Here is how an XOR gate looks:
+OR checks that at least one input is on, and NAND makes sure the inputs aren't both on. Let's package that circuit into a gate called XOR. Here is how an XOR gate looks:
 
 <a id="diagram-6-4"></a> 
 
@@ -356,7 +356,7 @@ OR checks that at least one input is on, and NAND makes sure the inputs aren't b
 
 *Diagram 6.4. An XOR gate.*
 
-Now let's do the carry value. The carry is simple! We only want to carry if we are doing `1 + 1`, so we use an AND gate to check if both inputs are on. Here is our half adder:
+Now let's do the carry value. The carry is simple! If you remember, for our half adder, the only time we want to carry when we are doing `1 + 1`, so we use an AND gate to check if both inputs are on. Here is our half adder:
 
 <a id="diagram-6-5"></a> 
 
@@ -366,7 +366,7 @@ Now let's do the carry value. The carry is simple! We only want to carry if we a
 
 As you can see, it works! `0 + 0 = 0`, `1 + 0 = 1`, `0 + 1 = 1`, and `1 + 1 = 10`.
 
-Now let's package up our half adder into a little box. From now on, I will call these packaged-up circuits chips:
+Now let's package up our half adder into a little box. From now on, I will call these packaged-up circuits "chips":
 
 <a id="diagram-6-6"></a> 
 
