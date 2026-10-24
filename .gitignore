@@ -5,3 +5,7 @@ resources/
 static/assets/frames-gen/
 node_modules/
 __pycache__/
+
+# downloaded by build.sh, not part of the repo
+hugo
+LICENSE
