@@ -961,21 +961,33 @@ body.page.writing table th { text-align: left !important; }
 
 
 /* ── CALLOUTS ([!NOTE], [!TIP], [!WARNING]) ─────────────────── */
+/* An accent rule down the left of a faintly tinted panel, with the type
+   set small and spaced above the body. The body stays at full --fg:
+   dimming it inside a tint costs contrast and the note is content, not
+   an aside to skim past. */
 .callout {
   border-left: 3px solid var(--accent);
   background: color-mix(in srgb, var(--accent) 7%, transparent);
-  padding: 10px 14px;
-  margin: 1.5em 0;
+  padding: 14px 18px;
+  margin: 1.8em 0;
   border-radius: 0 4px 4px 0;
 }
 .callout-label {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   color: var(--accent);
-  margin-bottom: 5px;
+  margin-bottom: 7px;
 }
-.callout-body p { margin: 0; line-height: 1.65; color: color-mix(in srgb, var(--fg) 80%, transparent); }
+.callout-body > :first-child { margin-top: 0; }
+.callout-body > :last-child { margin-bottom: 0; }
+.callout-body p { margin: 0 0 0.8em; }
+/* The code chip's own background is --border, which all but disappears
+   against the tint, so give it an opaque ground of its own in here. */
+.callout-body :not(pre) > code { background: var(--bg); }
+@media (max-width: 700px) {
+  .callout { padding: 12px 14px; }
+}
 .callout-tip  { border-color: #4caf50; background: color-mix(in srgb, #4caf50 7%, transparent); }
 .callout-tip .callout-label { color: #4caf50; }
 .callout-warning { border-color: #e0a040; background: color-mix(in srgb, #e0a040 7%, transparent); }

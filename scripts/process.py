@@ -6,6 +6,8 @@ Runs before Hugo build. Applies mechanical transforms to all markdown files:
   2. <img src="/images/*.{gif,png,jpg}"> → wrapped in <div class="svg-diagram">
   3. > [!NOTE] inline text → two-line Hugo GFM alert format
   4. Hard-wrapped paragraph lines → single reflowed lines (mobile-safe)
+  5. Hard-wrapped callout bodies → reflowed too, so hardWraps does not
+     freeze the book's line breaks into <br> tags on the page
 
 Planning sections are stripped manually before content reaches git.
 This script is idempotent — safe to run on already-processed files.
@@ -35,6 +37,20 @@ def is_special_line(line):
     # ordered list: 1. or 1)
     if re.match(r'^\d+[.)]\s', s): return True
     return False
+
+def is_list_item(line):
+    """A bullet or numbered item, which may itself be hard-wrapped."""
+    return bool(re.match(r'^([-*+]\s|\d+[.)]\s)', line.strip()))
+
+def is_block_start(line):
+    """is_special_line, relaxed for a numbered line that cannot actually
+    start a list. Goldmark only lets an ordered list interrupt a paragraph
+    when it is numbered 1, so a wrapped sentence continuing with "53." is
+    still prose and belongs back on the line it was wrapped from."""
+    s = line.strip()
+    if re.match(r'^\d+[.)]\s', s) and not re.match(r'^1[.)]\s', s):
+        return False
+    return is_special_line(line)
 
 def reflow_paragraphs(content):
     """Join hard-wrapped prose lines within paragraphs into single long lines."""
@@ -79,6 +95,21 @@ def reflow_paragraphs(content):
             i += 1
             continue
 
+        # A list item can be wrapped too. Its continuation lines are lazy
+        # continuations of the same item, so join them onto it; the strict
+        # test here keeps the next item in the list from being swallowed.
+        if is_list_item(line):
+            item = [line.rstrip()]
+            i += 1
+            while i < len(lines):
+                nxt = lines[i]
+                if nxt.strip() == '' or is_special_line(nxt):
+                    break
+                item.append(nxt.strip())
+                i += 1
+            result.append(' '.join(item))
+            continue
+
         # Special line: pass through as-is
         if is_special_line(line):
             result.append(line)
@@ -95,7 +126,7 @@ def reflow_paragraphs(content):
                 break
             if nxt_s.startswith('```') or nxt_s.startswith('~~~'):
                 break
-            if is_special_line(nxt):
+            if is_block_start(nxt):
                 break
             para.append(nxt.rstrip())
             i += 1
@@ -290,6 +321,55 @@ def fix_obsidian_callouts(content):
         flags=re.MULTILINE
     )
 
+def reflow_callouts(content):
+    """Join hard-wrapped lines inside a callout, the way reflow_paragraphs
+    does for ordinary prose.
+
+    The source wraps callout bodies at its own column. hardWraps is on, so
+    every one of those wrap points would otherwise become a <br> and the
+    note would keep the book's line breaks at whatever width the page is.
+    The marker line, blank lines between paragraphs, and anything
+    is_special_line calls a block of its own are all left alone, so a list
+    or a nested quote inside a callout still renders as one.
+    """
+    lines = content.split('\n')
+    out = []
+    i = 0
+
+    while i < len(lines):
+        if not lines[i].lstrip().startswith('>'):
+            out.append(lines[i])
+            i += 1
+            continue
+
+        # collect the whole run of quoted lines, then reflow it as a unit
+        block = []
+        while i < len(lines) and lines[i].lstrip().startswith('>'):
+            block.append(re.sub(r'^\s*>[ \t]?', '', lines[i]))
+            i += 1
+
+        j = 0
+        while j < len(block):
+            body = block[j]
+            stripped = body.strip()
+            if stripped == '' or stripped.startswith('[!') or is_special_line(body):
+                out.append(('> ' + body).rstrip())
+                j += 1
+                continue
+
+            para = [body.rstrip()]
+            j += 1
+            while j < len(block):
+                nxt = block[j]
+                if nxt.strip() == '' or is_special_line(nxt):
+                    break
+                para.append(nxt.rstrip())
+                j += 1
+            out.append('> ' + ' '.join(para))
+
+    return '\n'.join(out)
+
+
 def swap_gifs_for_webp(content):
     """Serve the animated WebP twin (built by extract_frames.py) instead of
     the GIF — same look, ~60-90% smaller. Only rewrites when the twin
@@ -352,6 +432,7 @@ def process_file(path):
     content = isolate_block_diagrams(content)
     content = convert_superscripts(content)
     content = fix_obsidian_callouts(content)
+    content = reflow_callouts(content)
     content = reflow_paragraphs(content)
 
     if content != original:
