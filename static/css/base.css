@@ -274,7 +274,6 @@ body.writing li:not(:where(.project-content *)), body.music li:not(:where(.proje
 
 .album-cover { display: block; width: 280px; height: 280px; object-fit: cover; margin-bottom: 20px; }
 
-.contact-blurb { color: var(--muted); margin-bottom: 10px; }
 .contact-email {
   display: inline-block;
   font-weight: 700;
