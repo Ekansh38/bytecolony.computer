@@ -1,5 +1,6 @@
 ---
 title: "Cropocalypse"
+weight: 1
 summary: "Cook or be cooked. A chaotic top-down survival game where you murder sentient vegetables, craft dishes, and buy weapons from a pigeon arms dealer."
 itchio: "https://byte-colony.itch.io/cropocalypse"
 engine: "Godot"
