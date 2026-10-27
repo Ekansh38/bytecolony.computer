@@ -8,6 +8,9 @@ skills: ["AI tooling", "API integration", "automation", "web deployment"]
 live: "https://amh-assistant.vercel.app"
 summary: "AI chat assistant for AMH Singapore. Connects Trello, Sheets, and Gmail in one place."
 date: 2026-01-01
+build:
+  list: never
+  render: never
 ---
 
 Built an AI assistant for AMH Singapore. It connects their Trello, Google Sheets, and Gmail into one chat interface so people can ask questions about their work without jumping between apps.

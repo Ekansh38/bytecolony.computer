@@ -7,6 +7,9 @@ stack: "Python, Anthropic API, Composio MCP, Vercel"
 status: "live"
 shipped: true
 live: "https://amh-assistant.vercel.app/"
+build:
+  list: never
+  render: never
 ---
 
 I was hired as an AI Intern at AMH Singapore. Their workflow was all over the place: Trello boards, emails, WhatsApp messages, spreadsheets, none of it talking to each other. So I built a bot that pulls from all of those and can actually answer real questions about what's going on.
