@@ -273,7 +273,7 @@ But why does `010` mean 2? Why does `101` mean 5? Is it just randomly assigned? 
 
 *Diagram 4.3. The decimal system.*
 
-In our decimal counting system, each place-value is a power of 10. That is because we have ten digits: 0-9. This exact same place-value logic can apply to the binary system too. We have two digits, 0 and 1, so each place is a power of 2.
+In our decimal counting system, each place-value is a power of 10. That is because we have ten digits: 0–9. This exact same place-value logic can apply to the binary system too. We have two digits, 0 and 1, so each place is a power of 2.
 
 <a id="diagram-5-4"></a> 
 
@@ -688,7 +688,7 @@ This is the logic gate symbol for a tri-state buffer:
 
 Let's address this enable conundrum. We have two uses for the word enable, with completely different meanings and contexts. One means enabling writing, and the other means enabling output. From now on, we will use two separate terms to avoid confusion: `WRITE` and `OUT`.
 
-We can make a new type of register, one with `WRITE`, `OUT`, a `D` input, and a `Q` output that shows the stored bits 0-7. By `D`, I simply mean the input data that we can store when `WRITE` is enabled.
+We can make a new type of register, one with `WRITE`, `OUT`, a `D` input, and a `Q` output that shows the stored bits 0–7. By `D`, I simply mean the input data that we can store when `WRITE` is enabled.
 
 <a id="diagram-8-4"></a> 
 
@@ -1174,7 +1174,7 @@ That is the fetch.
 
 ### Decode & Execute
 
-Steps 1 and 2 are the fetch, and they are the same for every instruction. The rest of the micro-steps depend on the instruction we want to execute, so we use another decoder, this time a `4-16` decoder. Each instruction is actually 8 bits long, one byte, but the opcode only needs 4 bits, so only the bottom 4 bits of IR are wired into the decoder and the top 4 are ignored. We only have 15 [instructions](#isa-table) (0-14, Table 11.1), so we can ignore output 15 of the decoder, and also output 0, since `0` is a `NOP`, which, if we remember, does nothing.
+Steps 1 and 2 are the fetch, and they are the same for every instruction. The rest of the micro-steps depend on the instruction we want to execute, so we use another decoder, this time a `4-16` decoder. Each instruction is actually 8 bits long, one byte, but the opcode only needs 4 bits, so only the bottom 4 bits of IR are wired into the decoder and the top 4 are ignored. We only have 15 [instructions](#isa-table) (0–14, Table 11.1), so we can ignore output 15 of the decoder, and also output 0, since `0` is a `NOP`, which, if we remember, does nothing.
 
 Let's first focus on the 2-byte instructions, the instructions that need to fetch a second byte. Instructions like `LOAD A, n`, `LOAD A, [addr]`, `STORE A, [addr]`, `JMP addr`, `JE addr`, `JC addr`, `JZ addr`.
 
@@ -1251,7 +1251,7 @@ In our [CPU](#diagram-11-1) (Diagram 10.1), if you remember, register A has a sp
 
 | # | Instruction | Step 3 | Step 4 |
 |---:|---|---|---|
-| 8-11 | `ADD`/`AND`/`OR`/`XOR` | `B_OUT`, `ACC_WRITE`, `FLAGS_WRITE` | `ACC_OUT`, `A_WRITE` |
+| 8–11 | `ADD`/`AND`/`OR`/`XOR` | `B_OUT`, `ACC_WRITE`, `FLAGS_WRITE` | `ACC_OUT`, `A_WRITE` |
 
 That is why on step 3 we only have `B_OUT` and no `A_OUT` since `A` is directly connected to the ALU already.
 
