@@ -1059,6 +1059,34 @@ a.pick-title:hover .pick-arrow { opacity: 1; }
 .pick-body { color: var(--muted); font-size: 0.88rem; margin-top: 6px; line-height: 1.6; }
 .pick-body p { margin: 0; }
 
+/* ── FURTHER READING ───────────────────────────────────────── */
+/* The reading list that closes the CPU article. The book sets each entry
+   as a run-on paragraph, which is right for a page and wrong for a screen,
+   so here the title, the author and the note each get their own line.
+   Hairlines rather than boxes: it is a list to scan, not a row of cards to
+   click, and the note stays close to full reading size because people
+   actually read these to decide what to pick up next. */
+.reading-list { margin: 0.5em 0 0; }
+.reading-item {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+.reading-item:first-child { border-top: 1px solid var(--border); }
+.reading-title {
+  font-weight: 700;
+  color: var(--fg);
+  line-height: 1.45;
+}
+.reading-alt { font-weight: 400; color: var(--muted); }
+.reading-author { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
+.reading-note { font-size: 0.95rem; line-height: 1.7; margin-top: 10px; }
+/* the article gives every paragraph a big bottom margin; inside an entry
+   that would pull the hairline away from the text it belongs to */
+.reading-note p, body.page.writing .reading-note p { margin: 0; }
+@media (max-width: 700px) {
+  .reading-item { padding: 15px 0; }
+}
+
 /* ── COMMENTS ──────────────────────────────────────────────── */
 .comments-section { margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
 .comments-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; }

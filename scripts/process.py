@@ -8,6 +8,8 @@ Runs before Hugo build. Applies mechanical transforms to all markdown files:
   4. Hard-wrapped paragraph lines → single reflowed lines (mobile-safe)
   5. Hard-wrapped callout bodies → reflowed too, so hardWraps does not
      freeze the book's line breaks into <br> tags on the page
+  6. The Further Reading entries → split into title, author and note, so the
+     closing list is set as a list rather than four run-on paragraphs
 
 Planning sections are stripped manually before content reaches git.
 This script is idempotent — safe to run on already-processed files.
@@ -417,6 +419,62 @@ def add_lazy_loading(content):
         r'\1loading="lazy" decoding="async" ',
         content)
 
+def structure_further_reading(content):
+    """Give the closing Further Reading list the shape a reading list has on
+    the web rather than the one it has in print.
+
+    In the book each entry is a single run-on paragraph: an italic title, the
+    author, then the annotation. That reads fine on paper and badly on a
+    screen, where nothing tells the four entries apart but a paragraph break.
+    Each one is split into its title, its author and its note so the list can
+    be set as a list.
+
+    An entry that does not parse is left exactly as it was, so it still
+    renders as an ordinary paragraph inside the section. Idempotent: the
+    wrapper is the marker.
+    """
+    if 'class="reading-list"' in content:
+        return content
+
+    m = re.search(r'^## Further Reading[ \t]*$', content, re.M)
+    if not m:
+        return content
+
+    head, body = content[:m.end()], content[m.end():]
+
+    # The author ends at the first ". " that is not a middle initial, so
+    # "Tony R. Kuphaldt. A textbook" breaks after Kuphaldt and not after R.
+    entry = re.compile(
+        r'^\*(?P<title>[^*]+)\*'
+        r'(?P<alt>\s*\([^)]+\))?'
+        r'\s+by\s+(?P<author>.+?)(?<!\s[A-Z])\.\s+'
+        r'(?P<note>\S.*)$'
+    )
+
+    out = []
+    for para in body.split('\n'):
+        hit = entry.match(para.strip()) if para.strip() else None
+        if not hit:
+            out.append(para)
+            continue
+        alt = hit.group('alt')
+        alt = f' <span class="reading-alt">{alt.strip()}</span>' if alt else ''
+        out.append(
+            '<div class="reading-item">\n'
+            f'<div class="reading-title">{hit.group("title")}{alt}</div>\n'
+            f'<div class="reading-author">{hit.group("author")}</div>\n'
+            '<div class="reading-note">\n'
+            '\n'
+            f'{hit.group("note")}\n'
+            '\n'
+            '</div>\n'
+            '</div>'
+        )
+
+    body = '\n'.join(out)
+    body = re.sub(r'\n{3,}', '\n\n', body)
+    return head + '\n\n<div class="reading-list">\n' + body.lstrip('\n') + '\n</div>\n'
+
 def process_file(path):
     with open(path, 'r', encoding='utf-8') as f:
         original = f.read()
@@ -434,6 +492,7 @@ def process_file(path):
     content = fix_obsidian_callouts(content)
     content = reflow_callouts(content)
     content = reflow_paragraphs(content)
+    content = structure_further_reading(content)
 
     if content != original:
         with open(path, 'w', encoding='utf-8') as f:

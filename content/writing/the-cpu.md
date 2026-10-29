@@ -60,7 +60,9 @@ When we connect the two ends of a battery with a wire, the electrons are able to
 
 The filament's resistance is actually important: it limits how much current can flow. If we connect `+` directly to `-` with just a wire, there's almost no resistance in the way, so a huge amount of current flows. The wire and the battery heat up fast, the battery drains, and things can melt or even catch fire. This is called a short circuit, and it is really bad!
 
-Even though technically electrons flow from `-` to `+`, I, and most resources in the real world, show current flowing from `+` to `-`. This is because the direction was decided (thanks, Benjamin Franklin!) before electrons were discovered, and it turns out the direction doesn't really matter (mostly). So we just stick to thinking of it as `+` to `-`, even though in reality the physical electrons flow from `-` to `+`. Later on, when I say a wire is driven high or low, that just means it is connected to `+` or `-`.
+Even though technically electrons flow from `-` to `+`, I, and most resources in the real world, show current flowing from `+` to `-`. This is because the direction was decided (thanks, Benjamin Franklin!) before electrons were discovered, and it turns out the direction doesn't really matter (mostly). So we just stick to thinking of it as `+` to `-`, even though in reality the physical electrons flow from `-` to `+`. Also, later on, when I say a wire is driven high or low, that just means it is connected to `+` or `-`.
+
+This is just the tip of the iceberg when it comes to electrical circuits. There is a lot more interesting stuff to learn, so if you are curious, check out *Lessons in Electric Circuits* in the Further Reading section at the end.
 
 Either way, current can only flow when the loop is complete. A switch is simply a controlled break in the loop, allowing us to break and complete the loop whenever we want. Now we have a circuit that can do one yes/no thing.
 
@@ -1425,3 +1427,47 @@ So to recap, a program is just a list of numbers sitting in RAM. The control uni
 
 I hope you now understand why computers aren't "just" 1s and 0s, but a very tall pile of simple.
 
+## Further Reading
+
+<div class="reading-list">
+<div class="reading-item">
+<div class="reading-title">Lessons in Electric Circuits, Volume I: DC</div>
+<div class="reading-author">Tony R. Kuphaldt</div>
+<div class="reading-note">
+
+A textbook on electricity. If the electricity basics at the start got you curious, this goes much deeper into voltage, current, resistance, and a lot more. Really loved this book, amazing read! Free online at [allaboutcircuits.com](https://www.allaboutcircuits.com/textbook/direct-current/).
+
+</div>
+</div>
+
+<div class="reading-item">
+<div class="reading-title">Code: The Hidden Language of Computer Hardware and Software</div>
+<div class="reading-author">Charles Petzold</div>
+<div class="reading-note">
+
+The classic. This book is what got me excited about CPU architecture and was my introduction to the field. Goes much deeper, with some history too if that interests you. Highly recommended.
+
+</div>
+</div>
+
+<div class="reading-item">
+<div class="reading-title">The Elements of Computing Systems <span class="reading-alt">(Nand2Tetris)</span></div>
+<div class="reading-author">Noam Nisan and Shimon Schocken</div>
+<div class="reading-note">
+
+A project course where you build a computer, an assembler, a compiler, and an operating system yourself, starting from NAND gates. Quite demanding; consider it if you want to go deep into computer science. Free materials at [nand2tetris.org](https://www.nand2tetris.org).
+
+</div>
+</div>
+
+<div class="reading-item">
+<div class="reading-title">What Every Programmer Should Know About Memory</div>
+<div class="reading-author">Ulrich Drepper</div>
+<div class="reading-note">
+
+A great paper on how memory really works. It expands on the RAM ideas here, covering DRAM, caches, and a lot more. Free online.
+
+</div>
+</div>
+
+</div>
