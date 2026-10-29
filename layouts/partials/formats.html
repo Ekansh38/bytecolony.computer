@@ -8,6 +8,9 @@
   The print edition is listed first, which is enough to mark it as the
   one to reach for away from the site.
   Sizes are read from disk at build time so they never go stale.
+  Divided by 1000000, not 1048576: the label says MB, and the
+  browser download bar and the Finder both count MB that way, so
+  a reader comparing the two sees the same number.
 
   Linkable as #formats (the article header's single button points here).
 */}}
@@ -43,7 +46,7 @@
     {{ range . }}
     <div class="fmt-row">
       <span class="fmt-name"><a href="{{ .url }}" target="_blank" rel="noopener">{{ .label }}</a></span>
-      {{ with os.Stat (printf "static%s" .url) }}<span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}
+      {{ with os.Stat (printf "static%s" .url) }}<span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1000000.0) }}</span>{{ end }}
     </div>
     {{ end }}
   </div>
@@ -55,7 +58,7 @@
     {{ range . }}
     <div class="fmt-row">
       <span class="fmt-name"><a href="{{ .url }}">{{ .label }}</a></span>
-      {{ with os.Stat (printf "static%s" .url) }}<span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1048576.0) }}</span>{{ end }}
+      {{ with os.Stat (printf "static%s" .url) }}<span class="format-size">{{ printf "%.1f MB" (div (float .Size) 1000000.0) }}</span>{{ end }}
     </div>
     {{ end }}
   </div>
