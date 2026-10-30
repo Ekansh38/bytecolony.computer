@@ -40,6 +40,8 @@ This probably looks like an overwhelming mess, but don't worry, that's normal. T
 
 - If a diagram is hard to understand, click it and step through each frame one by one using the arrow keys, with the provided descriptions. This only works if you are reading on my website, bytecolony.computer.
 
+- If you are reading this as a book (print, PDF, or ebook), animated diagrams show a few key frames, so transitions and minor moments may be cut. When something is cut, a link points to the full animation at bytecolony.computer.
+
 - Don't try to "memorize" every layout. Focus on the mental models, concepts, and what part each piece has to play.
 
 - If a section feels dense or hard to understand, follow the diagrams first and try to get a feel for what is happening.
@@ -119,7 +121,7 @@ In this example, we end up using a switch in the input circuit anyway, but any k
 
 As you can also tell by the diagram, there is a slight delay between the coil turning on and the metal arm moving. Relays are mechanical, so they do not switch instantly.
 
-Now let's see how we can build an actual electrical AND gate that takes two input wires and outputs an electrical signal.
+Now let's see how we can build an actual electrical AND gate that takes two input wires. For now, the output is still a bulb, but we will fix that soon.
 
 <a id="diagram-4-2"></a> 
 
@@ -129,7 +131,7 @@ Now let's see how we can build an actual electrical AND gate that takes two inpu
 
 The output circuit has two breaks in it, one controlled by each input relay. Only when both inputs are on do both relays close, completing the output loop.
 
-That is the big difference from the hand-switch version. The inputs are still drawn as switches here, but they don't have to be. The input could just be a wire: driven high, current flows through the coil and the relay pulls. Driven low, no current flows and the relay lets go. Using these relays chained in clever ways, you can create every fundamental logic gate, such as the OR gate.
+That is the big difference from the hand-switch version. The inputs are still drawn as switches here, but they don't have to be. The input could just be a wire. One end of each coil is always connected to `-`, and the other end is the input wire. If the input wire is driven high, there is a voltage across the coil, so current flows through it and the relay pulls. If it is driven low, both ends of the coil are connected to `-`. There is no difference in potential between them, so the voltage is 0, no current flows, and the relay lets go. Using these relays chained in clever ways, you can create every fundamental logic gate, such as the OR gate.
 
 But before the next diagram, I am going to use one more new symbol: ground. For our purposes here, the ground symbol will simply refer to the common return point of the circuit, usually connected to the negative side of the battery.
 
