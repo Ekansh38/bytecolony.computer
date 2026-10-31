@@ -8,16 +8,8 @@ status: "active"
 github: "https://github.com/Ekansh38/byte-space"
 ---
 
-"byte-space" is a terminal-based internet simulator set in the early internet era.
+byte-space simulates Unix machines that you connect to from a terminal. A server process holds any number of virtual computers, and you open a session on one of them with a client. Inside a session you get a login prompt, a shell, users, permissions, and a filesystem.
 
-Right now my main focus is BS-EXTFS, my own inode-based hand-rolled filesystem for byte-space. The project is still heavily a work-in-progress. After BS-EXTFS the next phases are networking, and then my own scripting language.
+The machines are a simulation. There is no hardware, nothing boots, and the processes are Go structs. The filesystem is not a simulation. BS-EXTFS is an ext2-inspired filesystem written from scratch, and every file you make is written as bytes into a 64MB disk.img with a real on-disk format you can open in a hex editor.
 
-Features will include (hopefully if I get to it):
-
-- browsing text-based websites
-- seeing packets travel between machines in real-time
-- a custom hand-rolled filesystem with inodes, permissions, and directories ([BS-EXTFS](/projects/bs-extfs/))
-- a custom scripting language for writing programs inside the simulation
-- a virtual kernel that implements real Unix-like syscalls (open, read, socket) and a full TCP/IP stack; programs interact with it exactly like they would a real OS
-
-It is a pretty cool project and you should definitely star it on Github.
+Checkout the Github for more information and a demo video!
