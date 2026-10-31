@@ -13,7 +13,7 @@
     {{ $bits := slice }}
     {{ with .Params.stack }}{{ $bits = $bits | append . }}{{ end }}
     {{ with .Params.status }}{{ $bits = $bits | append . }}{{ end }}
-    <div class="li-meta">{{ delimit $bits ", " }}{{ with .Params.github }}{{ if $bits }}, {{ end }}<a href="{{ . }}" target="_blank">source</a>{{ end }}{{ with .Params.parent }}, part of <a href="/projects/{{ . }}/">{{ . }}</a>{{ end }}</div>
+    <div class="li-meta">{{ delimit $bits ", " }}{{ with .Params.github }}{{ if $bits }}, {{ end }}<a href="{{ . }}" target="_blank">source</a>{{ end }}</div>
   </li>
   {{ end }}{{ end }}
 </ul>
