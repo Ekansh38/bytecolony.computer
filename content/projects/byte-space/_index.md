@@ -2,7 +2,7 @@
 title: "byte-space"
 weight: 2
 layout: "list"
-summary: "Recreates the early 1980s internet in the terminal (WIP)"
+summary: "Simulated Unix Machines and a Hand-Written Filesystem"
 stack: "Go"
 status: "active"
 github: "https://github.com/Ekansh38/byte-space"
