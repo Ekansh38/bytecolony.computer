@@ -1,8 +1,36 @@
 {{ if eq .Type "alert" }}
+{{ if eq .AlertType "tryout" }}
+{{/*
+  A try-it question. The source writes one alert whose body is the question,
+  then a paragraph opening with `**Answer:**`. Split on that paragraph and put
+  the answer behind a disclosure: a question with its answer already in view
+  is not a question, it is a statement.
+
+  Splitting on the rendered HTML rather than the markdown is deliberate, since
+  the hook only ever sees .Text after goldmark has run. If the marker is ever
+  missing the whole body renders as the question, with no disclosure, which
+  still reads correctly.
+*/}}
+{{ $marker := "<p><strong>Answer:</strong>" }}
+{{ $parts := split (string .Text) $marker }}
+<div class="callout callout-tryout">
+  <div class="callout-label">TRY IT</div>
+  <div class="callout-body">
+    {{ index $parts 0 | safeHTML }}
+    {{ if gt (len $parts) 1 }}
+    <details class="tryout">
+      <summary>answer</summary>
+      <div class="tryout-answer">{{ printf "%s%s" $marker (delimit (after 1 $parts) $marker) | safeHTML }}</div>
+    </details>
+    {{ end }}
+  </div>
+</div>
+{{ else }}
 <div class="callout callout-{{ .AlertType }}">
   <div class="callout-label">{{ strings.ToUpper .AlertType }}</div>
   <div class="callout-body">{{ .Text | safeHTML }}</div>
 </div>
+{{ end }}
 {{ else }}
 <blockquote>{{ .Text | safeHTML }}</blockquote>
 {{ end }}

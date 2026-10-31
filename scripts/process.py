@@ -5,6 +5,7 @@ Runs before Hugo build. Applies mechanical transforms to all markdown files:
   1. <img src="/images/*.svg"> → {{< svg "name" >}} shortcode
   2. <img src="/images/*.{gif,png,jpg}"> → wrapped in <div class="svg-diagram">
   3. > [!NOTE] inline text → two-line Hugo GFM alert format
+  3b. > [!TRY-OUT] → [!TRYOUT], the only spelling goldmark reads as an alert
   4. Hard-wrapped paragraph lines → single reflowed lines (mobile-safe)
   5. Hard-wrapped callout bodies → reflowed too, so hardWraps does not
      freeze the book's line breaks into <br> tags on the page
@@ -313,6 +314,19 @@ def convert_superscripts(content):
             out.append(sub)
     return ''.join(out)
 
+def normalize_alert_types(content):
+    """Rewrite `[!TRY-OUT]` as `[!TRYOUT]`.
+
+    goldmark only reads a GFM alert marker whose type is letters, so the
+    hyphenated spelling the source uses falls through as a plain blockquote
+    with a literal `[!TRY-OUT]` line in it. Collapsing the hyphen here keeps
+    the source's spelling intact and still gives the render hook an alert,
+    with `.AlertType` of `tryout`.
+    """
+    return re.sub(r'(^>[ \t]*\[!)([A-Z]+)-([A-Z]+)(\])',
+                  r'\1\2\3\4', content, flags=re.MULTILINE)
+
+
 def fix_obsidian_callouts(content):
     """Convert `> [!NOTE] inline text` to the two-line Hugo GFM alert format.
     Uses [ \\t]+ (not \\s+) so it never crosses newlines — keeps this idempotent."""
@@ -489,6 +503,7 @@ def process_file(path):
     content = add_img_dimensions(content)
     content = isolate_block_diagrams(content)
     content = convert_superscripts(content)
+    content = normalize_alert_types(content)
     content = fix_obsidian_callouts(content)
     content = reflow_callouts(content)
     content = reflow_paragraphs(content)

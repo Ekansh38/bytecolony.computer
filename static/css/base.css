@@ -994,6 +994,51 @@ body.page.writing table th { text-align: left !important; }
 .callout-caution { border-color: #e05050; background: color-mix(in srgb, #e05050 7%, transparent); }
 .callout-caution .callout-label { color: #e05050; }
 
+/* ── TRY IT questions ([!TRY-OUT]) ──────────────────────────── */
+/* Same panel as the other callouts, so a question reads as one of the
+   family rather than a new kind of box. What sets it apart is the
+   control: the answer sits behind a disclosure, so the question is
+   worth attempting before the answer is on the page.
+   No colour of its own on purpose — every theme defines --accent and
+   nothing else, and a second hue here would only compete with the
+   label. */
+.tryout > summary {
+  display: inline-flex;       /* also drops the marker in Chrome */
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 0.95rem;
+  list-style: none;           /* Firefox */
+}
+.tryout > summary::-webkit-details-marker { display: none; }   /* Safari */
+.tryout > summary:hover { text-decoration: underline; }
+/* A square box clipped to a triangle, not a border triangle: the box
+   stays 9x9 through the rotation, so the caret turns in place instead
+   of nudging the label sideways. */
+.tryout > summary::before {
+  content: '';
+  flex: none;
+  width: 9px;
+  height: 9px;
+  background: currentColor;
+  clip-path: polygon(20% 0, 95% 50%, 20% 100%);
+  transition: transform 0.18s ease;
+}
+.tryout[open] > summary::before { transform: rotate(90deg); }
+.tryout-answer { margin-top: 0.8em; }
+.tryout-answer > :last-child { margin-bottom: 0; }
+/* One line of text is a small thing to hit with a thumb, so give it the
+   same vertical padding the nav links get on a phone. */
+@media (max-width: 700px) {
+  .tryout > summary { padding: 8px 0; }
+  .tryout-answer { margin-top: 0.4em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tryout > summary::before { transition: none; }
+}
+
 
 body.page mark {
   background: color-mix(in srgb, var(--accent) 15%, transparent);
