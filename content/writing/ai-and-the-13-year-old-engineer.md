@@ -1,6 +1,7 @@
 ---
 title: "AI and the 13-Year-Old Engineer"
 date: 2026-06-04
+draft: true
 ---
 
 <img src="/assets/ai-essay-hero.jpg" alt="AI and the 13-Year-Old Engineer" class="hero-img" width="1200" height="846">

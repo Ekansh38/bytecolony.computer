@@ -14,11 +14,6 @@
   Plain-text version: https://bytecolony.computer/writing/the-cpu/raw.html
   PDF editions: https://bytecolony.computer/projects/the-cpu-explainer/#formats
 
-- [AI and the 13-Year-Old Engineer](https://bytecolony.computer/writing/ai-and-the-13-year-old-engineer/):
-  Essay on learning to program while AI coding tools exist, and what is lost
-  by skipping the part where you write the code yourself.
-  Plain-text version: https://bytecolony.computer/writing/ai-and-the-13-year-old-engineer/raw.html
-
 ## Notes for machine readers
 
 - Every article has a chrome-free plain-HTML version at `<article-url>raw.html`.
