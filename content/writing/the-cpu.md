@@ -242,7 +242,7 @@ With our knowledge about logic gates, let's create the "should-I-wash-my-dog 500
 
 Again, this animation doesn't cover all possible states.
 
-Keep in mind these [electromagnetic relays](#diagram-4-1) (Diagram 3.1) we used in the examples are quite big and slow. Relays aren't the only solution. They are simply an early solution, and an easy one to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) actually used these types of relays.
+The [electromagnetic relays](#diagram-4-1) (Diagram 3.1) we used in the examples are quite big and slow. Relays aren't the only solution. They are simply an early solution, and an easy one to understand, and many real computers like the [Harvard Mark I](https://en.wikipedia.org/wiki/Harvard_Mark_I) actually used these types of relays.
 
 In modern computers, similar behavior is achieved by using transistors. A transistor is kind of like a relay, but with no mechanical moving parts. A voltage on one pin decides whether current can pass between the other two. This makes transistors much faster and smaller.
 
@@ -441,7 +441,7 @@ We have made a full adder! Now we can chain full adders together to add two 8-bi
 
 *Diagram 5.10. An 8-bit adder.*
 
-Each full adder handles one column. The carry-out from one column becomes the carry-in for the next column. That is it! That is all addition is!
+Each full adder handles one column. The carry-out from one column becomes the carry-in for the next column. We did it, that's all addition is!
 
 Keep in mind, the carry-in for the first adder is set to ground, a.k.a. 0. In the chip version below I bring that first carry-in out as a `CI` pin instead, so the chip can be chained too. For now we just feed it 0. Also, notice how we have 9 outputs, not 8. That is because two 8-bit values can add up to a number too big to fit in eight bits. It's like how adding two 2-digit numbers could result in a three-digit number for us. Like 50 + 50 = 100.
 
@@ -642,7 +642,7 @@ This repeating on-off behavior can be achieved in different ways. A rough toy ex
 
 Real clocks are built in more sophisticated and reliable ways, often using crystals or other oscillator circuits. But we do not need to build the clock itself here. For now, we can treat it as a little chip that repeatedly produces the same on-off signal.
 
-Just imagine the new accumulator with a clock signal instead of a `STEP` button. I am too lazy to draw it for you.
+Just imagine the new accumulator with a clock signal instead of a `STEP` button.
 
 We now have some storage. A register that can hold a byte, and update exactly when we want. But registers on their own are not enough. We need to be able to move numbers between registers, the adders, and the main memory, which we will build later.
 
@@ -662,7 +662,7 @@ To show the state of the wires, I can write a number in the arrow; the number 0,
 
 *Diagram 7.1. Two registers sharing a bus.*
 
-But we have an issue: this diagram is technically not possible yet. Say register A is outputting `00000000` and register B is outputting `00000001`, both onto the same 8 wires. Look at the last wire. Register A is driving it low, so that wire is connected to `-`. Register B is driving the same wire high, so it is also connected to `+`. What happens?
+But we have an issue: this diagram is technically not possible yet. Say register A is outputting `00000000` and register B is outputting `00000001`, both onto the same 8 wires. Notice what would happen to the last wire. Register A is driving it low, so that wire is connected to `-`. Register B is driving the same wire high, so it is also connected to `+`. What happens?
 
 Yep. A short-circuit.
 
@@ -688,7 +688,7 @@ Z: disconnected
 This relay diagram of how a tri-state buffer works should make this concept crystal clear.
 
 > [!NOTE]
-> I have drawn everything the output wire is currently touching in yellow. Yellow is just there so you can follow the path with your eyes; it doesn't mean anything.
+> I have drawn everything the output wire is currently touching in yellow. Yellow is just there so you can follow the path; it doesn't mean anything.
 
 <a id="diagram-8-2"></a> 
 
@@ -964,7 +964,7 @@ The XOR gate, labeled 6, works by XORing each pair of bits from `A` and `B`, and
 
 Then we flip the bits with gate 7, getting `11111111`, and if we AND them all together with gate 8, we can check if they are all true. If even one pair of bits differs, that wire ends up `0` after the flip, and the AND outputs `0`. Simple.
 
-The `CARRY` flag is simple: we just connect the adder's carry-out, `CO`, directly to the flag output. Of course, it only means anything when we are actually adding. That's it, the ALU is complete. We can now piece together this whole CPU.
+The `CARRY` flag is simple: we just connect the adder's carry-out, `CO`, directly to the flag output. Of course, it only means anything when we are actually adding. The ALU is complete. We can now piece together this whole CPU.
 
 > [!TRYOUT]
 > The ALU adds `11111111` and `00000001`. Which flags turn on?
