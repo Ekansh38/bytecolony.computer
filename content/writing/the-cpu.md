@@ -48,7 +48,7 @@ This probably looks like an overwhelming mess, but don't worry, that's normal. T
 
 ### Circuits & Switches
 
-First, we need the basics of how electricity and circuits work. Here is a simple circuit:
+First, we need to know the basics of how electricity and circuits work. Here is a simple circuit:
 
 <a id="diagram-3-1"></a> 
 
