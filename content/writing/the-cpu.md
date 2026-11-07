@@ -8,8 +8,8 @@ about: ["Central processing unit", "Computer architecture", "Logic gate", "Digit
 teaches: ["How logic gates are built from switches and relays", "How binary addition works", "How a bit is stored", "How RAM is addressed", "How a control unit decodes instructions"]
 readingTime: 60
 faq: "cpu"
-pdf: /assets/the-cpu-explainer-light.pdf
-pdfdark: /assets/the-cpu-explainer-dark.pdf
+pdf: /assets/the-cpu-explainer-book.pdf
+pdfdark: /assets/the-cpu-explainer-book-dark.pdf
 github: https://github.com/Ekansh38/the-cpu-explainer/
 ---
 ## Part 1: Foundations

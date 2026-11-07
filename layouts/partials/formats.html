@@ -5,8 +5,10 @@
   type. Each row is one edition: the variant name is the link, and the
   size sits in a column beside it so the whole set scans vertically.
 
-  The print edition is listed first, which is enough to mark it as the
-  one to reach for away from the site.
+  The print interior sits with the plain links rather than under pdf,
+  and alone among the downloads it shows no size. It is the bare block
+  a printer is fed, not an edition to read on a screen, so listing it
+  beside the others would invite a choice nobody wants to make.
   Sizes are read from disk at build time so they never go stale.
   Divided by 1000000, not 1048576: the label says MB, and the
   browser download bar and the Finder both count MB that way, so
@@ -15,15 +17,13 @@
   Linkable as #formats (the article header's single button points here).
 */}}
 {{ $pdfs := slice }}
-{{ with .Params.pdfprint }}{{ $pdfs = $pdfs | append (dict "label" "print" "url" .) }}{{ end }}
-{{ with .Params.pdf }}{{ $pdfs = $pdfs | append (dict "label" "light" "url" .) }}{{ end }}
-{{ with .Params.pdfdark }}{{ $pdfs = $pdfs | append (dict "label" "dark" "url" .) }}{{ end }}
+{{ with .Params.pdf }}{{ $pdfs = $pdfs | append (dict "label" "book" "url" .) }}{{ end }}
+{{ with .Params.pdfdark }}{{ $pdfs = $pdfs | append (dict "label" "book, dark" "url" .) }}{{ end }}
 
 {{ $epubs := slice }}
-{{ with .Params.epub }}{{ $epubs = $epubs | append (dict "label" "light" "url" .) }}{{ end }}
-{{ with .Params.epubdark }}{{ $epubs = $epubs | append (dict "label" "dark" "url" .) }}{{ end }}
+{{ with .Params.epub }}{{ $epubs = $epubs | append (dict "label" "epub" "url" .) }}{{ end }}
 
-{{ $hasAny := or .Params.article (or $pdfs (or $epubs (or .Params.raw .Params.github))) }}
+{{ $hasAny := or .Params.article (or $pdfs (or $epubs (or .Params.raw (or .Params.pdfprint .Params.github)))) }}
 {{ if $hasAny }}
 <section class="formats" id="formats">
   <h2 class="formats-title">formats</h2>
@@ -37,6 +37,9 @@
     {{ end }}
     {{ with .Params.github }}
     <li><a href="{{ . }}" target="_blank" rel="noopener">source</a></li>
+    {{ end }}
+    {{ with .Params.pdfprint }}
+    <li><a href="{{ . }}" target="_blank" rel="noopener">print interior</a></li>
     {{ end }}
   </ul>
 
