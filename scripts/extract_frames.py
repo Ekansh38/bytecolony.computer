@@ -114,10 +114,32 @@ def needs_rebuild(gif_path, sidecar_path, manifest_path):
     return os.path.getmtime(gif_path) > mtime or os.path.getmtime(sidecar_path) > mtime
 
 
+def check_captions(name, captions, count):
+    """Report sidecar captions that don't line up with the GIF's frames.
+
+    A frame with no caption still renders, the viewer just says there isn't
+    one yet, and a caption numbered past the last frame is dropped on the
+    floor. Both are silent, which is the wrong way for a numbering mistake
+    to fail: the sidecar is written by hand against a GIF that gets
+    re-exported, so a frame added or removed slides every later caption onto
+    the wrong picture. Shout at build time instead.
+    """
+    problems = []
+    missing = [i for i in range(1, count + 1) if not captions.get(i, "").strip()]
+    if missing:
+        problems.append(f"no caption for frame(s) {', '.join(map(str, missing))}")
+    extra = sorted(n for n in captions if n > count or n < 1)
+    if extra:
+        problems.append(f"caption(s) {', '.join(map(str, extra))} past the GIF's {count} frames")
+    for p in problems:
+        print(f"extract_frames: {name}: {p}", file=sys.stderr)
+    return len(problems)
+
+
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     index = {}
-    built = skipped = 0
+    built = skipped = warned = 0
 
     for gif_path in sorted(glob.glob(os.path.join(ASSET_DIR, "*.gif"))):
         name = os.path.splitext(os.path.basename(gif_path))[0]
@@ -162,11 +184,13 @@ def main():
             json.dump(manifest, f, ensure_ascii=False, indent=1)
 
         index[name] = {"count": len(manifest["frames"]), "title": manifest["title"]}
+        warned += check_captions(name, meta["captions"], len(manifest["frames"]))
 
     with open(os.path.join(OUT_DIR, "index.json"), "w", encoding="utf-8") as f:
         json.dump(index, f, ensure_ascii=False, indent=1)
 
-    print(f"extract_frames: {built} extracted, {skipped} up-to-date, {len(index)} total")
+    summary = f"extract_frames: {built} extracted, {skipped} up-to-date, {len(index)} total"
+    print(summary if not warned else f"{summary}, {warned} caption warning(s)")
 
 
 if __name__ == "__main__":
