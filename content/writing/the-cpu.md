@@ -1288,7 +1288,7 @@ Here is a little demo where it shows the process of executing the instruction `L
 
 <div class="svg-diagram big"><img loading="lazy" decoding="async" src="/assets/frames-gen/cu-internals-two-demo/anim.webp" alt="LOAD A, [addr] animation" width="1920" height="1492"></div>
 
-*Diagram 13.2. `LOAD A, [addr]` animation.*
+*Diagram 13.2. Executing `LOAD A, [addr]`.*
 
 When the label for a control signal turns red, that means it's on (pink ones still wait for `NOT CLOCK`). Next we do the `MOV` instructions.
 
