@@ -60,9 +60,15 @@
   <link rel="stylesheet" href="/css/mobile.css">
   <link rel="stylesheet" href="/css/terminal.css">
   <link rel="stylesheet" href="/css/settings.css">
-  <link rel="stylesheet" href="/css/article-nav.css">
+  {{/*
+    The article nav pill is for reading a long piece, so it ships only
+    with one. Loaded everywhere it also built itself from whatever h2s
+    a page happened to have, which on a listing meant a table of
+    contents for the listing itself.
+  */}}
   {{ $isArticle := or (eq .Section "writing") (and (eq .Kind "page") (eq .Section "projects")) }}
   {{ if $isArticle }}
+  <link rel="stylesheet" href="/css/article-nav.css">
   <link rel="stylesheet" href="/css/writing.css">
   <link rel="preload" as="font" type="font/woff2" href="/fonts/tldraw_mono.woff2" crossorigin>
   {{ end }}
@@ -190,7 +196,9 @@
   <script src="/js/bg-sim.js" defer></script>
   <script src="/js/terminal.js" defer></script>
   <script src="/js/reading-progress.js" defer></script>
+  {{ if or (eq .Section "writing") (and (eq .Kind "page") (eq .Section "projects")) }}
   <script src="/js/article-nav.js" defer></script>
+  {{ end }}
   <script src="/js/svg-lazy.js" defer></script>
   <script src="/js/diagram-lightbox.js" defer></script>
   <script src="/js/pdf-menu.js" defer></script>
