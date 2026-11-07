@@ -1435,7 +1435,7 @@ Here is our CPU executing it:
 
 <a id="diagram-15-1"></a> 
 
-<div class="svg-diagram big"><img loading="lazy" decoding="async" src="/assets/frames-gen/program-demo/anim.webp" alt="The CPU running a simple program" width="1920" height="1789"></div>
+<div class="svg-diagram big"><img loading="lazy" decoding="async" pdf-frames="link-last" src="/assets/frames-gen/program-demo/anim.webp" alt="The CPU running a simple program" width="1920" height="1789"></div>
 
 *Diagram 14.1. The CPU running a simple program.*
 
@@ -1547,7 +1547,9 @@ Some user would have to manually sit there at the Control Panel flipping these v
 
 So what about keyboards, monitors? All the things that turn a CPU into a computer. Well, you have already seen the core idea. Imagine the DISPLAY register, just much bigger: thousands of memory slots instead of one, where each number sets the color of one tiny pixel on a screen. A keyboard is the same thing but in reverse, a slot you read instead of write, where the value is a code for the last key pressed.
 
-Real computers are a lot fancier about it. They have dedicated I/O buses, whole controller chips that talk to the devices so the CPU doesn't have to, and devices that can even write into RAM directly on their own.
+Real computers are a lot fancier about it. They have dedicated I/O buses, whole controller chips that talk to the devices so the CPU doesn't have to, and devices that can even write into RAM directly on their own. They also have storage, like a disk or SSD, which lets information persist even when the power goes off.
+
+Then there is the operating system. It is the first program that runs when you turn your computer on, and it does a lot. It loads programs from storage into RAM and runs them. It switches between programs so fast that it creates the illusion of many things happening at once. It handles the keyboard, the screen, and the disk. It makes the programmer's life much easier. This is of course the very basics. Operating systems do a lot of interesting and complex things, so if you are curious, check out *Operating Systems: Three Easy Pieces* in the Further Reading section.
 
 So to recap, a program is just a list of numbers sitting in RAM. The control unit fetches those numbers one at a time, decodes them, and executes each one as a few micro-steps, flipping control wires that move bytes between registers. Every one of those components is made up of simple logic gates, and every gate is made up of relays, or more commonly these days, transistors.
 
@@ -1582,6 +1584,16 @@ The classic. This book is what got me excited about CPU architecture and was my 
 <div class="reading-note">
 
 A project course where you build a computer, an assembler, a compiler, and an operating system yourself, starting from NAND gates. Quite demanding; consider it if you want to go deep into computer science. Free materials at [nand2tetris.org](https://www.nand2tetris.org).
+
+</div>
+</div>
+
+<div class="reading-item">
+<div class="reading-title">Operating Systems: Three Easy Pieces</div>
+<div class="reading-author">Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau</div>
+<div class="reading-note">
+
+The next step up the stack. This book breaks down how operating systems work in three easy pieces. Clear, funny, and highly recommended. Free online at [ostep.org](https://www.ostep.org).
 
 </div>
 </div>
