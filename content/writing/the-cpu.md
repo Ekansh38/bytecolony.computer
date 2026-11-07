@@ -320,7 +320,7 @@ So now that we can represent numbers with wires, how can we add numbers together
 
 *Diagram 4.6. Math?*
 
-### Math?
+### 1 + 1 = 10
 
 Let's start with a brief reminder of how we algorithmically add two decimal numbers.
 
@@ -338,7 +338,7 @@ We start at the rightmost column, do 5 + 8, get 13, and carry the 1. So we write
 
 *Diagram 5.2. Binary addition.*
 
-`1 + 1` gives `10`, which is binary for 2.
+So yes, `1 + 1 = 10`. Not ten. `10` is binary for 2.
 
 So the sum bit for that column is `0`, and the carry is `1`. `1 + 1 + 1` in the second column gives `11`, which is binary for 3. So the sum bit is `1`, and the carry is `1`, and so on.
 
@@ -646,7 +646,7 @@ Just imagine the new accumulator with a clock signal instead of a `STEP` button.
 
 We now have some storage. A register that can hold a byte, and update exactly when we want. But registers on their own are not enough. We need to be able to move numbers between registers, the adders, and the main memory, which we will build later.
 
-### Public Transport?
+### Taking the Bus
 
 One simple solution to move bytes around would be to give every component its own bundle of 8 wires to every other component, but that would become a mess very quickly.
 
