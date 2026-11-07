@@ -60,7 +60,7 @@ A battery has two sides, `+` and `-`. On the `-` side, the atoms have an excess 
 
 When we connect the two ends of a battery with a wire, the electrons are able to flow. That's because wires are made of metals like copper, which are conductors: their electrons can move easily from atom to atom. Materials like plastic, rubber and air are insulators: they don't let go of their electrons easily, so almost nothing flows through them. As the electrons travel from the `-` side of the battery to the `+` side of the battery, they pass through the filament of the light bulb, turning on the light. The filament is a very thin wire, so it's harder for the electrons to squeeze through. This is called resistance, and pushing current through it makes the filament heat up so much that it glows. The battery has chemicals that keep that imbalance of electrons going, to keep the current flowing.
 
-The filament's resistance is actually important: it limits how much current can flow. If we connect `+` directly to `-` with just a wire, there's almost no resistance in the way, so a huge amount of current flows. The wire and the battery heat up fast, the battery drains, and things can melt or even catch fire. This is called a short circuit, and it is bad!
+The filament's resistance is actually important: it limits how much current can flow. If we connect `+` directly to `-` with just a wire, there's almost no resistance in the way, so a huge amount of current flows. The wire and the battery heat up fast, the battery drains, and things can melt or even catch fire. This is called a short circuit, and it is bad.
 
 Even though technically electrons flow from `-` to `+`, most resources in the real world show current flowing from `+` to `-`. This is because the direction was decided (thanks, Benjamin Franklin!) before electrons were discovered, and it turns out the direction doesn't really matter (mostly). So we just stick to thinking of it as `+` to `-`, even though in reality the physical electrons flow from `-` to `+`. Also, later on, when I say a wire is driven high or low, that just means it is connected to `+` or `-`.
 
@@ -242,7 +242,7 @@ NAND is AND with the output flipped. NOR is OR with the output flipped. That lit
 >
 > **Answer:** `0`. It's AND, flipped.
 
-With our knowledge about logic gates, let's create the "should-I-wash-my-dog 5000" machine!
+With our knowledge about logic gates, let's create the "should-I-wash-my-dog 5000" machine.
 
 <a id="diagram-4-11"></a> 
 
@@ -398,7 +398,7 @@ Here is how an XOR gate looks:
 
 *Diagram 5.4. An XOR gate.*
 
-Now let's do the carry value. The carry is simple! If you remember, for our half adder, the only time we want to carry is when we are doing `1 + 1`, so we use an AND gate to check if both inputs are on.
+Now let's do the carry value. The carry is simple. If you remember, for our half adder, the only time we want to carry is when we are doing `1 + 1`, so we use an AND gate to check if both inputs are on.
 
 Here is our half adder:
 
@@ -457,7 +457,7 @@ Let's again package this up into a chip:
 
 *Diagram 5.9. A full adder chip.*
 
-We have made a full adder! Now we can chain full adders together to add two 8-bit numbers. Since 8 bits make one byte, this is an adder that can add two one-byte numbers: anything from 0 to 255.
+We have made a full adder. Now we can chain full adders together to add two 8-bit numbers. Since 8 bits make one byte, this is an adder that can add two one-byte numbers: anything from 0 to 255.
 
 <a id="diagram-6-10"></a> 
 
@@ -502,7 +502,7 @@ With a bit of extra circuitry around the adder, we can also make little status w
 
 I don't want to go deep into flags yet. Just remember that the adder can output little yes/no facts about the sum. That matters later for instructions like "jump if zero." But let's not get ahead of ourselves.
 
-We have just built addition! But we also need something else: storage. For example, let's say we want to build a circuit that counts by ones, like 1, 2, 3, 4, ...
+We have just built addition. But we also need something else: storage. For example, let's say we want to build a circuit that counts by ones, like 1, 2, 3, 4, ...
 
 The obvious idea is to feed the output of the adder back into one of its inputs. Start with `00000000`, add `00000001`, get `00000001`. Feed that back in, add `00000001` again, get `00000010`. Then `00000011`, then `00000100`, and so on.
 
@@ -618,9 +618,9 @@ The circuit that does this is called a D-type edge-triggered flip-flop. This mig
 
 How it works is, when the enable wire is off, the first latch mirrors `D`. That is because the NOT gate flips the enable signal, so the first latch sees it as on.
 
-Then when enable turns on, the second latch stores the output of the first one. And because enable is now on, the first latch is locked, so it can't change!
+Then when enable turns on, the second latch stores the output of the first one. And because enable is now on, the first latch is locked, so it can't change.
 
-So if `D` changes while enable is off, we are all good because the second latch is locked. But if `D` changes while enable is on, we are fine because the first latch is locked. So `Q` can only change at the exact moment `E` turns on. That is our rising edge!
+So if `D` changes while enable is off, we are all good because the second latch is locked. But if `D` changes while enable is on, we are fine because the first latch is locked. So `Q` can only change at the exact moment `E` turns on. That is our rising edge.
 
 Here is one storage cell, which is just the flip-flop we showed above:
 
@@ -782,9 +782,9 @@ Of course, on the second frame, when `OUT` of register A is enabled, the `D` wir
 
 Also generally in this diagram, register B's output is sometimes shown as `Z` even when the bus is 53. That is because register B's `OUT` is off, so register B is not driving the bus. It may be connected to a bus currently at 53, but the 53 is coming from register A. `Z` describes what register B is doing, which is nothing.
 
-By the end of this sequence, we have copied the value 53 to register B! We can have many more registers and other components sharing a common bus, as long as only one of them is driving the bus at a time.
+By the end of this sequence, we have copied the value 53 to register B. We can have many more registers and other components sharing a common bus, as long as only one of them is driving the bus at a time.
 
-Now we can store a byte, compute a sum, and move bytes around! The next problem is organization and scale. How do we organize many stored bytes so the machine can choose one slot, read it, and write back to it? A handful of registers aren't enough.
+Now we can store a byte, compute a sum, and move bytes around. The next problem is organization and scale. How do we organize many stored bytes so the machine can choose one slot, read it, and write back to it? A handful of registers aren't enough.
 
 ### Organizing Data
 
@@ -796,7 +796,7 @@ We want to build a system that organizes data into a simple structure.
 
 *Diagram 8.1. Our data structure.*
 
-Many slots, each with its own address. This system is known technically as RAM: Random Access Memory. It is called RAM because when the CPU wants to access a slot, it just knows the number and can access any slot at will. It is not like flipping through a book looking for the right page. It is more like grabbing a book from a bookshelf, where you already know exactly where the book is.
+It is a set of slots, each with its own address. This system is known technically as RAM: Random Access Memory. It is called RAM because when the CPU wants to access a slot, it just knows the number and can access any slot at will. It is not like flipping through a book looking for the right page. It is more like grabbing a book from a bookshelf, where you already know exactly where the book is.
 
 Now let's think about exactly what we would want this RAM chip to do, and what inputs and outputs it would have.
 
@@ -819,7 +819,7 @@ top 2 bits = column
 bottom 2 bits = row
 ```
 
-Two bits can choose 4 values, so this gives us a 4×4 grid of memory slots. That is 16 total bytes!
+Two bits can choose 4 values, so this gives us a 4×4 grid of memory slots. That is 16 total bytes.
 
 Once the address selects a slot, two things can happen:
 
@@ -859,7 +859,7 @@ We use one `2-4` decoder for the rows and another `2-4` decoder for the columns.
 
 *Diagram 8.4. Where the row and column meet.*
 
-Honestly? That's it. We can use two decoders, sixteen registers, some wires and buses all mashed together with some extra logic gates and BOOM! We have some RAM.
+Honestly? That's it. Two decoders, sixteen registers, some wires and buses, a few extra logic gates, and we have RAM.
 
 > [!NOTE]
 > In the next diagram, blue lines are 8-bit data buses. `OUT` is yellow, and `WRITE` is orange. They are still ordinary wires; the colors are only there to make the diagram easier to follow.
@@ -990,7 +990,7 @@ The NOT gate on the right, labeled 4, is just like before: there are actually ei
 
 But the AND gate next to it, labeled 5, takes in a bus and outputs just one wire. Like the [three-input AND](#diagram-9-7) from the RAM section (Diagram 8.7), this AND gate takes in 8 inputs and produces 1 output. It just checks if all of its inputs are on.
 
-So if we flip each bit, and then check if all of them are on, we get the `ZERO` flag. This makes sense because all the bits going into the AND gate can only be on if they were originally `00000000`, a.k.a. zero!
+So if we flip each bit, and then check if all of them are on, we get the `ZERO` flag. This makes sense because all the bits going into the AND gate can only be on if they were originally `00000000`, a.k.a. zero.
 
 Next, let's cover the `EQUAL` circuitry. It consists of:
 
@@ -1064,7 +1064,7 @@ Now, about this mysterious box labeled CU. What is it exactly? It is the control
 
 But how exactly does the computer work in the first place? First we load our program into RAM: a list of instructions, each one just a number. The control unit then fetches the instruction from RAM at the address stored in PC, so if PC is 0, it fetches the instruction at address 0 and stores it in IR. How? It copies PC into the MAR and flips on `RAM_OUT`, [exactly like we have done before](#diagram-9-10) (Diagram 8.10). Next it figures out what that instruction means, and executes a bunch of steps to actually do that instruction, then it increments or changes PC and repeats that whole cycle.
 
-This is kind of a simplified version of what our CPU will do, but we will dive into it in the following sections. You can think of this cycle as fetch, decode, execute. Fetching gets us the instruction, decoding figures out what it means, and executing actually flips those control wires on and off to accomplish that instruction!
+This is kind of a simplified version of what our CPU will do, but we will dive into it in the following sections. You can think of this cycle as fetch, decode, execute. Fetching gets us the instruction, decoding figures out what it means, and executing actually flips those control wires on and off to accomplish that instruction.
 
 But before we can figure out how the CU works, we need to figure out how instructions work. What does an instruction even look like?
 
@@ -1255,7 +1255,7 @@ So to accomplish this, we only need 2 simple micro-steps:
 1. `PC_OUT`, `MAR_WRITE`
 2. `RAM_OUT`, `IR_WRITE`, `PC_INC`
 
-We know how we can output and write in one micro-step, but three things? How can we increment PC too? Incrementing PC has nothing to do with the bus and doesn't disrupt anything else going on, so we just can! And notice, these 2 micro-steps are exactly the same for every single instruction.
+We know how we can output and write in one micro-step, but three things? How can we increment PC too? Incrementing PC has nothing to do with the bus and doesn't disrupt anything else going on, so we just can. And notice, these 2 micro-steps are exactly the same for every single instruction.
 
 One thing I am not drawing in the following diagrams: every `WRITE` signal is ANDed with `NOT CLOCK`, like we just discussed. The same goes for PC's `I` signal: incrementing stores a value too. It just comes from PC's own little adder instead of the bus, so it waits for `NOT CLOCK` like every other store.
 
@@ -1377,7 +1377,7 @@ So here we are:
 
 Again I am leaving out all the instructions apart from these 4, and again this wiring is a mess. All you need to know is that the bottom 2 bits of the opcode are tapped out and connected directly to the ALU's `OP` bits. And the rest of the logic just checks if it is an ALU instruction and if so, on the appropriate steps, it enables the correct control wires according to the table above.
 
-One last thing: `HALT`. This instruction just stops the clock. The way we do this is by using an [SR latch](#diagram-7-1) (Diagram 6.1), whose `Q` is inverted and then ANDed with the clock signal itself. So, on step 3 of instruction number 14, we just set that latch, and boom! We froze the computer.
+One last thing: `HALT`. This instruction just stops the clock. The way we do this is by using an [SR latch](#diagram-7-1) (Diagram 6.1), whose `Q` is inverted and then ANDed with the clock signal itself. So, on step 3 of instruction number 14, we just set that latch, and we have frozen the computer.
 
 <a id="diagram-14-5"></a> 
 
@@ -1479,7 +1479,7 @@ You might notice something weird:
 
 This little sequence first puts 255 into register B. Our CPU doesn't have an instruction to load directly into register B, so we have to load it into register A first and then move it over. Then it loads the value in slot 101 into register A, adds them, and stores the result back into slot 101. But why?
 
-On this computer, adding 255 is just like subtracting 1! This is because the byte throws away anything past 255, so adding 255 and dropping the overflow is the same as taking 1 away. For example, let's say we have the number 5, we add 255, we get 260, but a byte runs out after 255 and rolls back over to 0, so 260 wraps around to 4!
+On this computer, adding 255 is just like subtracting 1! This is because the byte throws away anything past 255, so adding 255 and dropping the overflow is the same as taking 1 away. For example, let's say we have the number 5, we add 255, we get 260, but a byte runs out after 255 and rolls back over to 0, so 260 wraps around to 4.
 
 One more oddity:
 
@@ -1493,7 +1493,7 @@ One more oddity:
 
 Our goal with this chunk of code is to just check if slot 101 is zero. If so, we are done and can jump to some other part of the program. Because this CPU is slightly more primitive than real CPUs, the programmer (me) had to use some weird trickery to check if it is zero. In this case I just added 0 to the value. That doesn't change it, but the flags only update after an ALU instruction, and the `ZERO` flag only turns on if the answer is 0. The only way 0 + something gives 0 is if that something was 0, so now the `ZERO` flag tells us if slot 101 is 0.
 
-My point with showing you all of these tricks is that, even though this CPU might not be the most advanced, it can do real things!
+My point with showing you all of these tricks is that, even though this CPU might not be the most advanced, it can do real things.
 
 Modern CPUs have proper solutions to things like subtraction, negative numbers, division, more flags, and a lot more that smart computer science people just thought of. You can go learn about them yourself. But here is the thing: those dedicated circuits exist mostly for speed. Our funky little CPU can already do a lot more than you'd think, just slower, with tricks like the ones above.
 
@@ -1543,7 +1543,7 @@ I hope you now understand why computers aren't "just" 1s and 0s, but a very tall
 <div class="reading-author">Tony R. Kuphaldt</div>
 <div class="reading-note">
 
-A textbook on electricity. If the electricity basics at the start got you curious, this goes much deeper into voltage, current, resistance, and a lot more. Really loved this book, amazing read! Free online at [allaboutcircuits.com](https://www.allaboutcircuits.com/textbook/direct-current/).
+A textbook on electricity. If the electricity basics at the start got you curious, this goes much deeper into voltage, current, resistance, and a lot more. Really loved this book, amazing read. Free online at [allaboutcircuits.com](https://www.allaboutcircuits.com/textbook/direct-current/).
 
 </div>
 </div>
