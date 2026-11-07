@@ -332,7 +332,7 @@ So now that we can represent numbers with wires, how can we add numbers together
 
 *Diagram 4.6. Math?*
 
-### 1 + 1 = 10
+### Making 1 + 1 = 10
 
 Let's start with a brief reminder of how we algorithmically add two decimal numbers.
 
