@@ -6,7 +6,7 @@
 
 {{ $projects := .Site.GetPage "/projects" }}
 <hr>
-<h2><a href="/projects" class="now-link">personal projects</a></h2>
+<h2><a href="/projects" class="now-link">main projects</a></h2>
 {{ $personal := slice }}
 {{ range $projects.Sections }}{{ if not .Params.shipped }}{{ $personal = $personal | append . }}{{ end }}{{ end }}
 {{ if $personal }}
