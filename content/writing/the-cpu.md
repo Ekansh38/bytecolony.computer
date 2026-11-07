@@ -62,7 +62,7 @@ When we connect the two ends of a battery with a wire, the electrons are able to
 
 The filament's resistance is actually important: it limits how much current can flow. If we connect `+` directly to `-` with just a wire, there's almost no resistance in the way, so a huge amount of current flows. The wire and the battery heat up fast, the battery drains, and things can melt or even catch fire. This is called a short circuit, and it is bad!
 
-Even though technically electrons flow from `-` to `+`, I, and most resources in the real world, show current flowing from `+` to `-`. This is because the direction was decided (thanks, Benjamin Franklin!) before electrons were discovered, and it turns out the direction doesn't really matter (mostly). So we just stick to thinking of it as `+` to `-`, even though in reality the physical electrons flow from `-` to `+`. Also, later on, when I say a wire is driven high or low, that just means it is connected to `+` or `-`.
+Even though technically electrons flow from `-` to `+`, most resources in the real world show current flowing from `+` to `-`. This is because the direction was decided (thanks, Benjamin Franklin!) before electrons were discovered, and it turns out the direction doesn't really matter (mostly). So we just stick to thinking of it as `+` to `-`, even though in reality the physical electrons flow from `-` to `+`. Also, later on, when I say a wire is driven high or low, that just means it is connected to `+` or `-`.
 
 This is just the tip of the iceberg when it comes to electrical circuits. There is a lot more interesting stuff to learn, so if you are curious, check out *Lessons in Electric Circuits* in the Further Reading section at the end.
 
@@ -74,7 +74,9 @@ Let's see if we can combine more switches so the circuit can "answer" slightly m
 
 Let's say switch 1 represents `STINKY`: whether the dog is stinky or not. Switch 2 represents `OLD_WASH`: has it been more than 5 days since the last wash? The rules for our first circuit are:
 
-If `STINKY AND OLD_WASH`, the bulb is on. Or in other words, if the dog is stinky and its last wash was over 5 days ago, then wash the dog. Here is the circuit:
+If `STINKY AND OLD_WASH`, the bulb is on. Or in other words, if the dog is stinky and its last wash was over 5 days ago, then wash the dog.
+
+Here is the circuit:
 
 <a id="diagram-3-2"></a> 
 
@@ -88,7 +90,9 @@ Let's add a new input: `MUDDY`, if the dog is muddy. The rules of the circuit ch
 
 If `(MUDDY OR STINKY) AND OLD_WASH`, the bulb is on.
 
-All this says is, if the dog is muddy or stinky and it's been more than 5 days since the dog's last wash, you should wash the dog. Let's focus on the `MUDDY OR STINKY` part of this circuit:
+All this says is, if the dog is muddy or stinky and it's been more than 5 days since the dog's last wash, you should wash the dog.
+
+Let's focus on the `MUDDY OR STINKY` part of this circuit:
 
 <a id="diagram-3-3"></a> 
 
@@ -115,7 +119,7 @@ Here is how a relay works:
 
 *Diagram 3.1. An electromagnetic relay.*
 
-This relay is made from a coil of wire and a movable metal arm. When current flows through the coil, the coil becomes a magnet and pulls the arm down. When current stops, a spring pulls the arm back up.
+This relay is made from a coil of wire and a movable metal arm. When current flows through the coil, the coil becomes a magnet and pulls the arm down. When current stops, a spring pulls the arm back up. The coil is a long, thin wire wound up tight, so like the filament, it has enough resistance that it isn't a short circuit.
 
 A relay lets one circuit open or close a switch in another circuit.
 
@@ -158,7 +162,9 @@ Now here is the OR gate:
 
 *Diagram 3.4. An electronic OR gate.*
 
-That is an OR gate using relays. Instead of two breaks one after another like in the AND gate, the output loop has two paths side by side, one through each relay's arm. If either input is on, its relay closes its path, and the loop is complete. If both are on, the current just has two paths instead of one. Now here is the full dog washer circuit up to this point:
+That is an OR gate using relays. Instead of two breaks one after another like in the AND gate, the output loop has two paths side by side, one through each relay's arm. If either input is on, its relay closes its path, and the loop is complete. If both are on, the current just has two paths instead of one.
+
+Now here is the full dog washer circuit up to this point:
 
 <a id="diagram-4-5"></a> 
 
@@ -209,7 +215,9 @@ Now before we look at the completed circuit, let's learn some basic logic gate s
 
 *Diagram 3.8. An AND gate.*
 
-This symbol represents the [AND circuit](#diagram-4-2) we made previously (Diagram 3.2), except instead of turning a bulb on and off, it drives an output wire. An OR gate is drawn like this:
+This symbol represents the [AND circuit](#diagram-4-2) we made previously (Diagram 3.2), except instead of turning a bulb on and off, it drives an output wire.
+
+An OR gate is drawn like this:
 
 <a id="diagram-4-9"></a> 
 
@@ -217,7 +225,9 @@ This symbol represents the [AND circuit](#diagram-4-2) we made previously (Diagr
 
 *Diagram 3.9. An OR gate.*
 
-This symbol represents the [OR circuit](#diagram-4-4) we made previously (Diagram 3.4). Whenever I use these symbols moving forward, they can almost directly translate to the circuits with the relays I showed you previously, just instead of turning on a light bulb, they drive a wire. Here are three more useful gate symbols:
+This symbol represents the [OR circuit](#diagram-4-4) we made previously (Diagram 3.4). Whenever I use these symbols moving forward, they can almost directly translate to the circuits with the relays I showed you previously, just instead of turning on a light bulb, they drive a wire.
+
+Here are three more useful gate symbols:
 
 <a id="diagram-4-10"></a> 
 
@@ -266,7 +276,9 @@ First, let's define some terms. A wire driven low is `0`, and a wire driven high
 
 If we want to represent numbers using wires, we are going to need more than one wire, because one wire can only represent up to two numbers, since it only has two possible states: `0` or `1`.
 
-But two wires have `2^2`, or four states, and three wires have `2^3`, or eight states. That would allow us to represent more numbers. Here are all the possible states we have with 3 wires:
+But two wires have `2^2`, or four states, and three wires have `2^3`, or eight states. That would allow us to represent more numbers.
+
+Here are all the possible states we have with 3 wires:
 
 <a id="diagram-5-2"></a> 
 
@@ -342,7 +354,9 @@ So yes, `1 + 1 = 10`. Not ten. `10` is binary for 2.
 
 So the sum bit for that column is `0`, and the carry is `1`. `1 + 1 + 1` in the second column gives `11`, which is binary for 3. So the sum bit is `1`, and the carry is `1`, and so on.
 
-How do we build a circuit using logic gates that performs this standard addition algorithm? Well, let's start with the rightmost column. If we think about it, all the possible states are:
+How do we build a circuit using logic gates that performs this standard addition algorithm? Well, let's start with the rightmost column.
+
+If we think about it, all the possible states are:
 
 | `A` | `B` | Sum | Carry |
 |---:|---:|---:|---:|
@@ -364,7 +378,9 @@ Let's first build this half adder. Let's start by computing the sum, not the car
 | 1 | 0 | 1 |
 | 1 | 1 | 0 |
 
-The sum is `1` only when exactly one input is `1`, not both. This is called XOR, short for exclusive OR. If we combine an OR gate and a NAND gate, and AND them together, we get XOR:
+The sum is `1` only when exactly one input is `1`, not both. This is called XOR, short for exclusive OR.
+
+If we combine an OR gate and a NAND gate, and AND them together, we get XOR:
 
 <a id="diagram-6-3"></a> 
 
@@ -372,7 +388,9 @@ The sum is `1` only when exactly one input is `1`, not both. This is called XOR,
 
 *Diagram 5.3. Half adder sum / XOR.*
 
-OR checks that at least one input is on, and NAND makes sure the inputs aren't both on. Let's package that circuit into a gate called XOR. Here is how an XOR gate looks:
+OR checks that at least one input is on, and NAND makes sure the inputs aren't both on. Let's package that circuit into a gate called XOR.
+
+Here is how an XOR gate looks:
 
 <a id="diagram-6-4"></a> 
 
@@ -380,7 +398,9 @@ OR checks that at least one input is on, and NAND makes sure the inputs aren't b
 
 *Diagram 5.4. An XOR gate.*
 
-Now let's do the carry value. The carry is simple! If you remember, for our half adder, the only time we want to carry is when we are doing `1 + 1`, so we use an AND gate to check if both inputs are on. Here is our half adder:
+Now let's do the carry value. The carry is simple! If you remember, for our half adder, the only time we want to carry is when we are doing `1 + 1`, so we use an AND gate to check if both inputs are on.
+
+Here is our half adder:
 
 <a id="diagram-6-5"></a> 
 
@@ -403,7 +423,9 @@ Now let's package up our half adder into a little box. From now on, I will call 
 
 *Diagram 5.6. A half adder chip.*
 
-Now that we have a half adder, we can add the rightmost column. That works because the rightmost column has no carry-in from a previous column. It only needs to add two bits. So if we have a number like this:
+Now that we have a half adder, we can add the rightmost column. That works because the rightmost column has no carry-in from a previous column. It only needs to add two bits.
+
+So if we have a number like this:
 
 <a id="diagram-6-7"></a> 
 
@@ -415,7 +437,9 @@ The half adder can handle the first column: `1 + 1`. That gives us a sum bit of 
 
 But now the next column has three things to add: `1 + 1 + 1`. The two original bits, plus the carry from the previous column.
 
-A half adder cannot do that. It only accepts two inputs. To continue adding up the other columns, we need a circuit that can take in three inputs: `A`, `B`, and `carry-in`. To add three bits, we use two half adders and an OR gate:
+A half adder cannot do that. It only accepts two inputs. To continue adding up the other columns, we need a circuit that can take in three inputs: `A`, `B`, and `carry-in`.
+
+To add three bits, we use two half adders and an OR gate:
 
 <a id="diagram-6-8"></a> 
 
@@ -453,7 +477,9 @@ Let's package this up into a chip once again:
 
 *Diagram 5.11. An 8-bit adder chip.*
 
-Now we have the carry-out and carry-in as separate inputs and outputs and the whole adder nicely organized into this chip. Let's have a look at some example problems:
+Now we have the carry-out and carry-in as separate inputs and outputs and the whole adder nicely organized into this chip.
+
+Let's have a look at some example problems:
 
 <a id="diagram-6-12"></a> 
 
@@ -482,7 +508,9 @@ The obvious idea is to feed the output of the adder back into one of its inputs.
 
 That seems correct at first glance. But there is a big problem. An adder just looks at its current inputs and computes an output.
 
-So if we wire the output straight back into the input, there is no stable value anymore. The adder is basically being asked to make a number equal to itself plus one:
+So if we wire the output straight back into the input, there is no stable value anymore.
+
+The adder is basically being asked to make a number equal to itself plus one:
 
 ```text
 input = input + 1
@@ -678,7 +706,9 @@ If `E` is on, the output will just be whatever `D` is, so either `0` or `1`. If 
 
 `Z` means the buffer's output is disconnected. Engineers call this "high impedance", which is where the letter `Z` comes from. It is not driving the bus to `+` or `-`, so another component can safely drive the bus without a clash or short-circuit.
 
-Or in other words, this buffer is not touching the wire. `0` is very different: the component is actively driving the wire to `-`. So we have three states:
+Or in other words, this buffer is not touching the wire. `0` is very different: the component is actively driving the wire to `-`.
+
+So we have three states:
 
 ```
 1: driven high
@@ -702,7 +732,9 @@ The important idea is that neither of those wires is directly connected to `+` o
 
 When `E` is `1`, both gaps close. The output is now connected to whichever side `D` picked, so it is driven to `1` or `0`.
 
-When `E` is `0`, both relays touch a point connected to nothing. Both wires lead to a dead end. The output wire is touching nothing. That is `Z`. Here is the full table:
+When `E` is `0`, both relays touch a point connected to nothing. Both wires lead to a dead end. The output wire is touching nothing. That is `Z`.
+
+Here is the full table:
 
 | `E` | `D` | Output |
 |---:|---:|---:|
@@ -778,14 +810,18 @@ To be clear, `WRITE` and `OUT` are control signals, so 1 input wire each. For th
 
 So we are going to build a minuscule 16-byte RAM: 16 addresses, with each address storing one byte. This design can be scaled up easily. Our address will be 4 bits long, because `2^4` is 16.
 
-We could do this as a tall stack of 16 registers, but a grid is nicer. So we will split the 4-bit address in half. The bottom two bits pick the row, and the top two bits pick the column:
+We could do this as a tall stack of 16 registers, but a grid is nicer. So we will split the 4-bit address in half.
+
+The bottom two bits pick the row, and the top two bits pick the column:
 
 ```text
 top 2 bits = column
 bottom 2 bits = row
 ```
 
-Two bits can choose 4 values, so this gives us a 4×4 grid of memory slots. That is 16 total bytes! Once the address selects a slot, two things can happen:
+Two bits can choose 4 values, so this gives us a 4×4 grid of memory slots. That is 16 total bytes!
+
+Once the address selects a slot, two things can happen:
 
 - If `WRITE` turns on, the selected slot stores `data in`.
 - If `OUT` is on, the selected slot drives its stored byte onto `data out`.
@@ -1071,7 +1107,9 @@ So here is what number each instruction in our CPU translates to:
 
 A few notes on reading this table. The mnemonic is just a short name for the instruction, so we humans don't have to remember numbers. `n` stands for a number, and `addr` stands for an address in RAM. Brackets mean the RAM slot at that address, so `[addr]` is whatever is stored there: `[5]` means whatever is stored at address 5, but just `5` means literally the number 5. Without brackets, like in the jump instructions, `addr` is just the address number itself. The arrow `->` means "goes into". Bytes is how many bytes of RAM the instruction takes up. And the binary column only shows 4 bits because 4 bits are enough to number all 15 instructions. In RAM, the opcode still takes up a full byte. The top 4 bits are just `0000`.
 
-The number for each instruction is called its opcode. Let's write a tiny program. We store `00000001` in address 0 of RAM. Then store `00000101` in address 1 of RAM. Then store `00000011` in address 2, then `11111111` in address 3, and finally `00001110` in address 4. Our RAM looks like this:
+The number for each instruction is called its opcode. Let's write a tiny program. We store `00000001` in address 0 of RAM. Then store `00000101` in address 1 of RAM. Then store `00000011` in address 2, then `11111111` in address 3, and finally `00001110` in address 4.
+
+Our RAM looks like this:
 
 ```
 0: 00000001
@@ -1142,7 +1180,9 @@ Now, when the addition overflows, the `CARRY` flag turns on, and `JC` catches it
 
 Because this computer is built from relays, and thus pretty slow, we can probably watch the light walk across the display with our own eyes. If we want to slow it down some, we can pad the program with some `NOP`s that waste clock cycles.
 
-Real computers are insanely fast and usually have specialized timer hardware and such, but sometimes run "do-nothing loops" that just waste clock cycles for a set time. Here is an example of a simple do-nothing delay loop:
+Real computers are insanely fast and usually have specialized timer hardware and such, but sometimes run "do-nothing loops" that just waste clock cycles for a set time.
+
+Here is an example of a simple do-nothing delay loop:
 
 ```
 0: LOAD A, 1
@@ -1217,7 +1257,9 @@ So to accomplish this, we only need 2 simple micro-steps:
 
 We know how we can output and write in one micro-step, but three things? How can we increment PC too? Incrementing PC has nothing to do with the bus and doesn't disrupt anything else going on, so we just can! And notice, these 2 micro-steps are exactly the same for every single instruction.
 
-One thing I am not drawing in the following diagrams: every `WRITE` signal is ANDed with `NOT CLOCK`, like we just discussed. The same goes for PC's `I` signal: incrementing stores a value too. It just comes from PC's own little adder instead of the bus, so it waits for `NOT CLOCK` like every other store. Drawing that same little AND gate nine times would clutter everything up, so instead:
+One thing I am not drawing in the following diagrams: every `WRITE` signal is ANDed with `NOT CLOCK`, like we just discussed. The same goes for PC's `I` signal: incrementing stores a value too. It just comes from PC's own little adder instead of the bus, so it waits for `NOT CLOCK` like every other store.
+
+Drawing that same little AND gate nine times would clutter everything up, so instead:
 
 > [!NOTE]
 > Every pin colored pink has that AND gate secretly. A pink pin only actually turns on at `NOT CLOCK`.
@@ -1323,7 +1365,9 @@ But now the big question: if all 4 of these instructions run the same micro-step
 
 Yep, the last 2 bits of each opcode directly match the ALU's `OP` bits for that specific operation. Must be a coincidence...
 
-Anyway, because of this, we can just directly wire those 2 last bits into the ALU's `OP` bits. We only actually store the result of the ALU on these instructions. Sure, a `STORE A, [addr]` instruction might make the ALU XOR, but it doesn't matter because we don't store the result. It's garbage. So here we are:
+Anyway, because of this, we can just directly wire those 2 last bits into the ALU's `OP` bits. We only actually store the result of the ALU on these instructions. Sure, a `STORE A, [addr]` instruction might make the ALU XOR, but it doesn't matter because we don't store the result. It's garbage.
+
+So here we are:
 
 <a id="diagram-14-4"></a> 
 
@@ -1359,7 +1403,9 @@ Wait, is that the whole CU? Umm, yes, that's it. Just combine all of those diagr
 
 ### Finally, The Fun Part
 
-That's it, huh? A whole computer. To test it, let's run a simple program on it. Let's start with the simplest program imaginable, just putting a number on the DISPLAY lamps:
+That's it, huh? A whole computer. To test it, let's run a simple program on it.
+
+Let's start with the simplest program imaginable, just putting a number on the DISPLAY lamps:
 
 ```
 0: LOAD A, 42
@@ -1408,7 +1454,9 @@ And there it is, 42 sitting on the lamps. Now let's try something real, a multip
 34: HALT
 ```
 
-The running total lives in slot 102. The program adds the value in slot 100 into slot 102, and then slot 101 counts down by one each time, until it hits 0. This is basically all the program is:
+The running total lives in slot 102. The program adds the value in slot 100 into slot 102, and then slot 101 counts down by one each time, until it hits 0.
+
+This is basically all the program is:
 
 ```
 total = 0 (slot 102)
