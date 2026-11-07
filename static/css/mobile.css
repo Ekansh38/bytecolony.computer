@@ -2,17 +2,30 @@
 @media (max-width: 540px) {
   h1, .site-title { font-size: 1.35rem; }
   header { margin-bottom: 36px; }
+  /* One row, always. Five items wrapping on a phone drops a lone link
+     onto a second line, which reads as a mistake rather than a menu.
+     space-between spreads them edge to edge and the gap below is the
+     minimum they may close to, so the row stays even at any width. */
   .nav {
-    gap: 4px 18px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 0 10px;
     margin-top: 12px;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     padding: 8px 0;
   }
+  /* The labels are 34 monospace characters all told, so they only fit a
+     narrow screen if the type gives a little. Full size wherever there
+     is room, shrinking only on the phones too narrow to hold the row. */
+  .nav a {
+    padding: 8px 0;
+    font-size: clamp(0.68rem, 3.6vw, 0.88rem);
+    white-space: nowrap;
+  }
   .social { gap: 16px; margin-top: 12px; font-size: 0.9rem; }
   .header-hr { margin-top: 12px; }
   .toggle { padding: 8px 6px; }
-  .nav a { padding: 8px 0; font-size: 0.88rem; }
   .cmt-reply-btn { padding: 10px 0; font-size: 0.78rem; }
   body.page .hero-img { width: 100%; }
 }
