@@ -1,6 +1,7 @@
 {{ define "main" }}
 <style>
-  .gb-intro { color: var(--muted); margin-bottom: 28px; line-height: 1.6; font-size: 0.9rem; }
+  /* No intro line under the title, so the title keeps the gap it left. */
+  .project-title { margin-bottom: 28px; }
 
   .gb-form { margin-bottom: 36px; }
   .gb-field { margin-bottom: 8px; }
@@ -53,7 +54,6 @@
 </style>
 
 <h1 class="project-title">guestbook</h1>
-<p class="gb-intro">Leave a message. Say something nice, or don't.</p>
 
 <div class="gb-form">
   <div class="gb-field">
