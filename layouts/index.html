@@ -11,14 +11,14 @@
 {{ range $projects.Sections }}{{ if not .Params.shipped }}{{ $personal = $personal | append . }}{{ end }}{{ end }}
 {{ if $personal }}
 <ul>
-  {{ range first 3 $personal }}
+  {{ range first 4 $personal }}
   <li>
     <span class="li-name"><a href="{{ .Permalink }}">{{ .Title }}</a></span>:
     <span class="li-desc">{{ .Params.summary }}</span>
   </li>
   {{ end }}
 </ul>
-{{ if gt (len $personal) 3 }}<p class="more-link"><a href="/projects">-- More +{{ sub (len $personal) 3 }} --</a></p>{{ end }}
+{{ if gt (len $personal) 4 }}<p class="more-link"><a href="/projects">-- More +{{ sub (len $personal) 4 }} --</a></p>{{ end }}
 {{ else }}<p class="empty-note">nothing yet</p>{{ end }}
 
 <hr>
