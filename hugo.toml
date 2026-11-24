@@ -38,7 +38,6 @@ enableRobotsTXT = true
 
 [params]
   tagline = "a journey underground"
-  pitch   = "My adventure underground as I feed my interest in computers!"
   github  = "https://github.com/ekansh38"
   youtube = "https://www.youtube.com/@byte_colony"
   itchio  = "https://byte-colony.itch.io/"

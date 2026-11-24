@@ -237,13 +237,6 @@ body.projects li:not(:where(.project-content *)), body.home li:not(:where(.proje
 body.writing li:not(:where(.project-content *)), body.music li:not(:where(.project-content *)), body.tools li:not(:where(.project-content *)) {
   padding: 14px 0;
 }
-.hero-pitch {
-  font-size: 1.15rem;
-  color: var(--accent);
-  font-style: italic;
-  margin-bottom: 24px;
-  letter-spacing: 0.01em;
-}
 .bio { margin-bottom: 28px; }
 .toggle {
   background: none; border: none; padding: 2px 0; font: inherit; cursor: pointer;
