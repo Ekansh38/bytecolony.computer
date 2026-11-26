@@ -2,9 +2,13 @@
 {{ if eq .AlertType "tryout" }}
 {{/*
   A try-it question. The source writes one alert whose body is the question,
-  then a paragraph opening with `**Answer:**`. Split on that paragraph and put
+  then a paragraph opening with `Answer:`. Split on that paragraph and put
   the answer behind a disclosure: a question with its answer already in view
   is not a question, it is a statement.
+
+  The source writes the label plain and leaves its styling to each build, so
+  a plain `Answer:` is made bold here first. A label that is already bold
+  passes through untouched.
 
   Splitting on the rendered HTML rather than the markdown is deliberate, since
   the hook only ever sees .Text after goldmark has run. If the marker is ever
@@ -12,7 +16,8 @@
   still reads correctly.
 */}}
 {{ $marker := "<p><strong>Answer:</strong>" }}
-{{ $parts := split (string .Text) $marker }}
+{{ $text := replace (string .Text) "<p>Answer:" $marker }}
+{{ $parts := split $text $marker }}
 <div class="callout callout-tryout">
   <div class="callout-label">TRY IT</div>
   <div class="callout-body">
